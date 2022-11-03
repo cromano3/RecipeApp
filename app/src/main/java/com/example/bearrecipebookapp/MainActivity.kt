@@ -335,7 +335,7 @@ fun BearAppTopBar(
                 //  .weight(1f),
                 color = Color(0xFFd8af84),
                 textAlign = TextAlign.Center,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 fontFamily = Cabin,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 1.0.em,
