@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">BearRecipeBookApp</string>
+
+    <string name="recipe1_name">Bagels</string>
+    <string name="recipe1_ingredients">Yeast, Flour, Garlic powder, Honey, Garlic, Onion, Sesame seeds</string>
+    <string name="recipe1_instructions">1)Make dough with salt, yeast, water, and garlic powder.\n\n2)Boil large pot full of water and add honey.\n\n3)Roll out dough, cut into thick strips, shape into bagels.\n\n4)Add uncooked bagels to boiling water and let boil for 2 minutes on each side.\n\n5)Bake boiled bagels for 20 minutes at 200.</string>
+
+    <string name="recipe2_name">Garlic Knots</string>
+    <string name="recipe2_ingredients">Yeast, Flour, Garlic powder, Garlic, Basil, Parsley, Vegan Butter</string>
+    <string name="recipe2_instructions">1)Make dough with salt, yeast, water, and garlic powder.\n\n2)Melt butter in sauce pan and add chopped garlic, basil, and parsley then add salt, and garlic powder.\n\n3)Cook on low heat to infuse butter.\n\n4)Cut dough into thin strips, roll longways, shape into knots.\n\n5)Cover knots with melted butter mixture.\n\n6)Bake for 20-25 minutes at 200.\n\n7)After baking cover with remaining melted butter mixture and let cool.\n
+    </string>
+
+    <string name="error_message">FAIL ERROR</string>
+    <string name="demo">\"Donuts\"</string>
+
+</resources>

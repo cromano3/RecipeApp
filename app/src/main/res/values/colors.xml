@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="grey_50">#FFF8F9FA</color>
+    <color name="grey_900">#FF202124</color>
+
+    <color name="lightbar">#FFFDFCF4</color>
+    <color name="darkbar">#FF1B1C18</color>
+</resources>
