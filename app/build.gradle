@@ -14,6 +14,14 @@ android {
                 "-Xjvm-default=all",
         ]
     }
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\croma\\Documents\\keystore\\keystore.jks')
+            storePassword 'f00kj00!!!'
+            keyAlias 'keystore'
+            keyPassword 'f00kj00!!!'
+        }
+    }
 
     defaultConfig {
 
@@ -38,6 +46,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

@@ -9,6 +9,7 @@ import com.example.bearrecipebookapp.data.RecipeRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 
@@ -20,6 +21,7 @@ class RecipeBookScreenViewModel(application: Application): ViewModel() {
     //search for a list of ingredients (Strings) that have this name
     //now we have a list of ingredients as string.
     //add the list to the newRecipeModel as newRecipeModel.ingredients<String>
+
 
     private val repository: RecipeRepository
 
@@ -38,11 +40,14 @@ class RecipeBookScreenViewModel(application: Application): ViewModel() {
 
     //var detailsScreenTarget: LiveData<RecipeWithIngredients>
 
-    val detailsScreenUiState = MutableStateFlow(RecipeWithIngredientsAndInstructions())
+    private val detailsScreenUiState = MutableStateFlow(RecipeWithIngredientsAndInstructions())
+    val publicDetailsScreenUiState = detailsScreenUiState.asStateFlow()
 
     //var detailsScreenTargetGood: LiveData<RecipeWithIngredientsAndInstructions>
 
 
+    private val onMenuUiState = MutableStateFlow(OnMenuUiState())
+    val publicOnMenuState = onMenuUiState.asStateFlow()
 
 
 
@@ -75,34 +80,89 @@ class RecipeBookScreenViewModel(application: Application): ViewModel() {
 
        // getInstructions(recipeWithIngredients.recipeEntity.recipeName)
 
-        detailsScreenUiState.update{currentState->
-                currentState.copy(recipeEntity = recipeWithIngredientsAndInstructions.recipeEntity,
-                    ingredientsList = recipeWithIngredientsAndInstructions.ingredientsList,
-                    instructionsList = recipeWithIngredientsAndInstructions.instructionsList
-                    //instructionsList = repository.detailsWithInstructions.instructionsList,
-                    //instructionsList = detailsScreenUiState.value.instructionsList
-
-                )
-        }
-    }
-
-    fun setDetailsScreenTargetHeart(recipe: RecipeWithIngredientsAndInstructions){
-        var newRecipe = recipe
-
-        if(recipe.recipeEntity.onMenu == 1)
-            newRecipe.recipeEntity.onMenu = 0
-        else if (recipe.recipeEntity.onMenu == 0)
-            newRecipe.recipeEntity.onMenu = 1
-
-        detailsScreenUiState.update{currentState->
-            currentState.copy(recipeEntity = newRecipe.recipeEntity,
-                ingredientsList = recipe.ingredientsList,
-                instructionsList = recipe.instructionsList
+        detailsScreenUiState.update { currentState ->
+            currentState.copy(
+                recipeEntity = recipeWithIngredientsAndInstructions.recipeEntity,
+                ingredientsList = recipeWithIngredientsAndInstructions.ingredientsList,
+                instructionsList = recipeWithIngredientsAndInstructions.instructionsList
                 //instructionsList = repository.detailsWithInstructions.instructionsList,
                 //instructionsList = detailsScreenUiState.value.instructionsList
 
             )
         }
+
+            onMenuUiState.update{currentState->
+                currentState.copy(
+                    onMenu = recipeWithIngredientsAndInstructions.recipeEntity.onMenu
+                )
+        }
+    }
+
+    fun setDetailsScreenTargetHeart(){
+
+
+        var updatedRecipe: Int
+
+        var newRecipe = detailsScreenUiState.value.recipeEntity
+
+
+
+
+        if(detailsScreenUiState.value.recipeEntity.onMenu == 1){
+            updatedRecipe = 0
+
+            onMenuUiState.update { currentState ->
+                currentState.copy(
+                    onMenu = updatedRecipe
+                )
+            }
+
+            newRecipe.onMenu = updatedRecipe
+            detailsScreenUiState.update { currentState ->
+                currentState.copy(
+                    recipeEntity = newRecipe,
+                    ingredientsList = detailsScreenUiState.value.ingredientsList,
+                    instructionsList = detailsScreenUiState.value.instructionsList
+
+                )
+            }
+
+        }
+        else if (detailsScreenUiState.value.recipeEntity.onMenu == 0){
+            updatedRecipe = 1
+
+            onMenuUiState.update { currentState ->
+                currentState.copy(
+                    onMenu = updatedRecipe
+                )
+            }
+
+
+
+            newRecipe.onMenu = updatedRecipe
+            detailsScreenUiState.update { currentState ->
+                currentState.copy(
+                    recipeEntity = newRecipe,
+                    ingredientsList = detailsScreenUiState.value.ingredientsList,
+                    instructionsList = detailsScreenUiState.value.instructionsList
+
+                )
+            }
+
+        }
+
+
+
+
+//        detailsScreenUiState.update{currentState->
+//            currentState.copy(recipeEntity = newRecipe.recipeEntity,
+//                ingredientsList = recipe.ingredientsList,
+//                instructionsList = recipe.instructionsList
+//                //instructionsList = repository.detailsWithInstructions.instructionsList,
+//                //instructionsList = detailsScreenUiState.value.instructionsList
+//
+//            )
+//        }
 
     }
 

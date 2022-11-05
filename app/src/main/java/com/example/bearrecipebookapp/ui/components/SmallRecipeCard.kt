@@ -206,6 +206,7 @@ fun SmallRecipeCard(
                 {
                     icon = Icons.Outlined.Favorite
                 }
+
                 FloatingActionButton(
                     onClick = onClick,
                     elevation = FloatingActionButtonDefaults.elevation(8.dp),

@@ -3,39 +3,17 @@ package com.example.bearrecipebookapp
 import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
@@ -51,7 +29,6 @@ import com.example.bearrecipebookapp.ui.RecipeScreen
 import com.example.bearrecipebookapp.ui.ShoppingListScreen
 import com.example.bearrecipebookapp.ui.WeeklyMenuScreen
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
-import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.RecipeBookScreenViewModel
 
 class MainActivity : ComponentActivity() {
@@ -88,8 +65,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BearRecipeApp(
     recipeBookScreenViewModel: RecipeBookScreenViewModel,
-    navController: NavHostController = rememberNavController()
+
 ){
+    //IS THIS THE SAME AS KEEPING IT IN THE PARAMETERS LIST????????????????????????????
+    val navController: NavHostController = rememberNavController()
+    //?????????????????????????????????????????????????????????????????????????????????
+
     // Get current back stack entry
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
@@ -109,7 +90,9 @@ fun BearRecipeApp(
     val allRecipesWithIngredientsAndInstructions by recipeBookScreenViewModel.recipesWithIngredientsAndInstructions.observeAsState(listOf())
     val selectedRecipesWithIngredientsAndInstructions by recipeBookScreenViewModel.selectedRecipesWithIngredientsAndInstructions.observeAsState(listOf())
 
-    val detailsScreenTarget by recipeBookScreenViewModel.detailsScreenUiState.collectAsState()
+    val detailsScreenTarget by recipeBookScreenViewModel.publicDetailsScreenUiState.collectAsState()
+
+    val publicOnMenuState by recipeBookScreenViewModel.publicOnMenuState.collectAsState()
 
 
 
@@ -137,11 +120,12 @@ fun BearRecipeApp(
                // recipeList = allRecipesWithIngredients,
                 onClick = {navController.navigate(it)},
                 newDetailsScreenTarget = detailsScreenTarget,
+
                 onGoBackClick = {navController.popBackStack();
                     //recipeBookScreenViewModel.removeAsDetailsScreenTarget(it)
                                 },
                 onUpdateMenuClick = {recipeBookScreenViewModel.updateMenuWithInstructions(it);
-                    recipeBookScreenViewModel.setDetailsScreenTargetHeart(it)}
+                    recipeBookScreenViewModel.newSetDetailsScreenTarget(it)}
                // onGoBackClick = {navController.navigate(currentScreen); navController.popBackStack()}
             )
         }
@@ -201,11 +185,15 @@ fun BearRecipeApp(
                 DetailsScreen(
                    // recipeList = allRecipesWithIngredients,
                    // recipeListWithInstructions = allRecipesWithInstructions,
+                    detailsScreenTargetOnMenu = publicOnMenuState.onMenu,
+                    detailsScreenTargetIngredients = detailsScreenTarget.ingredientsList,
+                    detailsScreenTargetInstructions = detailsScreenTarget.instructionsList,
                     detailsScreenTarget = detailsScreenTarget,
                     onGoBackClick = {navController.popBackStack();
                                     //recipeBookScreenViewModel.removeAsDetailsScreenTarget(it)
                                     },
-                   // onUpdateMenuClick = {recipeBookScreenViewModel.updateMenu(it)}
+                    onUpdateMenuClick = {recipeBookScreenViewModel.updateMenuWithInstructions(it);
+                        recipeBookScreenViewModel.setDetailsScreenTargetHeart()}
                 )
 
             }
@@ -247,7 +235,7 @@ fun BearAppTopBar(
 
 //    val keys = listOf(topBarMenuItems.keys)
 
-    val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
+
 
     val keys = listOf("Recipes", "Menu", "Shopping List")
 
@@ -292,128 +280,7 @@ fun BearAppTopBar(
 //        }
 
         //BackHandler{ onGoBackClick(detailsScreenTarget) }
-        BackHandler { onGoBackClick() }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .background(Color(0xFF682300)),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
-        ){
-            IconButton(
-               // onClick = {onGoBackClick(detailsScreenTarget)},
-                onClick = {onGoBackClick()},
-                modifier =
-                Modifier
-                    .size(48.dp)
-                    .align(Alignment.CenterVertically)
-                    .background(color = Color.Transparent),
-                // color = Color.Transparent
-
-            ){
-                Icon(
-                    imageVector = Icons.Outlined.ArrowBack,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(24.dp),
-                    // .padding(start = 16.dp)
-                    // .clickable(onClick = {onGoBackClick(detailsScreenTarget)}),
-                    tint = Color(0xFFd8af84)
-
-
-                )
-            }
-
-            Spacer(Modifier.weight(1f))
-
-
-            Text(
-                text = newDetailsScreenTarget.recipeEntity.recipeName,
-                modifier = Modifier.width(200.dp),
-                //  .weight(1f),
-                color = Color(0xFFd8af84),
-                textAlign = TextAlign.Center,
-                fontSize = 22.sp,
-                fontFamily = Cabin,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 1.0.em,
-                style = MaterialTheme.typography.h4.merge(
-                    TextStyle(
-                        platformStyle = PlatformTextStyle(
-                            includeFontPadding = false
-                        ),
-                        lineHeightStyle = LineHeightStyle(
-                            alignment = LineHeightStyle.Alignment.Top,
-                            trim = LineHeightStyle.Trim.FirstLineTop)
-                    )
-                ),
-
-                )
-
-            Spacer(Modifier.weight(1f))
-
-            Icon(
-                imageVector = Icons.Outlined.Share,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(24.dp),
-                tint = Color(0xFFd8af84)
-
-            )
-            Spacer(Modifier.size(16.dp))
-
-            val icon: ImageVector
-
-
-            if(newDetailsScreenTarget.recipeEntity.onMenu == 0){
-                icon = Icons.Outlined.FavoriteBorder
-
-            }else
-            {
-                icon = Icons.Outlined.Favorite
-            }
-
-            FloatingActionButton(
-                onClick = {onUpdateMenuClick(newDetailsScreenTarget)},
-                elevation = FloatingActionButtonDefaults.elevation(8.dp),
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .border(
-                        width = 2.dp,
-                        brush = (Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFFd8af84),
-                                Color(0xFFb15f33),
-
-                                ),
-                            endX = gradientWidthButton,
-                            tileMode = TileMode.Mirror
-                        )),
-                        shape = CircleShape
-                    )
-                    // .align(Alignment.BottomEnd)
-                    .size(36.dp)
-                    //the background of the square for this button, it stays a square even tho
-                    //we have shape = circle shape.  If this is not changed you see a solid
-                    //square for the "background" of this button.
-                    .background(color = Color.Transparent),
-                shape = CircleShape,
-                //this is the background color of the button after the "Shaping" is applied.
-                //it is different then the background attribute above.
-                backgroundColor = Color(0xFF682300)
-            ) {
-                Icon(
-                    icon,
-                    tint = Color(0xFFd8af84),
-                    modifier = Modifier.size(20.dp),
-                    // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                    contentDescription = null
-                )
-            }
-            Spacer(Modifier.size(8.dp))
-        }
     }
 
 //        Text(

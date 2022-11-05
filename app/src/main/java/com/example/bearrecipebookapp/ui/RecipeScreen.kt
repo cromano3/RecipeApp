@@ -32,6 +32,75 @@ fun RecipeScreen(
         color = Color(0xFFd8af84)
 
     ) {
+
+
+
+
+
+//        var myFilteredList by rememberSaveable { mutableStateOf<MutableList<RecipeWithIngredientsAndInstructions>>(mutableListOf(RecipeWithIngredientsAndInstructions())) }
+//        var myFiltersList by rememberSaveable { mutableStateOf<MutableList<String>>(null) }
+//
+//
+//        var myFiltered
+//
+//
+//        var clickedFilter by rememberSaveable {mutableStateOf("")}
+//
+//        if (myFiltersList.contains(clickedFilter))
+//            myFiltersList.remove(clickedFilter)
+//        else
+//            myFiltersList.add(clickedFilter)
+//
+//
+//        if (myFiltersList.size == 0){
+//            myFilteredList = allRecipesWithIngredientsAndInstructions
+//        }
+//
+//        else{
+//            myFilteredList = listOf<Recipes>() // MUST CLEAR ALL AND MAKE EMPTY AGAIN
+
+//           for(x in 0 until allRecipesWithIngredients.size){
+//                for(y in 0 until allRecipesWithIngredients[x].attributesList.size){
+//                    if(myFiltersList.contains(allRecipesWithIngredients[x].attributesList[y]){
+//                        myFilteredList.add(allRecipesWithIngredients[x])
+//                        BREAK!!!! break out of y loop to avoid adding duplicates
+//                    }
+//                }
+//            }
+//        }
+
+//    LazyColumn(myFilteredList){
+//        SmallRecipeCard(it) Modifier.animateItemPlacement()
+//    }
+/*
+
+
+
+        myFiltersList.add("Favorite", false)
+        myFiltersList.add("Asian", false)
+
+        where myFiltersList.key == clickedFilter{
+            myFiltersList.value = !myFiltersList.value
+            }
+
+
+        for(x in 0 until allRecipesWithIngredients.size){
+            for(y in 0 until allRecipesWithIngredients[x].attributesList.size){
+                if(myFiltersMap.contains(allRecipesWithIngredients[x].attributesList[y]){
+                    where myFiltersMap.key == allRecipesWithIngredients[x].attributesList[y]
+                        //ONLY ADD IF UNIQUE!! MUST CHECK IF LIST ALREADY HAS IT
+                        myFilteredRecipesList.add( allRecipesWithIngredients[x] )
+
+
+
+
+        LazyColumn(
+
+        )
+         */
+
+
+
         Column(
             //To DO:
             modifier = Modifier
