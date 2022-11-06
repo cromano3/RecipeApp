@@ -33,8 +33,8 @@ import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 //the recipe card with name, ingredients, image, and instructions
 @Composable
 fun RecipeCard(
+    modifier: Modifier,
     recipeWithIngredients: RecipeWithIngredients,
-    selected: Boolean,
     currentScreen: String,
     onClick: () -> Unit,
     onDetailsClick: () -> Unit,
@@ -133,7 +133,7 @@ fun RecipeCard(
             }
         }
         Surface(
-            modifier = Modifier
+            modifier = modifier
                 .padding(start = 8.dp , end = 8.dp)
                 .height(40.dp)
                 .fillMaxWidth()
@@ -253,14 +253,15 @@ fun DefaultPreview2() {
 
         ) {
             RecipeCard(
+                modifier = Modifier,
                 recipeWithIngredients = RecipeWithIngredients(
                     recipeEntity = myRE,
                     ingredientsList = myList
                 ),
-                selected = true,
                 currentScreen = "WeeklyMenuScreen",
-                onClick = { /*TODO*/ },
-                onDetailsClick = {})
+                onClick = {},
+                onDetailsClick = {}
+            )
         }
     }
 }

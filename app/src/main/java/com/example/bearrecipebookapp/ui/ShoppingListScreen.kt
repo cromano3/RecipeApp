@@ -1,5 +1,6 @@
 package com.example.bearrecipebookapp.ui
 
+import android.app.Application
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,6 +10,8 @@ import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.outlined.CheckBoxOutlineBlank
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -17,78 +20,91 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.IngredientEntity
-import com.example.bearrecipebookapp.data.InstructionEntity
-import com.example.bearrecipebookapp.data.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
-import com.example.bearrecipebookapp.datamodel.RecipeWithInstructions
-import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
+import com.example.bearrecipebookapp.viewmodel.ShoppingListScreenViewModel
 
 @Composable
 fun ShoppingListScreen(
-    selectedIngredients: List<IngredientEntity>,
-    //selectedRecipes: List<RecipeWithIngredients>,
-    selectedRecipes: List<RecipeWithIngredientsAndInstructions>,
-    onClickIngredientSelected: (IngredientEntity) -> Unit,
-    onClickIngredientDeselected: (IngredientEntity) -> Unit,
-    //onDetailsClick: (RecipeWithIngredients) -> Unit
-    onDetailsClick: (RecipeWithIngredientsAndInstructions) -> Unit
+    onDetailsClick: () -> Unit
 ) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color(0xFFd8af84)//Color(0xFFb15f33), //Color(0xFFd8af84)
+    val owner = LocalViewModelStoreOwner.current
 
-
-    ) {
-        Row(
-            Modifier
-                .fillMaxSize()
-//                .verticalScroll(rememberScrollState())
+    owner?.let { viewModelStoreOwner ->
+        val shoppingListScreenViewModel: ShoppingListScreenViewModel = viewModel(
+            viewModelStoreOwner,
+            "ShoppingListScreenViewModel",
+            ShoppingListScreenViewModelFactory(
+                LocalContext.current.applicationContext
+                        as Application,
+            )
         )
+
+        val shoppingListScreenData by shoppingListScreenViewModel.shoppingListScreenData.observeAsState(listOf())
+        val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
+
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color(0xFFd8af84)//Color(0xFFb15f33), //Color(0xFFd8af84)
+
+
+        ) {
+            Row(
+                Modifier
+                    .fillMaxSize()
+//                .verticalScroll(rememberScrollState())
+            )
             {
-                Column(modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(0.60f)
-                    .padding(bottom = 8.dp)
-                    .verticalScroll(rememberScrollState()),
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(0.60f)
+                        .padding(bottom = 8.dp)
+                        .verticalScroll(rememberScrollState()),
 
                     ) {
 
-                    selectedIngredients.forEach{
+                    selectedIngredients.forEach {
                         ShoppingListItemWithButton(
                             ingredientEntity = it,
-                            onClickIngredientSelected = {onClickIngredientSelected(it)} ,
-                            onClickIngredientDeselected = {onClickIngredientDeselected(it)},
-
-                        )
+                            onClickIngredientSelected = { shoppingListScreenViewModel.ingredientSelected(it) },
+                            onClickIngredientDeselected = { shoppingListScreenViewModel.ingredientDeselected(it) },
+                            )
                     }
                 }
-                Column(modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(0.40f)
-                    .verticalScroll(rememberScrollState()),
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(0.40f)
+                        .verticalScroll(rememberScrollState()),
 
                     ) {
 
-                    selectedRecipes.forEach{
+                    shoppingListScreenData.forEach {
                         RecipeIconWithButton(
-                            recipeWithIngredients = RecipeWithIngredients(recipeEntity = it.recipeEntity, ingredientsList = it.ingredientsList),
-                                    //it,
-                            onDetailsClick = { onDetailsClick(it) }
+                            recipeWithIngredients = RecipeWithIngredients(
+                                recipeEntity = it.recipeEntity,
+                                ingredientsList = it.ingredientsList
+                            ),
+                            onDetailsClick = { shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
+                                onDetailsClick() }
                         )
                     }
                 }
             }
-
+        }
     }
 }
 
@@ -358,37 +374,48 @@ fun ShoppingListItemWithButton(
 
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun DefaultPreview() {
-    var myRecipe: RecipeEntity = RecipeEntity(recipeName = "Cauliflower Walnut Tacos", onMenu = 0,1, timeToMake = 60, rating = 98)
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun DefaultPreview() {
+//    var myRecipe: RecipeEntity = RecipeEntity(recipeName = "Cauliflower Walnut Tacos", onMenu = 0,1, timeToMake = 60, rating = 98)
+//
+//    var ing1: IngredientEntity = IngredientEntity(ingredientName = "Ingredient 1", quantityOwned = 0, quantityNeeded = 0)
+//    var ing2: IngredientEntity = IngredientEntity(ingredientName = "Ingredient 2", quantityOwned = 0, quantityNeeded = 0)
+//    var ing3: IngredientEntity = IngredientEntity(ingredientName = "Ingredient 3", quantityOwned = 0, quantityNeeded = 0)
+//
+//    var ins1: InstructionEntity = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it.")
+//    var ins2: InstructionEntity = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!.")
+//    var ins3: InstructionEntity = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!!.")
+//
+//    var recList = listOf(
+//        RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)),
+//        RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)))
+//
+//    var recInsList = listOf(
+//        RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
+//        RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
+//    )
+//
+//    var recipeAll = RecipeWithIngredientsAndInstructions(myRecipe,listOf(ing1, ing2), listOf(ins1, ins2))
+//
+//    BearRecipeBookAppTheme {
+//        ShoppingListScreen(
+//            listOf(ing1, ing2, ing3),
+//            listOf(recipeAll),
+//            {},
+//            {},
+//            {}
+//        )
+//    }
+//}
 
-    var ing1: IngredientEntity = IngredientEntity(ingredientName = "Ingredient 1", quantityOwned = 0, quantityNeeded = 0)
-    var ing2: IngredientEntity = IngredientEntity(ingredientName = "Ingredient 2", quantityOwned = 0, quantityNeeded = 0)
-    var ing3: IngredientEntity = IngredientEntity(ingredientName = "Ingredient 3", quantityOwned = 0, quantityNeeded = 0)
-
-    var ins1: InstructionEntity = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it.")
-    var ins2: InstructionEntity = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!.")
-    var ins3: InstructionEntity = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!!.")
-
-    var recList = listOf(
-        RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)),
-        RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)))
-
-    var recInsList = listOf(
-        RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
-        RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
-    )
-
-    var recipeAll = RecipeWithIngredientsAndInstructions(myRecipe,listOf(ing1, ing2), listOf(ins1, ins2))
-
-    BearRecipeBookAppTheme {
-        ShoppingListScreen(
-            listOf(ing1, ing2, ing3),
-            listOf(recipeAll),
-            {},
-            {},
-            {}
-        )
+class ShoppingListScreenViewModelFactory(
+    val application: Application,
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return ShoppingListScreenViewModel(
+            application,
+        ) as T
     }
+
 }

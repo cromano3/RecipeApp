@@ -4,15 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
-
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 
 @Dao
-interface HomeScreenDao {
+interface DetailsScreenDao {
 
     @Transaction
-    @Query("SELECT * FROM recipe_table")
-    fun getData(): LiveData<List<HomeScreenDataModel>>
+    @Query("SELECT recipe_table.* FROM recipe_table INNER JOIN details_screen_target_table ON details_screen_target_table.target_name = recipe_table.recipe_name")
+    fun getData(): LiveData<RecipeWithIngredientsAndInstructions>
 
 
     @Transaction
@@ -25,9 +24,4 @@ interface HomeScreenDao {
     @Transaction
     @Query("UPDATE ingredient_table SET quantity_owned = :quantityOwned WHERE ingredient_name = :name")
     fun setIngredientQuantityOwned(name: String, quantityOwned: Int)
-
-
-    @Transaction
-    @Query("UPDATE details_screen_target_table SET target_name = :recipeName")
-    fun setDetailsScreenTarget(recipeName: String)
 }

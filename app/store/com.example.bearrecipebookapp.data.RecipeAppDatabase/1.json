@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8100a6a5de3b8047027492faa7de9da0",
+    "identityHash": "13ad246c10a873157362c72c9ef8a82a",
     "entities": [
       {
         "tableName": "recipe_table",
@@ -144,12 +144,79 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "attributes_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`attribute_name` TEXT NOT NULL, PRIMARY KEY(`attribute_name`))",
+        "fields": [
+          {
+            "fieldPath": "recipeName",
+            "columnName": "attribute_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "attribute_name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "recipe_attributes_join_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `attribute_name` TEXT NOT NULL, PRIMARY KEY(`recipe_name`, `attribute_name`))",
+        "fields": [
+          {
+            "fieldPath": "recipeName",
+            "columnName": "recipe_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "attributeName",
+            "columnName": "attribute_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "recipe_name",
+            "attribute_name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "details_screen_target_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`target_name` TEXT NOT NULL, PRIMARY KEY(`target_name`))",
+        "fields": [
+          {
+            "fieldPath": "ingredientName",
+            "columnName": "target_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "target_name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8100a6a5de3b8047027492faa7de9da0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '13ad246c10a873157362c72c9ef8a82a')"
     ]
   }
 }

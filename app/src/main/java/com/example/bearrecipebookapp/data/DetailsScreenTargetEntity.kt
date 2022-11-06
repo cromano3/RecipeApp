@@ -4,9 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "attributes_table")
-class AttributeEntity(
+@Entity(tableName = "details_screen_target_table")
+class DetailsScreenTargetEntity(
+
     @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = "attribute_name")
-    val attributeName: String = "",
-)
+    @ColumnInfo(name = "target_name")
+    val ingredientName: String = "",
+
+
+    )

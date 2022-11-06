@@ -3,27 +3,29 @@ package com.example.bearrecipebookapp.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.bearrecipebookapp.data.HomeScreenRepository
+import com.example.bearrecipebookapp.data.DetailsScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
-import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 
-class HomeScreenViewModel(application: Application): ViewModel() {
+class DetailsScreenViewModel(application: Application,
+                        //     recipeName: String
+): ViewModel() {
 
-    private val repository: HomeScreenRepository
+    private val repository: DetailsScreenRepository
 
-    var homeScreenData: LiveData<List<HomeScreenDataModel>>
+    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
 
 
 
     init {
         val appDb = RecipeAppDatabase.getInstance(application)
-        val homeScreenDao = appDb.HomeScreenDao()
-        repository = HomeScreenRepository(homeScreenDao)
+        val detailsScreenDao = appDb.DetailsScreenDao()
+        repository = DetailsScreenRepository(detailsScreenDao)
 
-        homeScreenData = repository.homeScreenData
+        detailsScreenData = repository.detailsScreenData
     }
 
-    fun toggleFavorite(recipe: HomeScreenDataModel){
+    fun toggleFavorite(recipe: RecipeWithIngredientsAndInstructions){
         if(recipe.recipeEntity.onMenu == 0){
             for(x in 0 until recipe.ingredientsList.size){
                 repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded + 1)
@@ -37,9 +39,5 @@ class HomeScreenViewModel(application: Application): ViewModel() {
             }
             repository.updateMenu(recipe.recipeEntity.recipeName, 0)
         }
-    }
-
-    fun setDetailsScreenTarget(recipeName: String){
-        repository.setDetailsScreenTarget(recipeName)
     }
 }

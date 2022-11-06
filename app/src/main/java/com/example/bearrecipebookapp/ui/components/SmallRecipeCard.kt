@@ -82,7 +82,7 @@ fun SmallRecipeCard(
     Surface(
         elevation = 4.dp,
         modifier = modifier
-            .padding(top = 16.dp, bottom = 16.dp)
+            .padding(top = 16.dp)
             .size(
                 width = 170.dp,
                 height = 270.dp

@@ -31,9 +31,10 @@ fun WeeklyMenuScreen(
             for(x in 0 until selectedRecipesList.size){
 
                 RecipeCard(
+                    modifier = Modifier,
                     recipeWithIngredients = RecipeWithIngredients(selectedRecipesList[x].recipeEntity,selectedRecipesList[x].ingredientsList),
                             //selectedRecipesList[x],
-                    selected = true,
+
                     currentScreen = "WeeklyMenuScreen",
                     onClick = { onClick(selectedRecipesList[x]) },
                     onDetailsClick = { onDetailsClick(selectedRecipesList[x]) }

@@ -13,6 +13,8 @@ import androidx.room.RoomDatabase
                         InstructionEntity::class,
                         AttributeEntity::class,
                         RecipeAttributesJoinEntity::class,
+                        DetailsScreenTargetEntity::class,
+
                      ],
     version = 1,
     exportSchema = true
@@ -20,6 +22,10 @@ import androidx.room.RoomDatabase
 public abstract class RecipeAppDatabase : RoomDatabase() {
 
     abstract fun RecipeDao(): RecipeDao
+    abstract fun HomeScreenDao(): HomeScreenDao
+    abstract fun DetailsScreenDao(): DetailsScreenDao
+    abstract fun MenuScreenDao(): MenuScreenDao
+    abstract fun ShoppingListScreenDao(): ShoppingListScreenDao
 
     companion object {
 
@@ -34,10 +40,10 @@ public abstract class RecipeAppDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                RecipeAppDatabase::class.java, "app_database13.db"
+                RecipeAppDatabase::class.java, "app_database17.db"
             )
               //  .allowMainThreadQueries()
-                .createFromAsset("database/app_database13.db")
+                .createFromAsset("database/app_database17.db")
                 .build()
                 // prepopulate the database after onCreate was called
 //                .addCallback(object : Callback() {
