@@ -25,13 +25,12 @@ fun RecipeScreen(
     onClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onDetailsClick: (RecipeWithIngredientsAndInstructions) -> Unit
 ) {
-
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFFd8af84)
 
     ) {
+
 
 
 
