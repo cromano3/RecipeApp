@@ -50,8 +50,6 @@ fun SmallRecipeCard(
 
     var ingredientsListAsString = ingredients[0].ingredientName
 
-    var image = R.drawable.bagel
-
     for(x in ingredients.indices)
     {
         if(x != 0){
@@ -59,7 +57,7 @@ fun SmallRecipeCard(
         }
     }
 
-    image = when(recipe.recipeName){
+    val image: Int = when(recipe.recipeName){
         "Bagels" -> R.drawable.bagel2
         "Garlic Knots" -> R.drawable.garlic2
         "Cauliflower Walnut Tacos" -> R.drawable.cauliflower
@@ -193,18 +191,15 @@ fun SmallRecipeCard(
 
                 /* TO DO:
                 Here we should check if the recipe.on_menu is true.
-                If it is true we don't need to update on click. Instead we send a Toast or Snackbar
+                If it is true we don't need to update on click. Instead we send a Toast or Snack bar
                 message saying this item is already in the list OR just do nothing.
                  */
 
-                val icon: ImageVector
+                val icon: ImageVector = if(recipe.onMenu == 0){
+                    Icons.Outlined.FavoriteBorder
 
-                if(recipe.onMenu == 0){
-                    icon = Icons.Outlined.FavoriteBorder
-
-                }else
-                {
-                    icon = Icons.Outlined.Favorite
+                }else {
+                    Icons.Outlined.Favorite
                 }
 
                 FloatingActionButton(
@@ -361,9 +356,9 @@ fun SmallRecipeCard(
 fun SnackCardPreview() {
     BearRecipeBookAppTheme {
 
-        var myRE: RecipeEntity =
+        val myRE =
             RecipeEntity(recipeName = "Cauliflower Walnut Tacos", onMenu = 0,1, timeToMake = 60, rating = 98)
-        var myList: List<IngredientEntity> = listOf<IngredientEntity>(
+        val myList: List<IngredientEntity> = listOf(
             IngredientEntity(ingredientName = "Ing. Name", quantityOwned = 0, quantityNeeded = 1)
         )
 
