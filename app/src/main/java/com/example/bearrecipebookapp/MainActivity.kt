@@ -1,21 +1,17 @@
 package com.example.bearrecipebookapp
 
-import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,7 +22,6 @@ import com.example.bearrecipebookapp.ui.MenuScreen
 import com.example.bearrecipebookapp.ui.NewDetailsScreen
 import com.example.bearrecipebookapp.ui.ShoppingListScreen
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
-import com.example.bearrecipebookapp.viewmodel.RecipeBookScreenViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,65 +32,27 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
-                ) {
+                ){
+                        BearRecipeApp()
 
-                    val owner = LocalViewModelStoreOwner.current
-
-                    owner?.let {
-                        val viewModel: RecipeBookScreenViewModel = viewModel(
-                            it,
-                            "RecipeBookScreenViewModel",
-                            RecipeBookScreenViewModelFactory(
-                                LocalContext.current.applicationContext
-                                        as Application
-                            )
-                        )
-                        BearRecipeApp(viewModel)
-                    }
 
                 }
             }
         }
     }
 }
-//Need to implement Navigation root starting here
+
 @Composable
 fun BearRecipeApp(
-    recipeBookScreenViewModel: RecipeBookScreenViewModel,
-
 ){
-    //IS THIS THE SAME AS KEEPING IT IN THE PARAMETERS LIST????????????????????????????
+    //IS THIS THE SAME AS KEEPING IT IN THE PARAMETERS LIST? Yes?
     val navController: NavHostController = rememberNavController()
-    //?????????????????????????????????????????????????????????????????????????????????
 
     // Get current back stack entry
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
     // Get the name of the current screen
     val currentScreen = currentBackStackEntry?.destination?.route ?: "RecipeScreen"
-
-
-    //These live data look ups are all GOOD, they are just currently unused
-//    val allRecipes by recipeBookScreenViewModel.allRecipes.observeAsState(listOf())
-//    val selectedRecipes by recipeBookScreenViewModel.selectedRecipes.observeAsState(listOf())
-//    val allRecipesWithInstructions by recipeBookScreenViewModel.recipesWithInstructions.observeAsState(listOf())
-//    val selectedRecipesWithIngredients by recipeBookScreenViewModel.selectedRecipesWithIngredients.observeAsState(listOf())
-//    val allRecipesWithIngredients by recipeBookScreenViewModel.recipesWithIngredients.observeAsState(listOf())
-
-    val selectedIngredients by recipeBookScreenViewModel.selectedIngredients.observeAsState(listOf())
-
-    val allRecipesWithIngredientsAndInstructions by recipeBookScreenViewModel.recipesWithIngredientsAndInstructions.observeAsState(listOf())
-    val selectedRecipesWithIngredientsAndInstructions by recipeBookScreenViewModel.selectedRecipesWithIngredientsAndInstructions.observeAsState(listOf())
-
-    val detailsScreenTarget by recipeBookScreenViewModel.publicDetailsScreenUiState.collectAsState()
-
-    val publicOnMenuState by recipeBookScreenViewModel.publicOnMenuState.collectAsState()
-
-
-
-
-
-
 
 
 
@@ -105,8 +62,6 @@ fun BearRecipeApp(
         "DetailsScreen" -> false
         else -> true
     }
-
-
 
     Scaffold(
         bottomBar = {
@@ -135,15 +90,6 @@ fun BearRecipeApp(
             composable(route = "ShoppingScreen"){
                 ShoppingListScreen(
                     onDetailsClick = { navController.navigate("DetailsScreen")}
-//                    selectedIngredients = selectedIngredients,
-//                    //selectedRecipes = selectedRecipesWithIngredients,
-//                    selectedRecipes = selectedRecipesWithIngredientsAndInstructions,
-//                    onClickIngredientSelected = {recipeBookScreenViewModel.ingredientSelected(it)},
-//                    onClickIngredientDeselected = {recipeBookScreenViewModel.ingredientDeselected(it)},
-//                    onDetailsClick = {
-//                        recipeBookScreenViewModel.newSetDetailsScreenTarget(it);
-//                        //recipeBookScreenViewModel.setDetailsScreenTarget(it);
-//                        navController.navigate("DetailsScreen")}
                 )
 
             }
@@ -209,12 +155,3 @@ fun BearAppTopBar(
 //        onUpdateMenuClick = {}
 //    )
 //}
-
-
-class RecipeBookScreenViewModelFactory(val application: Application) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-
-            return RecipeBookScreenViewModel(application) as T
-        }
-
-}

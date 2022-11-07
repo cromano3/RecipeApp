@@ -1,4 +1,4 @@
-package com.example.bearrecipebookapp.viewmodel
+package com.example.bearrecipebookapp.oldstuff
 
 import android.app.Application
 import androidx.lifecycle.LiveData
