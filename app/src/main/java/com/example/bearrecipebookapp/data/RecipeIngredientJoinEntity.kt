@@ -10,7 +10,6 @@ class RecipeIngredientJoinEntity(
     @ColumnInfo(name = "recipe_name")
     val recipeName: String,
 
-
     @ColumnInfo(name = "ingredient_name")
     val ingredientName: String,
 

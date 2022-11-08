@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "13ad246c10a873157362c72c9ef8a82a",
+    "identityHash": "f0d9e1dc7f935786868bf22f2f1ba45d",
     "entities": [
       {
         "tableName": "recipe_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `review_score` INTEGER NOT NULL, PRIMARY KEY(`recipe_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `review_score` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, PRIMARY KEY(`recipe_name`))",
         "fields": [
           {
             "fieldPath": "recipeName",
@@ -41,6 +41,12 @@
           {
             "fieldPath": "rating",
             "columnName": "review_score",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isShown",
+            "columnName": "is_shown",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -146,19 +152,25 @@
         "foreignKeys": []
       },
       {
-        "tableName": "attributes_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`attribute_name` TEXT NOT NULL, PRIMARY KEY(`attribute_name`))",
+        "tableName": "filters_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`filter_name` TEXT NOT NULL, `is_active_filter` INTEGER NOT NULL, PRIMARY KEY(`filter_name`))",
         "fields": [
           {
-            "fieldPath": "recipeName",
-            "columnName": "attribute_name",
+            "fieldPath": "filterName",
+            "columnName": "filter_name",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isActiveFilter",
+            "columnName": "is_active_filter",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "attribute_name"
+            "filter_name"
           ],
           "autoGenerate": false
         },
@@ -166,8 +178,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "recipe_attributes_join_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `attribute_name` TEXT NOT NULL, PRIMARY KEY(`recipe_name`, `attribute_name`))",
+        "tableName": "recipe_filters_join_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `filter_name` TEXT NOT NULL, PRIMARY KEY(`recipe_name`, `filter_name`))",
         "fields": [
           {
             "fieldPath": "recipeName",
@@ -176,8 +188,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "attributeName",
-            "columnName": "attribute_name",
+            "fieldPath": "filterName",
+            "columnName": "filter_name",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -185,7 +197,7 @@
         "primaryKey": {
           "columnNames": [
             "recipe_name",
-            "attribute_name"
+            "filter_name"
           ],
           "autoGenerate": false
         },
@@ -216,7 +228,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '13ad246c10a873157362c72c9ef8a82a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f0d9e1dc7f935786868bf22f2f1ba45d')"
     ]
   }
 }

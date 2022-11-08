@@ -58,13 +58,10 @@ fun ShoppingListScreen(
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color(0xFFd8af84)//Color(0xFFb15f33), //Color(0xFFd8af84)
-
-
         ) {
             Row(
                 Modifier
                     .fillMaxSize()
-//                .verticalScroll(rememberScrollState())
             )
             {
                 Column(
@@ -358,18 +355,8 @@ fun ShoppingListItemWithButton(
                     fontSize = 16.sp
                 )
             }
-
-
         }
-
-
     }
-
-
-
-
-
-
 }
 
 

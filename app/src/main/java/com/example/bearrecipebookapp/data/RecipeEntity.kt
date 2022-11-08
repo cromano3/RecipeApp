@@ -25,6 +25,9 @@ class RecipeEntity(
     @ColumnInfo(name = "review_score")
     val rating: Int = 0,
 
+    @ColumnInfo(name = "is_shown")
+    var isShown: Int = 1
+
 //
 //    @ColumnInfo(name = "ingredients")
 //    val ingredients: String,
