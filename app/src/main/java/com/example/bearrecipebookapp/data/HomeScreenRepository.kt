@@ -2,6 +2,7 @@ package com.example.bearrecipebookapp.data
 
 import androidx.lifecycle.LiveData
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,6 +14,10 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
     var homeScreenData: LiveData<List<HomeScreenDataModel>> = homeScreenDao.getData()
     var filtersList: LiveData<List<FilterEntity>> = homeScreenDao.getFilters()
     var referenceList: LiveData<List<HomeScreenDataModel>> = homeScreenDao.getReferenceList()
+
+    var unfilteredList: LiveData<List<RecipeWithIngredients>> = homeScreenDao.getUnfilteredList()
+    var filteredList1: LiveData<List<RecipeWithIngredients>> = homeScreenDao.getFilteredList1()
+    var filteredList2: LiveData<List<RecipeWithIngredients>> = homeScreenDao.getFilteredList2()
 
 
 

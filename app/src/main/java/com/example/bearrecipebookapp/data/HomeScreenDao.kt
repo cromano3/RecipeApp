@@ -5,10 +5,27 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 
 
 @Dao
 interface HomeScreenDao {
+
+
+    @Transaction
+    @Query("SELECT * FROM recipe_table")
+    fun getUnfilteredList(): LiveData<List<RecipeWithIngredients>>
+
+    @Transaction
+    @Query("SELECT * FROM recipe_table WHERE is_shown = 1")
+    fun getFilteredList1(): LiveData<List<RecipeWithIngredients>>
+
+    @Transaction
+    @Query("SELECT * FROM recipe_table WHERE is_shown = 2")
+    fun getFilteredList2(): LiveData<List<RecipeWithIngredients>>
+
+
+
 
 
     @Transaction

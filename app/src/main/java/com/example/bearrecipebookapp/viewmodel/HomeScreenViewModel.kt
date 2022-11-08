@@ -7,9 +7,11 @@ import com.example.bearrecipebookapp.data.FilterEntity
 import com.example.bearrecipebookapp.data.HomeScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
-import com.example.bearrecipebookapp.datamodel.uiStateDataModel
+import com.example.bearrecipebookapp.datamodel.HomeScreenUiStateDataModel
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(application: Application): ViewModel() {
@@ -21,12 +23,18 @@ class HomeScreenViewModel(application: Application): ViewModel() {
     var filtersList: LiveData<List<FilterEntity>>
     var referenceList: LiveData<List<HomeScreenDataModel>>
 
+    var unfilteredList: LiveData<List<RecipeWithIngredients>>
+    var filteredList1: LiveData<List<RecipeWithIngredients>>
+    var filteredList2: LiveData<List<RecipeWithIngredients>>
 
-    var uiState = uiStateDataModel()
+
+    val uiState = MutableStateFlow(HomeScreenUiStateDataModel())
 
     private var filterCount: Int
-    private var isFiltered: Boolean
-    private var myFiltersList: MutableList<String>
+    var isFiltered: Boolean
+    var myFiltersList: MutableList<String>
+
+    var isSecondFiltered: Boolean
 
 
     init {
@@ -40,11 +48,16 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 
         filterCount = 0
         isFiltered = false
+        isSecondFiltered = false
         myFiltersList = mutableListOf()
 
         homeScreenData = repository.homeScreenData
         filtersList = repository.filtersList
         referenceList = repository.referenceList
+
+        unfilteredList = repository.unfilteredList
+        filteredList1 = repository.filteredList1
+        filteredList2 = repository.filteredList2
 
         newGetData()
 
@@ -56,15 +69,15 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 //            copyOfData = repository.newGetData()
 //            uiState.value = copyOfData
 
-            uiState.homeScreenDataModelList = repository.newGetData()
+//            uiState.homeScreenDataModelList = repository.newGetData()
         }
     }
 
 
-    fun cleanUpFilters(){
+    private fun cleanUpFilters(){
         repository.setAllToShown()
         repository.setAllFiltersToOff()
-        newGetData()
+//        newGetData()
     }
 
 
@@ -93,7 +106,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
             }
             if(hitCounter == myFiltersList.size && myFiltersList.size > 0){
                 //
-                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 1
+//                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 1
 
                 //set isDisplayed = True
                 homeScreenData.value?.get(x)?.recipeEntity?.recipeName?.let {
@@ -103,7 +116,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
             }
             else{
                 //
-                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 0
+//                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 0
 
                 //set isDisplayed = False
                 homeScreenData.value?.get(x)?.recipeEntity?.recipeName?.let {
@@ -200,7 +213,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 
 
 
-    fun toggleFavorite(recipe: HomeScreenDataModel){
+    fun toggleFavorite(recipe: RecipeWithIngredients){
         if(recipe.recipeEntity.onMenu == 0){
             for(x in 0 until recipe.ingredientsList.size){
                 repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded + 1)
