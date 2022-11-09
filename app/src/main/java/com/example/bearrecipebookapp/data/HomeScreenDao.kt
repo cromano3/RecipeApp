@@ -61,7 +61,7 @@ interface HomeScreenDao {
 
 
     @Transaction
-    @Query("UPDATE recipe_table SET is_shown = 1")
+    @Query("UPDATE recipe_table SET is_shown = 0")
     fun setAllToShown()
 
     @Transaction

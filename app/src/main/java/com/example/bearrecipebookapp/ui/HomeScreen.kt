@@ -29,7 +29,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,7 +39,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.data.FilterEntity
 import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.HomeScreenViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
@@ -64,19 +66,26 @@ fun HomeScreen(
         )
 
         val homeScreenData by homeScreenViewModel.homeScreenData.observeAsState(listOf())
-        val filtersList by homeScreenViewModel.filtersList.observeAsState(listOf())
         val referenceList by homeScreenViewModel.referenceList.observeAsState(listOf())
 
 
         val uiState = homeScreenViewModel.uiState
 
+        val filtersList by homeScreenViewModel.filtersList.observeAsState(listOf())
+
         val unfilteredList by homeScreenViewModel.unfilteredList.observeAsState((listOf()))
         val filteredList1 by homeScreenViewModel.filteredList1.observeAsState(listOf())
+        val filteredList2 by homeScreenViewModel.filteredList2.observeAsState(listOf())
 
-        var isFiltered = homeScreenViewModel.isFiltered
+        var showUnfilteredList by remember { mutableStateOf(true) }
+        var showFilteredList1 by remember { mutableStateOf(false) }
+        var showFilteredList2 by remember { mutableStateOf(false) }
+        var filterController by remember { mutableStateOf(false) }
 
-        val isSecondFiltered = homeScreenViewModel.isSecondFiltered
+        var filterSelectedClick by remember { mutableStateOf(false) }
+        var filterDeselectedClick by remember { mutableStateOf(false) }
 
+        val coroutineScope = CoroutineScope(Dispatchers.Main)
 
 
         Surface(
@@ -86,127 +95,152 @@ fun HomeScreen(
             color = Color(0xFFd8af84)
 
         ) {
+
             Column(){
                 Row(Modifier.horizontalScroll(rememberScrollState())){
                     filtersList.forEach {
                         FiltersButton(
                             filterEntity = it,
-                            onClickIngredientSelected = { homeScreenViewModel.applyFilter(it.filterName);
-                                                        isFiltered = true
-                                                        },
-                            onClickIngredientDeselected = { homeScreenViewModel.removeFilter(it.filterName);
-                                                          isFiltered = false},
+                            onClickFilterSelected = { homeScreenViewModel.applyFilter(it.filterName);
+                                                    filterSelectedClick = !filterSelectedClick },
+                            onClickFilterDeselected = {coroutineScope.launch(Dispatchers.Main) {
+                                filterDeselectedClick = !filterDeselectedClick
+                                delay(0.4.seconds)
+                                homeScreenViewModel.removeFilter(it.filterName)
+                            }
+                            }
                         )
                     }
                 }
 
-                var showFilteredList by remember { mutableStateOf(true) }
-
-                if(isFiltered == true){
+                if(filterSelectedClick){
                     LaunchedEffect(Unit) {
-                        delay(1.seconds)
-                    showFilteredList = false
-                    }
-                }
-                else{
-
-                    showFilteredList = true
-
-                }
 
 
 
-            AnimatedVisibility(
-                visible = showFilteredList,
-                enter = EnterTransition.None,
-                exit = ExitTransition.None,
-//                enter = fadeIn(
-//                    TweenSpec(40, 0, FastOutLinearInEasing)
-//                ),
-//                exit = fadeOut(
-//                    animationSpec = TweenSpec(400, 550, FastOutLinearInEasing)
-//                )
-            ){
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(unfilteredList.size, key = {it}) { index ->
-                        var myInt = 0
-                        if(index + 1 == unfilteredList.size){
-                            myInt = 16
+                        if(!filterController){
+
+                            showUnfilteredList = false
+                            showFilteredList2 = false
+                            delay(0.6.seconds)
+                            showFilteredList1 = true
+                            filterController = true
+
+                            filterSelectedClick = false
                         }
-                        SmallRecipeCard(
-                            modifier = Modifier
-                                .padding(bottom = myInt.dp)
-                                .animateItemPlacement(animationSpec = (tween(500)))
-                                .animateEnterExit(
-                                    enter = fadeIn(
-                                        TweenSpec(400, 500, FastOutLinearInEasing)
-                                    ),
-                                    exit = fadeOut(
-                                        animationSpec = TweenSpec(400, 50, FastOutLinearInEasing)
-                                    )
-                                )
-                            ,
-                            recipe = unfilteredList[index].recipeEntity,
-                            ingredients = unfilteredList[index].ingredientsList,
-                            //this does onMenu updates and related ingredients updates
-                            //needs to be changed to menu button when we add menu button
-                            onClick = { homeScreenViewModel.toggleFavorite(unfilteredList[index]) },
-                            onDetailsClick = {
-                                homeScreenViewModel.setDetailsScreenTarget(unfilteredList[index].recipeEntity.recipeName);
-                                onDetailsClick()
-                            }
-                            )
+                        else{
+
+                            showFilteredList1 = false
+                            delay(0.6.seconds)
+                            showFilteredList2 = true
+                            filterController = false
+
+                            filterSelectedClick = false
                         }
                     }
                 }
 
 
+                if(filterDeselectedClick)
+                    LaunchedEffect(Unit) {
+                        showFilteredList1 = false
+                        showFilteredList2 = false
+                        delay(0.6.seconds)
+                        showUnfilteredList = true
+                        filterController = false
+
+                        filterDeselectedClick = false
+                }
 
 
-                    AnimatedVisibility(
-                        visible = isFiltered,
+                Box() {
+                    //Unfiltered List
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = showUnfilteredList,
                         enter = EnterTransition.None,
                         exit = ExitTransition.None,
-//                enter = fadeIn(
-//                    TweenSpec(40, 0, FastOutLinearInEasing)
-//                ),
-//                exit = fadeOut(
-//                    animationSpec = TweenSpec(400, 550, FastOutLinearInEasing)
-//                )
-                    ){
+                    ) {
+
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),
                             modifier = Modifier
                                 .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            items(filteredList1.size, key = {it}) { index ->
+
+                            items(unfilteredList.size, key = { it }) { index ->
                                 var myInt = 0
-                                if(index + 1 == filteredList1.size){
+                                if (index + 1 == unfilteredList.size) {
                                     myInt = 16
                                 }
+
                                 SmallRecipeCard(
                                     modifier = Modifier
                                         .padding(bottom = myInt.dp)
                                         .animateItemPlacement(animationSpec = (tween(500)))
                                         .animateEnterExit(
-                                            enter = fadeIn(
-                                                TweenSpec(400, 500, FastOutLinearInEasing)
+                                            enter = scaleIn(
+                                                TweenSpec(200, 800, FastOutLinearInEasing)
                                             ),
-                                            exit = fadeOut(
+                                            exit = scaleOut(
                                                 animationSpec = TweenSpec(
-                                                    400,
-                                                    100,
+                                                    200,
+                                                    0,
                                                     FastOutLinearInEasing
                                                 )
                                             )
-                                        )
-                                    ,
+                                        ),
+                                    recipe = unfilteredList[index].recipeEntity,
+                                    ingredients = unfilteredList[index].ingredientsList,
+                                    //this does onMenu updates and related ingredients updates
+                                    //needs to be changed to menu button when we add menu button
+                                    onClick = { homeScreenViewModel.toggleFavorite(unfilteredList[index]) },
+                                    onDetailsClick = {
+                                        homeScreenViewModel.setDetailsScreenTarget(unfilteredList[index].recipeEntity.recipeName);
+                                        onDetailsClick()
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+
+                    //Filtered list 1
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = showFilteredList1,
+                        enter = EnterTransition.None,
+                        exit = ExitTransition.None,
+                    ) {
+
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier
+                                .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+
+                            items(filteredList1.size, key = { it }) { index ->
+                                var myInt = 0
+                                if (index + 1 == filteredList1.size) {
+                                    myInt = 16
+                                }
+
+                                SmallRecipeCard(
+                                    modifier = Modifier
+                                        .padding(bottom = myInt.dp)
+                                        .animateItemPlacement(animationSpec = (tween(500)))
+                                        .animateEnterExit(
+                                            enter = scaleIn(
+                                                TweenSpec(200, 800, FastOutLinearInEasing)
+                                            ),
+                                            exit = scaleOut(
+                                                animationSpec = TweenSpec(
+                                                    200,
+                                                    0,
+                                                    FastOutLinearInEasing
+                                                )
+                                            )
+                                        ),
                                     recipe = filteredList1[index].recipeEntity,
                                     ingredients = filteredList1[index].ingredientsList,
                                     //this does onMenu updates and related ingredients updates
@@ -220,6 +254,7 @@ fun HomeScreen(
                             }
                         }
                     }
+                }
 
 
 
@@ -229,16 +264,18 @@ fun HomeScreen(
     }
 }
 
+
+
 @Composable
 fun FiltersButton(
     filterEntity: FilterEntity,
-    onClickIngredientSelected: () -> Unit,
-    onClickIngredientDeselected: () -> Unit
+    onClickFilterSelected: () -> Unit,
+    onClickFilterDeselected: () -> Unit
 ){
 
     val selected: Boolean
 
-    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
+//    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
 
     val myIcon: ImageVector
     val checkBoxBackgroundColor: Color
@@ -284,7 +321,7 @@ fun FiltersButton(
 //            )
             .clickable(
                 enabled = !selected,
-                onClick = onClickIngredientSelected,
+                onClick = onClickFilterSelected,
             ),// { selected = !selected },
         shape = RoundedCornerShape(25.dp),
         color = Color(0xFF682300),
@@ -301,7 +338,7 @@ fun FiltersButton(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .size(36.dp),
-                    onClick = onClickIngredientDeselected //{ selected = !selected }
+                    onClick = onClickFilterDeselected //{ selected = !selected }
                 ){
                     Icon(
                         modifier = Modifier,

@@ -20,21 +20,22 @@ class HomeScreenViewModel(application: Application): ViewModel() {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     var homeScreenData: LiveData<List<HomeScreenDataModel>>
-    var filtersList: LiveData<List<FilterEntity>>
+
     var referenceList: LiveData<List<HomeScreenDataModel>>
+
+    var filtersList: LiveData<List<FilterEntity>>
 
     var unfilteredList: LiveData<List<RecipeWithIngredients>>
     var filteredList1: LiveData<List<RecipeWithIngredients>>
     var filteredList2: LiveData<List<RecipeWithIngredients>>
 
-
     val uiState = MutableStateFlow(HomeScreenUiStateDataModel())
 
     private var filterCount: Int
-    var isFiltered: Boolean
-    var myFiltersList: MutableList<String>
+    private var isFiltered: Boolean
+    private var myFiltersList: MutableList<String>
 
-    var isSecondFiltered: Boolean
+    private var isSecondFiltered: Boolean
 
 
     init {
@@ -63,7 +64,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 
     }
 
-    private fun newGetData(){
+    private fun newGetData() {
         coroutineScope.launch(Dispatchers.IO) {
 //            var copyOfData: MutableList<HomeScreenDataModel> = mutableListOf<HomeScreenDataModel>()
 //            copyOfData = repository.newGetData()
@@ -74,110 +75,138 @@ class HomeScreenViewModel(application: Application): ViewModel() {
     }
 
 
-    private fun cleanUpFilters(){
+    private fun cleanUpFilters() {
         repository.setAllToShown()
         repository.setAllFiltersToOff()
 //        newGetData()
     }
 
 
-    fun applyFilter(filterName: String){
-        filterCount++
-        isFiltered = true
+    fun applyFilter(filterName: String) {
 
-        //should change to 'filtersList' (LiveData)?????????????????????????
-        myFiltersList.add(filterName)
-        ///??????????????????????????????????
+        if (filterCount == 0) {
+            filterCount = 1
+        } else if (filterCount == 1) {
+            filterCount = 2
+        } else if (filterCount == 2) {
+            filterCount = 1
+        }
 
         repository.addFilter(filterName)
 
-        var hitCounter = 0
 
-       // var tempList = mutableListOf<HomeScreenDataModel>()
+        for (x in 0 until (referenceList.value?.size ?: 0)) {
+            for (z in 0 until (referenceList.value?.get(x)?.filtersList?.size ?: 0)) {
+                if (referenceList.value?.get(x)?.filtersList?.get(z)?.filterName == filterName) {
 
-        for(x in 0 until (homeScreenData.value?.size ?: 0)){
-            for(y in 0 until myFiltersList.size){
-                for(z in 0 until (homeScreenData.value?.get(x)?.filtersList?.size ?: 0)){
-                    if(homeScreenData.value?.get(x)?.filtersList?.get(z)?.filterName == myFiltersList[y]){
-                        hitCounter++
-                        break
+                    referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
+                        repository.setIsShown(
+                            it, filterCount
+                        )
                     }
-                }
-            }
-            if(hitCounter == myFiltersList.size && myFiltersList.size > 0){
-                //
-//                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 1
 
-                //set isDisplayed = True
-                homeScreenData.value?.get(x)?.recipeEntity?.recipeName?.let {
-                    repository.setIsShown(
-                        it, 1)
-                }
-            }
-            else{
-                //
-//                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 0
+                    break
 
-                //set isDisplayed = False
-                homeScreenData.value?.get(x)?.recipeEntity?.recipeName?.let {
-                    repository.setIsShown(
-                        it, 0)
                 }
             }
-            hitCounter = 0
         }
+
+
+//        var hitCounter = 0
+//
+//       // var tempList = mutableListOf<HomeScreenDataModel>()
+//
+//        for(x in 0 until (homeScreenData.value?.size ?: 0)){
+//            for(y in 0 until myFiltersList.size){
+//                for(z in 0 until (homeScreenData.value?.get(x)?.filtersList?.size ?: 0)){
+//                    if(homeScreenData.value?.get(x)?.filtersList?.get(z)?.filterName == myFiltersList[y]){
+//                        hitCounter++
+//                        break
+//                    }
+//                }
+//            }
+//            if(hitCounter == myFiltersList.size && myFiltersList.size > 0){
+//                //
+////                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 1
+//
+//                //set isDisplayed = True
+//                homeScreenData.value?.get(x)?.recipeEntity?.recipeName?.let {
+//                    repository.setIsShown(
+//                        it, 1)
+//                }
+//            }
+//            else{
+//                //
+////                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 0
+//
+//                //set isDisplayed = False
+//                homeScreenData.value?.get(x)?.recipeEntity?.recipeName?.let {
+//                    repository.setIsShown(
+//                        it, 0)
+//                }
+//            }
+//            hitCounter = 0
+//        }
 
 //        uiState.update{
 //            it.copy(homeScreenDataModelList = tempList)
 //        }
-       // uiState.homeScreenDataModelList = tempList
+        // uiState.homeScreenDataModelList = tempList
     }
 
 
-    fun removeFilter(filterName: String){
-        filterCount--
+    fun removeFilter(filterName: String) {
 
-        //should change to 'filtersList' (LiveData)?????????????????????????
-        myFiltersList.remove(filterName)
-        //??????????????????????????????????????????????????????????
+        filterCount = 0
 
-        repository.removeFilter(filterName)
+        cleanUpFilters()
 
-        isFiltered = myFiltersList.size != 0
 
-        var hitCounter = 0
+//        filterCount--
+//
+//        //should change to 'filtersList' (LiveData)?????????????????????????
+//        myFiltersList.remove(filterName)
+//        //??????????????????????????????????????????????????????????
+//
+//        repository.removeFilter(filterName)
+//
+//        isFiltered = myFiltersList.size != 0
+//
+//        var hitCounter = 0
+//
+//        if(!isFiltered) {
+//            cleanUpFilters()
+//        }
+//        else{
+//            for(x in 0 until (referenceList.value?.size ?: 0)){
+//                for(y in 0 until myFiltersList.size){
+//                    for(z in 0 until (referenceList.value?.get(x)?.filtersList?.size ?: 0)){
+//                        if(referenceList.value?.get(x)?.filtersList?.get(z)?.filterName == myFiltersList[y]){
+//                            hitCounter++
+//                            break
+//                        }
+//                    }
+//                }
+//                if(hitCounter == myFiltersList.size && myFiltersList.size > 0){
+//                    //set isDisplayed = True
+//                    referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
+//                        repository.setIsShown(
+//                            it, 1)
+//                    }
+//                }
+//                else{
+//                    //set isDisplayed = False
+//                    referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
+//                        repository.setIsShown(
+//                            it, 0)
+//                    }
+//                }
+//                hitCounter = 0
+//            }
+//        }
+}
 
-        if(!isFiltered) {
-            cleanUpFilters()
-        }
-        else{
-            for(x in 0 until (referenceList.value?.size ?: 0)){
-                for(y in 0 until myFiltersList.size){
-                    for(z in 0 until (referenceList.value?.get(x)?.filtersList?.size ?: 0)){
-                        if(referenceList.value?.get(x)?.filtersList?.get(z)?.filterName == myFiltersList[y]){
-                            hitCounter++
-                            break
-                        }
-                    }
-                }
-                if(hitCounter == myFiltersList.size && myFiltersList.size > 0){
-                    //set isDisplayed = True
-                    referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
-                        repository.setIsShown(
-                            it, 1)
-                    }
-                }
-                else{
-                    //set isDisplayed = False
-                    referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
-                        repository.setIsShown(
-                            it, 0)
-                    }
-                }
-                hitCounter = 0
-            }
-        }
-    }
+
 
 
 
