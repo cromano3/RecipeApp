@@ -5,13 +5,10 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -29,13 +26,16 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.FilterEntity
 import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.HomeScreenViewModel
@@ -87,6 +87,11 @@ fun HomeScreen(
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
 
+        /**
+         * Get the image based on the recipe Name
+         */
+
+
 
         Surface(
             modifier = Modifier
@@ -99,6 +104,7 @@ fun HomeScreen(
             Column(){
                 Row(Modifier.horizontalScroll(rememberScrollState())){
                     filtersList.forEach {
+
                         FiltersButton(
                             filterEntity = it,
                             onClickFilterSelected = { homeScreenViewModel.applyFilter(it.filterName);
@@ -122,7 +128,7 @@ fun HomeScreen(
 
                             showUnfilteredList = false
                             showFilteredList2 = false
-                            delay(0.6.seconds)
+                            delay(0.2.seconds)
                             showFilteredList1 = true
                             filterController = true
 
@@ -145,7 +151,7 @@ fun HomeScreen(
                     LaunchedEffect(Unit) {
                         showFilteredList1 = false
                         showFilteredList2 = false
-                        delay(0.6.seconds)
+                        delay(0.2.seconds)
                         showUnfilteredList = true
                         filterController = false
 
@@ -180,11 +186,11 @@ fun HomeScreen(
                                         .animateItemPlacement(animationSpec = (tween(500)))
                                         .animateEnterExit(
                                             enter = scaleIn(
-                                                TweenSpec(200, 800, FastOutLinearInEasing)
+                                                TweenSpec(150, 400, FastOutLinearInEasing)
                                             ),
                                             exit = scaleOut(
                                                 animationSpec = TweenSpec(
-                                                    200,
+                                                    150,
                                                     0,
                                                     FastOutLinearInEasing
                                                 )
@@ -231,11 +237,11 @@ fun HomeScreen(
                                         .animateItemPlacement(animationSpec = (tween(500)))
                                         .animateEnterExit(
                                             enter = scaleIn(
-                                                TweenSpec(200, 800, FastOutLinearInEasing)
+                                                TweenSpec(150, 400, FastOutLinearInEasing)
                                             ),
                                             exit = scaleOut(
                                                 animationSpec = TweenSpec(
-                                                    200,
+                                                    150,
                                                     0,
                                                     FastOutLinearInEasing
                                                 )
@@ -272,6 +278,22 @@ fun FiltersButton(
     onClickFilterSelected: () -> Unit,
     onClickFilterDeselected: () -> Unit
 ){
+    val image: Int = when (filterEntity.filterName) {
+        "Asian" -> R.drawable.noodles
+        "Breakfast" -> R.drawable.coffee
+        "Chinese" -> R.drawable.chinesefood1
+        "Curry" -> R.drawable.curryicon
+        "Soups" -> R.drawable.soup
+        "Thai" -> R.drawable.thai
+        "Indian" -> R.drawable.samosa1
+        "Italian" -> R.drawable.farfalle
+        "Japanese" -> R.drawable.sushi
+        "Mexican" -> R.drawable.taco
+        "Baked Goods" -> R.drawable.bake
+        "Sweets" -> R.drawable.baking
+        "Vegan" -> R.drawable.vegan
+        else -> R.drawable.bagel
+    }
 
     val selected: Boolean
 
@@ -308,8 +330,8 @@ fun FiltersButton(
     Surface(
         modifier = Modifier
             .padding(start = 8.dp, top = 8.dp)
-            .width(150.dp)
-            .height(36.dp)
+            .width(74.dp)
+            .height(74.dp)
             .alpha(alphaLevel)
 //            .background(
 //                brush = Brush.horizontalGradient(
@@ -323,8 +345,8 @@ fun FiltersButton(
                 enabled = !selected,
                 onClick = onClickFilterSelected,
             ),// { selected = !selected },
-        shape = RoundedCornerShape(25.dp),
-        color = Color(0xFF682300),
+        shape = RoundedCornerShape(12.dp),
+        color = Color(0xFFf8ea9a),
         elevation = 4.dp,
         //color = Color(0xFF682300),//Color(0xFFd8af84),
         contentColor = Color(0xFFd8af84),
@@ -336,50 +358,67 @@ fun FiltersButton(
             Box{
                 IconButton(
                     modifier = Modifier
-                        .align(Alignment.CenterEnd)
+                        .align(Alignment.Center)
                         .size(36.dp),
                     onClick = onClickFilterDeselected //{ selected = !selected }
                 ){
                     Icon(
                         modifier = Modifier,
                         imageVector = Icons.Outlined.Close,
-                        tint = Color(0xFFFFFFFF),
+                        tint = Color(0xFF000000),
                         contentDescription = null
                     )
                 }
             }
         }
-        Row(
+        Column(
             Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.Start
+            horizontalAlignment = Alignment.CenterHorizontally
         )
         {
-            Icon(
-                imageVector = myIcon,
-                tint = checkBoxBackgroundColor,
-
-                //  .background(color = Color(0xFFFFFFFF)),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(start = 6.dp, top = 2.dp, end = 2.dp, bottom = 2.dp)
-                    .size(28.dp)
-                    .align(Alignment.CenterVertically)
-                    .alpha(alphaLevel)
-                //.weight(1f)
-
+            Image(
+                painter = painterResource(id = image), null,
+                //contentScale = ContentScale.Crop,
+                modifier = Modifier.size(48.dp).padding(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 1.dp),
             )
+
+
+//            Icon(
+//                imageVector = myIcon,
+//                tint = checkBoxBackgroundColor,
+//
+//                //  .background(color = Color(0xFFFFFFFF)),
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .padding(start = 6.dp, top = 2.dp, end = 2.dp, bottom = 2.dp)
+//                    .size(28.dp)
+//                    .align(Alignment.CenterVertically)
+//                    .alpha(alphaLevel)
+//                //.weight(1f)
+//
+//            )
             Text(
+                text = filterEntity.filterName,
                 modifier = Modifier
                     // .weight(1f)
-                    .padding(start = 4.dp)
-                    .align(Alignment.CenterVertically)
+                    .padding(bottom = 2.dp)
+                    .align(Alignment.CenterHorizontally)
                     .alpha(alphaLevel),
-                text = filterEntity.filterName,
-                textDecoration = decoration,
-                fontSize = 16.sp
+                color = Color(0xFF000000),
+
+                //textDecoration = decoration,
+                fontSize = 12.sp
             )
         }
     }
+}
+
+@Composable
+@Preview
+fun myprevi() {
+//    HomeScreen(onDetailsClick = "", )
+
+
 }
 
 class HomeScreenViewModelFactory(
