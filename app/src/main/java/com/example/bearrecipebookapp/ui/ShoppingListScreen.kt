@@ -1,16 +1,24 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
-import androidx.compose.foundation.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.outlined.CheckBoxOutlineBlank
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +30,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -31,11 +38,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.IngredientEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.viewmodel.ShoppingListScreenViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ShoppingListScreen(
     onDetailsClick: () -> Unit
@@ -55,6 +66,25 @@ fun ShoppingListScreen(
         val shoppingListScreenData by shoppingListScreenViewModel.shoppingListScreenData.observeAsState(listOf())
         val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
 
+        var filterWasClicked by remember { mutableStateOf(false) }
+
+        val uiState by shoppingListScreenViewModel.shoppingScreenUiState.collectAsState()
+
+        val listState = rememberLazyListState()
+        val listState2 = rememberLazyListState()
+
+//        if(filterWasClicked) {
+        LaunchedEffect(filterWasClicked) {
+
+
+            delay(200)
+            async { listState.animateScrollToItem(0) }
+            async { listState2.animateScrollToItem(0) }
+//                filterWasClicked = false
+
+        }
+//        }
+
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color(0xFFd8af84)//Color(0xFFb15f33), //Color(0xFFd8af84)
@@ -64,41 +94,75 @@ fun ShoppingListScreen(
                     .fillMaxSize()
             )
             {
-                Column(
+                LazyColumn(
+                    state = listState,
                     modifier = Modifier
-                        .fillMaxHeight()
+//                        .fillMaxHeight()
                         .weight(0.60f)
-                        .padding(bottom = 8.dp)
-                        .verticalScroll(rememberScrollState()),
+                        .padding(bottom = 48.dp),
+
+                    userScrollEnabled = true,
+//                        .verticalScroll(rememberScrollState()),
 
                     ) {
 
-                    selectedIngredients.forEach {
+                    items(selectedIngredients, key = { it.ingredientName }) {
                         ShoppingListItemWithButton(
+                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
                             ingredientEntity = it,
+                            isWorking = uiState.isWorking,
                             onClickIngredientSelected = { shoppingListScreenViewModel.ingredientSelected(it) },
                             onClickIngredientDeselected = { shoppingListScreenViewModel.ingredientDeselected(it) },
-                            )
+                        )
                     }
+                    item{
+                        Spacer(
+                            Modifier
+                                .size(20.dp)
+                                .fillMaxWidth())
+                    }
+
+//                    selectedIngredients.forEach {
+//                        ShoppingListItemWithButton(
+//                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
+//                            ingredientEntity = it,
+//                            onClickIngredientSelected = { shoppingListScreenViewModel.ingredientSelected(it) },
+//                            onClickIngredientDeselected = { shoppingListScreenViewModel.ingredientDeselected(it) },
+//                            )
+//                    }
                 }
-                Column(
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(0.40f)
-                        .verticalScroll(rememberScrollState()),
+                        .padding(bottom = 48.dp)
+//                        .fillMaxHeight()
+                        .weight(0.40f),
+                    state = listState2,
+//                        .verticalScroll(rememberScrollState()),
+                        ) {
 
-                    ) {
-
-                    shoppingListScreenData.forEach {
+                    items(shoppingListScreenData, key = { it.recipeEntity.recipeName }) {
                         RecipeIconWithButton(
-                            recipeWithIngredients = RecipeWithIngredients(
-                                recipeEntity = it.recipeEntity,
-                                ingredientsList = it.ingredientsList
-                            ),
+                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
+                            recipeWithIngredients = it,
+                            isWorking = uiState.isWorking,
+                            onFilterClick = {shoppingListScreenViewModel.filterBy(it); filterWasClicked = !filterWasClicked},
                             onDetailsClick = { shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
                                 onDetailsClick() }
                         )
+
+
                     }
+
+//                    shoppingListScreenData.forEach {
+//                        RecipeIconWithButton(
+//                            recipeWithIngredients = RecipeWithIngredients(
+//                                recipeEntity = it.recipeEntity,
+//                                ingredientsList = it.ingredientsList
+//                            ),
+//                            onDetailsClick = { shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
+//                                onDetailsClick() }
+//                        )
+//                    }
                 }
             }
         }
@@ -107,7 +171,10 @@ fun ShoppingListScreen(
 
 @Composable
 fun RecipeIconWithButton(
+    modifier: Modifier,
     recipeWithIngredients: RecipeWithIngredients,
+    isWorking: Boolean,
+    onFilterClick: () -> Unit,
     onDetailsClick: () -> Unit
 ){
 
@@ -131,7 +198,26 @@ fun RecipeIconWithButton(
 
     val gradientWidth = with(LocalDensity.current) { 100.dp.toPx() }
 
-    Column(Modifier.fillMaxWidth(),
+    val alphaAnim: Float by animateFloatAsState(
+        targetValue =
+        if (
+            recipeWithIngredients.recipeEntity.isShoppingFilter == 1 ||
+            recipeWithIngredients.recipeEntity.isShoppingFilter == 2
+        )
+            1f
+        else
+            0.30f,
+        animationSpec = tween(
+            durationMillis = 150,
+            delayMillis = 0,
+            easing = LinearEasing,
+        )
+    )
+
+    Column(
+        modifier
+            .fillMaxWidth()
+            .alpha(alphaAnim),
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         Surface(
@@ -139,27 +225,24 @@ fun RecipeIconWithButton(
                 .size(120.dp)
                 .padding(top = 8.dp, bottom = 4.dp)
                 .align(Alignment.CenterHorizontally)
-                .clickable { /* Highlight ingredients that match this recipe on this screen*/ },
+                .clickable(enabled = !isWorking, onClick = onFilterClick),
             shape = RoundedCornerShape(15.dp),
             elevation = 6.dp,
 
         ){
-            Image(
-                modifier = Modifier
-                    .fillMaxSize(),
+            AsyncImage(
+                model = image,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
-                /*
-
-                add correct image
-
-                */
-
-                //painter = painterResource(recipeEntity.image),
-
-                painter = painterResource(image),
-
-                contentDescription = null
             )
+//            Image(
+//                modifier = Modifier
+//                    .fillMaxSize(),
+//                contentScale = ContentScale.Crop,
+//                painter = painterResource(image),
+//                contentDescription = null
+//            )
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -190,9 +273,9 @@ fun RecipeIconWithButton(
 
         Surface(
             modifier = Modifier
-               // .padding(top = 4.dp)
+                // .padding(top = 4.dp)
                 .wrapContentSize()
-                .clickable { onDetailsClick() },
+                .clickable(enabled = !isWorking) {  onDetailsClick() },
  //               .background(
 //                    brush = Brush.horizontalGradient(
 //                        colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
@@ -230,7 +313,9 @@ fun RecipeIconWithButton(
 
 @Composable
 fun ShoppingListItemWithButton(
+    modifier: Modifier,
     ingredientEntity: IngredientEntity,
+    isWorking: Boolean,
     onClickIngredientSelected: () -> Unit,
     onClickIngredientDeselected: () -> Unit
 ){
@@ -242,7 +327,7 @@ fun ShoppingListItemWithButton(
     val myIcon: ImageVector
     val checkBoxBackgroundColor: Color
     val decoration : TextDecoration
-    val alphaLevel : Float
+    var alphaLevel : Float
 
 
     if(ingredientEntity.quantityOwned == ingredientEntity.quantityNeeded
@@ -266,13 +351,26 @@ fun ShoppingListItemWithButton(
 
     }
 
+    if (ingredientEntity.isShown == 0) alphaLevel = 0.30f
+
+
+    val alphaAnim: Float by animateFloatAsState(
+        targetValue = alphaLevel,
+//        targetValue = if (ingredientEntity.isShown == 1) 1f else 0.2f,
+        animationSpec = tween(
+            durationMillis = 150,
+            delayMillis = 0,
+            easing = LinearEasing,
+        )
+    )
+
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .padding(start = 8.dp, top = 8.dp)
             .width(240.dp)
             .height(36.dp)
-            .alpha(alphaLevel)
+            .alpha(alphaAnim)
 //            .background(
 //                brush = Brush.horizontalGradient(
 //                    colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
@@ -282,7 +380,7 @@ fun ShoppingListItemWithButton(
 //                shape = RoundedCornerShape((14.dp))
 //            )
             .clickable(
-                enabled = !selected,
+                enabled = !selected && !isWorking,
                 onClick = onClickIngredientSelected,
             ),// { selected = !selected },
         shape = RoundedCornerShape(25.dp),
@@ -300,7 +398,8 @@ fun ShoppingListItemWithButton(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .size(36.dp),
-                    onClick = onClickIngredientDeselected //{ selected = !selected }
+                    onClick = onClickIngredientDeselected, //{ selected = !selected }
+                    enabled = !isWorking
                 ){
                     Icon(
                         modifier = Modifier,

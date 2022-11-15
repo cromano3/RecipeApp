@@ -7,12 +7,14 @@ import com.example.bearrecipebookapp.data.FilterEntity
 import com.example.bearrecipebookapp.data.HomeScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
-import com.example.bearrecipebookapp.datamodel.HomeScreenUiStateDataModel
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.uiFiltersStateDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeScreenViewModel(application: Application): ViewModel() {
 
@@ -29,7 +31,9 @@ class HomeScreenViewModel(application: Application): ViewModel() {
     var filteredList1: LiveData<List<RecipeWithIngredients>>
     var filteredList2: LiveData<List<RecipeWithIngredients>>
 
-    val uiState = MutableStateFlow(HomeScreenUiStateDataModel())
+//    val uiState = MutableStateFlow(HomeScreenUiStateDataModel())
+
+    val uiFiltersState = MutableStateFlow(uiFiltersStateDataModel())
 
     private var filterCount: Int
     private var isFiltered: Boolean
@@ -64,13 +68,19 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 
     }
 
+
     private fun newGetData() {
         coroutineScope.launch(Dispatchers.IO) {
-//            var copyOfData: MutableList<HomeScreenDataModel> = mutableListOf<HomeScreenDataModel>()
-//            copyOfData = repository.newGetData()
-//            uiState.value = copyOfData
 
-//            uiState.homeScreenDataModelList = repository.newGetData()
+            var data = withContext(Dispatchers.IO){repository.getUiData()}
+
+            data = data.sortedWith(compareBy { it.filterName }) as MutableList<FilterEntity>
+
+            uiFiltersState.update{
+                it.copy(
+                    filtersList = data
+                )
+            }
         }
     }
 
@@ -78,21 +88,61 @@ class HomeScreenViewModel(application: Application): ViewModel() {
     private fun cleanUpFilters() {
         repository.setAllToShown()
         repository.setAllFiltersToOff()
+        repository.setAllFiltersToShown()
 //        newGetData()
     }
 
 
+
     fun applyFilter(filterName: String) {
 
-        if (filterCount == 0) {
-            filterCount = 1
-        } else if (filterCount == 1) {
-            filterCount = 2
-        } else if (filterCount == 2) {
-            filterCount = 1
+//        if (filterCount == 0) {
+//            filterCount = 1
+//        } else if (filterCount == 1) {
+//            filterCount = 2
+//        } else if (filterCount == 2) {
+//            filterCount = 1
+//        }
+
+//        repository.addFilter(filterName)
+//        repository.hideOtherFilters(filterName)
+
+//        var myList = uiFiltersState.value.filtersList
+
+
+        var myName = ""
+        var myNum = 0
+        var myList: MutableList<FilterEntity> = mutableListOf<FilterEntity>()
+
+        for(x in 0 until uiFiltersState.value.filtersList.size){
+            myNum = if(uiFiltersState.value.filtersList[x].filterName == filterName){
+                1
+            } else{
+                0
+            }
+
+            myName = uiFiltersState.value.filtersList[x].filterName
+            myList.add(FilterEntity(filterName = myName, isActiveFilter = myNum, isShown = myNum))
         }
 
-        repository.addFilter(filterName)
+        myList = myList.sortedWith(compareByDescending{it.isShown}) as MutableList<FilterEntity>
+
+
+        uiFiltersState.update { currentState ->
+            currentState.copy(filtersList = myList)
+        }
+
+//        for(y in uiFiltersState.value.filtersList.indices){
+//            if(uiFiltersState.value.filtersList[y].filterName == filterName){
+//                uiFiltersState.value.filtersList[y].isShown = 1
+//            }
+//            else
+//                uiFiltersState.value.filtersList[y].isShown = 0
+//        }
+
+
+
+
 
 
         for (x in 0 until (referenceList.value?.size ?: 0)) {
@@ -101,7 +151,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 
                     referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
                         repository.setIsShown(
-                            it, filterCount
+                            it, 1
                         )
                     }
 
@@ -157,9 +207,35 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 
     fun removeFilter(filterName: String) {
 
-        filterCount = 0
+//        filterCount = 0
 
         cleanUpFilters()
+
+        var myName = ""
+        var isActive = 0
+        var isShown = 1
+        var myList: MutableList<FilterEntity> = mutableListOf<FilterEntity>()
+
+        for(x in 0 until uiFiltersState.value.filtersList.size){
+            myName = uiFiltersState.value.filtersList[x].filterName
+            myList.add(FilterEntity(filterName = myName, isActiveFilter = isActive, isShown = isShown))
+        }
+
+//        myList = myList.sortedWith(compareByDescending{it.isShown}) as MutableList<FilterEntity>
+//
+//
+//        uiFiltersState.update { currentState ->
+//            currentState.copy(filtersList = myList)
+//        }
+
+
+        myList = myList.sortedWith(compareBy { it.filterName }) as MutableList<FilterEntity>
+
+        uiFiltersState.update{
+            it.copy(
+                filtersList = myList
+            )
+        }
 
 
 //        filterCount--

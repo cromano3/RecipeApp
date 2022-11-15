@@ -29,6 +29,10 @@ interface HomeScreenDao {
 
 
     @Transaction
+    @Query("UPDATE filters_table SET is_shown = 1")
+    fun setAllFiltersToShown()
+
+    @Transaction
     @Query("UPDATE filters_table SET is_active_filter = 0")
     fun setAllFiltersToOff()
 
@@ -40,6 +44,9 @@ interface HomeScreenDao {
     @Query("SELECT * FROM recipe_table")
     suspend fun newGetData(): MutableList<HomeScreenDataModel>
 
+    @Transaction
+    @Query("SELECT * FROM filters_table WHERE filter_name <> 'Unfiltered'")
+    suspend fun getUiData(): MutableList<FilterEntity>
 
 //    @Transaction
 //    @Query("SELECT * FROM recipe_table " +
@@ -111,6 +118,10 @@ interface HomeScreenDao {
     @Transaction
     @Query("UPDATE filters_table SET is_active_filter = 0 WHERE filter_name = :filterName")
     fun removeFilter(filterName: String)
+
+    @Transaction
+    @Query("UPDATE filters_table SET is_shown = 0 WHERE filter_name <> :filterName")
+    fun hideOtherFilters(filterName: String)
 
 
 

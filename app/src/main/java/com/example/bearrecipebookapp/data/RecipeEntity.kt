@@ -26,7 +26,10 @@ class RecipeEntity(
     val rating: Int = 0,
 
     @ColumnInfo(name = "is_shown")
-    var isShown: Int = 1
+    var isShown: Int = 1,
+
+    @ColumnInfo(name = "is_shopping_filter")
+    var isShoppingFilter: Int = 0,
 
 //
 //    @ColumnInfo(name = "ingredients")

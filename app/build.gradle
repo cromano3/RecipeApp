@@ -15,6 +15,7 @@ android {
     kotlinOptions{
         freeCompilerArgs += [
                 "-Xjvm-default=all",
+                "-opt-in=kotlin.RequiresOptIn",
         ]
     }
     signingConfigs {
@@ -96,6 +97,8 @@ dependencies {
 //    ksp("androidx.room:room-compiler:2.4.3")
 
     implementation("javax.inject:javax.inject:1")
+
+    implementation("io.coil-kt:coil-compose:2.2.2")
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'

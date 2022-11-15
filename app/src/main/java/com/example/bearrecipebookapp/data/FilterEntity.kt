@@ -11,5 +11,11 @@ class FilterEntity(
     val filterName: String = "",
 
     @ColumnInfo(name = "is_active_filter")
-    val isActiveFilter: Int = 0
+    var isActiveFilter: Int = 0,
+
+    @ColumnInfo(name = "is_shown")
+    var isShown: Int = 0
+
+
+
 )

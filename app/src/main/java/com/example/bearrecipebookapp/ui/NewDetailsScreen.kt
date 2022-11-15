@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
@@ -39,6 +38,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.IngredientEntity
 import com.example.bearrecipebookapp.data.InstructionEntity
@@ -261,18 +261,27 @@ fun NewDetailsScreen(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Image(
+                    AsyncImage(
+                        model = image,
+                        contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp)
                             .padding(bottom = 16.dp),
                         contentScale = ContentScale.Crop,
-                        /*
-                        add correct image
-                         */
-                        painter = painterResource(image),
-                        contentDescription = null
                     )
+//                    Image(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(300.dp)
+//                            .padding(bottom = 16.dp),
+//                        contentScale = ContentScale.Crop,
+//                        /*
+//                        add correct image
+//                         */
+//                        painter = painterResource(image),
+//                        contentDescription = null
+//                    )
 
                     // Row(
 //                modifier = Modifier
@@ -308,7 +317,7 @@ fun NewDetailsScreen(
                             contentColor = Color(0xFFd8af84),
                             elevation = 6.dp
                         ) {
-                            //Difficulty Column
+                            //Time
                             Column(
                                 Modifier.padding(start = 4.dp)
                             ) {
@@ -543,7 +552,7 @@ fun NewDetailsScreen(
 
 
                     }
-                    //          }
+
                     //Instructions List
                     for (x in 0 until detailsScreenData.instructionsList.size) {
                         Surface(
@@ -567,6 +576,10 @@ fun NewDetailsScreen(
                         }
 
                     }
+                    Spacer(
+                        Modifier
+                            .size(64.dp)
+                            .fillMaxWidth())
                 }
             }
         }

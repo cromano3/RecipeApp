@@ -47,7 +47,7 @@ fun MenuScreen(
 
         ) {
             Column(Modifier.verticalScroll(rememberScrollState())) {
-                for (x in 0 until menuScreenData.size) {
+                for (x in menuScreenData.indices) {
 
                     var myInt = 0
                     if(x + 1 == menuScreenData.size){

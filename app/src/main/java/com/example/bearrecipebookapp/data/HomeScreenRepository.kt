@@ -5,6 +5,7 @@ import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
@@ -23,11 +24,20 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
 
     ///
 
+    suspend fun getUiData(): MutableList<FilterEntity>{
+        return homeScreenDao.getUiData()
+    }
+
     suspend fun newGetData(): MutableList<HomeScreenDataModel>{
            return homeScreenDao.newGetData()
     }
 
 
+    fun setAllFiltersToShown(){
+        coroutineScope.launch(Dispatchers.IO) {
+            homeScreenDao.setAllFiltersToShown()
+        }
+    }
 
     ///
     fun setAllFiltersToOff(){
@@ -38,6 +48,7 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
 
     fun setAllToShown(){
         coroutineScope.launch(Dispatchers.IO) {
+            delay(150)
             homeScreenDao.setAllToShown()
         }
     }
@@ -73,6 +84,12 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
         coroutineScope.launch(Dispatchers.IO) {
             //UPDATE filter_table SET is_active_filter = 1 WHERE filter_name = 'filterName'
             homeScreenDao.addFilter(filterName)
+        }
+    }
+
+    fun hideOtherFilters(filterName: String){
+        coroutineScope.launch(Dispatchers.IO) {
+            homeScreenDao.hideOtherFilters(filterName)
         }
     }
 

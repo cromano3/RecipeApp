@@ -59,7 +59,7 @@ fun BearRecipeApp(
     var showTopBar by rememberSaveable { mutableStateOf(true) }
 
     showTopBar = when (currentScreen){
-        "DetailsScreen" -> false
+//        "DetailsScreen" -> false
         else -> true
     }
 

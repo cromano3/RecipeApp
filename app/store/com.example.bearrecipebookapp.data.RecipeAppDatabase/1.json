@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f0d9e1dc7f935786868bf22f2f1ba45d",
+    "identityHash": "977dba81995920bf20c2d9b6a20b60c9",
     "entities": [
       {
         "tableName": "recipe_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `review_score` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, PRIMARY KEY(`recipe_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `review_score` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, PRIMARY KEY(`recipe_name`))",
         "fields": [
           {
             "fieldPath": "recipeName",
@@ -49,6 +49,12 @@
             "columnName": "is_shown",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "isShoppingFilter",
+            "columnName": "is_shopping_filter",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -62,7 +68,7 @@
       },
       {
         "tableName": "ingredient_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ingredient_name` TEXT NOT NULL, `quantity_owned` INTEGER NOT NULL, `quantity_needed` INTEGER NOT NULL, PRIMARY KEY(`ingredient_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ingredient_name` TEXT NOT NULL, `quantity_owned` INTEGER NOT NULL, `quantity_needed` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, PRIMARY KEY(`ingredient_name`))",
         "fields": [
           {
             "fieldPath": "ingredientName",
@@ -79,6 +85,12 @@
           {
             "fieldPath": "quantityNeeded",
             "columnName": "quantity_needed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isShown",
+            "columnName": "is_shown",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -153,7 +165,7 @@
       },
       {
         "tableName": "filters_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`filter_name` TEXT NOT NULL, `is_active_filter` INTEGER NOT NULL, PRIMARY KEY(`filter_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`filter_name` TEXT NOT NULL, `is_active_filter` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, PRIMARY KEY(`filter_name`))",
         "fields": [
           {
             "fieldPath": "filterName",
@@ -164,6 +176,12 @@
           {
             "fieldPath": "isActiveFilter",
             "columnName": "is_active_filter",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isShown",
+            "columnName": "is_shown",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -228,7 +246,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f0d9e1dc7f935786868bf22f2f1ba45d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '977dba81995920bf20c2d9b6a20b60c9')"
     ]
   }
 }

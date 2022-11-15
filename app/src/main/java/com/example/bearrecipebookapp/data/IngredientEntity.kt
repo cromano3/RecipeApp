@@ -16,4 +16,6 @@ class IngredientEntity(
     @ColumnInfo(name = "quantity_needed")
     val quantityNeeded: Int = 0,
 
+    @ColumnInfo(name = "is_shown")
+    val isShown: Int = 1,
 )

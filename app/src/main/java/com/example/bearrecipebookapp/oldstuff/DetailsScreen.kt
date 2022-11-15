@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
@@ -31,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.IngredientEntity
 import com.example.bearrecipebookapp.data.InstructionEntity
@@ -374,18 +374,27 @@ Column {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
+        AsyncImage(
+            model = image,
+            contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
                 .padding(bottom = 16.dp),
             contentScale = ContentScale.Crop,
-            /*
-                add correct image
-                 */
-            painter = painterResource(image),
-            contentDescription = null
         )
+//        Image(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(300.dp)
+//                .padding(bottom = 16.dp),
+//            contentScale = ContentScale.Crop,
+//            /*
+//                add correct image
+//                 */
+//            painter = painterResource(image),
+//            contentDescription = null
+//        )
 
         // Row(
 //                modifier = Modifier
