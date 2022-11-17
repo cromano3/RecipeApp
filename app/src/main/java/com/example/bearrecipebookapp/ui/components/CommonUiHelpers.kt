@@ -1,8 +1,10 @@
 package com.example.bearrecipebookapp.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -10,12 +12,14 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -36,7 +40,9 @@ fun RecipeCard(
     modifier: Modifier,
     recipeWithIngredients: RecipeWithIngredients,
     currentScreen: String,
-    onClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
+    onRemoveClick: () -> Unit,
+    onCompleteClick: () -> Unit,
     onDetailsClick: () -> Unit,
     ){
 
@@ -80,9 +86,9 @@ fun RecipeCard(
             formattedTime = "$quotient hrs."
         } else {
             if (quotient == 1) {
-                formattedTime = "$quotient hr. $remainder mins."
+                formattedTime = "$quotient hr.\n $remainder mins."
             } else {
-                formattedTime = "$quotient hrs. $remainder mins."
+                formattedTime = "$quotient hrs.\n $remainder mins."
             }
         }
     }
@@ -97,32 +103,205 @@ fun RecipeCard(
                 .padding(start = 8.dp, end = 8.dp, top = 16.dp,)
                 .height(176.dp)
                 .fillMaxWidth()
-                .clickable(onClick = onDetailsClick),
-            shape = RoundedCornerShape(10.dp),
-            elevation = 8.dp,
-        )
-        {
-            AsyncImage(
-                model = image,
-                contentDescription = null,
-                modifier = Modifier
-                    .height(176.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop,
+                .clickable(onClick = onDetailsClick)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(Color(0xFFb15f33),Color(0xFF682300)),
+                        tileMode = TileMode.Mirror),
+                    shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
+            shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp),
+            color = Color.Transparent,
+//            elevation = 8.dp,
             )
-//            Image(
-//                modifier = Modifier
-//                    .height(176.dp)
-//                    .fillMaxWidth()
-//                    .clip(RoundedCornerShape(10.dp)),
-//                contentScale = ContentScale.Crop,
-//                painter = painterResource(image),
-//                contentDescription = null
-//            )
+        {
+            Row(modifier = Modifier.fillMaxSize()){
+                //Info Box
+                Column(
+                    Modifier.padding(start = 0.dp).width(60.dp).fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+
+                    //Time
+                    Column(Modifier.wrapContentHeight().fillMaxWidth().padding(top = 4.dp),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ){
+                        Icon(
+                            Icons.Outlined.Timer,
+                            contentDescription = null,
+                            tint = Color(0xFF000000),
+                            modifier = Modifier
+                                .size(20.dp),
+                        )
+                        Text(
+                            text = formattedTime,
+                            modifier = Modifier
+                                .padding(
+                                    start = 0.dp,
+                                    end = 0.dp,
+                                    top = 0.dp,
+                                    bottom = 0.dp
+                                )
+                                .background(color = Color.Transparent),
+                            // .weight(1f),
+                            color = Color(0xFF000000),
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    //Difficulty
+                    Column(Modifier.wrapContentHeight().fillMaxWidth(),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ){
+                        Icon(
+                            Icons.Outlined.AutoAwesome,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = Color(0xFF000000),
+                        )
+                        Row(){
+                            Icon(
+                                Icons.Outlined.Star,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = Color(0xFF000000),
+                            )
+                            if(recipeWithIngredients.recipeEntity.difficulty > 1){
+                                Icon(
+                                    Icons.Outlined.Star,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = Color(0xFF000000),
+                                )
+                            }
+                        }
+                        if(recipeWithIngredients.recipeEntity.difficulty > 2){
+                            Icon(
+                                Icons.Outlined.Star,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = Color(0xFF000000),
+                            )
+                        }
+                    }
+
+                    //Rating
+                    Column(Modifier.wrapContentHeight().fillMaxWidth().padding(bottom = 4.dp),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ){
+                        Icon(
+                            Icons.Outlined.ThumbUp,
+                            contentDescription = null,
+                            modifier = Modifier.padding(top = 0.dp).size(20.dp),
+                            tint = Color(0xFF000000),
+
+                        )
+                        Text(
+                            text = "${recipeWithIngredients.recipeEntity.rating}" + "%",
+                            modifier = Modifier
+                                .padding(
+                                    start = 0.dp,
+                                    end = 0.dp,
+                                    top = 0.dp,
+                                    bottom = 0.dp
+                                )
+                                .background(color = Color.Transparent),
+                            // .weight(1f),
+                            color = Color(0xFF000000),
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+                Spacer(Modifier.fillMaxHeight().border(1.dp, Color(0xFFd8af84)).width(1.dp))
+
+                AsyncImage(
+                    model = image,
+                    contentDescription = null,
+                    modifier = Modifier.weight(1f)
+                        .height(176.dp)
+//                        .width(200.dp)
+//                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(0.dp)),
+//                        .border(1.dp, Color(0xFFd8af84)),
+                    contentScale = ContentScale.Crop,
+                )
+
+                Spacer(Modifier.fillMaxHeight().border(1.dp, Color(0xFFd8af84)).width(1.dp))
+
+                //Info Box
+                Column(
+                    Modifier.padding(start = 0.dp).width(60.dp).fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceAround,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+
+                    val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
+
+                    val icon: ImageVector = if (recipeWithIngredients.recipeEntity.isFavorite == 0) {
+                        Icons.Outlined.FavoriteBorder
+
+                    } else {
+                        Icons.Outlined.Favorite
+                    }
+
+                    FloatingActionButton(
+                        onClick = onFavoriteClick,
+                        elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                        modifier = Modifier
+//                            .padding(end = 8.dp)
+                            .border(
+                                width = 2.dp,
+                                brush = (Brush.horizontalGradient(
+                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                    endX = gradientWidthButton,
+                                    tileMode = TileMode.Mirror)),
+                                shape = CircleShape
+                            )
+                            .size(36.dp)
+                            //the background of the square for this button, it stays a square even tho
+                            //we have shape = circle shape.  If this is not changed you see a solid
+                            //square for the "background" of this button.
+                            .background(color = Color.Transparent),
+                        shape = CircleShape,
+                        //this is the background color of the button after the "Shaping" is applied.
+                        //it is different then the background attribute above.
+                        backgroundColor = Color(0xFF682300)
+                    ) {
+                        Icon(
+                            icon,
+                            tint = Color(0xFFd8af84),
+                            modifier = Modifier.size(20.dp),
+                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                            contentDescription = null
+                        )
+                    }
+
+                    Icon(
+                        imageVector = Icons.Outlined.Share,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(36.dp),
+                        tint = Color(0xFFd8af84)
+                    )
+
+
+                }
+
+
+            }
+
             Box(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(start = 64.dp, end = 64.dp),
             ){
                 Text(
                     modifier = Modifier.align(Alignment.Center),
@@ -140,29 +319,33 @@ fun RecipeCard(
                 )
             }
             //        Top Right corner delete button
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-            ){
-
-                if (currentScreen == "WeeklyMenuScreen"){
-                    IconButton(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .size(36.dp),
-                        onClick = onClick
-                    )
-                    {
-                        Icon(
-                            modifier = Modifier,
-                            imageVector = Icons.Outlined.Close,
-                            tint = Color(0xFF000000),
-                            contentDescription = null
-                        )
-                    }
-                }
-            }
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize(),
+//            ){
+//
+//                if (currentScreen == "WeeklyMenuScreen"){
+//                    IconButton(
+//                        modifier = Modifier
+//                            .align(Alignment.TopEnd)
+//                            .size(36.dp),
+//                        onClick = onClick
+//                    )
+//                    {
+//                        Icon(
+//                            modifier = Modifier,
+//                            imageVector = Icons.Outlined.Close,
+//                            tint = Color(0xFF000000),
+//                            contentDescription = null
+//                        )
+//                    }
+//                }
+//            }
         }
+
+        Spacer(Modifier.fillMaxWidth().border(1.dp, Color(0xFFd8af84)).height(1.dp))
+
+        //Bottom Bar surface
         Surface(
             modifier = modifier
                 .padding(start = 8.dp , end = 8.dp)
@@ -170,138 +353,119 @@ fun RecipeCard(
                 .fillMaxWidth()
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = listOf(Color(0xFF682300),Color(0xFFb15f33) ),
-                        endX = gradientWidth,
+                        colors = listOf( Color(0xFFb15f33), Color(0xFF682300) ),
                         tileMode = TileMode.Mirror
                     ),
-                    shape = RoundedCornerShape((10.dp))
+                    shape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp)
                 ),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp),
 
             color = Color.Transparent,
-//            elevation = 1.dp,
-//            contentColor = Color.Transparent
+
         ){
-//            Surface(
-//                modifier = Modifier
-//                    .padding(bottom = 16.dp)
-//                    .wrapContentSize(),
-//                shape = RoundedCornerShape(10.dp),
-//                color = Color(0xFFf8ea9a),
-//                //color = Color(0xFF682300),//Color(0xFFd8af84),
-//                contentColor = Color(0xFFd8af84),
-//                elevation = 6.dp
-//            ) {
-                //Time
-                Row(
-                    Modifier.padding(start = 4.dp),
-                    horizontalArrangement = Arrangement.Center
+            Row(
+                Modifier.padding(start = 4.dp, end = 4.dp).fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+
+
+                Surface(
+                    modifier = Modifier
+                        //.padding(start = 8.dp, top = 8.dp)
+                        .wrapContentSize()
+                        .alpha(0.55f)
+                        .border(
+                            width = 2.dp,
+                            brush = (Brush.horizontalGradient(
+                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                tileMode = TileMode.Mirror)),
+                            shape = CircleShape
+                        )
+                        .clickable(
+                            enabled = false,
+                            //!selected
+                            onClick = onRemoveClick,
+                        ),// { selected = !selected },
+                    shape = RoundedCornerShape(25.dp),
+                    color = Color(0xFFf8ea9a),
+                    elevation = 4.dp,
+                    //color = Color(0xFF682300),//Color(0xFFd8af84),
+                    contentColor = Color(0xFF682300),
                 ) {
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Outlined.Timer,
-                            tint = Color(0xFF000000),
-                            contentDescription = null
-                        )
-                        Text(
-                            text =
-//                            "Time: " +
-                                    formattedTime,
-                            modifier = Modifier
-                                .padding(
-                                    start = 8.dp,
-//                                    end = 8.dp,
-                                    top = 8.dp,
-                                    bottom = 8.dp
-                                )
-                                .background(color = Color.Transparent),
-                            // .weight(1f),
-                            color =Color(0xFF000000),
-//                            Color(0xFF682300),
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-
-                        )
-                    }
-
-                    Spacer(Modifier.weight(1f))
-
-                    //Difficulty
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-//                        modifier = Modifier.padding(end = 4.dp)
-                    ) {
-                        Icon(
-                            Icons.Outlined.AutoAwesome,
-                            tint = Color(0xFF000000),
-                            contentDescription = null
-                        )
+                        //Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
+                    )
+                    {
+
                         Text(
-                            text = "",
-//                            "Difficulty: ",
+                            text = "Remove",
                             modifier = Modifier
-                                .padding(
-                                    start = 4.dp,
-                                    end = 0.dp,
-                                    top = 8.dp,
-                                    bottom = 8.dp
-                                )
-                                .background(color = Color.Transparent),
-                            // .weight(1f),
+                                // .weight(1f)
+//                                .padding(start = 0.dp, end = 0.dp)
+                                .align(Alignment.CenterVertically)
+                                .alpha(0.55f),
                             color = Color(0xFF682300),
+//                            textDecoration = decoration,
                             fontSize = 18.sp,
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold
-
-                        )
-                        for (x in 0 until recipeWithIngredients.recipeEntity.difficulty) {
-                            Icon(
-                                Icons.Outlined.Star,
-                                tint = Color(0xFF000000),
-                                contentDescription = null
-                            )
-                        }
-                    }
-
-                    Spacer(Modifier.weight(1f))
-
-                    //Rating
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Outlined.ThumbUp,
-                            tint = Color(0xFF000000),
-                            contentDescription = null
-                        )
-                        Text(
-                            text =
-//                            "Rating: " +
-                                    "${recipeWithIngredients.recipeEntity.rating}" + "%",
-                            modifier = Modifier
-                                .padding(
-                                    start = 8.dp,
-                                    end = 8.dp,
-                                    top = 8.dp,
-                                    bottom = 8.dp
-                                )
-                                .background(color = Color.Transparent),
-                            // .weight(1f),
-                            color =
-                            Color(0xFF000000),
-//                            Color(0xFF682300),
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-
                         )
                     }
                 }
 
 
+                Surface(
+                    modifier = Modifier
+                        //.padding(start = 8.dp, top = 8.dp)
+                        .wrapContentSize()
+//                        .alpha(alphaLevel)
+                        .border(
+                            width = 2.dp,
+                            brush = (Brush.horizontalGradient(
+                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                tileMode = TileMode.Mirror)),
+                            shape = CircleShape
+                        )
+                        .clickable(
+                            enabled = false,
+                            //!selected
+                            onClick = onCompleteClick,
+                        ),// { selected = !selected },
+                    shape = RoundedCornerShape(25.dp),
+                    color = Color(0xFFf8ea9a),
+                    elevation = 4.dp,
+                    //color = Color(0xFF682300),//Color(0xFFd8af84),
+                    contentColor = Color(0xFF682300),
+                ) {
+                    Row(
+                        //Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
+                    )
+                    {
+
+                        Text(
+                            text = "Finished Cooking!",
+                            modifier = Modifier
+                                // .weight(1f)
+//                                   .padding(start = 6.dp, end = 6.dp)
+                                .align(Alignment.CenterVertically),
+//                                .alpha(alphaLevel),
+                            color = Color(0xFF682300),
+//                            textDecoration = decoration,
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
         }
     }
+}
 
 
 
@@ -374,7 +538,7 @@ fun DefaultPreview2() {
     BearRecipeBookAppTheme {
 
             var myRE: RecipeEntity = RecipeEntity(recipeName = "Cauliflower Walnut Tacos",
-                onMenu = 0,1, timeToMake = 60, rating = 98)
+                onMenu = 0, isDetailsScreenTarget = 1, timeToMake = 60, rating = 98, difficulty = 3)
 
             var myList: List<IngredientEntity> = listOf<IngredientEntity>(
                 IngredientEntity(ingredientName = "Ing. Name", quantityOwned = 0, quantityNeeded = 1))
@@ -391,8 +555,10 @@ fun DefaultPreview2() {
                     ingredientsList = myList
                 ),
                 currentScreen = "WeeklyMenuScreen",
-                onClick = {},
-                onDetailsClick = {}
+                onCompleteClick = {},
+                onRemoveClick = {},
+                onDetailsClick = {},
+                onFavoriteClick = {},
             )
         }
     }

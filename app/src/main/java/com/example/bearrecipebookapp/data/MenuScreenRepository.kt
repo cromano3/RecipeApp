@@ -28,6 +28,13 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
     }
 
 
+    fun updateFavorite(recipeName: String, isFavoriteStatus: Int) {
+        coroutineScope.launch(Dispatchers.IO) {
+            menuScreenDao.updateFavorite(recipeName, isFavoriteStatus)
+        }
+    }
+
+
     fun updateQuantityNeeded(ingredientName: String, quantityNeeded: Int){
         coroutineScope.launch(Dispatchers.IO) {
             menuScreenDao.updateQuantityNeeded(ingredientName, quantityNeeded)

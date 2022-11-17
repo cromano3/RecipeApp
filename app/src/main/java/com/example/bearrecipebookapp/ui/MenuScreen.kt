@@ -58,7 +58,9 @@ fun MenuScreen(
                         modifier = Modifier.padding(bottom = myInt.dp),
                         recipeWithIngredients = menuScreenData[x],
                         currentScreen = "WeeklyMenuScreen",
-                        onClick = { menuScreenViewModel.removeFromMenu(menuScreenData[x]) },
+                        onFavoriteClick = {menuScreenViewModel.toggleFavorite(menuScreenData[x]) },
+                        onRemoveClick = { menuScreenViewModel.removeFromMenu(menuScreenData[x]) },
+                        onCompleteClick = { menuScreenViewModel.removeFromMenu(menuScreenData[x]) },
                         onDetailsClick = { menuScreenViewModel.setDetailsScreenTarget(menuScreenData[x].recipeEntity.recipeName);
                             onDetailsClick()
                         }

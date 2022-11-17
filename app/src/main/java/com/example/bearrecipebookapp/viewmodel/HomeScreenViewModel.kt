@@ -8,13 +8,10 @@ import com.example.bearrecipebookapp.data.HomeScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
-import com.example.bearrecipebookapp.datamodel.uiFiltersStateDataModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.bearrecipebookapp.datamodel.UiFiltersStateDataModel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeScreenViewModel(application: Application): ViewModel() {
 
@@ -25,15 +22,25 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 
     var referenceList: LiveData<List<HomeScreenDataModel>>
 
+
+
+    //GOOD!!!
     var filtersList: LiveData<List<FilterEntity>>
+    //GOOD!!
+
+    var newRecipesList: LiveData<List<RecipeWithIngredients>>
+
+
+
 
     var unfilteredList: LiveData<List<RecipeWithIngredients>>
+
     var filteredList1: LiveData<List<RecipeWithIngredients>>
     var filteredList2: LiveData<List<RecipeWithIngredients>>
 
 //    val uiState = MutableStateFlow(HomeScreenUiStateDataModel())
 
-    val uiFiltersState = MutableStateFlow(uiFiltersStateDataModel())
+    val uiFiltersState = MutableStateFlow(UiFiltersStateDataModel())
 
     private var filterCount: Int
     private var isFiltered: Boolean
@@ -48,8 +55,8 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         repository = HomeScreenRepository(homeScreenDao)
 
 //        cleanUpSort()
-        cleanUpFilters()
-        newGetData()
+//        cleanUpFilters()
+//        newGetData()
 
         filterCount = 0
         isFiltered = false
@@ -64,223 +71,336 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         filteredList1 = repository.filteredList1
         filteredList2 = repository.filteredList2
 
-        newGetData()
-
-    }
-
-
-    private fun newGetData() {
-        coroutineScope.launch(Dispatchers.IO) {
-
-            var data = withContext(Dispatchers.IO){repository.getUiData()}
-
-            data = data.sortedWith(compareBy { it.filterName }) as MutableList<FilterEntity>
-
-            uiFiltersState.update{
-                it.copy(
-                    filtersList = data
-                )
-            }
-        }
-    }
-
-
-    private fun cleanUpFilters() {
-        repository.setAllToShown()
-        repository.setAllFiltersToOff()
-        repository.setAllFiltersToShown()
 //        newGetData()
+
+        //
+
+        coroutineScope.launch(Dispatchers.IO) {
+            async(Dispatchers.IO) { repository.cleanRecipes() }
+            async(Dispatchers.IO) { repository.cleanFilters() }
+        }
+
+
+
+        newRecipesList = repository.newRecipeList
     }
 
 
-
-    fun applyFilter(filterName: String) {
-
-//        if (filterCount == 0) {
-//            filterCount = 1
-//        } else if (filterCount == 1) {
-//            filterCount = 2
-//        } else if (filterCount == 2) {
-//            filterCount = 1
+//    private fun newGetData() {
+//        coroutineScope.launch(Dispatchers.IO) {
+//
+//            var data = withContext(Dispatchers.IO){repository.getUiData()}
+//
+//            data = data.sortedWith(compareBy { it.filterName }) as MutableList<FilterEntity>
+//
+//            uiFiltersState.update{
+//                it.copy(
+//                    filtersList = data
+//                )
+//            }
 //        }
-
-//        repository.addFilter(filterName)
-//        repository.hideOtherFilters(filterName)
-
-//        var myList = uiFiltersState.value.filtersList
+//    }
 
 
-        var myName = ""
-        var myNum = 0
-        var myList: MutableList<FilterEntity> = mutableListOf<FilterEntity>()
+//    private fun cleanUpFilters() {
+//        repository.setAllToShown()
+//        repository.setAllFiltersToOff()
+//        repository.setAllFiltersToShown()
+////        newGetData()
+//    }
 
-        for(x in 0 until uiFiltersState.value.filtersList.size){
-            myNum = if(uiFiltersState.value.filtersList[x].filterName == filterName){
-                1
-            } else{
-                0
-            }
 
-            myName = uiFiltersState.value.filtersList[x].filterName
-            myList.add(FilterEntity(filterName = myName, isActiveFilter = myNum, isShown = myNum))
-        }
-
-        myList = myList.sortedWith(compareByDescending{it.isShown}) as MutableList<FilterEntity>
-
+    fun filterBy(filter: FilterEntity){
+        coroutineScope.launch(Dispatchers.Main) {
 
         uiFiltersState.update { currentState ->
-            currentState.copy(filtersList = myList)
+            currentState.copy(isWorking = true)
         }
+            if (filter.isActiveFilter == 0 ||
+                filter.isActiveFilter == 1
+            ) {
+                uiFiltersState.update { currentState ->
+                    currentState.copy(showAllRecipes = false)
+                }
 
-//        for(y in uiFiltersState.value.filtersList.indices){
-//            if(uiFiltersState.value.filtersList[y].filterName == filterName){
-//                uiFiltersState.value.filtersList[y].isShown = 1
-//            }
-//            else
-//                uiFiltersState.value.filtersList[y].isShown = 0
+
+//        coroutineScope.launch(Dispatchers.IO) {
+            async(Dispatchers.IO) { repository.removeOtherFilters(filter.filterName) }
+            async(Dispatchers.IO) { repository.filterBy(filter.filterName)  }
+
 //        }
 
+///////////////////////////////////////////
+                delay(500)
+///////////////////////////////////////////
 
+                var match = false
 
-
-
-
-        for (x in 0 until (referenceList.value?.size ?: 0)) {
-            for (z in 0 until (referenceList.value?.get(x)?.filtersList?.size ?: 0)) {
-                if (referenceList.value?.get(x)?.filtersList?.get(z)?.filterName == filterName) {
-
-                    referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
-                        repository.setIsShown(
-                            it, 1
-                        )
+                for (x in 0 until (referenceList.value?.size ?: 0)) {
+                    for (y in 0 until (referenceList.value?.get(x)?.filtersList?.size ?: 0)) {
+                        if ((referenceList.value?.get(x)?.filtersList?.get(y)?.filterName
+                                ?: 0) == filter.filterName
+                        ) {
+                            match = true
+                            break
+                        }
                     }
+                    if (!match) {
+                        referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
+                            repository.setRecipeToNotShown(it)
+                        }
+                    } else {
+                        referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
+                            repository.setRecipeToShown(it)
+                        }
+                    }
+                    match = false
+                }
 
-                    break
+                uiFiltersState.update { currentState ->
+                    currentState.copy(showAllRecipes = true)
+                }
 
+            } else if (filter.isActiveFilter == 2) {
+
+                uiFiltersState.update { currentState ->
+                    currentState.copy(showAllRecipes = false)
+                }
+                //this delay allows the fade out animation to take place/finish before getting cut
+                //off. It could/should be reduced to the duration of the animation itself.
+                delay(400)
+
+//                coroutineScope.launch(Dispatchers.IO) {
+//                println("zero")
+                    withContext(Dispatchers.IO) { repository.cleanRecipes() }
+//                println("first")
+                    withContext(Dispatchers.IO) { repository.cleanFilters() }
+//                println("second")
+//                }
+
+                /**
+                 * There should be some kind of await() or delay happening here.
+                 * In order for the list to be loaded with the correct animation, we must ensure
+                 * that the above async query "cleanRecipes()" executes before the below statement
+                 * shows the list.
+                 *
+                 * This is assuming that showing the list before the data is populated will not
+                 * trigger the animation.  It is possible that the empty list can be "shown" or
+                 * "visible = true" and then after that the data is populated which could maybe
+                 * trigger the animation?
+                 *
+                 * This needs to be investigated.
+                 *
+                 * UPDATE: The list is not empty, in fact it is never empty, it is instead still
+                 * in its previous state (contains the filtered list of recipes). The async query
+                 * swaps the data for the new data.
+                 *
+                 * Regardless, the animation is NOT triggered and therefore this must be dealt with.
+                 *
+                 * UPDATE 2: withContext should fix this.
+                 */
+
+                uiFiltersState.update { currentState ->
+                    currentState.copy(showAllRecipes = true)
                 }
             }
+
+        uiFiltersState.update { currentState ->
+            currentState.copy(isWorking = false)
         }
 
 
-//        var hitCounter = 0
-//
-//       // var tempList = mutableListOf<HomeScreenDataModel>()
-//
-//        for(x in 0 until (homeScreenData.value?.size ?: 0)){
-//            for(y in 0 until myFiltersList.size){
-//                for(z in 0 until (homeScreenData.value?.get(x)?.filtersList?.size ?: 0)){
-//                    if(homeScreenData.value?.get(x)?.filtersList?.get(z)?.filterName == myFiltersList[y]){
-//                        hitCounter++
-//                        break
-//                    }
-//                }
-//            }
-//            if(hitCounter == myFiltersList.size && myFiltersList.size > 0){
-//                //
-////                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 1
-//
-//                //set isDisplayed = True
-//                homeScreenData.value?.get(x)?.recipeEntity?.recipeName?.let {
-//                    repository.setIsShown(
-//                        it, 1)
-//                }
-//            }
-//            else{
-//                //
-////                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 0
-//
-//                //set isDisplayed = False
-//                homeScreenData.value?.get(x)?.recipeEntity?.recipeName?.let {
-//                    repository.setIsShown(
-//                        it, 0)
-//                }
-//            }
-//            hitCounter = 0
-//        }
+        }
 
-//        uiState.update{
-//            it.copy(homeScreenDataModelList = tempList)
-//        }
-        // uiState.homeScreenDataModelList = tempList
     }
 
-
-    fun removeFilter(filterName: String) {
-
-//        filterCount = 0
-
-        cleanUpFilters()
-
-        var myName = ""
-        var isActive = 0
-        var isShown = 1
-        var myList: MutableList<FilterEntity> = mutableListOf<FilterEntity>()
-
-        for(x in 0 until uiFiltersState.value.filtersList.size){
-            myName = uiFiltersState.value.filtersList[x].filterName
-            myList.add(FilterEntity(filterName = myName, isActiveFilter = isActive, isShown = isShown))
-        }
-
+//    fun applyFilter(filterName: String) {
+//
+////        if (filterCount == 0) {
+////            filterCount = 1
+////        } else if (filterCount == 1) {
+////            filterCount = 2
+////        } else if (filterCount == 2) {
+////            filterCount = 1
+////        }
+//
+////        repository.addFilter(filterName)
+////        repository.hideOtherFilters(filterName)
+//
+////        var myList = uiFiltersState.value.filtersList
+//
+//
+//        var myName = ""
+//        var myNum = 0
+//        var myList: MutableList<FilterEntity> = mutableListOf<FilterEntity>()
+//
+//        for(x in 0 until uiFiltersState.value.filtersList.size){
+//            myNum = if(uiFiltersState.value.filtersList[x].filterName == filterName){
+//                1
+//            } else{
+//                0
+//            }
+//
+//            myName = uiFiltersState.value.filtersList[x].filterName
+//            myList.add(FilterEntity(filterName = myName, isActiveFilter = myNum, isShown = myNum))
+//        }
+//
 //        myList = myList.sortedWith(compareByDescending{it.isShown}) as MutableList<FilterEntity>
 //
 //
 //        uiFiltersState.update { currentState ->
 //            currentState.copy(filtersList = myList)
 //        }
-
-
-        myList = myList.sortedWith(compareBy { it.filterName }) as MutableList<FilterEntity>
-
-        uiFiltersState.update{
-            it.copy(
-                filtersList = myList
-            )
-        }
-
-
-//        filterCount--
 //
-//        //should change to 'filtersList' (LiveData)?????????????????????????
-//        myFiltersList.remove(filterName)
-//        //??????????????????????????????????????????????????????????
+////        for(y in uiFiltersState.value.filtersList.indices){
+////            if(uiFiltersState.value.filtersList[y].filterName == filterName){
+////                uiFiltersState.value.filtersList[y].isShown = 1
+////            }
+////            else
+////                uiFiltersState.value.filtersList[y].isShown = 0
+////        }
 //
-//        repository.removeFilter(filterName)
 //
-//        isFiltered = myFiltersList.size != 0
 //
-//        var hitCounter = 0
 //
-//        if(!isFiltered) {
-//            cleanUpFilters()
-//        }
-//        else{
-//            for(x in 0 until (referenceList.value?.size ?: 0)){
-//                for(y in 0 until myFiltersList.size){
-//                    for(z in 0 until (referenceList.value?.get(x)?.filtersList?.size ?: 0)){
-//                        if(referenceList.value?.get(x)?.filtersList?.get(z)?.filterName == myFiltersList[y]){
-//                            hitCounter++
-//                            break
-//                        }
-//                    }
-//                }
-//                if(hitCounter == myFiltersList.size && myFiltersList.size > 0){
-//                    //set isDisplayed = True
+//
+//
+//        for (x in 0 until (referenceList.value?.size ?: 0)) {
+//            for (z in 0 until (referenceList.value?.get(x)?.filtersList?.size ?: 0)) {
+//                if (referenceList.value?.get(x)?.filtersList?.get(z)?.filterName == filterName) {
+//
 //                    referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
 //                        repository.setIsShown(
-//                            it, 1)
+//                            it, 1
+//                        )
 //                    }
+//
+//                    break
+//
 //                }
-//                else{
-//                    //set isDisplayed = False
-//                    referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
-//                        repository.setIsShown(
-//                            it, 0)
-//                    }
-//                }
-//                hitCounter = 0
 //            }
 //        }
-}
+//
+//
+////        var hitCounter = 0
+////
+////       // var tempList = mutableListOf<HomeScreenDataModel>()
+////
+////        for(x in 0 until (homeScreenData.value?.size ?: 0)){
+////            for(y in 0 until myFiltersList.size){
+////                for(z in 0 until (homeScreenData.value?.get(x)?.filtersList?.size ?: 0)){
+////                    if(homeScreenData.value?.get(x)?.filtersList?.get(z)?.filterName == myFiltersList[y]){
+////                        hitCounter++
+////                        break
+////                    }
+////                }
+////            }
+////            if(hitCounter == myFiltersList.size && myFiltersList.size > 0){
+////                //
+//////                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 1
+////
+////                //set isDisplayed = True
+////                homeScreenData.value?.get(x)?.recipeEntity?.recipeName?.let {
+////                    repository.setIsShown(
+////                        it, 1)
+////                }
+////            }
+////            else{
+////                //
+//////                uiState.homeScreenDataModelList[x].recipeEntity.isShown = 0
+////
+////                //set isDisplayed = False
+////                homeScreenData.value?.get(x)?.recipeEntity?.recipeName?.let {
+////                    repository.setIsShown(
+////                        it, 0)
+////                }
+////            }
+////            hitCounter = 0
+////        }
+//
+////        uiState.update{
+////            it.copy(homeScreenDataModelList = tempList)
+////        }
+//        // uiState.homeScreenDataModelList = tempList
+//    }
+
+
+//    fun removeFilter(filterName: String) {
+//
+////        filterCount = 0
+//
+////        cleanUpFilters()
+//
+//        var myName = ""
+//        var isActive = 0
+//        var isShown = 1
+//        var myList: MutableList<FilterEntity> = mutableListOf<FilterEntity>()
+//
+//        for(x in 0 until uiFiltersState.value.filtersList.size){
+//            myName = uiFiltersState.value.filtersList[x].filterName
+//            myList.add(FilterEntity(filterName = myName, isActiveFilter = isActive, isShown = isShown))
+//        }
+//
+////        myList = myList.sortedWith(compareByDescending{it.isShown}) as MutableList<FilterEntity>
+////
+////
+////        uiFiltersState.update { currentState ->
+////            currentState.copy(filtersList = myList)
+////        }
+//
+//
+//        myList = myList.sortedWith(compareBy { it.filterName }) as MutableList<FilterEntity>
+//
+//        uiFiltersState.update{
+//            it.copy(
+//                filtersList = myList
+//            )
+//        }
+//
+//
+////        filterCount--
+////
+////        //should change to 'filtersList' (LiveData)?????????????????????????
+////        myFiltersList.remove(filterName)
+////        //??????????????????????????????????????????????????????????
+////
+////        repository.removeFilter(filterName)
+////
+////        isFiltered = myFiltersList.size != 0
+////
+////        var hitCounter = 0
+////
+////        if(!isFiltered) {
+////            cleanUpFilters()
+////        }
+////        else{
+////            for(x in 0 until (referenceList.value?.size ?: 0)){
+////                for(y in 0 until myFiltersList.size){
+////                    for(z in 0 until (referenceList.value?.get(x)?.filtersList?.size ?: 0)){
+////                        if(referenceList.value?.get(x)?.filtersList?.get(z)?.filterName == myFiltersList[y]){
+////                            hitCounter++
+////                            break
+////                        }
+////                    }
+////                }
+////                if(hitCounter == myFiltersList.size && myFiltersList.size > 0){
+////                    //set isDisplayed = True
+////                    referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
+////                        repository.setIsShown(
+////                            it, 1)
+////                    }
+////                }
+////                else{
+////                    //set isDisplayed = False
+////                    referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
+////                        repository.setIsShown(
+////                            it, 0)
+////                    }
+////                }
+////                hitCounter = 0
+////            }
+////        }
+//}
 
 
 
@@ -316,9 +436,17 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 
 
 
-
-
     fun toggleFavorite(recipe: RecipeWithIngredients){
+        if(recipe.recipeEntity.isFavorite == 0){
+            repository.updateFavorite(recipe.recipeEntity.recipeName, 1)
+        }
+        else if(recipe.recipeEntity.isFavorite == 1){
+            repository.updateFavorite(recipe.recipeEntity.recipeName, 0)
+        }
+    }
+
+
+    fun toggleMenu(recipe: RecipeWithIngredients){
         if(recipe.recipeEntity.onMenu == 0){
             for(x in 0 until recipe.ingredientsList.size){
                 repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded + 1)

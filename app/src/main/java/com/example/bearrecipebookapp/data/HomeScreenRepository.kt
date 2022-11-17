@@ -22,7 +22,81 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
 
 
 
-    ///
+    var newRecipeList: LiveData<List<RecipeWithIngredients>> = homeScreenDao.getRecipeList()
+
+
+
+
+
+
+    suspend fun removeOtherFilters(name: String){
+//        coroutineScope.launch(Dispatchers.IO) {
+//            println("ZeroA")
+//            delay(5000)
+//            println("FirstA")
+            homeScreenDao.removeOtherFilters(name)
+//            println("SecondA")
+//            delay(5000)
+//            println("ThirdA")
+//        }
+    }
+
+    suspend fun filterBy(name: String){
+//        coroutineScope.launch(Dispatchers.IO) {
+
+//            println("ZeroB")
+//            delay(5000)
+//            println("FirstB")
+            homeScreenDao.filterBy(name)
+//            println("SecondB")
+//            delay(5000)
+//            println("ThirdB")
+//        }
+    }
+
+    //
+
+    fun setRecipeToNotShown(name: String){
+        coroutineScope.launch(Dispatchers.IO) {
+            homeScreenDao.setRecipeToNotShown(name)
+        }
+    }
+
+    fun setRecipeToShown(name: String){
+        coroutineScope.launch(Dispatchers.IO) {
+            homeScreenDao.setRecipeToShown(name)
+        }
+    }
+
+    //
+
+    suspend fun cleanFilters(){
+//        coroutineScope.launch(Dispatchers.IO) {
+//        println("zeroB")
+//        delay(5000)
+//        println("firstB")
+            homeScreenDao.cleanFilters()
+//        }
+    }
+
+    suspend fun cleanRecipes(){
+//        coroutineScope.launch(Dispatchers.IO) {
+//        println("zeroA")
+//        delay(5000)
+//        println("firstA")
+            homeScreenDao.cleanRecipes()
+
+//        }
+    }
+
+
+
+
+
+
+
+
+    //////////////////
 
     suspend fun getUiData(): MutableList<FilterEntity>{
         return homeScreenDao.getUiData()
@@ -106,6 +180,12 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
 
 
     ///
+
+    fun updateFavorite(recipeName: String, isFavoriteStatus: Int) {
+        coroutineScope.launch(Dispatchers.IO) {
+            homeScreenDao.updateFavorite(recipeName, isFavoriteStatus)
+        }
+    }
 
     fun updateMenu(recipeName: String, onMenuStatus: Int) {
         coroutineScope.launch(Dispatchers.IO) {

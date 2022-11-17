@@ -8,8 +8,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +41,8 @@ fun SmallRecipeCard(
     modifier: Modifier,
     recipe: RecipeEntity,
     ingredients: List<IngredientEntity>,
-    onClick: ()->Unit,
+    onFavoriteClick: ()-> Unit,
+    onMenuClick: () -> Unit,
     onDetailsClick: () -> Unit
 ){
 
@@ -174,38 +177,71 @@ fun SmallRecipeCard(
                         ),
                     shape = CircleShape
                 ){
-
                     AsyncImage(
                         model = image,
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
                     )
-//
-//                    Image(
-//                        modifier = Modifier
-//                            .fillMaxSize(),
-//                        contentScale = ContentScale.Crop,
-//                        painter = painterResource(image),
-//                        contentDescription = null
-//                    )
                 }
 
-                /* TO DO:
-                Here we should check if the recipe.on_menu is true.
-                If it is true we don't need to update on click. Instead we send a Toast or Snack bar
-                message saying this item is already in the list OR just do nothing.
-                 */
 
-                val icon: ImageVector = if(recipe.onMenu == 0){
+                //onMenu Button
+                val menuIcon: ImageVector = if(recipe.onMenu == 0){
+                    Icons.Outlined.Restaurant
+
+                }else {
+                    Icons.Outlined.Check
+                }
+                //onMenu Button
+                FloatingActionButton(
+                    onClick = onMenuClick,
+                    elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                    modifier = Modifier
+                        .padding(top = 4.dp, start = 8.dp)
+                        .border(
+                            width = 2.dp,
+                            brush = (Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFFd8af84),
+                                    Color(0xFFb15f33),
+
+                                    ),
+                                endX = gradientWidthButton,
+                                tileMode = TileMode.Mirror
+                            )),
+                            shape = CircleShape
+                        )
+                        .align(Alignment.BottomStart)
+                        .size(36.dp)
+                        //the background of the square for this button, it stays a square even tho
+                        //we have shape = circle shape.  If this is not changed you see a solid
+                        //square for the "background" of this button.
+                        .background(color = Color.Transparent),
+                    shape = CircleShape,
+                    //this is the background color of the button after the "Shaping" is applied.
+                    //it is different then the background attribute above.
+                    backgroundColor = Color(0xFF682300)
+                ) {
+                    Icon(
+                        menuIcon,
+                        tint = Color(0xFFd8af84),
+                        modifier = Modifier.size(20.dp),
+                        // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                        contentDescription = null
+                    )
+                }
+
+                //Favorite button
+                val icon: ImageVector = if(recipe.isFavorite == 0){
                     Icons.Outlined.FavoriteBorder
 
                 }else {
                     Icons.Outlined.Favorite
                 }
-
+                //Favorite button
                 FloatingActionButton(
-                    onClick = onClick,
+                    onClick = onFavoriteClick,
                     elevation = FloatingActionButtonDefaults.elevation(8.dp),
                     modifier = Modifier
                         .padding(top = 4.dp, end = 8.dp)
@@ -241,58 +277,9 @@ fun SmallRecipeCard(
                         contentDescription = null
                     )
                 }
-//                FloatingActionButton(
-//                    onClick = onClick,
-//                    elevation = FloatingActionButtonDefaults.elevation(8.dp),
-//                    modifier = Modifier
-//                        .padding(top = 4.dp, end = 8.dp)
-//                        .border(
-//                            width = 4.dp,
-//                            brush = (Brush.horizontalGradient(
-//                                colors = listOf(
-//                                    MaterialTheme.colors.secondaryVariant,
-//                                    Color(0xFFb15f33)
-//                                ),
-//                                endX = gradientWidthButton,
-//                                tileMode = TileMode.Mirror
-//                            )),
-//                            shape = CircleShape
-//                        )
-//                        .align(Alignment.BottomEnd)
-//                        .size(48.dp)
-//                        //the background of the square for this button, it stays a square even tho
-//                        //we have shape = circle shape.  If this is not changed you see a solid
-//                        //square for the "background" of this button.
-//                        .background(color = Color.Transparent),
-//                    shape = CircleShape,
-//                   //this is the background color of the button after the "Shaping" is applied.
-//                    //it is different then the background attribute above.
-//                    backgroundColor = Color(0xFFb15f33)
-//                ) {
-//                    Icon(
-//                        Icons.Outlined.Add,
-//                        tint = Color(0xFFFFFFFF),
-//                       // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-//                        contentDescription = null
-//                    )
-//                }
-
-            //Implement Async image later
-//                AsyncImage(
-//                    model = ImageRequest.Builder(LocalContext.current)
-//                        .data(imageUrl)
-//                        .crossfade(true)
-//                        .build(),
-//                    contentDescription = "",
-//                    placeholder = painterResource(R.drawable.placeholder),
-//                    modifier = Modifier.fillMaxSize(),
-//                    contentScale = ContentScale.Crop,
-//                )
             }
+
             Box(Modifier.fillMaxSize()) {
-
-
-
                 Box(
                     Modifier
                         .padding(top = 17.dp)
@@ -322,7 +309,6 @@ fun SmallRecipeCard(
                         .background(Color(0xFF6769f1))) {
                 }
                 Text(
-                //text = "Butter, Yeast, Onion, Sesame Seeds, Red Pepper",
                     text = ingredientsListAsString,
                     style = MaterialTheme.typography.body2,
                     lineHeight = (1.5).em,
@@ -365,8 +351,8 @@ fun SnackCardPreview() {
         )
 
         Row{
-        SmallRecipeCard(modifier = Modifier, recipe = myRE, onClick = { }, ingredients =  myList, onDetailsClick =  {})
-        SmallRecipeCard(modifier = Modifier, recipe = myRE, onClick = { }, ingredients =  myList, onDetailsClick =  {})
+        SmallRecipeCard(modifier = Modifier, recipe = myRE, onFavoriteClick = { }, onMenuClick = {}, ingredients =  myList, onDetailsClick =  {})
+        SmallRecipeCard(modifier = Modifier, recipe = myRE, onFavoriteClick = { }, onMenuClick = {}, ingredients =  myList, onDetailsClick =  {})
         }
 
     }

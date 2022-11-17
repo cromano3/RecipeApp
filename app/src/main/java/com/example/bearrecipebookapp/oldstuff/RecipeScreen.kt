@@ -1,7 +1,6 @@
 package com.example.bearrecipebookapp.ui
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -12,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
-import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 
 @Composable
 fun RecipeScreen(
@@ -112,35 +110,35 @@ fun RecipeScreen(
         )
         {
 
-            for(x in allRecipesWithIngredientsAndInstructions.indices) {
-                if ((x + 2) % 2 == 0) {
-                    Row(){
-                        SmallRecipeCard(
-                            modifier = Modifier.padding(end = 16.dp),
-                            recipe = allRecipesWithIngredientsAndInstructions[x].recipeEntity,
-                            ingredients = allRecipesWithIngredientsAndInstructions[x].ingredientsList,
-//                selected = selected,
-//                currentScreen = "RecipeBookScreen",
-                            onClick = { onClick(allRecipesWithIngredientsAndInstructions[x]) },
-                            onDetailsClick = { onDetailsClick(allRecipesWithIngredientsAndInstructions[x]) }
-                        )
-
-                        if (x + 1 != allRecipesWithIngredientsAndInstructions.size) {
-                            SmallRecipeCard(
-                                modifier = Modifier,
-                                recipe = allRecipesWithIngredientsAndInstructions[x+1].recipeEntity,
-                                ingredients = allRecipesWithIngredientsAndInstructions[x+1].ingredientsList,
-//                selected = selected,
-//                currentScreen = "RecipeBookScreen",
-                                onClick = { onClick(allRecipesWithIngredientsAndInstructions[x+1]) },
-                                onDetailsClick = { onDetailsClick(allRecipesWithIngredientsAndInstructions[x+1]) }
-                            )
-                        }
-
-                    }
-
-                }
-            }
+//            for(x in allRecipesWithIngredientsAndInstructions.indices) {
+//                if ((x + 2) % 2 == 0) {
+//                    Row(){
+//                        SmallRecipeCard(
+//                            modifier = Modifier.padding(end = 16.dp),
+//                            recipe = allRecipesWithIngredientsAndInstructions[x].recipeEntity,
+//                            ingredients = allRecipesWithIngredientsAndInstructions[x].ingredientsList,
+////                selected = selected,
+////                currentScreen = "RecipeBookScreen",
+//                            onClick = { onClick(allRecipesWithIngredientsAndInstructions[x]) },
+//                            onDetailsClick = { onDetailsClick(allRecipesWithIngredientsAndInstructions[x]) }
+//                        )
+//
+//                        if (x + 1 != allRecipesWithIngredientsAndInstructions.size) {
+//                            SmallRecipeCard(
+//                                modifier = Modifier,
+//                                recipe = allRecipesWithIngredientsAndInstructions[x+1].recipeEntity,
+//                                ingredients = allRecipesWithIngredientsAndInstructions[x+1].ingredientsList,
+////                selected = selected,
+////                currentScreen = "RecipeBookScreen",
+//                                onClick = { onClick(allRecipesWithIngredientsAndInstructions[x+1]) },
+//                                onDetailsClick = { onDetailsClick(allRecipesWithIngredientsAndInstructions[x+1]) }
+//                            )
+//                        }
+//
+//                    }
+//
+//                }
+//            }
 
         }
 //            items(allRecipesWithIngredients.size) {

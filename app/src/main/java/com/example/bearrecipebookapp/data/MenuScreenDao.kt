@@ -29,10 +29,17 @@ interface MenuScreenDao {
     @Query("UPDATE recipe_table SET on_menu = 0 WHERE recipe_name = :recipeName")
     fun removeFromMenu(recipeName: String)
 
+    @Query("UPDATE recipe_table SET is_favorite = :isFavoriteStatus WHERE recipe_name = :name")
+    fun updateFavorite(name: String, isFavoriteStatus: Int)
+
 
     /**
      * This query executes successfully and as intended in the DB Builder.
      * However, it will not compile here.
+     *
+     *
+     * SOLVED: Because Room does not support UPDATE FROM
+     *
      */
 //    @Transaction
 //    @Query("UPDATE ingredient_table AS it SET quantity_needed = it.quantity_needed + 1 " +

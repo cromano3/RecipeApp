@@ -40,4 +40,14 @@ class MenuScreenViewModel(application: Application): ViewModel() {
 
     }
 
+    fun toggleFavorite(recipe: RecipeWithIngredients){
+        if(recipe.recipeEntity.isFavorite == 0){
+            repository.updateFavorite(recipe.recipeEntity.recipeName, 1)
+        }
+        else if(recipe.recipeEntity.isFavorite == 1){
+            repository.updateFavorite(recipe.recipeEntity.recipeName, 0)
+        }
+
+    }
+
 }

@@ -21,6 +21,9 @@ interface DetailsScreenDao {
     @Query("UPDATE recipe_table SET on_menu = :onMenu WHERE recipe_name = :name")
     fun updateMenu(name: String, onMenu: Int)
 
+    @Query("UPDATE recipe_table SET is_favorite = :isFavoriteStatus WHERE recipe_name = :name")
+    fun updateFavorite(name: String, isFavoriteStatus: Int)
+
     @Transaction
     @Query("UPDATE ingredient_table SET quantity_owned = :quantityOwned WHERE ingredient_name = :name")
     fun setIngredientQuantityOwned(name: String, quantityOwned: Int)

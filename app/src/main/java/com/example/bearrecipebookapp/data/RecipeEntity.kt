@@ -31,6 +31,9 @@ class RecipeEntity(
     @ColumnInfo(name = "is_shopping_filter")
     var isShoppingFilter: Int = 0,
 
+    @ColumnInfo(name = "is_favorite")
+    var isFavorite: Int = 0,
+
 //
 //    @ColumnInfo(name = "ingredients")
 //    val ingredients: String,

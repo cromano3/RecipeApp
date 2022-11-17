@@ -158,13 +158,10 @@ fun NewDetailsScreen(
                             // .padding(start = 16.dp)
                             // .clickable(onClick = {onGoBackClick(detailsScreenData)}),
                             tint = Color(0xFFd8af84)
-
-
                         )
                     }
 
                     Spacer(Modifier.weight(1f))
-
 
                     Text(
                         text = detailsScreenData.recipeEntity.recipeName,
@@ -198,18 +195,17 @@ fun NewDetailsScreen(
                         modifier = Modifier
                             .size(24.dp),
                         tint = Color(0xFFd8af84)
-
                     )
+
                     Spacer(Modifier.size(16.dp))
 
-                    var icon: ImageVector
                     val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
 
-                    if (detailsScreenData.recipeEntity.onMenu == 0) {
-                        icon = Icons.Outlined.FavoriteBorder
+                    val icon: ImageVector = if (detailsScreenData.recipeEntity.isFavorite == 0) {
+                        Icons.Outlined.FavoriteBorder
 
                     } else {
-                        icon = Icons.Outlined.Favorite
+                        Icons.Outlined.Favorite
                     }
 
                     FloatingActionButton(
@@ -270,24 +266,7 @@ fun NewDetailsScreen(
                             .padding(bottom = 16.dp),
                         contentScale = ContentScale.Crop,
                     )
-//                    Image(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .height(300.dp)
-//                            .padding(bottom = 16.dp),
-//                        contentScale = ContentScale.Crop,
-//                        /*
-//                        add correct image
-//                         */
-//                        painter = painterResource(image),
-//                        contentDescription = null
-//                    )
 
-                    // Row(
-//                modifier = Modifier
-//                    .height(IntrinsicSize.Min)
-//                    .fillMaxWidth()
-//            ) {
 
                     Column(
                         modifier = Modifier
@@ -296,7 +275,7 @@ fun NewDetailsScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        //Difficulty box
+                        //Info box
                         Surface(
                             modifier = Modifier
                                 .padding(bottom = 16.dp)
@@ -317,11 +296,12 @@ fun NewDetailsScreen(
                             contentColor = Color(0xFFd8af84),
                             elevation = 6.dp
                         ) {
-                            //Time
+                            //Info Box
                             Column(
                                 Modifier.padding(start = 4.dp)
                             ) {
 
+                                //Time
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
                                         Icons.Outlined.Timer,
@@ -494,7 +474,8 @@ fun NewDetailsScreen(
                                 .wrapContentSize()
                                 .alpha(alphaLevel)
                                 .clickable(
-                                    enabled = !selected,
+                                    enabled = false,
+                                    //!selected
                                     onClick = {/* TO DO */ },
                                 ),// { selected = !selected },
                             shape = RoundedCornerShape(25.dp),
@@ -534,7 +515,7 @@ fun NewDetailsScreen(
 
                                 )
                                 Text(
-                                    text = "Add Ingredients to Shopping List!",
+                                    text = "Add To My Menu",
                                     modifier = Modifier
                                         // .weight(1f)
                                         //   .padding(start = 4.dp, end = 6.dp)
@@ -546,11 +527,8 @@ fun NewDetailsScreen(
                                     textAlign = TextAlign.Center,
                                     fontWeight = FontWeight.Bold
                                 )
-
                             }
                         }
-
-
                     }
 
                     //Instructions List
@@ -584,7 +562,6 @@ fun NewDetailsScreen(
             }
         }
     }
-
 }
 
 @Preview

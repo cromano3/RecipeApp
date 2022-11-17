@@ -19,6 +19,12 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
         }
     }
 
+    fun updateFavorite(recipeName: String, isFavoriteStatus: Int) {
+        coroutineScope.launch(Dispatchers.IO) {
+            detailsScreenDao.updateFavorite(recipeName, isFavoriteStatus)
+        }
+    }
+
     fun updateQuantityNeeded(ingredientName: String, quantityNeeded: Int){
         coroutineScope.launch(Dispatchers.IO) {
             detailsScreenDao.updateQuantityNeeded(ingredientName, quantityNeeded)
