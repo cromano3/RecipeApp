@@ -383,7 +383,7 @@ fun RecipeCard(
                             shape = CircleShape
                         )
                         .clickable(
-                            enabled = false,
+//                            enabled = false,
                             //!selected
                             onClick = onRemoveClick,
                         ),// { selected = !selected },
@@ -430,7 +430,7 @@ fun RecipeCard(
                             shape = CircleShape
                         )
                         .clickable(
-                            enabled = false,
+//                            enabled = false,
                             //!selected
                             onClick = onCompleteClick,
                         ),// { selected = !selected },

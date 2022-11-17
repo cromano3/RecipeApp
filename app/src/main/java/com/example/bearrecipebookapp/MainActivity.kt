@@ -5,6 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.MenuBook
+import androidx.compose.material.icons.outlined.Restaurant
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,10 +62,10 @@ fun BearRecipeApp(
 
     var showTopBar by rememberSaveable { mutableStateOf(true) }
 
-    showTopBar = when (currentScreen){
-//        "DetailsScreen" -> false
-        else -> true
-    }
+//    showTopBar = when (currentScreen){
+////        "DetailsScreen" -> false
+//        else -> true
+//    }
 
     Scaffold(
         bottomBar = {
@@ -132,7 +136,15 @@ fun BearAppTopBar(
         ) {
             keys.forEachIndexed { index, title ->
                 Tab(
-                    text = { Text(title) },
+//                    text = { Text(title) },
+                    icon =
+                    {
+                        when(title){
+                            "Recipes" -> Icon(Icons.Outlined.MenuBook, contentDescription = null)
+                            "Menu" -> Icon(Icons.Outlined.Restaurant, contentDescription = null)
+                            "Shopping List" -> Icon(Icons.Outlined.ShoppingCart, contentDescription = null)
+                        }
+                    },
                     selected = state == index,
                     onClick = { state = index
                         when(title){
