@@ -5,13 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.MenuScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
+import com.example.bearrecipebookapp.data.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.UiAlertStateMenuScreenDataModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
 class MenuScreenViewModel(application: Application): ViewModel() {
 
     private val repository: MenuScreenRepository
 
     var menuScreenData: LiveData<List<RecipeWithIngredients>>
+
+    val uiAlertState = MutableStateFlow(UiAlertStateMenuScreenDataModel())
 
 
 
@@ -22,6 +28,43 @@ class MenuScreenViewModel(application: Application): ViewModel() {
 
         menuScreenData = repository.menuScreenData
     }
+
+    fun triggerCompletedAlert(recipe: RecipeWithIngredients){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showCompletedAlert = true,
+                recipe = recipe
+            )
+        }
+    }
+
+    fun cancelCompletedAlert(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showCompletedAlert = false,
+                recipe = RecipeWithIngredients(RecipeEntity(), listOf())
+            )
+        }
+    }
+
+    fun triggerRemoveAlert(recipe: RecipeWithIngredients){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showRemoveAlert = true,
+                recipe = recipe
+            )
+        }
+    }
+
+    fun cancelRemoveAlert(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showRemoveAlert = false,
+                recipe = RecipeWithIngredients(RecipeEntity(), listOf())
+            )
+        }
+    }
+
 
     fun setDetailsScreenTarget(recipeName: String){
         repository.setDetailsScreenTarget(recipeName)

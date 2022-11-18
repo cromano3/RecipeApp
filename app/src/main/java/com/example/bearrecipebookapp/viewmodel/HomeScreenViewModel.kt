@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.FilterEntity
 import com.example.bearrecipebookapp.data.HomeScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
+import com.example.bearrecipebookapp.data.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.UiAlertStateDataModel
 import com.example.bearrecipebookapp.datamodel.UiFiltersStateDataModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,6 +43,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 //    val uiState = MutableStateFlow(HomeScreenUiStateDataModel())
 
     val uiFiltersState = MutableStateFlow(UiFiltersStateDataModel())
+    val uiAlertState = MutableStateFlow(UiAlertStateDataModel())
 
     private var filterCount: Int
     private var isFiltered: Boolean
@@ -108,6 +111,24 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 //        repository.setAllFiltersToShown()
 ////        newGetData()
 //    }
+
+    fun triggerAlert(recipe: RecipeWithIngredients){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showAlert = true,
+                recipe = recipe
+            )
+        }
+    }
+
+    fun cancelAlert(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showAlert = false,
+                recipe = RecipeWithIngredients(RecipeEntity(), listOf())
+            )
+        }
+    }
 
 
     fun filterBy(filter: FilterEntity){

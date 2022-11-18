@@ -4,18 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MenuBook
 import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.material.icons.outlined.ShoppingCart
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,6 +26,7 @@ import com.example.bearrecipebookapp.ui.MenuScreen
 import com.example.bearrecipebookapp.ui.NewDetailsScreen
 import com.example.bearrecipebookapp.ui.ShoppingListScreen
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,18 +50,18 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BearRecipeApp(
 ){
-    //IS THIS THE SAME AS KEEPING IT IN THE PARAMETERS LIST? Yes?
-    val navController: NavHostController = rememberNavController()
 
-    // Get current back stack entry
+    val navController: NavHostController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
-    // Get the name of the current screen
     val currentScreen = currentBackStackEntry?.destination?.route ?: "RecipeScreen"
 
 
 
     var showTopBar by rememberSaveable { mutableStateOf(true) }
+
+    val coroutineScope = rememberCoroutineScope()
+    val scaffoldState = rememberScaffoldState()
 
 //    showTopBar = when (currentScreen){
 ////        "DetailsScreen" -> false
@@ -68,11 +69,30 @@ fun BearRecipeApp(
 //    }
 
     Scaffold(
+        scaffoldState = scaffoldState,
         bottomBar = {
             BearAppTopBar(
                 showTopBar = showTopBar,
                 onClick = {navController.navigate(it)},
             )
+        },
+        snackbarHost = {
+            SnackbarHost(it){ data ->
+                Snackbar(
+                    modifier = Modifier.padding(8.dp),
+                    shape = CutCornerShape(0.dp),
+                    backgroundColor = Color(0xFF000000),
+                )
+                {
+                    Text(
+                        text = data.message,
+                        color = Color(0xFFFFFFFF)
+                    )
+                }
+            }
+//                modifier = Modifier.align(Alignment.BottomCenter),
+//                hostState = snackbarHostState,
+
         }
     ){
         NavHost(
@@ -82,13 +102,39 @@ fun BearRecipeApp(
             composable(route = "RecipeScreen"){
                 //Recipe Book Main Screen
                 HomeScreen(
-                    onDetailsClick = { navController.navigate("DetailsScreen") }
+                    onDetailsClick = { navController.navigate("DetailsScreen") },
+                    onFavoriteClick = {coroutineScope.launch{
+                        if(it.recipeEntity.isFavorite == 1)
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
+                                duration = SnackbarDuration.Short)
+                        else if(it.recipeEntity.isFavorite == 0)
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
+                                duration = SnackbarDuration.Short)
+                    }},
+                    onMenuClick = {coroutineScope.launch {
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            message = "Added " + it.recipeEntity.recipeName + " to the Menu.",
+                            duration = SnackbarDuration.Short
+                        )
+                    }}
                 )
             }
             composable(route = "WeeklyMenuScreen"){
                 //Weekly menu screen
                 MenuScreen(
-                    onDetailsClick = { navController.navigate("DetailsScreen")}
+                    onDetailsClick = { navController.navigate("DetailsScreen")},
+                    onFavoriteClick = {coroutineScope.launch{
+                        if(it.recipeEntity.isFavorite == 1)
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
+                                duration = SnackbarDuration.Short)
+                        else if(it.recipeEntity.isFavorite == 0)
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
+                                duration = SnackbarDuration.Short)
+                    }}
                 )
             }
             composable(route = "ShoppingScreen"){

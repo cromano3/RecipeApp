@@ -14,8 +14,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -33,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.FilterEntity
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.HomeScreenViewModel
 import kotlinx.coroutines.delay
@@ -42,7 +45,9 @@ import kotlinx.coroutines.delay
 @Composable
 fun HomeScreen(
  //   homeScreenViewModel: HomeScreenViewModel = viewModel(),
-    onDetailsClick: () -> Unit
+    onDetailsClick: () -> Unit,
+    onFavoriteClick: (RecipeWithIngredients) -> Unit,
+    onMenuClick: (RecipeWithIngredients) -> Unit
 ) {
 
 
@@ -68,31 +73,26 @@ fun HomeScreen(
 
 
 
-        //GOOD!!!
+
         val newRecipeList by homeScreenViewModel.newRecipesList.observeAsState(listOf())
-        //GOOD!!!
         val filtersList by homeScreenViewModel.filtersList.observeAsState(listOf())
 
         val uiFiltersState by homeScreenViewModel.uiFiltersState.collectAsState()
-
-
+        val uiAlertState by homeScreenViewModel.uiAlertState.collectAsState()
 
 
         var filterSelectedClick by remember { mutableStateOf(false) }
-
-
-//        val coroutineScope = CoroutineScope(Dispatchers.Main)
-
-
-
         var isFiltered by remember { mutableStateOf(false) }
+
+//        val coroutineScope = rememberCoroutineScope()
+//        val snackbarHostState = remember {SnackbarHostState()}
+
 
 
 
 //        val itemSize = 74.dp
 //        val density = LocalDensity.current
 //        val itemSizePx = with(density) { itemSize.toPx() }
-
         val listState = rememberLazyListState()
 
         if(isFiltered){
@@ -117,8 +117,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(top = 0.dp, bottom = 48.dp),
             color = Color(0xFFd8af84)
-
-        ) {
+        ){
 
             Column{
 
@@ -130,22 +129,20 @@ fun HomeScreen(
 
                         FiltersButton(
                             modifier = Modifier
-                                .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0)))
-                            ,
+                                .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
                             filterEntity = it,
                             isWorking = uiFiltersState.isWorking,
-                            onFilterClick = {homeScreenViewModel.filterBy(it)
+                            onFilterClick =
+                            {
+                                homeScreenViewModel.filterBy(it)
                                 filterSelectedClick = !filterSelectedClick
                                 isFiltered = !isFiltered
-                                            },
-
+                            },
                         )
                     }
-
                     item{
                         Spacer(Modifier.size(8.dp))
                     }
-
                 }
 
 
@@ -190,9 +187,38 @@ fun HomeScreen(
                                     ingredients = newRecipeList[index].ingredientsList,
                                     //this does onMenu updates and related ingredients updates
                                     //needs to be changed to menu button when we add menu button
-                                    onFavoriteClick = { homeScreenViewModel.toggleFavorite(newRecipeList[index]) },
-                                    onMenuClick = { homeScreenViewModel.toggleMenu(newRecipeList[index]) },
-//                                    onClick = { homeScreenViewModel.toggleFavorite(newRecipeList[index]) },
+                                    onFavoriteClick =
+                                    {
+                                        onFavoriteClick(newRecipeList[index])
+//                                        coroutineScope.launch{
+//                                            if(newRecipeList[index].recipeEntity.isFavorite == 1)
+//                                                snackbarHostState.showSnackbar(
+//                                                    message = "Removed " + newRecipeList[index].recipeEntity.recipeName + " from Favorites.",
+//                                                    duration = SnackbarDuration.Short)
+//                                            else if(newRecipeList[index].recipeEntity.isFavorite == 0)
+//                                                snackbarHostState.showSnackbar(
+//                                                    message = "Added " + newRecipeList[index].recipeEntity.recipeName + " to Favorites.",
+//                                                    duration = SnackbarDuration.Short)
+//                                        }
+                                        homeScreenViewModel.toggleFavorite(newRecipeList[index])
+                                    },
+                                    onMenuClick =
+                                    {
+                                        if (newRecipeList[index].recipeEntity.onMenu == 0){
+                                            homeScreenViewModel.toggleMenu(newRecipeList[index])
+                                            onMenuClick(newRecipeList[index])
+//                                        coroutineScope.launch {
+//                                            snackbarHostState.showSnackbar(
+//                                                message = "Added " + newRecipeList[index].recipeEntity.recipeName + " to the Menu.",
+//                                                duration = SnackbarDuration.Short
+//                                            )
+//                                        }
+                                    }
+                                        else if(newRecipeList[index].recipeEntity.onMenu == 1){
+                                            homeScreenViewModel.triggerAlert(newRecipeList[index])
+                                        }
+                                    },
+//
                                     onDetailsClick = {
                                         homeScreenViewModel.setDetailsScreenTarget(newRecipeList[index].recipeEntity.recipeName)
                                         onDetailsClick()
@@ -201,6 +227,51 @@ fun HomeScreen(
                             }
                         }
                     }
+                }
+            }
+            Box(Modifier.fillMaxSize()){
+//                SnackbarHost(
+//                    modifier = Modifier.align(Alignment.BottomCenter),
+//                    hostState = snackbarHostState,
+//                    snackbar = {
+//                        Snackbar(
+//                            backgroundColor = Color(0xFF000000),
+//                            contentColor = Color(0xFFFFFFFF))
+//                        {
+//                            Text(
+//                                text = it.message,
+//                                color = Color(0xFFFFFFFF)
+//                            )
+//                        }
+//                    }
+//                )
+                if(uiAlertState.showAlert){
+                    AlertDialog(
+                        onDismissRequest = {},
+                        text = {
+                            Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
+                                    " from the Menu? (This will also remove it from the Shopping List.)" )
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    homeScreenViewModel.toggleMenu(uiAlertState.recipe)
+                                    homeScreenViewModel.cancelAlert()
+                                }
+                            ) {
+                                Text("Yes")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    homeScreenViewModel.cancelAlert()
+                                }
+                            ) {
+                                Text("Cancel")
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -366,7 +437,7 @@ fun FiltersButton(
 @Composable
 @Preview
 fun MyPreview420() {
-    HomeScreen(onDetailsClick = {} )
+    HomeScreen(onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {} )
 
 
 }
