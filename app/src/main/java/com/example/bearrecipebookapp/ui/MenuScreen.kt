@@ -1,12 +1,11 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -27,6 +26,7 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.viewmodel.MenuScreenViewModel
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MenuScreen(
     onDetailsClick: () -> Unit,
@@ -35,7 +35,7 @@ fun MenuScreen(
 
     val owner = LocalViewModelStoreOwner.current
 
-    owner?.let {
+    owner?.let { it ->
         val menuScreenViewModel: MenuScreenViewModel = viewModel(
             it,
             "MenuScreenViewModel",
@@ -51,35 +51,63 @@ fun MenuScreen(
 
 
         Surface(
-            modifier = Modifier.fillMaxSize().padding(bottom = 48.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 48.dp),
             color = Color(0xFFd8af84)
 
         ) {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
-                for (x in menuScreenData.indices) {
-
-                    var myInt = 0
-                    if(x + 1 == menuScreenData.size){
-                        myInt = 16
-                    }
-
+            LazyColumn(){
+                items(menuScreenData, key = { it.recipeEntity.recipeName }) {
                     RecipeCard(
-                        modifier = Modifier.padding(bottom = myInt.dp),
-                        recipeWithIngredients = menuScreenData[x],
+                        /**
+                         * animate item placement not working for deletes
+                         */
+                        modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
+                        recipeWithIngredients = it,
                         currentScreen = "WeeklyMenuScreen",
                         onFavoriteClick =
                         {
-                            menuScreenViewModel.toggleFavorite(menuScreenData[x])
-                            onFavoriteClick(menuScreenData[x])
+                            menuScreenViewModel.toggleFavorite(it)
+                            onFavoriteClick(it)
                         },
-                        onRemoveClick = { menuScreenViewModel.triggerRemoveAlert(menuScreenData[x]) },
-                        onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(menuScreenData[x]) },
-                        onDetailsClick = { menuScreenViewModel.setDetailsScreenTarget(menuScreenData[x].recipeEntity.recipeName);
+                        onRemoveClick = { menuScreenViewModel.triggerRemoveAlert(it) },
+                        onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(it) },
+                        onDetailsClick = { menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
                             onDetailsClick()
                         }
                     )
+
+                }
+                item(){
+                    Spacer(Modifier.fillMaxWidth().padding(16.dp))
                 }
             }
+//            Column(Modifier.verticalScroll(rememberScrollState())) {
+//                for (x in menuScreenData.indices) {
+//
+//                    var myInt = 0
+//                    if(x + 1 == menuScreenData.size){
+//                        myInt = 16
+//                    }
+//
+//                    RecipeCard(
+//                        modifier = Modifier.padding(bottom = myInt.dp),
+//                        recipeWithIngredients = menuScreenData[x],
+//                        currentScreen = "WeeklyMenuScreen",
+//                        onFavoriteClick =
+//                        {
+//                            menuScreenViewModel.toggleFavorite(menuScreenData[x])
+//                            onFavoriteClick(menuScreenData[x])
+//                        },
+//                        onRemoveClick = { menuScreenViewModel.triggerRemoveAlert(menuScreenData[x]) },
+//                        onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(menuScreenData[x]) },
+//                        onDetailsClick = { menuScreenViewModel.setDetailsScreenTarget(menuScreenData[x].recipeEntity.recipeName);
+//                            onDetailsClick()
+//                        }
+//                    )
+//                }
+//            }
             Box(Modifier.fillMaxSize()){
                 //Remove Alert
                 if(uiAlertState.showRemoveAlert){

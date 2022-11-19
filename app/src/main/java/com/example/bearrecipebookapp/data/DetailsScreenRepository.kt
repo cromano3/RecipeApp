@@ -13,6 +13,18 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
     var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions> = detailsScreenDao.getData()
 
 
+    fun removeFromMenu(recipeName: String){
+        coroutineScope.launch(Dispatchers.IO) {
+            detailsScreenDao.removeFromMenu(recipeName)
+        }
+    }
+
+    fun addToMenu(recipeName: String){
+        coroutineScope.launch(Dispatchers.IO) {
+            detailsScreenDao.addToMenu(recipeName)
+        }
+    }
+
     fun updateMenu(recipeName: String, onMenuStatus: Int) {
         coroutineScope.launch(Dispatchers.IO) {
             detailsScreenDao.updateMenu(recipeName, onMenuStatus)

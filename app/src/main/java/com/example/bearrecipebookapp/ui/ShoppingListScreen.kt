@@ -356,7 +356,6 @@ fun ShoppingListItemWithButton(
 
     val alphaAnim: Float by animateFloatAsState(
         targetValue = alphaLevel,
-//        targetValue = if (ingredientEntity.isShown == 1) 1f else 0.2f,
         animationSpec = tween(
             durationMillis = 150,
             delayMillis = 0,

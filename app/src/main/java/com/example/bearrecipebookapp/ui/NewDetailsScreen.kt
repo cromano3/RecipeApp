@@ -2,6 +2,9 @@ package com.example.bearrecipebookapp.ui
 
 import android.app.Application
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -11,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -55,6 +59,10 @@ import com.example.bearrecipebookapp.viewmodel.DetailsScreenViewModel
 fun NewDetailsScreen(
     //recipeName: String,
     onGoBackClick: () -> Unit,
+    onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+
 ) {
 
     val owner = LocalViewModelStoreOwner.current
@@ -71,6 +79,8 @@ fun NewDetailsScreen(
         )
 
         val detailsScreenData by detailsScreenViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
+
+        val uiAlertState by detailsScreenViewModel.uiAlertState.collectAsState()
 
 
 //    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
@@ -121,6 +131,8 @@ fun NewDetailsScreen(
             }
         }
 
+        val scrollState = rememberScrollState()
+
 
         Surface(
             modifier = Modifier
@@ -130,7 +142,7 @@ fun NewDetailsScreen(
 
         ) {
 //            BackHandler { onGoBackClick() }
-            Column {
+            Column() {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -209,7 +221,10 @@ fun NewDetailsScreen(
                     }
 
                     FloatingActionButton(
-                        onClick = { detailsScreenViewModel.toggleFavorite(detailsScreenData) },
+                        onClick = {
+                            onFavoriteClick(detailsScreenData)
+                            detailsScreenViewModel.toggleFavorite(detailsScreenData)
+                                  },
                         elevation = FloatingActionButtonDefaults.elevation(8.dp),
                         modifier = Modifier
                             .padding(end = 8.dp)
@@ -253,7 +268,7 @@ fun NewDetailsScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(ScrollState(0), enabled = true),
+                        .verticalScroll(scrollState, enabled = true),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -394,8 +409,9 @@ fun NewDetailsScreen(
                         //Ingredients List //
                         Surface(
                             modifier = Modifier
-                                .wrapContentSize()
-                                .padding(bottom = 16.dp),
+                                .wrapContentHeight()
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                             //    .weight(1f),
                             shape = RoundedCornerShape(10.dp),
                             color = Color(0xFF682300),
@@ -410,7 +426,8 @@ fun NewDetailsScreen(
                                 )
                             ) {
                                 Text(
-                                    modifier = Modifier.padding(bottom = 8.dp)
+                                    modifier = Modifier
+                                        .padding(bottom = 8.dp)
                                         .align(Alignment.CenterHorizontally),
                                     text = "Ingredients List:",
                                     textDecoration = TextDecoration.Underline,
@@ -428,105 +445,177 @@ fun NewDetailsScreen(
 
                                     )
                                 }
-//                            Spacer(
-//                                modifier = Modifier
-//                                    .background(color = Color.Transparent)
-//                                    .height(8.dp)
-//                            )
                             }
                         }
 
 
-                        //////////////////////
-
                         val selected: Boolean
-
 
                         val myIcon: ImageVector
                         val checkBoxBackgroundColor: Color
                         val decoration: TextDecoration
                         val alphaLevel: Float
+                        val myText: String
+                        val myFinishedText: String
 
 
                         if (detailsScreenData.recipeEntity.onMenu == 1) {
-
                             selected = true
                             myIcon = Icons.Filled.CheckBox
                             checkBoxBackgroundColor = Color(0xFF682300)
-                            decoration = TextDecoration.LineThrough
+//                            decoration = TextDecoration.LineThrough
                             alphaLevel = 0.55f
-
-
+                            myText = "Remove from Menu"
+                            myFinishedText = "Finished Cooking!"
                         } else {
-
                             selected = false
                             myIcon = Icons.Outlined.CheckBoxOutlineBlank
                             checkBoxBackgroundColor = Color(0xFF682300)
-                            decoration = TextDecoration.None
+//                            decoration = TextDecoration.None
                             alphaLevel = 1f
-
+                            myText = "Add to Menu"
+                            myFinishedText = "I Made This!"
                         }
 
-
-                        Surface(
-                            modifier = Modifier
-                                //.padding(start = 8.dp, top = 8.dp)
-                                .wrapContentSize()
-                                .alpha(alphaLevel)
-                                .clickable(
-                                    enabled = false,
-                                    //!selected
-                                    onClick = {/* TO DO */ },
-                                ),// { selected = !selected },
-                            shape = RoundedCornerShape(25.dp),
-                            color = Color(0xFFf8ea9a),
-                            elevation = 4.dp,
-                            //color = Color(0xFF682300),//Color(0xFFd8af84),
-                            contentColor = Color(0xFF682300),
-                        ) {
-                            Row(
-                                //Modifier.fillMaxSize(),
-                                horizontalArrangement = Arrangement.Start,
-                                modifier = Modifier.padding(
-                                    start = 8.dp,
-                                    end = 8.dp,
-                                    top = 8.dp,
-                                    bottom = 8.dp
-                                )
+                        val alphaAnim: Float by animateFloatAsState(
+                            targetValue = alphaLevel,
+                            animationSpec = tween(
+                                durationMillis = 150,
+                                delayMillis = 0,
+                                easing = LinearEasing,
                             )
-                            {
-                                Icon(
-                                    imageVector = myIcon,
-                                    tint = checkBoxBackgroundColor,
+                        )
 
-                                    //  .background(color = Color(0xFFFFFFFF)),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .padding(
-                                            start = 6.dp,
-                                            top = 2.dp,
-                                            end = 2.dp,
-                                            bottom = 2.dp
-                                        )
-                                        .size(28.dp)
-                                        .align(Alignment.CenterVertically)
-                                        .alpha(alphaLevel)
-                                    //.weight(1f)
 
+//
+
+                        Row(
+                            Modifier.fillMaxWidth().wrapContentHeight(),
+                            horizontalArrangement = Arrangement.SpaceEvenly) {
+                            //Add/Remove from Menu button
+                            Surface(
+                                modifier = Modifier
+                                    //.padding(start = 8.dp, top = 8.dp)
+                                    .wrapContentSize()
+                                    .alpha(alphaAnim)
+                                    .clickable(
+//                                    enabled = false,
+                                        //!selected
+                                        onClick = {
+                                            if (selected) {
+                                                detailsScreenViewModel.triggerRemoveAlert(
+                                                    detailsScreenData
+                                                )
+                                            } else if (!selected) {
+                                                detailsScreenViewModel.addToMenu(detailsScreenData)
+                                                onMenuAddClick(detailsScreenData)
+                                            }
+                                        },
+                                    ),// { selected = !selected },
+                                shape = RoundedCornerShape(25.dp),
+                                color = Color(0xFFf8ea9a),
+                                elevation = 4.dp,
+                                //color = Color(0xFF682300),//Color(0xFFd8af84),
+                                contentColor = Color(0xFF682300),
+                            ) {
+                                Row(
+                                    //Modifier.fillMaxSize(),
+                                    horizontalArrangement = Arrangement.Start,
+                                    modifier = Modifier.padding(
+                                        start = 8.dp,
+                                        end = 8.dp,
+                                        top = 8.dp,
+                                        bottom = 8.dp
+                                    )
                                 )
-                                Text(
-                                    text = "Add To My Menu",
-                                    modifier = Modifier
-                                        // .weight(1f)
-                                        //   .padding(start = 4.dp, end = 6.dp)
-                                        .align(Alignment.CenterVertically)
-                                        .alpha(alphaLevel),
-                                    color = Color(0xFF682300),
-                                    textDecoration = decoration,
-                                    fontSize = 18.sp,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Bold
+                                {
+                                    Icon(
+                                        imageVector = myIcon,
+                                        tint = checkBoxBackgroundColor,
+
+                                        //  .background(color = Color(0xFFFFFFFF)),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .padding(
+                                                start = 0.dp,
+                                                top = 2.dp,
+                                                end = 2.dp,
+                                                bottom = 2.dp
+                                            )
+                                            .size(28.dp)
+                                            .align(Alignment.CenterVertically)
+                                            .alpha(alphaAnim)
+                                        //.weight(1f)
+
+                                    )
+                                    Text(
+                                        text = myText,
+                                        modifier = Modifier
+                                            // .weight(1f)
+                                            //   .padding(start = 4.dp, end = 6.dp)
+                                            .align(Alignment.CenterVertically)
+                                            .alpha(alphaAnim),
+                                        color = Color(0xFF682300),
+//                                    textDecoration = decoration,
+                                        fontSize = 18.sp,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+
+                            //Finished Cooking Button
+                            Surface(
+                                modifier = Modifier
+                                    //.padding(start = 8.dp, top = 8.dp)
+                                    .wrapContentSize()
+//                                    .alpha(alphaAnim)
+                                    .clickable(
+//                                    enabled = false,
+                                        //!selected
+                                        onClick = {
+                                            if (selected) {
+                                                detailsScreenViewModel.triggerCompletedAlert(
+                                                    detailsScreenData
+                                                )
+                                            } else if (!selected) {
+                                                detailsScreenViewModel.triggerCompletedAlert(
+                                                    detailsScreenData
+                                                )
+                                            }
+                                        },
+                                    ),// { selected = !selected },
+                                shape = RoundedCornerShape(25.dp),
+                                color = Color(0xFFf8ea9a),
+                                elevation = 4.dp,
+                                //color = Color(0xFF682300),//Color(0xFFd8af84),
+                                contentColor = Color(0xFF682300),
+                            ) {
+                                Row(
+                                    //Modifier.fillMaxSize(),
+                                    horizontalArrangement = Arrangement.Start,
+                                    modifier = Modifier.padding(
+                                        start = 8.dp,
+                                        end = 8.dp,
+                                        top = 12.dp,
+                                        bottom = 12.dp
+                                    )
                                 )
+                                {
+                                    Text(
+                                        text = myFinishedText,
+                                        modifier = Modifier
+                                            // .weight(1f)
+                                            //   .padding(start = 4.dp, end = 6.dp)
+                                            .align(Alignment.CenterVertically),
+//                                            .alpha(alphaAnim),
+                                        color = Color(0xFF682300),
+//                                    textDecoration = decoration,
+                                        fontSize = 18.sp,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                         }
                     }
@@ -558,6 +647,81 @@ fun NewDetailsScreen(
                         Modifier
                             .size(64.dp)
                             .fillMaxWidth())
+                }
+            }
+            Box(Modifier.fillMaxSize()){
+                //Remove Alert
+                if(uiAlertState.showRemoveAlert){
+                    AlertDialog(
+                        onDismissRequest = {},
+                        text = {
+                            Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
+                                    " from the Menu? (This will also remove it from the Shopping List.)" )
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    onMenuRemoveClick(detailsScreenData)
+                                    detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
+                                    detailsScreenViewModel.cancelRemoveAlert()
+                                }
+                            ) {
+                                Text("Yes")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    detailsScreenViewModel.cancelRemoveAlert()
+                                }
+                            ) {
+                                Text("Cancel")
+                            }
+                        }
+                    )
+                }
+
+                val finishedText: String = if(detailsScreenData.recipeEntity.onMenu == 1){
+                    "Mark " +
+                            uiAlertState.recipe.recipeEntity.recipeName +
+                            " as completed and remove from the Menu? (This will also remove it from the Shopping List.)"
+                } else
+                    "Great job! Add " +
+                            uiAlertState.recipe.recipeEntity.recipeName  +
+                            " to Cooked Recipes list?"
+
+                //Completed Alert
+                if(uiAlertState.showCompletedAlert){
+                    AlertDialog(
+                        onDismissRequest = {},
+                        text = {
+                            Text(text = finishedText )
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    /**
+                                     * Add completed count +1 to Database
+                                     */
+                                    if(detailsScreenData.recipeEntity.onMenu == 1) {
+                                        detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
+                                    }
+                                    detailsScreenViewModel.cancelCompletedAlert()
+                                }
+                            ) {
+                                Text("Yes")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    detailsScreenViewModel.cancelCompletedAlert()
+                                }
+                            ) {
+                                Text("Cancel")
+                            }
+                        }
+                    )
                 }
             }
         }

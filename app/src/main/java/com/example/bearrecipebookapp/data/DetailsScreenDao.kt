@@ -27,4 +27,12 @@ interface DetailsScreenDao {
     @Transaction
     @Query("UPDATE ingredient_table SET quantity_owned = :quantityOwned WHERE ingredient_name = :name")
     fun setIngredientQuantityOwned(name: String, quantityOwned: Int)
+
+    @Transaction
+    @Query("UPDATE recipe_table SET on_menu = 0 WHERE recipe_name = :recipeName")
+    fun removeFromMenu(recipeName: String)
+
+    @Transaction
+    @Query("UPDATE recipe_table SET on_menu = 1 WHERE recipe_name = :recipeName")
+    fun addToMenu(recipeName: String)
 }
