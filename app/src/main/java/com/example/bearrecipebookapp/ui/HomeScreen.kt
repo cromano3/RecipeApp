@@ -4,26 +4,28 @@ package com.example.bearrecipebookapp.ui
 import android.app.Application
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,12 +46,11 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreen(
- //   homeScreenViewModel: HomeScreenViewModel = viewModel(),
+    onSearchClick: () -> Unit,
     onDetailsClick: () -> Unit,
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
     onMenuClick: (RecipeWithIngredients) -> Unit
 ) {
-
 
     val owner = LocalViewModelStoreOwner.current
 
@@ -120,8 +121,81 @@ fun HomeScreen(
         ){
 
             Column{
+                Row(
+                    Modifier
+                        .background(Color(0xFF682300))
+                        .fillMaxWidth()
+                        .height(54.dp)
+                )
+                {
+                    Surface(
+                        Modifier
+                            .wrapContentSize()
+                            .clickable(onClick = onSearchClick)
+                            .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
+                            .border(
+                                width = 2.dp,
+                                brush = (Brush.horizontalGradient(
+                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                    tileMode = TileMode.Mirror)),
+                                shape = RoundedCornerShape(25.dp)
+                            ),
+//                        color = Color(0xFF682300),
+                        shape = RoundedCornerShape(25.dp)
+                    ){
+                        TextField(
+                            value = "",
+                            onValueChange = {},
+                            modifier = Modifier
+//                                .alpha(.8f)
+                            ,
+                            enabled = false,
+                            readOnly = true,
+                            leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
+                            shape = RoundedCornerShape(25.dp),
+                            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0xFFd8af84), textColor = Color(0xFF000000))
+                        )
+                    }
+                    Spacer(Modifier.weight(1f))
+                    FloatingActionButton(
+                        onClick = { },
+                        elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .border(
+                                width = 2.dp,
+                                brush = (Brush.horizontalGradient(colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33),),
+                                    tileMode = TileMode.Mirror)),
+                                shape = CircleShape
+                            )
+                            .align(Alignment.CenterVertically)
+                            .size(36.dp)
+                            //the background of the square for this button, it stays a square even tho
+                            //we have shape = circle shape.  If this is not changed you see a solid
+                            //square for the "background" of this button.
+                            .background(color = Color.Transparent),
+                        shape = CircleShape,
+                        //this is the background color of the button after the "Shaping" is applied.
+                        //it is different then the background attribute above.
+                        backgroundColor = Color(0xFF682300)
+                    ) {
+                        Icon(
+                            Icons.Outlined.Person,
+                            tint = Color(0xFFd8af84),
+                            modifier = Modifier.size(20.dp),
+                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                            contentDescription = null
+                        )
+                    }
+                }
 
                 LazyRow(
+                    modifier = Modifier.background(
+//                        Color(0xFFb15f33)
+//                                Color(0xFF682300)
+                        Color(0xFFd8af84)
+//                        Color(0xFFf8ea9a)
+                    ),
                     state = listState,
                     userScrollEnabled = !isFiltered
                 ){
@@ -145,6 +219,7 @@ fun HomeScreen(
                     }
                 }
 
+                Spacer(Modifier.background(Brush.horizontalGradient(colors = listOf(Color(0xFFb15f33), Color(0xFF682300)), tileMode = TileMode.Mirror)).fillMaxWidth().height(2.dp))
 
 
                 Box {
@@ -167,7 +242,6 @@ fun HomeScreen(
                                     bottomPadding = 16
                                 }
 
-                                
                                 SmallRecipeCard(
                                     modifier = Modifier
                                         .padding(bottom = bottomPadding.dp)
@@ -190,16 +264,6 @@ fun HomeScreen(
                                     onFavoriteClick =
                                     {
                                         onFavoriteClick(newRecipeList[index])
-//                                        coroutineScope.launch{
-//                                            if(newRecipeList[index].recipeEntity.isFavorite == 1)
-//                                                snackbarHostState.showSnackbar(
-//                                                    message = "Removed " + newRecipeList[index].recipeEntity.recipeName + " from Favorites.",
-//                                                    duration = SnackbarDuration.Short)
-//                                            else if(newRecipeList[index].recipeEntity.isFavorite == 0)
-//                                                snackbarHostState.showSnackbar(
-//                                                    message = "Added " + newRecipeList[index].recipeEntity.recipeName + " to Favorites.",
-//                                                    duration = SnackbarDuration.Short)
-//                                        }
                                         homeScreenViewModel.toggleFavorite(newRecipeList[index])
                                     },
                                     onMenuClick =
@@ -207,12 +271,6 @@ fun HomeScreen(
                                         if (newRecipeList[index].recipeEntity.onMenu == 0){
                                             homeScreenViewModel.toggleMenu(newRecipeList[index])
                                             onMenuClick(newRecipeList[index])
-//                                        coroutineScope.launch {
-//                                            snackbarHostState.showSnackbar(
-//                                                message = "Added " + newRecipeList[index].recipeEntity.recipeName + " to the Menu.",
-//                                                duration = SnackbarDuration.Short
-//                                            )
-//                                        }
                                     }
                                         else if(newRecipeList[index].recipeEntity.onMenu == 1){
                                             homeScreenViewModel.triggerAlert(newRecipeList[index])
@@ -350,6 +408,14 @@ fun FiltersButton(
             .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
             .width(74.dp)
             .height(74.dp)
+            .border(
+                width = 2.dp,
+                brush = (Brush.horizontalGradient(
+                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33),),
+                    tileMode = TileMode.Mirror
+                )),
+                shape = RoundedCornerShape(12.dp)
+            )
             .alpha(alphaAnim)
 //            .background(
 //                brush = Brush.horizontalGradient(
@@ -365,31 +431,13 @@ fun FiltersButton(
 //                if (isActiveFilterBool) onClickFilterDeselected else onClickFilterSelected,
             ),// { selected = !selected },
         shape = RoundedCornerShape(12.dp),
-        color = Color(0xFFf8ea9a),
+        color =
+//        Color(0xFFf8ea9a)
+                Color(0xFF682300),
         elevation = 4.dp,
         //color = Color(0xFF682300),//Color(0xFFd8af84),
         contentColor = Color(0xFFd8af84),
     ){
-        /*
-            if selected then show X
-         */
-//        if (selected){
-//            Box{
-//                IconButton(
-//                    modifier = Modifier
-//                        .align(Alignment.Center)
-//                        .size(36.dp),
-//                    onClick = onClickFilterDeselected //{ selected = !selected }
-//                ){
-//                    Icon(
-//                        modifier = Modifier,
-//                        imageVector = Icons.Outlined.Close,
-//                        tint = Color(0xFF000000),
-//                        contentDescription = null
-//                    )
-//                }
-//            }
-//        }
         Column(
             Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -401,33 +449,20 @@ fun FiltersButton(
                 modifier = Modifier
                     .size(48.dp)
                     .padding(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 1.dp),
+                colorFilter = ColorFilter.tint(Color(0xFFd8af84)),
             )
 
-
-//            Icon(
-//                imageVector = myIcon,
-//                tint = checkBoxBackgroundColor,
-//
-//                //  .background(color = Color(0xFFFFFFFF)),
-//                contentDescription = null,
-//                modifier = Modifier
-//                    .padding(start = 6.dp, top = 2.dp, end = 2.dp, bottom = 2.dp)
-//                    .size(28.dp)
-//                    .align(Alignment.CenterVertically)
-//                    .alpha(alphaLevel)
-//                //.weight(1f)
-//
-//            )
             Text(
                 text = filterEntity.filterName,
                 modifier = Modifier
                     // .weight(1f)
-                    .padding(bottom = 2.dp)
+                    .padding(start = 1.dp, end = 1.dp, bottom = 2.dp)
                     .align(Alignment.CenterHorizontally),
 //                    .alpha(alphaLevel),
-                color = Color(0xFF000000),
-
-                //textDecoration = decoration,
+                color =
+                Color(0xFFd8af84)
+//                Color(0xFF000000)
+                ,
                 fontSize = 12.sp
             )
         }
@@ -437,7 +472,7 @@ fun FiltersButton(
 @Composable
 @Preview
 fun MyPreview420() {
-    HomeScreen(onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {} )
+    HomeScreen(onSearchClick = {}, onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {} )
 
 
 }

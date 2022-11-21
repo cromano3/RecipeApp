@@ -87,6 +87,18 @@ fun SmallRecipeCard(
                 width = 170.dp,
                 height = 270.dp
             )
+            .border(
+                width = 2.dp,
+                brush = (Brush.horizontalGradient(
+                    colors = listOf(
+                        Color(0xFFd8af84),
+                        Color(0xFFb15f33),
+
+                        ),
+                    tileMode = TileMode.Mirror
+                )),
+                shape = RoundedCornerShape(15.dp)
+            )
             .clickable(onClick = onDetailsClick),
         shape = RoundedCornerShape(15.dp),
         color = Color(0xFFdfe0fb)
@@ -312,7 +324,7 @@ fun SmallRecipeCard(
                     text = ingredientsListAsString,
                     style = MaterialTheme.typography.body2,
                     lineHeight = (1.5).em,
-                    modifier = Modifier.padding(start = 2.dp, end = 2.dp)
+                    modifier = Modifier.padding(start = 4.dp, end = 4.dp)
                 )
                 /*
                         0/7 quantity owned/quantity needed

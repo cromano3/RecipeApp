@@ -21,10 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.bearrecipebookapp.ui.HomeScreen
-import com.example.bearrecipebookapp.ui.MenuScreen
-import com.example.bearrecipebookapp.ui.NewDetailsScreen
-import com.example.bearrecipebookapp.ui.ShoppingListScreen
+import com.example.bearrecipebookapp.ui.*
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import kotlinx.coroutines.launch
 
@@ -99,9 +96,11 @@ fun BearRecipeApp(
             navController = navController,
             startDestination = "RecipeScreen",
         ){
+
             composable(route = "RecipeScreen"){
                 //Recipe Book Main Screen
                 HomeScreen(
+                    onSearchClick = {navController.navigate("SearchScreen")},
                     onDetailsClick = { navController.navigate("DetailsScreen") },
                     onFavoriteClick = {coroutineScope.launch{
                         if(it.recipeEntity.isFavorite == 1)
@@ -121,6 +120,7 @@ fun BearRecipeApp(
                     }}
                 )
             }
+
             composable(route = "WeeklyMenuScreen"){
                 //Weekly menu screen
                 MenuScreen(
@@ -137,12 +137,14 @@ fun BearRecipeApp(
                     }}
                 )
             }
+
             composable(route = "ShoppingScreen"){
                 ShoppingListScreen(
-                    onDetailsClick = { navController.navigate("DetailsScreen")}
+                    onDetailsClick = { navController.navigate("DetailsScreen") }
                 )
 
             }
+
             composable(route = "DetailsScreen") {
 
                 NewDetailsScreen(
@@ -170,6 +172,14 @@ fun BearRecipeApp(
                                 duration = SnackbarDuration.Short)
                     }}
                 )
+            }
+
+            composable(route = "SearchScreen"){
+                SearchScreen(
+                    onGoBackClick = { navController.popBackStack() },
+                    onDetailsClick = { navController.navigate("DetailsScreen") }
+                )
+
             }
 
 

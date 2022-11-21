@@ -11,9 +11,7 @@ import com.example.bearrecipebookapp.datamodel.UiAlertStateDetailsScreenDataMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
-class DetailsScreenViewModel(application: Application,
-                        //     recipeName: String
-): ViewModel() {
+class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
     private val repository: DetailsScreenRepository
 
