@@ -86,7 +86,11 @@ fun SearchScreen(
                         modifier = Modifier.focusRequester(focusRequester),
                         textStyle = TextStyle(color = Color(0xFF000000)),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                        keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()})
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                searchScreenViewModel.searchFor(text)
+                                focusManager.clearFocus()
+                            })
 //                        colors =
                     )
 
