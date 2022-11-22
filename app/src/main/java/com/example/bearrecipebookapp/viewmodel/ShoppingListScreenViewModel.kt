@@ -46,6 +46,7 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
             shoppingScreenUiState.value.isWorking = true
 
+
             if (recipe.recipeEntity.isShoppingFilter == 0 ||
                 recipe.recipeEntity.isShoppingFilter == 1
             ) {

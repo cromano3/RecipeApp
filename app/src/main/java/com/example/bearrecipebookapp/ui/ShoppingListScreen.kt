@@ -304,10 +304,7 @@ fun RecipeIconWithButton(
             )
         }
 
-        Spacer(
-            Modifier
-                .size(20.dp)
-                .fillMaxWidth())
+        Spacer(Modifier.size(20.dp).fillMaxWidth())
     }
 
 }
