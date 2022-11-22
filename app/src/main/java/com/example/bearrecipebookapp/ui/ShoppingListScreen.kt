@@ -73,17 +73,15 @@ fun ShoppingListScreen(
         val listState = rememberLazyListState()
         val listState2 = rememberLazyListState()
 
-//        if(filterWasClicked) {
-        LaunchedEffect(filterWasClicked) {
+        if(filterWasClicked) {
+            LaunchedEffect(Unit) {
 
-
-            delay(200)
-            async { listState.animateScrollToItem(0) }
-            async { listState2.animateScrollToItem(0) }
+                delay(200)
+                async { listState.animateScrollToItem(0) }
+                async { listState2.animateScrollToItem(0) }
 //                filterWasClicked = false
-
+            }
         }
-//        }
 
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -105,6 +103,9 @@ fun ShoppingListScreen(
 //                        .verticalScroll(rememberScrollState()),
 
                     ) {
+                    item(){
+                        Text(text = uiState.counter.toString())
+                    }
 
                     items(selectedIngredients, key = { it.ingredientName }) {
                         ShoppingListItemWithButton(

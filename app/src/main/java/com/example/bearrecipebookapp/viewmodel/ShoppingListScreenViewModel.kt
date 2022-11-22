@@ -11,6 +11,7 @@ import com.example.bearrecipebookapp.datamodel.ShoppingScreenUiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -39,21 +40,14 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
     fun filterBy(recipe: RecipeWithIngredients){
 
 
-        //        coroutineScope.launch(Dispatchers.IO) {
-//            withContext(Dispatchers.IO){repository.removeOtherFilters(recipe.recipeEntity.recipeName)}
-//            withContext(Dispatchers.IO){repository.filterBy(recipe.recipeEntity.recipeName)}
-//        }
-
-
         coroutineScope.launch(Dispatchers.IO) {
 
-//////////////////////////////////////////////////////////////////////
             shoppingScreenUiState.value.isWorking = true
-///////////////////////////////////////////////////////////////////////
+
             if (recipe.recipeEntity.isShoppingFilter == 0 ||
                 recipe.recipeEntity.isShoppingFilter == 1
             ) {
-//                coroutineScope.launch(Dispatchers.IO) {
+
                     withContext(Dispatchers.IO) { repository.removeOtherFilters(recipe.recipeEntity.recipeName) }
                     withContext(Dispatchers.IO) { repository.filterBy(recipe.recipeEntity.recipeName) }
 
@@ -77,19 +71,17 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
                     }
                     match = false
                 }
-//                }
+
             } else if (recipe.recipeEntity.isShoppingFilter == 2) {
-//                coroutineScope.launch(Dispatchers.IO) {
+
                     withContext(Dispatchers.IO) {
                         repository.cleanIngredients();
                         repository.cleanFilters()
                     }
-//                }
+
             }
 
-//////////////////////////////////////////////////////
             shoppingScreenUiState.value.isWorking = false
-//////////////////////////////////////////////////////
 
         }
 
@@ -98,10 +90,19 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
 
     fun ingredientSelected(ingredientEntity: IngredientEntity){
+        shoppingScreenUiState.update {
+            it.copy(counter = shoppingScreenUiState.value.counter + 1)
+        }
+
         repository.setIngredientToOwned(ingredientEntity)
     }
 
     fun ingredientDeselected(ingredientEntity: IngredientEntity){
+
+        shoppingScreenUiState.update {
+            it.copy(counter = shoppingScreenUiState.value.counter + 1)
+        }
+
         repository.setIngredientToNotOwned(ingredientEntity)
     }
 

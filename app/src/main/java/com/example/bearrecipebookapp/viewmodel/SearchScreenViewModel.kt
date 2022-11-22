@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.viewmodel
 
 import android.app.Application
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.SearchScreenRepository
@@ -184,12 +185,13 @@ class SearchScreenViewModel (application: Application): ViewModel() {
 
     }
 
-    fun updatePreview(input: String){
+    fun updatePreview(textFieldValueInput: TextFieldValue, input: String){
         coroutineScope.launch(Dispatchers.IO) {
 
             uiState.update {
                 it.copy(
-                    showResults = false
+                    showResults = false,
+                    currentInput = textFieldValueInput
                 )
             }
 

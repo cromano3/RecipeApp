@@ -1,7 +1,6 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -85,7 +84,7 @@ fun NewDetailsScreen(
 
 //    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
 
-        BackHandler { onGoBackClick() }
+//        BackHandler { onGoBackClick() }
 
 
         /**

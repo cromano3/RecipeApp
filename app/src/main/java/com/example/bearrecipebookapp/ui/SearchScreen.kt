@@ -1,7 +1,6 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -62,11 +61,13 @@ fun SearchScreen(
 
         var isKeyboardOpen by remember { mutableStateOf(true) }
 
-        LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
+        if(!uiState.showResults) {
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
         }
 
-        BackHandler(onBack = {focusManager.clearFocus()})
+//        BackHandler( onBack = {focusManager.clearFocus()} )
 
 
 
@@ -78,10 +79,10 @@ fun SearchScreen(
 
                     //Search field
                     TextField(
-                        value = text,
+                        value = uiState.currentInput,
                         onValueChange = {
-                            text = it
-                            searchScreenViewModel.updatePreview(it)
+//                            text = it
+                            searchScreenViewModel.updatePreview( it, it.text)
                                         },
                         modifier = Modifier.focusRequester(focusRequester),
                         textStyle = TextStyle(color = Color(0xFF000000)),
