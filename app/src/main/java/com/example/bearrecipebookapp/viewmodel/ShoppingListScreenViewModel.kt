@@ -8,12 +8,9 @@ import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.ShoppingListScreenRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.ShoppingScreenUiState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
@@ -33,6 +30,11 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
         shoppingListScreenData = repository.shoppingListScreenData
         selectedIngredients = repository.selectedIngredients
+
+        coroutineScope.launch(Dispatchers.IO) {
+            async(Dispatchers.IO){repository.cleanIngredients()}
+            async(Dispatchers.IO) {repository.cleanFilters()}
+        }
     }
 
 
