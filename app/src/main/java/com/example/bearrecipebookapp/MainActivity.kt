@@ -122,7 +122,13 @@ fun BearRecipeApp(
                             message = "Added " + it.recipeEntity.recipeName + " to the Menu.",
                             duration = SnackbarDuration.Short
                         )
-                    }}
+                    }},
+                    onMenuRemovedClick = {coroutineScope.launch {
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            message = "Removed " + it.recipeEntity.recipeName + " from the Menu.",
+                            duration = SnackbarDuration.Short
+                        )
+                    }},
                 )
             }
 
@@ -138,6 +144,17 @@ fun BearRecipeApp(
                         else if(it.recipeEntity.isFavorite == 0)
                             scaffoldState.snackbarHostState.showSnackbar(
                                 message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
+                                duration = SnackbarDuration.Short)
+                    }},
+                    onRemoveClick = {coroutineScope.launch{
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Removed " + it.recipeEntity.recipeName + " from the Menu.",
+                                duration = SnackbarDuration.Short)
+
+                    }},
+                    onCompleteClick = {coroutineScope.launch{
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Completed cooking " + it.recipeEntity.recipeName + "!!",
                                 duration = SnackbarDuration.Short)
                     }}
                 )

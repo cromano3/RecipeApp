@@ -49,7 +49,8 @@ fun HomeScreen(
     onSearchClick: () -> Unit,
     onDetailsClick: () -> Unit,
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
-    onMenuClick: (RecipeWithIngredients) -> Unit
+    onMenuClick: (RecipeWithIngredients) -> Unit,
+    onMenuRemovedClick: (RecipeWithIngredients) -> Unit,
 ) {
 
     val owner = LocalViewModelStoreOwner.current
@@ -274,6 +275,7 @@ fun HomeScreen(
                                     }
                                         else if(newRecipeList[index].recipeEntity.onMenu == 1){
                                             homeScreenViewModel.triggerAlert(newRecipeList[index])
+                                            onMenuRemovedClick(newRecipeList[index])
                                         }
                                     },
 //
@@ -472,7 +474,7 @@ fun FiltersButton(
 @Composable
 @Preview
 fun MyPreview420() {
-    HomeScreen(onSearchClick = {}, onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {} )
+    HomeScreen(onSearchClick = {}, onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {}, onMenuRemovedClick = {} )
 
 
 }

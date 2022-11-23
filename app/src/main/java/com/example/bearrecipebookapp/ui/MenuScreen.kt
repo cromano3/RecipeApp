@@ -31,6 +31,8 @@ import com.example.bearrecipebookapp.viewmodel.MenuScreenViewModel
 fun MenuScreen(
     onDetailsClick: () -> Unit,
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
+    onCompleteClick: (RecipeWithIngredients) -> Unit,
+    onRemoveClick: (RecipeWithIngredients) -> Unit,
 ) {
 
     val owner = LocalViewModelStoreOwner.current
@@ -71,8 +73,15 @@ fun MenuScreen(
                             menuScreenViewModel.toggleFavorite(it)
                             onFavoriteClick(it)
                         },
-                        onRemoveClick = { menuScreenViewModel.triggerRemoveAlert(it) },
-                        onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(it) },
+                        onRemoveClick = {
+                            menuScreenViewModel.triggerRemoveAlert(it)
+                            onRemoveClick(it)
+                                        },
+                        onCompleteClick = {
+                            menuScreenViewModel.triggerCompletedAlert(it)
+                            onCompleteClick(it)
+                                          }
+                            ,
                         onDetailsClick = { menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
                             onDetailsClick()
                         }

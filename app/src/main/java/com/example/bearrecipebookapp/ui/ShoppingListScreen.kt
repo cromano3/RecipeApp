@@ -43,8 +43,8 @@ import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.IngredientEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.viewmodel.ShoppingListScreenViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -70,17 +70,21 @@ fun ShoppingListScreen(
 
         val uiState by shoppingListScreenViewModel.shoppingScreenUiState.collectAsState()
 
+        val coroutineScope = rememberCoroutineScope()
+
         val listState = rememberLazyListState()
         val listState2 = rememberLazyListState()
 
         if(filterWasClicked) {
-            LaunchedEffect(Unit) {
+//            LaunchedEffect(Unit) {
+            coroutineScope.launch {
 
                 delay(200)
-                async { listState.animateScrollToItem(0) }
-                async { listState2.animateScrollToItem(0) }
-//                filterWasClicked = false
+                listState.animateScrollToItem(0)
+                listState2.animateScrollToItem(0)
+                filterWasClicked = false
             }
+//            filterWasClicked = false
         }
 
         Surface(
@@ -276,7 +280,7 @@ fun RecipeIconWithButton(
             modifier = Modifier
                 // .padding(top = 4.dp)
                 .wrapContentSize()
-                .clickable(enabled = !isWorking) {  onDetailsClick() },
+                .clickable(enabled = !isWorking) { onDetailsClick() },
  //               .background(
 //                    brush = Brush.horizontalGradient(
 //                        colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
@@ -304,7 +308,10 @@ fun RecipeIconWithButton(
             )
         }
 
-        Spacer(Modifier.size(20.dp).fillMaxWidth())
+        Spacer(
+            Modifier
+                .size(20.dp)
+                .fillMaxWidth())
     }
 
 }
