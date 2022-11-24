@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchScreenViewModel (application: Application): ViewModel() {
 
@@ -34,6 +35,8 @@ class SearchScreenViewModel (application: Application): ViewModel() {
 
 //        allRecipes = repository.allRecipes
         results = repository.results
+
+        coroutineScope.launch { repository.clearResults() }
 
         //Get reference list from DB and assign to uiState
         setReferenceList()
@@ -79,24 +82,28 @@ class SearchScreenViewModel (application: Application): ViewModel() {
 
             coroutineScope.launch(Dispatchers.IO) {
 
-                repository.clearResults()
+                withContext(Dispatchers.IO){repository.clearResults()}
 
                 val data: List<HomeScreenDataModel> = repository.getRecipes()
 
                 for(x in 0 until (data.size)){
                     //check names
                     if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].recipeEntity.recipeName)){
-                        repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)
+
+                        withContext(Dispatchers.IO){ repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)}
                     }
 
                     for(y in 0 until (data[x].ingredientsList.size)){
                         if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].ingredientsList[y].ingredientName)){
-                            repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)
+
+                            withContext(Dispatchers.IO){ repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)}
                         }
                     }
                     for (y in 0 until (data[x].filtersList.size)){
                         if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].filtersList[y].filterName)){
-                            repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)
+
+                            withContext(Dispatchers.IO){ repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)}
+
                         }
                     }
                 }
@@ -317,6 +324,8 @@ class SearchScreenViewModel (application: Application): ViewModel() {
 
     fun updatePreview(textFieldValueInput: TextFieldValue, input: String){
         coroutineScope.launch(Dispatchers.IO) {
+
+            repository.clearResults()
 
             uiState.update {
                 it.copy(

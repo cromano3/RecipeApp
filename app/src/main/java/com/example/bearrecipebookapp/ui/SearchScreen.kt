@@ -157,6 +157,7 @@ fun SearchScreen(
 
                     //search results
                     if(uiState.showResults){
+
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),
                             modifier = Modifier

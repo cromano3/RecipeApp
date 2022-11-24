@@ -261,29 +261,16 @@ fun BearAppBottomBar(
         val routes = listOf("RecipeScreen", "WeeklyMenuScreen", "ShoppingScreen")
 
 
-        println("here2")
-        for(x in queue.indices){
-            println("route $currentRoute queue " + queue[x].destination.route)
-        }
-        println("here3")
 
         routes.forEach{ it ->
             BottomNavigationItem(
                 selected = (currentRoute == it),
                 onClick = {
-                    for(x in queue.indices){
-                        println("BEFORE IF")
-                        println("route $currentRoute clicked on $it queue " + queue[x].destination)
-                    }
 
                     if(currentRoute == "SearchScreen" && it == "RecipeScreen"){
                         navController.popBackStack()
                     }
                     if(currentRoute == "DetailsScreen"){
-                        for(x in queue.indices){
-                            println("INSIDE IF")
-                            println("route $currentRoute clicked on $it queue " + queue[x].destination)
-                        }
 
                         navController.popBackStack()
                     }

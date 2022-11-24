@@ -29,10 +29,10 @@ class SearchScreenRepository(private val searchScreenDao: SearchScreenDao) {
         return searchScreenDao.getRecipes()
     }
 
-    fun setSearchResult(recipeName:String , isResult: Int){
-        coroutineScope.launch(Dispatchers.IO) {
+    suspend fun setSearchResult(recipeName:String , isResult: Int){
+//        coroutineScope.launch(Dispatchers.IO) {
             searchScreenDao.setSearchResult(recipeName, isResult)
-        }
+//        }
     }
 
     suspend fun clearResults(){

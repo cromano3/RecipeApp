@@ -31,7 +31,7 @@ interface SearchScreenDao {
 //    fun getAllRecipes(): LiveData<List<HomeScreenDataModel>>
 
     @Transaction
-    @Query("SELECT * FROM recipe_table WHERE is_search_result = 1")
+    @Query("SELECT * FROM recipe_table WHERE is_search_result = 1 ORDER BY recipe_name ASC")
     fun getResults(): LiveData<List<HomeScreenDataModel>>
 
     @Transaction
