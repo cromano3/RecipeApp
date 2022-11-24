@@ -10,4 +10,6 @@ data class UiSearchScreenDataModel (
     val clickSearchResults: List<HomeScreenDataModel> = listOf(),
     val showResults: Boolean = false,
     val currentInput: TextFieldValue = TextFieldValue(text = ""),
+    val showAlert: Boolean = false,
+    val alertRecipe: HomeScreenDataModel = HomeScreenDataModel(),
     )

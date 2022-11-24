@@ -1,5 +1,6 @@
 package com.example.bearrecipebookapp.data
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
@@ -24,6 +25,22 @@ interface SearchScreenDao {
     @Query("SELECT * FROM recipe_table")
     fun getRecipes(): List<HomeScreenDataModel>
 
+    //
+//    @Transaction
+//    @Query("SELECT * FROM recipe_table")
+//    fun getAllRecipes(): LiveData<List<HomeScreenDataModel>>
+
+    @Transaction
+    @Query("SELECT * FROM recipe_table WHERE is_search_result = 1")
+    fun getResults(): LiveData<List<HomeScreenDataModel>>
+
+    @Transaction
+    @Query("UPDATE recipe_table SET is_search_result = :isResult WHERE recipe_name = :recipeName")
+    fun setSearchResult(recipeName:String , isResult: Int)
+
+    @Transaction
+    @Query("UPDATE recipe_table SET is_search_result = 0")
+    fun clearResults()
 
     //
     //

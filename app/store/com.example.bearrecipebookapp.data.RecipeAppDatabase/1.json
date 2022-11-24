@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "626c72a0a4ade4e08b598f682a170754",
+    "identityHash": "b47010db25fe6f9cf221efcfb4b2a2d9",
     "entities": [
       {
         "tableName": "recipe_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `review_score` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, PRIMARY KEY(`recipe_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `review_score` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `is_search_result` INTEGER NOT NULL, PRIMARY KEY(`recipe_name`))",
         "fields": [
           {
             "fieldPath": "recipeName",
@@ -59,6 +59,12 @@
           {
             "fieldPath": "isFavorite",
             "columnName": "is_favorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isSearchResult",
+            "columnName": "is_search_result",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -252,7 +258,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '626c72a0a4ade4e08b598f682a170754')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b47010db25fe6f9cf221efcfb4b2a2d9')"
     ]
   }
 }

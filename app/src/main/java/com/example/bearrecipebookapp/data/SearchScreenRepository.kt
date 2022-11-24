@@ -1,5 +1,6 @@
 package com.example.bearrecipebookapp.data
 
+import androidx.lifecycle.LiveData
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -8,6 +9,9 @@ import kotlinx.coroutines.launch
 class SearchScreenRepository(private val searchScreenDao: SearchScreenDao) {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
+//    var allRecipes: LiveData<List<HomeScreenDataModel>> = searchScreenDao.getAllRecipes()
+    var results: LiveData<List<HomeScreenDataModel>> = searchScreenDao.getResults()
 
     suspend fun getRecipeNamesReferenceList(): List<String>{
         return searchScreenDao.getRecipeNamesReferenceList()
@@ -23,6 +27,18 @@ class SearchScreenRepository(private val searchScreenDao: SearchScreenDao) {
 
     suspend fun getRecipes(): List<HomeScreenDataModel>{
         return searchScreenDao.getRecipes()
+    }
+
+    fun setSearchResult(recipeName:String , isResult: Int){
+        coroutineScope.launch(Dispatchers.IO) {
+            searchScreenDao.setSearchResult(recipeName, isResult)
+        }
+    }
+
+    suspend fun clearResults(){
+//        coroutineScope.launch(Dispatchers.IO) {
+            searchScreenDao.clearResults()
+//        }
     }
 
     fun updateFavorite(recipeName: String, isFavoriteStatus: Int) {

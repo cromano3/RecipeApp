@@ -2,6 +2,7 @@ package com.example.bearrecipebookapp.viewmodel
 
 import android.app.Application
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.SearchScreenRepository
@@ -22,6 +23,8 @@ class SearchScreenViewModel (application: Application): ViewModel() {
 
     val uiState = MutableStateFlow(UiSearchScreenDataModel())
 
+//    val allRecipes: LiveData<List<HomeScreenDataModel>>
+    val results: LiveData<List<HomeScreenDataModel>>
 
     init {
 
@@ -29,9 +32,29 @@ class SearchScreenViewModel (application: Application): ViewModel() {
         val searchScreenDao = appDb.SearchScreenDao()
         repository = SearchScreenRepository(searchScreenDao)
 
+//        allRecipes = repository.allRecipes
+        results = repository.results
+
         //Get reference list from DB and assign to uiState
         setReferenceList()
 
+    }
+
+    fun triggerAlert(recipe: HomeScreenDataModel){
+        uiState.update { currentState ->
+            currentState.copy(
+                showAlert = true,
+                alertRecipe = recipe
+            )
+        }
+    }
+    fun cancelAlert(){
+        uiState.update { currentState ->
+            currentState.copy(
+                showAlert = false,
+                alertRecipe = HomeScreenDataModel()
+            )
+        }
     }
 
     private fun setReferenceList(){
@@ -49,6 +72,113 @@ class SearchScreenViewModel (application: Application): ViewModel() {
             }
         }
     }
+
+    fun liveSearchForClick(){
+
+        if(uiState.value.currentInput.text.isNotEmpty()){
+
+            coroutineScope.launch(Dispatchers.IO) {
+
+                repository.clearResults()
+
+                val data: List<HomeScreenDataModel> = repository.getRecipes()
+
+                for(x in 0 until (data.size)){
+                    //check names
+                    if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].recipeEntity.recipeName)){
+                        repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)
+                    }
+
+                    for(y in 0 until (data[x].ingredientsList.size)){
+                        if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].ingredientsList[y].ingredientName)){
+                            repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)
+                        }
+                    }
+                    for (y in 0 until (data[x].filtersList.size)){
+                        if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].filtersList[y].filterName)){
+                            repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)
+                        }
+                    }
+                }
+
+                uiState.update {
+                    it.copy(
+                        showResults = true
+                    )
+                }
+
+            }
+
+        }
+
+    }
+
+    fun liveSearchForPush(input: String){
+
+        if(input.isNotEmpty()){
+
+            coroutineScope.launch(Dispatchers.IO) {
+
+                repository.clearResults()
+
+                val data: List<HomeScreenDataModel> = repository.getRecipes()
+
+                for(x in 0 until (data.size)){
+                    //check names
+                    if (input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].recipeEntity.recipeName)){
+                            repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)
+                    }
+
+                    for(y in 0 until (data[x].ingredientsList.size)){
+                        if (input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].ingredientsList[y].ingredientName)){
+                                repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)
+                        }
+                    }
+                    for (y in 0 until (data[x].filtersList.size)){
+                        if (input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].filtersList[y].filterName)){
+                                repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)
+                        }
+                    }
+                }
+
+                uiState.update {
+                    it.copy(
+                        showResults = true
+                    )
+                }
+
+//                for(x in 0 until (allRecipes.value?.size ?: 0)){
+//                    //check names
+//                    if (input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(allRecipes.value?.get(x)?.recipeEntity?.recipeName ?: "")){
+//                        if(allRecipes.value?.get(x)?.recipeEntity?.recipeName != null){
+//                            repository.setSearchResult(recipeName = allRecipes.value?.get(x)?.recipeEntity?.recipeName!!, isResult = 1)
+//                        }
+//                    }
+//
+//                    for(y in 0 until (allRecipes.value?.get(x)?.ingredientsList?.size ?: 0)){
+//                        if (input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(
+//                                allRecipes.value?.get(x)?.ingredientsList?.get(y)?.ingredientName ?: "")){
+//                            if(allRecipes.value?.get(x)?.recipeEntity?.recipeName != null){
+//                                repository.setSearchResult(recipeName = allRecipes.value?.get(x)?.recipeEntity?.recipeName!!, isResult = 1)
+//                            }
+//                        }
+//
+//                    }
+//                    for (y in 0 until (allRecipes.value?.get(x)?.filtersList?.size ?: 0)){
+//                        if (input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(
+//                                allRecipes.value?.get(x)?.filtersList?.get(y)?.filterName ?: "")){
+//                            if(allRecipes.value?.get(x)?.recipeEntity?.recipeName != null){
+//                                repository.setSearchResult(recipeName = allRecipes.value?.get(x)?.recipeEntity?.recipeName!!, isResult = 1)
+//                            }
+//                        }
+//                    }
+//                }
+            }
+
+        }
+
+    }
+
 
     fun searchFor(input: String) {
 

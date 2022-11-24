@@ -7,14 +7,15 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -52,13 +53,14 @@ fun SearchScreen(
             factory = SearchScreenViewModelFactory(LocalContext.current.applicationContext as Application)
         )
 
-
         val uiState by searchScreenViewModel.uiState.collectAsState()
+//        val allRecipes by searchScreenViewModel.allRecipes.observeAsState()
+        val results by searchScreenViewModel.results.observeAsState(listOf())
 
         val focusRequester = remember { FocusRequester() }
         val focusManager = LocalFocusManager.current
 
-        var text by remember { mutableStateOf("") }
+        val text by remember { mutableStateOf("") }
 
         var isKeyboardOpen by remember { mutableStateOf(true) }
 
@@ -90,13 +92,14 @@ fun SearchScreen(
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                         keyboardActions = KeyboardActions(
                             onSearch = {
-                                searchScreenViewModel.searchFor(text)
+                                searchScreenViewModel.liveSearchForClick()
+//                                searchScreenViewModel.searchFor(text)
                                 focusManager.clearFocus()
                             })
 //                        colors =
                     )
 
-                    //Profile Screen button
+                //Profile Screen button
                 }
                 Surface(
                     Modifier
@@ -137,7 +140,8 @@ fun SearchScreen(
                                     Modifier
                                         .wrapContentSize()
                                         .clickable(onClick = {
-                                            searchScreenViewModel.searchForClick(it)
+                                            searchScreenViewModel.liveSearchForPush(it.name)
+//                                            searchScreenViewModel.searchForClick(it)
                                             focusManager.clearFocus()
                                         })
                                 )
@@ -151,39 +155,135 @@ fun SearchScreen(
                         }
                     }
 
+                    //search results
                     if(uiState.showResults){
-                        LazyColumn(state = listState,
-                            modifier = Modifier.padding(bottom = 0.dp).pointerInput(Unit) {
-                                detectTapGestures(
-                                    onTap = { focusManager.clearFocus() },
-                                    onPress = { focusManager.clearFocus() },
-                                )
-                                detectVerticalDragGestures { _, _ -> focusManager.clearFocus()  }
-                                detectDragGestures { _, _ -> focusManager.clearFocus() }
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier
+                                .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp).pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onTap = { focusManager.clearFocus() },
+                                        onPress = { focusManager.clearFocus() },
+                                    )
+                                    detectVerticalDragGestures { _, _ -> focusManager.clearFocus()  }
+                                    detectDragGestures { _, _ -> focusManager.clearFocus() }
 
-                            }){
-                            items(items = uiState.clickSearchResults, key = {it.recipeEntity.recipeName}){
+                                },
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+
+                            items(results.size, key = { it }) { index ->
+                                var bottomPadding = 0
+                                if (index + 1 == results.size) {
+                                    bottomPadding = 64
+                                }
+
                                 SmallRecipeCard(
-                                    modifier = Modifier,
-                                    recipe = it.recipeEntity,
-                                    ingredients = it.ingredientsList,
+                                    modifier = Modifier.padding(bottom = bottomPadding.dp),
+                                    recipe = results[index].recipeEntity,
+                                    ingredients = results[index].ingredientsList,
                                     onFavoriteClick = {
-                                        onFavoriteClick(it.recipeEntity)
-                                        searchScreenViewModel.toggleFavorite(it)
+                                        onFavoriteClick(results[index].recipeEntity)
+                                        searchScreenViewModel.toggleFavorite(results[index])
                                         focusManager.clearFocus()},
-                                    onMenuClick = {
-                                        onMenuClick(it.recipeEntity)
-                                        searchScreenViewModel.toggleMenu(it)
-                                        focusManager.clearFocus()},
+                                    onMenuClick =
+                                    {
+                                        if (results[index].recipeEntity.onMenu == 0){
+                                            focusManager.clearFocus()
+                                            onMenuClick(results[index].recipeEntity)
+                                            searchScreenViewModel.toggleMenu(results[index])
+                                        }
+                                        else if(results[index].recipeEntity.onMenu == 1){
+                                            focusManager.clearFocus()
+                                            searchScreenViewModel.triggerAlert(results[index])
+                                        }
+                                    },
                                     onDetailsClick = {
-                                        searchScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
+                                        searchScreenViewModel.setDetailsScreenTarget(results[index].recipeEntity.recipeName)
                                         onDetailsClick()
                                         focusManager.clearFocus()},
                                 )
+
+
                             }
-                            item(){
-                                Spacer(Modifier.fillMaxWidth().height(64.dp))
-                            }
+                        }
+
+//                        LazyColumn(state = listState,
+//                            modifier = Modifier.padding(bottom = 0.dp).pointerInput(Unit) {
+//                                detectTapGestures(
+//                                    onTap = { focusManager.clearFocus() },
+//                                    onPress = { focusManager.clearFocus() },
+//                                )
+//                                detectVerticalDragGestures { _, _ -> focusManager.clearFocus()  }
+//                                detectDragGestures { _, _ -> focusManager.clearFocus() }
+//
+//                            }){
+//
+//                            items(
+//                                items =
+////                                uiState.clickSearchResults
+//                                results
+//                                ,
+//                                key = {it.recipeEntity.recipeName}
+//                            ){
+//                                SmallRecipeCard(
+//                                    modifier = Modifier,
+//                                    recipe = it.recipeEntity,
+//                                    ingredients = it.ingredientsList,
+//                                    onFavoriteClick = {
+//                                        onFavoriteClick(it.recipeEntity)
+//                                        searchScreenViewModel.toggleFavorite(it)
+//                                        focusManager.clearFocus()},
+//                                    onMenuClick =
+//                                    {
+//                                        if (it.recipeEntity.onMenu == 0){
+//                                            focusManager.clearFocus()
+//                                            onMenuClick(it.recipeEntity)
+//                                            searchScreenViewModel.toggleMenu(it)
+//                                        }
+//                                        else if(it.recipeEntity.onMenu == 1){
+//                                            focusManager.clearFocus()
+//                                            searchScreenViewModel.triggerAlert(it)
+//                                        }
+//                                    },
+//                                    onDetailsClick = {
+//                                        searchScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
+//                                        onDetailsClick()
+//                                        focusManager.clearFocus()},
+//                                )
+//                            }
+//                            item(){
+//                                Spacer(Modifier.fillMaxWidth().height(64.dp))
+//                            }
+//                        }
+                        if(uiState.showAlert){
+                            AlertDialog(
+                                onDismissRequest = {},
+                                text = {
+                                    Text(text = "Are you sure you want to remove " + uiState.alertRecipe.recipeEntity.recipeName +
+                                            " from the Menu? (This will also remove it from the Shopping List.)" )
+                                },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            onMenuClick(uiState.alertRecipe.recipeEntity)
+                                            searchScreenViewModel.toggleMenu(uiState.alertRecipe)
+                                            searchScreenViewModel.cancelAlert()
+                                        }
+                                    ) {
+                                        Text("Yes")
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton(
+                                        onClick = {
+                                            searchScreenViewModel.cancelAlert()
+                                        }
+                                    ) {
+                                        Text("Cancel")
+                                    }
+                                }
+                            )
                         }
                     }
 

@@ -220,7 +220,7 @@ fun BearRecipeApp(
                             scaffoldState.snackbarHostState.showSnackbar(
                                 message = "Removed " + it.recipeName + " from Menu.",
                                 duration = SnackbarDuration.Short)
-                        else if(it.isFavorite == 0)
+                        else if(it.onMenu == 0)
                             scaffoldState.snackbarHostState.showSnackbar(
                                 message = "Added " + it.recipeName + " to Menu.",
                                 duration = SnackbarDuration.Short)
