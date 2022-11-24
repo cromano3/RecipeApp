@@ -199,28 +199,6 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 //                println("second")
 //                }
 
-                /**
-                 * There should be some kind of await() or delay happening here.
-                 * In order for the list to be loaded with the correct animation, we must ensure
-                 * that the above async query "cleanRecipes()" executes before the below statement
-                 * shows the list.
-                 *
-                 * This is assuming that showing the list before the data is populated will not
-                 * trigger the animation.  It is possible that the empty list can be "shown" or
-                 * "visible = true" and then after that the data is populated which could maybe
-                 * trigger the animation?
-                 *
-                 * This needs to be investigated.
-                 *
-                 * UPDATE: The list is not empty, in fact it is never empty, it is instead still
-                 * in its previous state (contains the filtered list of recipes). The async query
-                 * swaps the data for the new data.
-                 *
-                 * Regardless, the animation is NOT triggered and therefore this must be dealt with.
-                 *
-                 * UPDATE 2: withContext should fix this.
-                 */
-
                 uiFiltersState.update { currentState ->
                     currentState.copy(showAllRecipes = true)
                 }
@@ -229,7 +207,6 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         uiFiltersState.update { currentState ->
             currentState.copy(isWorking = false)
         }
-
 
         }
 

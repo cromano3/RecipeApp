@@ -235,4 +235,34 @@ class SearchScreenViewModel (application: Application): ViewModel() {
 
         }
     }
+
+    fun toggleFavorite(recipe: HomeScreenDataModel){
+        if(recipe.recipeEntity.isFavorite == 0){
+            repository.updateFavorite(recipe.recipeEntity.recipeName, 1)
+        }
+        else if(recipe.recipeEntity.isFavorite == 1){
+            repository.updateFavorite(recipe.recipeEntity.recipeName, 0)
+        }
+    }
+
+
+    fun toggleMenu(recipe: HomeScreenDataModel){
+        if(recipe.recipeEntity.onMenu == 0){
+            for(x in 0 until recipe.ingredientsList.size){
+                repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded + 1)
+            }
+            repository.updateMenu(recipe.recipeEntity.recipeName, 1)
+        }
+        else if(recipe.recipeEntity.onMenu == 1){
+            for(x in 0 until recipe.ingredientsList.size){
+                repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded - 1)
+                repository.setIngredientQuantityOwned(recipe.ingredientsList[x], 0)
+            }
+            repository.updateMenu(recipe.recipeEntity.recipeName, 0)
+        }
+    }
+
+    fun setDetailsScreenTarget(recipeName: String){
+        repository.setDetailsScreenTarget(recipeName)
+    }
 }

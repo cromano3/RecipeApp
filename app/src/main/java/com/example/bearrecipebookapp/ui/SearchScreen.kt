@@ -5,10 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -28,10 +25,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bearrecipebookapp.data.RecipeEntity
 import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.SearchScreenViewModel
 
@@ -40,6 +39,8 @@ import com.example.bearrecipebookapp.viewmodel.SearchScreenViewModel
 fun SearchScreen(
     onGoBackClick: () -> Unit,
     onDetailsClick: () -> Unit,
+    onFavoriteClick: (RecipeEntity) -> Unit,
+    onMenuClick: (RecipeEntity) -> Unit,
 ){
 
     val owner = LocalViewModelStoreOwner.current
@@ -120,7 +121,7 @@ fun SearchScreen(
                     if(!uiState.showResults){
                         LazyColumn(
                             state = listState,
-                            modifier = Modifier.pointerInput(Unit) {
+                            modifier = Modifier.padding(bottom = 0.dp).pointerInput(Unit) {
                             detectTapGestures(
                                 onTap = { focusManager.clearFocus() },
                                 onPress = { focusManager.clearFocus() },
@@ -144,12 +145,15 @@ fun SearchScreen(
                                     Text(text = it.name, color = Color(0xFF000000))
                                 }
                             }
+                            item(){
+                                Spacer(Modifier.fillMaxWidth().height(56.dp))
+                            }
                         }
                     }
 
                     if(uiState.showResults){
                         LazyColumn(state = listState,
-                            modifier = Modifier.pointerInput(Unit) {
+                            modifier = Modifier.padding(bottom = 0.dp).pointerInput(Unit) {
                                 detectTapGestures(
                                     onTap = { focusManager.clearFocus() },
                                     onPress = { focusManager.clearFocus() },
@@ -163,10 +167,22 @@ fun SearchScreen(
                                     modifier = Modifier,
                                     recipe = it.recipeEntity,
                                     ingredients = it.ingredientsList,
-                                    onFavoriteClick = { /*TODO*/ focusManager.clearFocus()},
-                                    onMenuClick = { /*TODO*/ focusManager.clearFocus()},
-                                    onDetailsClick = {focusManager.clearFocus()},
+                                    onFavoriteClick = {
+                                        onFavoriteClick(it.recipeEntity)
+                                        searchScreenViewModel.toggleFavorite(it)
+                                        focusManager.clearFocus()},
+                                    onMenuClick = {
+                                        onMenuClick(it.recipeEntity)
+                                        searchScreenViewModel.toggleMenu(it)
+                                        focusManager.clearFocus()},
+                                    onDetailsClick = {
+                                        searchScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
+                                        onDetailsClick()
+                                        focusManager.clearFocus()},
                                 )
+                            }
+                            item(){
+                                Spacer(Modifier.fillMaxWidth().height(64.dp))
                             }
                         }
                     }

@@ -275,7 +275,6 @@ fun HomeScreen(
                                     }
                                         else if(newRecipeList[index].recipeEntity.onMenu == 1){
                                             homeScreenViewModel.triggerAlert(newRecipeList[index])
-                                            onMenuRemovedClick(newRecipeList[index])
                                         }
                                     },
 //
@@ -315,6 +314,7 @@ fun HomeScreen(
                         confirmButton = {
                             TextButton(
                                 onClick = {
+                                    onMenuRemovedClick(uiAlertState.recipe)
                                     homeScreenViewModel.toggleMenu(uiAlertState.recipe)
                                     homeScreenViewModel.cancelAlert()
                                 }

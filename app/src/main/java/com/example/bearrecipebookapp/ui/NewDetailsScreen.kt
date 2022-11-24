@@ -61,6 +61,7 @@ fun NewDetailsScreen(
     onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
 
 ) {
 
@@ -680,17 +681,21 @@ fun NewDetailsScreen(
                     )
                 }
 
-                val finishedText: String = if(detailsScreenData.recipeEntity.onMenu == 1){
-                    "Mark " +
-                            uiAlertState.recipe.recipeEntity.recipeName +
-                            " as completed and remove from the Menu? (This will also remove it from the Shopping List.)"
-                } else
-                    "Great job! Add " +
-                            uiAlertState.recipe.recipeEntity.recipeName  +
-                            " to Cooked Recipes list?"
+                ////
+
 
                 //Completed Alert
                 if(uiAlertState.showCompletedAlert){
+
+                    val finishedText: String = if(detailsScreenData.recipeEntity.onMenu == 1){
+                        "Mark " +
+                                uiAlertState.recipe.recipeEntity.recipeName +
+                                " as completed and remove from the Menu? (This will also remove it from the Shopping List.)"
+                    } else
+                        "Great job! Add " +
+                                uiAlertState.recipe.recipeEntity.recipeName  +
+                                " to Cooked Recipes list?"
+
                     AlertDialog(
                         onDismissRequest = {},
                         text = {
@@ -702,7 +707,9 @@ fun NewDetailsScreen(
                                     /**
                                      * Add completed count +1 to Database
                                      */
+
                                     if(detailsScreenData.recipeEntity.onMenu == 1) {
+                                        onCompleteClick(detailsScreenData)
                                         detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
                                     }
                                     detailsScreenViewModel.cancelCompletedAlert()

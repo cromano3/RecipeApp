@@ -6,6 +6,7 @@ import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,11 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -87,10 +90,12 @@ fun ShoppingListScreen(
 //            filterWasClicked = false
         }
 
+
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(bottom = 48.dp),
             color = Color(0xFFd8af84)//Color(0xFFb15f33), //Color(0xFFd8af84)
         ) {
+
             Row(
                 Modifier
                     .fillMaxSize()
@@ -101,15 +106,16 @@ fun ShoppingListScreen(
                     modifier = Modifier
 //                        .fillMaxHeight()
                         .weight(0.60f)
-                        .padding(bottom = 48.dp),
+//                        .padding(bottom = 48.dp)
+                    ,
 
                     userScrollEnabled = true,
 //                        .verticalScroll(rememberScrollState()),
 
                     ) {
-                    item(){
-                        Text(text = uiState.counter.toString())
-                    }
+//                    item(){
+//                        Text(text = uiState.counter.toString())
+//                    }
 
                     items(selectedIngredients, key = { it.ingredientName }) {
                         ShoppingListItemWithButton(
@@ -138,7 +144,7 @@ fun ShoppingListScreen(
                 }
                 LazyColumn(
                     modifier = Modifier
-                        .padding(bottom = 48.dp)
+//                        .padding(bottom = 48.dp)
 //                        .fillMaxHeight()
                         .weight(0.40f),
                     state = listState2,
@@ -170,7 +176,34 @@ fun ShoppingListScreen(
 //                    }
                 }
             }
+            if (selectedIngredients.isEmpty()) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                        Spacer(
+//                            Modifier
+//                                .fillMaxWidth()
+//                                .weight(1f)
+//                        )
+//                        Text(text = "The Menu is empty", color = Color(0xFF682300))
+                    Image(
+
+                        painter = painterResource(id = R.drawable.shoppingscreenempty),
+                        contentDescription = null,
+                        alignment = Alignment.Center,
+                        alpha = .5f,
+                        colorFilter = ColorFilter.tint(Color(0xFF682300))
+                    )
+//                        Text(text = "add some recipes", color = Color(0xFF682300))
+//                        Spacer(
+//                            Modifier
+//                                .fillMaxWidth()
+//                                .weight(1f)
+//                        )
+//                    }
+                }
+            }
         }
+
     }
 }
 

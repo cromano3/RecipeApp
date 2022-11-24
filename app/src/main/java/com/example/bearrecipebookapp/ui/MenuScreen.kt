@@ -1,8 +1,14 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,19 +20,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.viewmodel.MenuScreenViewModel
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun MenuScreen(
     onDetailsClick: () -> Unit,
@@ -59,39 +69,50 @@ fun MenuScreen(
             color = Color(0xFFd8af84)
 
         ) {
-            LazyColumn(){
-                items(menuScreenData, key = { it.recipeEntity.recipeName }) {
-                    RecipeCard(
-                        /**
-                         * animate item placement not working for deletes
-                         */
-                        modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
-                        recipeWithIngredients = it,
-                        currentScreen = "WeeklyMenuScreen",
-                        onFavoriteClick =
-                        {
-                            menuScreenViewModel.toggleFavorite(it)
-                            onFavoriteClick(it)
-                        },
-                        onRemoveClick = {
-                            menuScreenViewModel.triggerRemoveAlert(it)
-                            onRemoveClick(it)
-                                        },
-                        onCompleteClick = {
-                            menuScreenViewModel.triggerCompletedAlert(it)
-                            onCompleteClick(it)
-                                          }
-                            ,
-                        onDetailsClick = { menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
-                            onDetailsClick()
-                        }
-                    )
 
+            LazyColumn() {
+                items(menuScreenData, key = { it.recipeEntity.recipeName }) {
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = it.recipeEntity.onMenu == 1,
+                        enter = EnterTransition.None,
+                        exit = ExitTransition.None,
+                    ) {
+                        RecipeCard(
+                            modifier = Modifier
+
+                                .animateEnterExit(
+                                    enter = EnterTransition.None,
+                                    exit = scaleOut(
+                                        animationSpec = TweenSpec(250, 0, FastOutLinearInEasing)
+                                    )
+                                ),
+//                                .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
+                            recipeWithIngredients = it,
+                            currentScreen = "WeeklyMenuScreen",
+                            onFavoriteClick =
+                            {
+                                menuScreenViewModel.toggleFavorite(it)
+                                onFavoriteClick(it)
+                            },
+                            onRemoveClick = { menuScreenViewModel.triggerRemoveAlert(it) },
+                            onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(it) },
+                            onDetailsClick = {
+                                menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
+                                onDetailsClick()
+                            }
+                        )
+
+                    }
                 }
-                item(){
-                    Spacer(Modifier.fillMaxWidth().padding(16.dp))
+                item() {
+                    Spacer(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    )
                 }
-            }
+
+        }
 //            Column(Modifier.verticalScroll(rememberScrollState())) {
 //                for (x in menuScreenData.indices) {
 //
@@ -118,6 +139,27 @@ fun MenuScreen(
 //                }
 //            }
             Box(Modifier.fillMaxSize()){
+                if(menuScreenData.isEmpty()) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Spacer(
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(1f))
+//                        Text(text = "The Menu is empty", color = Color(0xFF682300))
+                        Image(
+                            painterResource(id = R.drawable.hungry),
+                            contentDescription = null,
+                            alpha = .5f,
+                            colorFilter = ColorFilter.tint(Color(0xFF682300))
+                        )
+//                        Text(text = "add some recipes", color = Color(0xFF682300))
+                        Spacer(
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(1f))
+                    }
+                }
+
                 //Remove Alert
                 if(uiAlertState.showRemoveAlert){
                     AlertDialog(
@@ -129,6 +171,7 @@ fun MenuScreen(
                         confirmButton = {
                             TextButton(
                                 onClick = {
+                                    onRemoveClick(uiAlertState.recipe)
                                     menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
                                     menuScreenViewModel.cancelRemoveAlert()
                                 }
@@ -162,6 +205,7 @@ fun MenuScreen(
                                     /**
                                      * Add completed count +1 to Database
                                      */
+                                    onCompleteClick(uiAlertState.recipe)
                                     menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
                                     menuScreenViewModel.cancelCompletedAlert()
                                 }

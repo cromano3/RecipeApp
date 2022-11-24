@@ -192,6 +192,11 @@ fun BearRecipeApp(
                             scaffoldState.snackbarHostState.showSnackbar(
                                 message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
                                 duration = SnackbarDuration.Short)
+                    }},
+                    onCompleteClick = {coroutineScope.launch{
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            message = "Completed cooking " + it.recipeEntity.recipeName + "!!",
+                            duration = SnackbarDuration.Short)
                     }}
                 )
             }
@@ -199,7 +204,27 @@ fun BearRecipeApp(
             composable(route = "SearchScreen"){
                 SearchScreen(
                     onGoBackClick = { navController.popBackStack() },
-                    onDetailsClick = { navController.navigate("DetailsScreen") }
+                    onDetailsClick = { navController.navigate("DetailsScreen") },
+                    onFavoriteClick = {coroutineScope.launch{
+                        if(it.isFavorite == 1)
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Removed " + it.recipeName + " from Favorites.",
+                                duration = SnackbarDuration.Short)
+                        else if(it.isFavorite == 0)
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Added " + it.recipeName + " to Favorites.",
+                                duration = SnackbarDuration.Short)
+                    }},
+                    onMenuClick = {coroutineScope.launch{
+                        if(it.onMenu == 1)
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Removed " + it.recipeName + " from Menu.",
+                                duration = SnackbarDuration.Short)
+                        else if(it.isFavorite == 0)
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Added " + it.recipeName + " to Menu.",
+                                duration = SnackbarDuration.Short)
+                    }},
                 )
 
             }

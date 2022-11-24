@@ -8,10 +8,16 @@ import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.UiAlertStateMenuScreenDataModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class MenuScreenViewModel(application: Application): ViewModel() {
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private val repository: MenuScreenRepository
 
@@ -75,11 +81,15 @@ class MenuScreenViewModel(application: Application): ViewModel() {
 
         //this should always be true
 //        if(recipe.recipeEntity.onMenu == 1){
-        for(x in 0 until recipe.ingredientsList.size){
-            repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded - 1)
-            repository.setIngredientQuantityOwned(recipe.ingredientsList[x], 0)
+        coroutineScope.launch(Dispatchers.IO) {
+            repository.setToFadeOut(recipe.recipeEntity.recipeName)
+            delay(300)
+            for (x in 0 until recipe.ingredientsList.size) {
+                repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded - 1)
+                repository.setIngredientQuantityOwned(recipe.ingredientsList[x], 0)
+            }
+            repository.removeFromMenu(recipe.recipeEntity.recipeName)
         }
-        repository.removeFromMenu(recipe.recipeEntity.recipeName)
 
     }
 

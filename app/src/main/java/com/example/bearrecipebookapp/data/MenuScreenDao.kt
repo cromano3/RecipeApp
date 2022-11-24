@@ -10,7 +10,7 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 interface MenuScreenDao {
 
     @Transaction
-    @Query("SELECT * FROM recipe_table WHERE on_menu = 1")
+    @Query("SELECT * FROM recipe_table WHERE on_menu > 0")
     fun getData(): LiveData<List<RecipeWithIngredients>>
 
     @Transaction
@@ -28,6 +28,10 @@ interface MenuScreenDao {
     @Transaction
     @Query("UPDATE recipe_table SET on_menu = 0 WHERE recipe_name = :recipeName")
     fun removeFromMenu(recipeName: String)
+
+    @Transaction
+    @Query("UPDATE recipe_table SET on_menu = 2 WHERE recipe_name = :recipeName")
+    fun setToFadeOut(recipeName: String)
 
     @Query("UPDATE recipe_table SET is_favorite = :isFavoriteStatus WHERE recipe_name = :name")
     fun updateFavorite(name: String, isFavoriteStatus: Int)

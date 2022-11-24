@@ -97,9 +97,9 @@ fun RecipeCard(
 
     val gradientWidth = with(LocalDensity.current) { 400.dp.toPx() }
 
-    Column(){
+    Column(modifier = modifier){
         Surface(
-            modifier = modifier
+            modifier = Modifier
                 .padding(start = 8.dp, end = 8.dp, top = 16.dp,)
                 .height(176.dp)
                 .fillMaxWidth()
@@ -348,7 +348,6 @@ fun RecipeCard(
         //Bottom Bar surface
         Surface(
             modifier =
-//            modifier
                 Modifier
                 .padding(start = 8.dp , end = 8.dp)
                 .height(40.dp)
