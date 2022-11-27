@@ -20,6 +20,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
@@ -133,8 +134,11 @@ fun BearRecipeApp(
     ){
         NavHost(
             navController = navController,
-            startDestination = "RecipeScreen",
+            startDestination = "ProfileScreen",
         ){
+            composable(route = "ProfileScreen"){
+                ProfileScreen()
+            }
 
             composable(route = "RecipeScreen"){
                 //Recipe Book Main Screen
@@ -317,11 +321,23 @@ fun BearAppBottomBar(
 
         val routes = listOf("RecipeScreen", "WeeklyMenuScreen", "ShoppingScreen")
 
+        var selected = false
+        var alpha = 1f
 
 
         routes.forEach{ it ->
+            if(it == currentRoute){
+                selected = true
+                alpha = 1f
+            }
+            else{
+                selected = false
+                alpha = 0.5f
+            }
             BottomNavigationItem(
-                selected = (currentRoute == it),
+                selected = selected
+//                (it == currentRoute)
+                ,
                 onClick = {
 
                     if(currentRoute == "SearchScreen" && it == "RecipeScreen"){
@@ -348,7 +364,18 @@ fun BearAppBottomBar(
                         "WeeklyMenuScreen" -> Icon(Icons.Outlined.Restaurant, contentDescription = null)
                         "ShoppingScreen" -> Icon(Icons.Outlined.ShoppingCart, contentDescription = null)
                     }
-                }
+                },
+                modifier = Modifier
+                    .alpha(alpha)
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            listOf(
+                                Color(0xFFFFFFFF),
+                                Color(0xFFFFFFFF)
+                            )
+                        ), alpha = 0.1f
+                    )
+
             )
         }
 
@@ -473,7 +500,8 @@ fun BearAppTopBar(
                                 width = 2.dp,
                                 brush = (Brush.horizontalGradient(
                                     colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                    tileMode = TileMode.Mirror)),
+                                    tileMode = TileMode.Mirror
+                                )),
                                 shape = RoundedCornerShape(25.dp)
                             ),
 //                        color = Color(0xFF682300),
