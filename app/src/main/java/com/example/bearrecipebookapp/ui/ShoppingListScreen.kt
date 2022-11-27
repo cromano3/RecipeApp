@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
@@ -52,7 +53,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ShoppingListScreen(
-    onDetailsClick: () -> Unit
+    onDetailsClick: () -> Unit,
+    onSystemBackClick: () -> Unit,
 ) {
     val owner = LocalViewModelStoreOwner.current
 
@@ -78,6 +80,10 @@ fun ShoppingListScreen(
         val listState = rememberLazyListState()
         val listState2 = rememberLazyListState()
 
+        BackHandler {
+            onSystemBackClick()
+        }
+
         if(filterWasClicked) {
 //            LaunchedEffect(Unit) {
             coroutineScope.launch {
@@ -92,7 +98,9 @@ fun ShoppingListScreen(
 
 
         Surface(
-            modifier = Modifier.fillMaxSize().padding(bottom = 48.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 48.dp),
             color = Color(0xFFd8af84)//Color(0xFFb15f33), //Color(0xFFd8af84)
         ) {
 

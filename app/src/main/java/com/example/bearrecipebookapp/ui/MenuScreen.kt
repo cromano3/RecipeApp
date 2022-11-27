@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -43,6 +44,7 @@ fun MenuScreen(
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
     onCompleteClick: (RecipeWithIngredients) -> Unit,
     onRemoveClick: (RecipeWithIngredients) -> Unit,
+    onSystemBackClick: () -> Unit,
 ) {
 
     val owner = LocalViewModelStoreOwner.current
@@ -60,6 +62,8 @@ fun MenuScreen(
         val menuScreenData by menuScreenViewModel.menuScreenData.observeAsState(listOf())
 
         val uiAlertState by menuScreenViewModel.uiAlertState.collectAsState()
+
+        BackHandler {  onSystemBackClick() }
 
 
         Surface(

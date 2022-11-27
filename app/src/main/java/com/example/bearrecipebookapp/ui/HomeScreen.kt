@@ -11,12 +11,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -122,73 +121,73 @@ fun HomeScreen(
         ){
 
             Column{
-                Row(
-                    Modifier
-                        .background(Color(0xFF682300))
-                        .fillMaxWidth()
-                        .height(54.dp)
-                )
-                {
-                    Surface(
-                        Modifier
-                            .wrapContentSize()
-                            .clickable(onClick = onSearchClick)
-                            .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
-                            .border(
-                                width = 2.dp,
-                                brush = (Brush.horizontalGradient(
-                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                    tileMode = TileMode.Mirror)),
-                                shape = RoundedCornerShape(25.dp)
-                            ),
-//                        color = Color(0xFF682300),
-                        shape = RoundedCornerShape(25.dp)
-                    ){
-                        TextField(
-                            value = "",
-                            onValueChange = {},
-                            modifier = Modifier
-//                                .alpha(.8f)
-                            ,
-                            enabled = false,
-                            readOnly = true,
-                            leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
-                            shape = RoundedCornerShape(25.dp),
-                            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0xFFd8af84), textColor = Color(0xFF000000))
-                        )
-                    }
-                    Spacer(Modifier.weight(1f))
-                    FloatingActionButton(
-                        onClick = { },
-                        elevation = FloatingActionButtonDefaults.elevation(8.dp),
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .border(
-                                width = 2.dp,
-                                brush = (Brush.horizontalGradient(colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33),),
-                                    tileMode = TileMode.Mirror)),
-                                shape = CircleShape
-                            )
-                            .align(Alignment.CenterVertically)
-                            .size(36.dp)
-                            //the background of the square for this button, it stays a square even tho
-                            //we have shape = circle shape.  If this is not changed you see a solid
-                            //square for the "background" of this button.
-                            .background(color = Color.Transparent),
-                        shape = CircleShape,
-                        //this is the background color of the button after the "Shaping" is applied.
-                        //it is different then the background attribute above.
-                        backgroundColor = Color(0xFF682300)
-                    ) {
-                        Icon(
-                            Icons.Outlined.Person,
-                            tint = Color(0xFFd8af84),
-                            modifier = Modifier.size(20.dp),
-                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                            contentDescription = null
-                        )
-                    }
-                }
+//                Row(
+//                    Modifier
+//                        .background(Color(0xFF682300))
+//                        .fillMaxWidth()
+//                        .height(54.dp)
+//                )
+//                {
+//                    Surface(
+//                        Modifier
+//                            .wrapContentSize()
+//                            .clickable(onClick = onSearchClick)
+//                            .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
+//                            .border(
+//                                width = 2.dp,
+//                                brush = (Brush.horizontalGradient(
+//                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                    tileMode = TileMode.Mirror)),
+//                                shape = RoundedCornerShape(25.dp)
+//                            ),
+////                        color = Color(0xFF682300),
+//                        shape = RoundedCornerShape(25.dp)
+//                    ){
+//                        TextField(
+//                            value = "",
+//                            onValueChange = {},
+//                            modifier = Modifier
+////                                .alpha(.8f)
+//                            ,
+//                            enabled = false,
+//                            readOnly = true,
+//                            leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
+//                            shape = RoundedCornerShape(25.dp),
+//                            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0xFFd8af84), textColor = Color(0xFF000000))
+//                        )
+//                    }
+//                    Spacer(Modifier.weight(1f))
+//                    FloatingActionButton(
+//                        onClick = { },
+//                        elevation = FloatingActionButtonDefaults.elevation(8.dp),
+//                        modifier = Modifier
+//                            .padding(end = 8.dp)
+//                            .border(
+//                                width = 2.dp,
+//                                brush = (Brush.horizontalGradient(colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33),),
+//                                    tileMode = TileMode.Mirror)),
+//                                shape = CircleShape
+//                            )
+//                            .align(Alignment.CenterVertically)
+//                            .size(36.dp)
+//                            //the background of the square for this button, it stays a square even tho
+//                            //we have shape = circle shape.  If this is not changed you see a solid
+//                            //square for the "background" of this button.
+//                            .background(color = Color.Transparent),
+//                        shape = CircleShape,
+//                        //this is the background color of the button after the "Shaping" is applied.
+//                        //it is different then the background attribute above.
+//                        backgroundColor = Color(0xFF682300)
+//                    ) {
+//                        Icon(
+//                            Icons.Outlined.Person,
+//                            tint = Color(0xFFd8af84),
+//                            modifier = Modifier.size(20.dp),
+//                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+//                            contentDescription = null
+//                        )
+//                    }
+//                }
 
                 LazyRow(
                     modifier = Modifier.background(
