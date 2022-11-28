@@ -79,6 +79,9 @@ class MenuScreenViewModel(application: Application): ViewModel() {
 
     fun removeFromMenu(recipe: RecipeWithIngredients){
 
+        repository.cleanIngredients()
+        repository.cleanShoppingFilters()
+
         //this should always be true
 //        if(recipe.recipeEntity.onMenu == 1){
         coroutineScope.launch(Dispatchers.IO) {

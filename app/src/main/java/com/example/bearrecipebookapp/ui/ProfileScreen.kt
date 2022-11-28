@@ -53,7 +53,7 @@ fun ProfileScreen() {
 
         val uiState by profileScreenViewModel.uiState.collectAsState()
 
-        val fadedColors = listOf(Color(0xBFD8AF84), Color(0xBFB15F33))
+        val fadedColors = listOf(Color(0x80D8AF84), Color(0x80B15F33))
         val fullColors = listOf(Color(0xFFd8af84), Color(0xFFb15f33))
 
 
@@ -185,7 +185,7 @@ fun ProfileScreen() {
                                     shape = CircleShape
                                 )
                                 .size(36.dp)
-                                .alpha(if (uiState.activeTab == "favorites") 1f else 0.75f),
+                                .alpha(if (uiState.activeTab == "favorites") 1f else 0.5f),
                             shape = CircleShape,
                             color = Color(0xFF682300)
                         ) {
@@ -199,7 +199,7 @@ fun ProfileScreen() {
                                 )
                             }
                         }
-                        Text("Favorites", modifier = Modifier.alpha(if (uiState.activeTab == "favorites") 1f else 0.75f), color = Color(0xFFd8af84))
+                        Text("Favorites", modifier = Modifier.alpha(if (uiState.activeTab == "favorites") 1f else 0.5f), color = Color(0xFFd8af84))
                     }
                 }
                 Surface(
@@ -237,7 +237,7 @@ fun ProfileScreen() {
                                     shape = CircleShape
                                 )
                                 .size(36.dp)
-                                .alpha(if (uiState.activeTab == "cooked") 1f else 0.75f),
+                                .alpha(if (uiState.activeTab == "cooked") 1f else 0.5f),
                             shape = CircleShape,
 
                         ) {
@@ -250,7 +250,7 @@ fun ProfileScreen() {
                                 )
                             }
                         }
-                        Text("Cooked", color = Color(0xFFd8af84), modifier = Modifier.alpha(if (uiState.activeTab == "cooked") 1f else 0.75f))
+                        Text("Cooked", color = Color(0xFFd8af84), modifier = Modifier.alpha(if (uiState.activeTab == "cooked") 1f else 0.5f))
                     }
                 }
                 Surface(
@@ -287,7 +287,7 @@ fun ProfileScreen() {
                                     shape = CircleShape
                                 )
                                 .size(36.dp)
-                                .alpha(if (uiState.activeTab == "reviews") 1f else 0.75f),
+                                .alpha(if (uiState.activeTab == "reviews") 1f else 0.5f),
                             shape = CircleShape,
                             color = Color(0xFF682300)
                         ) {
@@ -301,7 +301,7 @@ fun ProfileScreen() {
                                 )
                             }
                         }
-                        Text("Reviews", color = Color(0xFFd8af84), modifier = Modifier.alpha(if (uiState.activeTab == "reviews") 1f else 0.75f))
+                        Text("Reviews", color = Color(0xFFd8af84), modifier = Modifier.alpha(if (uiState.activeTab == "reviews") 1f else 0.5f))
                     }
                 }
             }

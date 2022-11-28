@@ -15,6 +15,14 @@ interface DetailsScreenDao {
 
 
     @Transaction
+    @Query("UPDATE recipe_table SET is_shopping_filter = 1")
+    fun cleanShoppingFilters()
+
+    @Transaction
+    @Query("UPDATE ingredient_table SET is_shown = 1 WHERE quantity_needed > 0")
+    fun cleanIngredients()
+
+    @Transaction
     @Query("UPDATE ingredient_table SET quantity_needed = :quantityNeeded WHERE ingredient_name = :name")
     fun updateQuantityNeeded(name: String, quantityNeeded: Int)
 

@@ -11,6 +11,14 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 @Dao
 interface HomeScreenDao {
 
+    @Transaction
+    @Query("UPDATE recipe_table SET is_shopping_filter = 1")
+    fun cleanShoppingFilters()
+
+    @Transaction
+    @Query("UPDATE ingredient_table SET is_shown = 1 WHERE quantity_needed > 0")
+    fun cleanIngredients()
+
 
     @Transaction
     @Query("UPDATE filters_table SET is_active_filter = 2 WHERE filter_name = :name")

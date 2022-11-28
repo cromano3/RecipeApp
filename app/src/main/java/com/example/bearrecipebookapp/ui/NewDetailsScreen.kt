@@ -137,128 +137,7 @@ fun NewDetailsScreen(
         ) {
 //            BackHandler { onGoBackClick() }
             Column() {
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(48.dp)
-//                        .background(Color(0xFF682300)),
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    horizontalArrangement = Arrangement.Start
-//                ) {
-//                    IconButton(
-//                        // onClick = {onGoBackClick(detailsScreenData)},
-//                        onClick = { onGoBackClick() },
-//                        modifier =
-//                        Modifier
-//                            .size(48.dp)
-//                            .align(Alignment.CenterVertically)
-//                            .background(color = Color.Transparent),
-//                        // color = Color.Transparent
-//
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Outlined.ArrowBack,
-//                            contentDescription = null,
-//                            modifier = Modifier
-//                                .size(24.dp),
-//                            // .padding(start = 16.dp)
-//                            // .clickable(onClick = {onGoBackClick(detailsScreenData)}),
-//                            tint = Color(0xFFd8af84)
-//                        )
-//                    }
-//
-//                    Spacer(Modifier.weight(1f))
-//
-//                    Text(
-//                        text = detailsScreenData.recipeEntity.recipeName,
-//                        modifier = Modifier.width(200.dp),
-//                        //  .weight(1f),
-//                        color = Color(0xFFd8af84),
-//                        textAlign = TextAlign.Center,
-//                        fontSize = 22.sp,
-//                        fontFamily = Cabin,
-//                        fontWeight = FontWeight.Bold,
-//                        lineHeight = 1.0.em,
-//                        style = MaterialTheme.typography.h4.merge(
-//                            TextStyle(
-//                                platformStyle = PlatformTextStyle(
-//                                    includeFontPadding = false
-//                                ),
-//                                lineHeightStyle = LineHeightStyle(
-//                                    alignment = LineHeightStyle.Alignment.Top,
-//                                    trim = LineHeightStyle.Trim.FirstLineTop
-//                                )
-//                            )
-//                        ),
-//
-//                        )
-//
-//                    Spacer(Modifier.weight(1f))
-//
-//                    Icon(
-//                        imageVector = Icons.Outlined.Share,
-//                        contentDescription = null,
-//                        modifier = Modifier
-//                            .size(24.dp),
-//                        tint = Color(0xFFd8af84)
-//                    )
-//
-//                    Spacer(Modifier.size(16.dp))
-//
-//                    val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
-//
-//                    val icon: ImageVector = if (detailsScreenData.recipeEntity.isFavorite == 0) {
-//                        Icons.Outlined.FavoriteBorder
-//
-//                    } else {
-//                        Icons.Outlined.Favorite
-//                    }
-//
-//                    FloatingActionButton(
-//                        onClick = {
-//                            onFavoriteClick(detailsScreenData)
-//                            detailsScreenViewModel.toggleFavorite(detailsScreenData)
-//                                  },
-//                        elevation = FloatingActionButtonDefaults.elevation(8.dp),
-//                        modifier = Modifier
-//                            .padding(end = 8.dp)
-//                            .border(
-//                                width = 2.dp,
-//                                brush = (Brush.horizontalGradient(
-//                                    colors = listOf(
-//                                        Color(0xFFd8af84),
-//                                        Color(0xFFb15f33),
-//
-//                                        ),
-//                                    endX = gradientWidthButton,
-//                                    tileMode = TileMode.Mirror
-//                                )),
-//                                shape = CircleShape
-//                            )
-//                            // .align(Alignment.BottomEnd)
-//                            .size(36.dp)
-//                            //the background of the square for this button, it stays a square even tho
-//                            //we have shape = circle shape.  If this is not changed you see a solid
-//                            //square for the "background" of this button.
-//                            .background(color = Color.Transparent),
-//                        shape = CircleShape,
-//                        //this is the background color of the button after the "Shaping" is applied.
-//                        //it is different then the background attribute above.
-//                        backgroundColor = Color(0xFF682300)
-//                    ) {
-//                        Icon(
-//                            icon,
-//                            tint = Color(0xFFd8af84),
-//                            modifier = Modifier.size(20.dp),
-//                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-//                            contentDescription = null
-//                        )
-//                    }
-//                    Spacer(Modifier.size(8.dp))
-//                }
 
-
-//            }
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -289,16 +168,6 @@ fun NewDetailsScreen(
                             modifier = Modifier
                                 .padding(bottom = 16.dp)
                                 .wrapContentSize(),
-
-//                            .background(
-//                                brush = Brush.horizontalGradient(
-//                                    colors = listOf(Color(0xFF682300),Color(0xFFb15f33) ),
-//                                    endX = gradientWidth,
-//                                    tileMode = TileMode.Mirror
-//                                ),
-//                                shape = RoundedCornerShape((25.dp))
-//                            ),
-                            //   .clickable(enabled = !selected) { selected = !selected },
                             shape = RoundedCornerShape(10.dp),
                             color = Color(0xFFf8ea9a),
                             //color = Color(0xFF682300),//Color(0xFFd8af84),

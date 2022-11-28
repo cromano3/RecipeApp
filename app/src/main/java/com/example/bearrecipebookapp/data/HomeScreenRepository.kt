@@ -25,6 +25,17 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
     var newRecipeList: LiveData<List<RecipeWithIngredients>> = homeScreenDao.getRecipeList()
 
 
+    fun cleanShoppingFilters(){
+        coroutineScope.launch(Dispatchers.IO) {
+            homeScreenDao.cleanShoppingFilters()
+        }
+    }
+
+    fun cleanIngredients(){
+        coroutineScope.launch(Dispatchers.IO) {
+            homeScreenDao.cleanIngredients()
+        }
+    }
 
 
 

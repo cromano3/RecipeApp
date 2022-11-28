@@ -48,4 +48,17 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
             detailsScreenDao.setIngredientQuantityOwned(ingredientEntity.ingredientName, quantityOwned)
         }
     }
+
+    fun cleanShoppingFilters(){
+        coroutineScope.launch(Dispatchers.IO) {
+            detailsScreenDao.cleanShoppingFilters()
+        }
+    }
+
+    fun cleanIngredients(){
+        coroutineScope.launch(Dispatchers.IO) {
+            detailsScreenDao.cleanIngredients()
+        }
+    }
+
 }

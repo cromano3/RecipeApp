@@ -84,7 +84,6 @@ fun BearRecipeApp(
     val scaffoldState = rememberScaffoldState()
 
 
-
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { BearAppTopBar(
@@ -92,7 +91,7 @@ fun BearRecipeApp(
             navController = navController,
             onHomeClick = {},
             onBackClick = { navController.popBackStack() },
-            onProfileClick = {},
+            onProfileClick = { navController.navigate("ProfileScreen") },
             onSearchClick = { navController.navigate("SearchScreen") },
             onFavoriteClick =
             {coroutineScope.launch{
@@ -107,12 +106,7 @@ fun BearRecipeApp(
             }},
         ) },
         bottomBar = { BearAppBottomBar(navController = navController) },
-//        bottomBar = {
-//            BearAppTopBar(
-//                showTopBar = showBottomBar,
-//                onClick = {navController.navigate(it)},
-//            )
-//        },
+
         snackbarHost = {
             SnackbarHost(it) { data ->
                 Snackbar(
@@ -134,7 +128,7 @@ fun BearRecipeApp(
     ){
         NavHost(
             navController = navController,
-            startDestination = "ProfileScreen",
+            startDestination = "RecipeScreen",
         ){
             composable(route = "ProfileScreen"){
                 ProfileScreen()
@@ -143,7 +137,7 @@ fun BearRecipeApp(
             composable(route = "RecipeScreen"){
                 //Recipe Book Main Screen
                 HomeScreen(
-                    onSearchClick = {navController.navigate("SearchScreen")},
+//                    onSearchClick = {navController.navigate("SearchScreen")},
                     onDetailsClick = {
                         navController.navigate("DetailsScreen",
 //                            navOptions { popUpTo("DetailsScreen") { inclusive = true } }
@@ -306,8 +300,6 @@ fun BearRecipeApp(
 @Composable
 fun BearAppBottomBar(
     navController: NavHostController,
-//    showBottomBar: Boolean,
-//    onClick: (String) -> Unit,
 )
 {
     BottomNavigation(
@@ -344,11 +336,14 @@ fun BearAppBottomBar(
                         navController.popBackStack()
                     }
                     if(currentRoute == "DetailsScreen"){
-
                         navController.popBackStack()
                     }
+                    if(currentRoute == "ProfileScreen"){
+                        navController.popBackStack()
+                    }
+
                       navController.navigate(it){
-//                          println("route $currentRoute destination $d")
+
                           popUpTo(navController.graph.findStartDestination().id) {
                               saveState = true
                           }
@@ -356,8 +351,7 @@ fun BearAppBottomBar(
                           restoreState = true
 
                       }
-//                    println("route $currentRoute destination $d")
-                          },
+                },
                 icon = {
                     when(it){
                         "RecipeScreen" -> Icon(Icons.Outlined.MenuBook, contentDescription = null)
@@ -462,7 +456,7 @@ fun BearAppTopBar(
                 title = detailsScreenData.recipeEntity.recipeName
                 textModifier = Modifier.width(200.dp)
                 icon = Icons.Outlined.ArrowBack
-                icon2 = Icons.Outlined.Person
+
                 clickEffectLeft = onBackClick
                 clickEffectRight = {
                     topBarViewModel.toggleFavorite(detailsScreenData)
@@ -605,7 +599,6 @@ fun BearAppTopBar(
                             )),
                             shape = CircleShape
                         )
-                        // .align(Alignment.BottomEnd)
                         .size(36.dp)
                         //the background of the square for this button, it stays a square even tho
                         //we have shape = circle shape.  If this is not changed you see a solid

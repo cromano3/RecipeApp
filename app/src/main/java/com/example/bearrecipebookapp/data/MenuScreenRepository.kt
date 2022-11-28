@@ -20,6 +20,19 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
         }
     }
 
+    fun cleanShoppingFilters(){
+        coroutineScope.launch(Dispatchers.IO) {
+            menuScreenDao.cleanShoppingFilters()
+        }
+    }
+
+    fun cleanIngredients(){
+        coroutineScope.launch(Dispatchers.IO) {
+            menuScreenDao.cleanIngredients()
+        }
+    }
+
+
     suspend fun removeFromMenu(recipeName: String){
 //        coroutineScope.launch(Dispatchers.IO) {
             menuScreenDao.removeFromMenu(recipeName)

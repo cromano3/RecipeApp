@@ -45,7 +45,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreen(
-    onSearchClick: () -> Unit,
+//    onSearchClick: () -> Unit,
     onDetailsClick: () -> Unit,
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
     onMenuClick: (RecipeWithIngredients) -> Unit,
@@ -357,7 +357,7 @@ fun FiltersButton(
         "Italian" -> R.drawable.farfalle
         "Japanese" -> R.drawable.sushi
         "Mexican" -> R.drawable.taco
-        "Baked Goods" -> R.drawable.bake
+        "Baking" -> R.drawable.bake
         "Sweets" -> R.drawable.baking
         "Vegan" -> R.drawable.vegan
         else -> R.drawable.bagel
@@ -473,7 +473,7 @@ fun FiltersButton(
 @Composable
 @Preview
 fun MyPreview420() {
-    HomeScreen(onSearchClick = {}, onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {}, onMenuRemovedClick = {} )
+    HomeScreen(onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {}, onMenuRemovedClick = {} )
 
 
 }

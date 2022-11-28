@@ -31,6 +31,9 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
     fun removeFromMenu(recipe: RecipeWithIngredientsAndInstructions){
 
+        repository.cleanIngredients()
+        repository.cleanShoppingFilters()
+
         for(x in 0 until recipe.ingredientsList.size){
             repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded - 1)
             repository.setIngredientQuantityOwned(recipe.ingredientsList[x], 0)
@@ -39,6 +42,9 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
     }
 
     fun addToMenu(recipe: RecipeWithIngredientsAndInstructions){
+
+        repository.cleanIngredients()
+        repository.cleanShoppingFilters()
 
         for(x in 0 until recipe.ingredientsList.size){
             repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded + 1)

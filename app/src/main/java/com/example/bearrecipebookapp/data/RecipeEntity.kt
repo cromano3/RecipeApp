@@ -37,6 +37,9 @@ class RecipeEntity(
     @ColumnInfo(name = "is_search_result")
     var isSearchResult: Int = 0,
 
+    @ColumnInfo(name = "cooked_count")
+    var cookedCount: Int = 0,
+
 //
 //    @ColumnInfo(name = "ingredients")
 //    val ingredients: String,
