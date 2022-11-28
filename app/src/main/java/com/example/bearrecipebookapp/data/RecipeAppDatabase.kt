@@ -28,6 +28,7 @@ public abstract class RecipeAppDatabase : RoomDatabase() {
     abstract fun ShoppingListScreenDao(): ShoppingListScreenDao
     abstract fun SearchScreenDao(): SearchScreenDao
     abstract fun TopBarDao(): TopBarDao
+    abstract fun ProfileScreenDao(): ProfileScreenDao
 
     companion object {
 

@@ -784,5 +784,4 @@ class DetailsScreenViewModelFactory(
           //  recipeName
         ) as T
     }
-
 }
