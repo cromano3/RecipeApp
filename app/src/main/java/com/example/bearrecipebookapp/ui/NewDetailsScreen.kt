@@ -234,7 +234,7 @@ fun NewDetailsScreen(
                                 Row(
                                     //Modifier.fillMaxSize(),
                                     horizontalArrangement = Arrangement.Start,
-                                    modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
+                                    modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 12.dp)
                                 )
                                 {
 
@@ -261,7 +261,6 @@ fun NewDetailsScreen(
                                 modifier = Modifier
                                     //.padding(start = 8.dp, top = 8.dp)
                                     .wrapContentSize()
-//                        .alpha(alphaLevel)
                                     .border(
                                         width = 2.dp,
                                         brush = (Brush.horizontalGradient(
@@ -290,7 +289,7 @@ fun NewDetailsScreen(
                             ) {
                                 Row(
                                     horizontalArrangement = Arrangement.Start,
-                                    modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
+                                    modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 12.dp)
                                 )
                                 {
 

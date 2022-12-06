@@ -479,7 +479,7 @@ fun BearAppTopBar(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp)
+                    .height(64.dp)
                     .background(Color(0xFF682300)),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
@@ -487,7 +487,7 @@ fun BearAppTopBar(
                 if(showSearch){
                     Surface(
                         Modifier
-                            .wrapContentSize()
+                            .height(56.dp)
                             .clickable(onClick = onSearchClick)
                             .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
                             .border(

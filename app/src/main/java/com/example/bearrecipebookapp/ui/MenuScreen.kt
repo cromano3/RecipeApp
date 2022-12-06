@@ -63,6 +63,8 @@ fun MenuScreen(
 
         val uiAlertState by menuScreenViewModel.uiAlertState.collectAsState()
 
+//        val coroutineScope = rememberCoroutineScope()
+
         BackHandler {  onSystemBackClick() }
 
 
@@ -101,8 +103,11 @@ fun MenuScreen(
                             onRemoveClick = { menuScreenViewModel.triggerRemoveAlert(it) },
                             onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(it) },
                             onDetailsClick = {
-                                menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
-                                onDetailsClick()
+//                                coroutineScope.launch(Dispatchers.IO) {
+                                    menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
+                                    onDetailsClick()
+//                                }
+
                             }
                         )
 

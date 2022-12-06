@@ -34,6 +34,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
@@ -115,7 +116,7 @@ fun SearchScreen(
                             searchScreenViewModel.updatePreview( it, it.text)
                         },
                         modifier = Modifier.focusRequester(focusRequester),
-                        textStyle = TextStyle(color = Color(0xFF000000)),
+                        textStyle = TextStyle.Default.copy(color = Color(0xFF000000), fontSize = 16.sp),
                         leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
                         trailingIcon =
                         {
@@ -190,7 +191,10 @@ fun SearchScreen(
                                         })
                                 )
                                 {
-                                    Text(text = it.name, color = Color(0xFF000000))
+                                    Text(
+                                        text = it.name,
+                                        modifier = Modifier.padding(start = 16.dp, top = 8.dp),
+                                        color = Color(0xFF000000))
                                 }
                             }
                             item(){
