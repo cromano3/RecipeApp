@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -14,8 +15,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -26,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -79,16 +86,53 @@ fun SearchScreen(
                 Row(){
 
                     //Go back button
+                    IconButton(
+                        onClick = { onGoBackClick() },
+                        modifier =
+                        Modifier
+                            .size(48.dp)
+                            .align(Alignment.CenterVertically)
+                            .background(color = Color.Transparent),
+                        // color = Color.Transparent
+
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.ArrowBack,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(24.dp),
+                            // .padding(start = 16.dp)
+                            // .clickable(onClick = {onGoBackClick(detailsScreenData)}),
+                            tint = Color(0xFF000000)
+                        )
+                    }
 
                     //Search field
                     TextField(
                         value = uiState.currentInput,
-                        onValueChange = {
-//                            text = it
+                        onValueChange =
+                        {
                             searchScreenViewModel.updatePreview( it, it.text)
-                                        },
+                        },
                         modifier = Modifier.focusRequester(focusRequester),
                         textStyle = TextStyle(color = Color(0xFF000000)),
+                        leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
+                        trailingIcon =
+                        {
+                            if(uiState.currentInput.text.isNotEmpty()){
+                                Surface(
+                                    color = Color.Transparent,
+                                    modifier = Modifier.clickable {  searchScreenViewModel.updatePreview( TextFieldValue(""), "") }
+                                )
+                                {
+                                    Icon(
+                                        Icons.Outlined.Close,
+                                        contentDescription = null,
+                                        tint = Color(0xFF000000)
+                                    )
+                                }
+                            }
+                        },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                         keyboardActions = KeyboardActions(
                             onSearch = {

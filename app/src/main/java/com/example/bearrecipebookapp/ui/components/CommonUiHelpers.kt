@@ -389,10 +389,10 @@ fun RecipeCard(
                             onClick = onRemoveClick,
                         ),// { selected = !selected },
                     shape = RoundedCornerShape(25.dp),
-                    color = Color(0xFFf8ea9a),
+                    color = Color(0xFF682300),
                     elevation = 4.dp,
                     //color = Color(0xFF682300),//Color(0xFFd8af84),
-                    contentColor = Color(0xFF682300),
+//                    contentColor = Color(0xFFd8af84),
                 ) {
                     Row(
                         //Modifier.fillMaxSize(),
@@ -408,7 +408,7 @@ fun RecipeCard(
 //                                .padding(start = 0.dp, end = 0.dp)
                                 .align(Alignment.CenterVertically)
                                 .alpha(0.55f),
-                            color = Color(0xFF682300),
+                            color = Color(0xFFd8af84),
 //                            textDecoration = decoration,
                             fontSize = 18.sp,
                             textAlign = TextAlign.Center,
@@ -436,10 +436,10 @@ fun RecipeCard(
                             onClick = onCompleteClick,
                         ),// { selected = !selected },
                     shape = RoundedCornerShape(25.dp),
-                    color = Color(0xFFf8ea9a),
+                    color = Color(0xFF682300),
                     elevation = 4.dp,
                     //color = Color(0xFF682300),//Color(0xFFd8af84),
-                    contentColor = Color(0xFF682300),
+//                    contentColor = Color(0xFF682300),
                 ) {
                     Row(
                         //Modifier.fillMaxSize(),
@@ -455,7 +455,7 @@ fun RecipeCard(
 //                                   .padding(start = 6.dp, end = 6.dp)
                                 .align(Alignment.CenterVertically),
 //                                .alpha(alphaLevel),
-                            color = Color(0xFF682300),
+                            color = Color(0xFFd8af84),
 //                            textDecoration = decoration,
                             fontSize = 18.sp,
                             textAlign = TextAlign.Center,
