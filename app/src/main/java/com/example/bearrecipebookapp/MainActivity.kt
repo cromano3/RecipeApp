@@ -131,7 +131,18 @@ fun BearRecipeApp(
             startDestination = "RecipeScreen",
         ){
             composable(route = "ProfileScreen"){
-                ProfileScreen()
+                ProfileScreen(
+                    onDetailsClick = { navController.navigate("DetailsScreen")},
+                    onRemoveClick = {coroutineScope.launch{
+                    if(it.recipeEntity.isFavorite == 1)
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
+                            duration = SnackbarDuration.Short)
+                    else if(it.recipeEntity.isFavorite == 0)
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
+                            duration = SnackbarDuration.Short)
+                }},)
             }
 
             composable(route = "RecipeScreen"){

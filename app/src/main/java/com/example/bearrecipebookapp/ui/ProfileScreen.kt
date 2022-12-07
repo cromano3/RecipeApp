@@ -1,23 +1,29 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Reviews
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -35,15 +41,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.viewmodel.ProfileScreenViewModel
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    onRemoveClick: (RecipeWithIngredients) -> Unit,
+    onDetailsClick: () -> Unit,
+) {
 
     val owner = LocalViewModelStoreOwner.current
 
-    owner?.let {
+    owner?.let { it ->
         val profileScreenViewModel: ProfileScreenViewModel = viewModel(
             it,
             "ProfileScreenViewModel",
@@ -52,6 +64,11 @@ fun ProfileScreen() {
 
 
         val uiState by profileScreenViewModel.uiState.collectAsState()
+
+        val favoritesData by profileScreenViewModel.favoritesData.observeAsState(listOf())
+        val cookedData by profileScreenViewModel.cookedData.observeAsState(listOf())
+
+        val uiAlertState by profileScreenViewModel.uiAlertState.collectAsState()
 
         val fadedColors = listOf(Color(0x80D8AF84), Color(0x80B15F33))
         val fullColors = listOf(Color(0xFFd8af84), Color(0xFFb15f33))
@@ -307,13 +324,193 @@ fun ProfileScreen() {
             }
 
             if (uiState.activeTab == "favorites")
-                LazyColumn() {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 48.dp),
+                    color = Color(0xFFd8af84)
 
+                ) {
+
+                    LazyColumn() {
+                        items(favoritesData, key = { it.recipeEntity.recipeName }) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = it.recipeEntity.isFavorite == 1,
+                                enter = EnterTransition.None,
+                                exit = ExitTransition.None,
+                            ) {
+                                RecipeCard(
+                                    modifier = Modifier
+
+                                        .animateEnterExit(
+                                            enter = EnterTransition.None,
+                                            exit = scaleOut(
+                                                animationSpec = TweenSpec(250, 0, FastOutLinearInEasing)
+                                            )
+                                        ),
+//                                .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
+                                    recipeWithIngredients = it,
+                                    currentScreen = "ProfileScreen",
+                                    onFavoriteClick =
+                                    {
+                                        /*
+                                        should trigger are you sure dialogue
+                                         */
+                                        profileScreenViewModel.triggerRemoveFavoriteAlert(it)
+
+//                                        profileScreenViewModel.toggleFavorite(it)
+//                                        onFavoriteClick(it)
+                                    },
+                                    onRemoveClick = {},
+                                    onCompleteClick = {},
+                                    onDetailsClick = {
+//                                coroutineScope.launch(Dispatchers.IO) {
+                                        profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
+                                        onDetailsClick()
+//                                }
+                                    }
+                                )
+                            }
+                        }
+
+                        item() {
+                            Spacer(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            )
+                        }
+                    }
+
+                    Box(Modifier.fillMaxSize()){
+
+                        //Remove Alert
+                        if(uiAlertState.showRemoveFavoriteAlert){
+                            AlertDialog(
+                                onDismissRequest = {},
+                                text = {
+                                    Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
+                                            " from your Favorites?" )
+                                },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            onRemoveClick(uiAlertState.recipe)
+                                            profileScreenViewModel.removeFavorite(uiAlertState.recipe)
+                                            profileScreenViewModel.cancelRemoveAlert()
+                                        }
+                                    ) {
+                                        Text("Yes")
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton(
+                                        onClick = {
+                                            profileScreenViewModel.cancelRemoveAlert()
+                                        }
+                                    ) {
+                                        Text("Cancel")
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
             else if (uiState.activeTab == "cooked")
-                LazyColumn() {
+            {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 48.dp),
+                    color = Color(0xFFd8af84)
 
+                ) {
+
+                    LazyColumn() {
+                        items(cookedData, key = { it.recipeEntity.recipeName }) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = it.recipeEntity.cookedCount > 0,
+                                enter = EnterTransition.None,
+                                exit = ExitTransition.None,
+                            ) {
+                                RecipeCard(
+                                    modifier = Modifier
+
+                                        .animateEnterExit(
+                                            enter = EnterTransition.None,
+                                            exit = scaleOut(
+                                                animationSpec = TweenSpec(250, 0, FastOutLinearInEasing)
+                                            )
+                                        ),
+//                                .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
+                                    recipeWithIngredients = it,
+                                    currentScreen = "ProfileScreen",
+                                    onFavoriteClick =
+                                    {
+                                        /*
+                                        should trigger are you sure dialogue
+                                         */
+                                        profileScreenViewModel.triggerRemoveFavoriteAlert(it)
+
+//                                        profileScreenViewModel.toggleFavorite(it)
+//                                        onFavoriteClick(it)
+                                    },
+                                    onRemoveClick = {},
+                                    onCompleteClick = {},
+                                    onDetailsClick = {
+//                                coroutineScope.launch(Dispatchers.IO) {
+                                        profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
+                                        onDetailsClick()
+//                                }
+                                    }
+                                )
+                            }
+                        }
+
+                        item() {
+                            Spacer(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            )
+                        }
+                    }
+
+                    Box(Modifier.fillMaxSize()){
+
+                        //Remove Alert
+                        if(uiAlertState.showRemoveFavoriteAlert){
+                            AlertDialog(
+                                onDismissRequest = {},
+                                text = {
+                                    Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
+                                            " from your Favorites?" )
+                                },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            onRemoveClick(uiAlertState.recipe)
+                                            profileScreenViewModel.removeFavorite(uiAlertState.recipe)
+                                            profileScreenViewModel.cancelRemoveAlert()
+                                        }
+                                    ) {
+                                        Text("Yes")
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton(
+                                        onClick = {
+                                            profileScreenViewModel.cancelRemoveAlert()
+                                        }
+                                    ) {
+                                        Text("Cancel")
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
+            }
             else if (uiState.activeTab == "reviews")
                 LazyColumn() {
 
@@ -334,6 +531,6 @@ class ProfileScreenViewModelFactory(val application: Application) : ViewModelPro
 @Composable
 fun ProfilePreview(){
     BearRecipeBookAppTheme {
-        ProfileScreen()
+//        ProfileScreen()
     }
 }

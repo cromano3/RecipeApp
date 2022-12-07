@@ -346,124 +346,128 @@ fun RecipeCard(
         Spacer(Modifier.fillMaxWidth().border(1.dp, Color(0xFFd8af84)).height(1.dp))
 
         //Bottom Bar surface
-        Surface(
-            modifier =
-                Modifier
-                .padding(start = 8.dp , end = 8.dp)
-                .height(40.dp)
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf( Color(0xFFb15f33), Color(0xFF682300) ),
-                        tileMode = TileMode.Mirror
+        if(currentScreen != "ProfileScreen"){
+
+            Surface(
+                modifier =
+                    Modifier
+                    .padding(start = 8.dp , end = 8.dp)
+                    .height(40.dp)
+                    .fillMaxWidth()
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf( Color(0xFFb15f33), Color(0xFF682300) ),
+                            tileMode = TileMode.Mirror
+                        ),
+                        shape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp)
                     ),
-                    shape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp)
-                ),
-            shape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp),
+                shape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp),
 
-            color = Color.Transparent,
+                color = Color.Transparent,
 
-        ){
-            Row(
-                Modifier.padding(start = 4.dp, end = 4.dp).fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-
-
-                Surface(
-                    modifier = Modifier
-                        //.padding(start = 8.dp, top = 8.dp)
-                        .wrapContentSize()
-                        .alpha(0.55f)
-                        .border(
-                            width = 2.dp,
-                            brush = (Brush.horizontalGradient(
-                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                tileMode = TileMode.Mirror)),
-                            shape = CircleShape
-                        )
-                        .clickable(
-//                            enabled = false,
-                            //!selected
-                            onClick = onRemoveClick,
-                        ),// { selected = !selected },
-                    shape = RoundedCornerShape(25.dp),
-                    color = Color(0xFF682300),
-                    elevation = 4.dp,
-                    //color = Color(0xFF682300),//Color(0xFFd8af84),
-//                    contentColor = Color(0xFFd8af84),
+            ){
+                Row(
+                    Modifier.padding(start = 4.dp, end = 4.dp).fillMaxSize(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Row(
-                        //Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
-                    )
-                    {
 
-                        Text(
-                            text = "Remove",
-                            modifier = Modifier
-                                // .weight(1f)
-//                                .padding(start = 0.dp, end = 0.dp)
-                                .align(Alignment.CenterVertically)
-                                .alpha(0.55f),
-                            color = Color(0xFFd8af84),
-//                            textDecoration = decoration,
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
+
+                    Surface(
+                        modifier = Modifier
+                            //.padding(start = 8.dp, top = 8.dp)
+                            .wrapContentSize()
+                            .alpha(0.55f)
+                            .border(
+                                width = 2.dp,
+                                brush = (Brush.horizontalGradient(
+                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                    tileMode = TileMode.Mirror)),
+                                shape = CircleShape
+                            )
+                            .clickable(
+    //                            enabled = false,
+                                //!selected
+                                onClick = onRemoveClick,
+                            ),// { selected = !selected },
+                        shape = RoundedCornerShape(25.dp),
+                        color = Color(0xFF682300),
+                        elevation = 4.dp,
+                        //color = Color(0xFF682300),//Color(0xFFd8af84),
+    //                    contentColor = Color(0xFFd8af84),
+                    ) {
+                        Row(
+                            //Modifier.fillMaxSize(),
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
                         )
+                        {
+
+                            Text(
+                                text = "Remove",
+                                modifier = Modifier
+                                    // .weight(1f)
+    //                                .padding(start = 0.dp, end = 0.dp)
+                                    .align(Alignment.CenterVertically)
+                                    .alpha(0.55f),
+                                color = Color(0xFFd8af84),
+    //                            textDecoration = decoration,
+                                fontSize = 18.sp,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
-                }
 
 
-                Surface(
-                    modifier = Modifier
-                        //.padding(start = 8.dp, top = 8.dp)
-                        .wrapContentSize()
-//                        .alpha(alphaLevel)
-                        .border(
-                            width = 2.dp,
-                            brush = (Brush.horizontalGradient(
-                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                tileMode = TileMode.Mirror)),
-                            shape = CircleShape
+                    Surface(
+                        modifier = Modifier
+                            //.padding(start = 8.dp, top = 8.dp)
+                            .wrapContentSize()
+    //                        .alpha(alphaLevel)
+                            .border(
+                                width = 2.dp,
+                                brush = (Brush.horizontalGradient(
+                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                    tileMode = TileMode.Mirror)),
+                                shape = CircleShape
+                            )
+                            .clickable(
+    //                            enabled = false,
+                                //!selected
+                                onClick = onCompleteClick,
+                            ),// { selected = !selected },
+                        shape = RoundedCornerShape(25.dp),
+                        color = Color(0xFF682300),
+                        elevation = 4.dp,
+                        //color = Color(0xFF682300),//Color(0xFFd8af84),
+    //                    contentColor = Color(0xFF682300),
+                    ) {
+                        Row(
+                            //Modifier.fillMaxSize(),
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
                         )
-                        .clickable(
-//                            enabled = false,
-                            //!selected
-                            onClick = onCompleteClick,
-                        ),// { selected = !selected },
-                    shape = RoundedCornerShape(25.dp),
-                    color = Color(0xFF682300),
-                    elevation = 4.dp,
-                    //color = Color(0xFF682300),//Color(0xFFd8af84),
-//                    contentColor = Color(0xFF682300),
-                ) {
-                    Row(
-                        //Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
-                    )
-                    {
+                        {
 
-                        Text(
-                            text = "Finished Cooking!",
-                            modifier = Modifier
-                                // .weight(1f)
-//                                   .padding(start = 6.dp, end = 6.dp)
-                                .align(Alignment.CenterVertically),
-//                                .alpha(alphaLevel),
-                            color = Color(0xFFd8af84),
-//                            textDecoration = decoration,
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-                        )
+                            Text(
+                                text = "Finished Cooking!",
+                                modifier = Modifier
+                                    // .weight(1f)
+    //                                   .padding(start = 6.dp, end = 6.dp)
+                                    .align(Alignment.CenterVertically),
+    //                                .alpha(alphaLevel),
+                                color = Color(0xFFd8af84),
+    //                            textDecoration = decoration,
+                                fontSize = 18.sp,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }
+
         }
     }
 }
