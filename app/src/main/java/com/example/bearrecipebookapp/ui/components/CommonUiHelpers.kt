@@ -98,6 +98,7 @@ fun RecipeCard(
     val gradientWidth = with(LocalDensity.current) { 400.dp.toPx() }
 
     Column(modifier = modifier){
+
         Surface(
             modifier = Modifier
                 .padding(start = 8.dp, end = 8.dp, top = 16.dp,)
@@ -115,62 +116,72 @@ fun RecipeCard(
             )
         {
             Row(modifier = Modifier.fillMaxSize()){
-                //Info Box
-                Column(
-                    Modifier.padding(start = 0.dp).width(60.dp).fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-
-                    //Time
-                    Column(Modifier.wrapContentHeight().fillMaxWidth().padding(top = 4.dp),
+                //Left Side Column
+                if(currentScreen != "CookedTab"){
+                    Column(
+                        Modifier.padding(start = 0.dp).width(60.dp).fillMaxHeight(),
                         verticalArrangement = Arrangement.SpaceBetween,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                    ){
-                        Icon(
-                            Icons.Outlined.Timer,
-                            contentDescription = null,
-                            tint = Color(0xFF000000),
-                            modifier = Modifier
-                                .size(20.dp),
-                        )
-                        Text(
-                            text = formattedTime,
-                            modifier = Modifier
-                                .padding(
-                                    start = 0.dp,
-                                    end = 0.dp,
-                                    top = 0.dp,
-                                    bottom = 0.dp
-                                )
-                                .background(color = Color.Transparent),
-                            // .weight(1f),
-                            color = Color(0xFF000000),
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                    ) {
 
-                    //Difficulty
-                    Column(Modifier.wrapContentHeight().fillMaxWidth(),
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ){
-                        Icon(
-                            Icons.Outlined.AutoAwesome,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            tint = Color(0xFF000000),
-                        )
-                        Row(){
+                        //Time
+                        Column(Modifier.wrapContentHeight().fillMaxWidth().padding(top = 4.dp),
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ){
                             Icon(
-                                Icons.Outlined.Star,
+                                Icons.Outlined.Timer,
+                                contentDescription = null,
+                                tint = Color(0xFF000000),
+                                modifier = Modifier
+                                    .size(20.dp),
+                            )
+                            Text(
+                                text = formattedTime,
+                                modifier = Modifier
+                                    .padding(
+                                        start = 0.dp,
+                                        end = 0.dp,
+                                        top = 0.dp,
+                                        bottom = 0.dp
+                                    )
+                                    .background(color = Color.Transparent),
+                                // .weight(1f),
+                                color = Color(0xFF000000),
+                                fontSize = 14.sp,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        //Difficulty
+                        Column(Modifier.wrapContentHeight().fillMaxWidth(),
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ){
+                            Icon(
+                                Icons.Outlined.AutoAwesome,
                                 contentDescription = null,
                                 modifier = Modifier.size(20.dp),
                                 tint = Color(0xFF000000),
                             )
-                            if(recipeWithIngredients.recipeEntity.difficulty > 1){
+                            Row(){
+                                Icon(
+                                    Icons.Outlined.Star,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = Color(0xFF000000),
+                                )
+                                if(recipeWithIngredients.recipeEntity.difficulty > 1){
+                                    Icon(
+                                        Icons.Outlined.Star,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(20.dp),
+                                        tint = Color(0xFF000000),
+                                    )
+                                }
+                            }
+                            if(recipeWithIngredients.recipeEntity.difficulty > 2){
                                 Icon(
                                     Icons.Outlined.Star,
                                     contentDescription = null,
@@ -179,44 +190,36 @@ fun RecipeCard(
                                 )
                             }
                         }
-                        if(recipeWithIngredients.recipeEntity.difficulty > 2){
+
+                        //Rating
+                        Column(Modifier.wrapContentHeight().fillMaxWidth().padding(bottom = 4.dp),
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ){
                             Icon(
-                                Icons.Outlined.Star,
+                                Icons.Outlined.ThumbUp,
                                 contentDescription = null,
-                                modifier = Modifier.size(20.dp),
+                                modifier = Modifier.padding(top = 0.dp).size(20.dp),
                                 tint = Color(0xFF000000),
+
+                            )
+                            Text(
+                                text = "${recipeWithIngredients.recipeEntity.rating}" + "%",
+                                modifier = Modifier
+                                    .padding(
+                                        start = 0.dp,
+                                        end = 0.dp,
+                                        top = 0.dp,
+                                        bottom = 0.dp
+                                    )
+                                    .background(color = Color.Transparent),
+                                // .weight(1f),
+                                color = Color(0xFF000000),
+                                fontSize = 14.sp,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold
                             )
                         }
-                    }
-
-                    //Rating
-                    Column(Modifier.wrapContentHeight().fillMaxWidth().padding(bottom = 4.dp),
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ){
-                        Icon(
-                            Icons.Outlined.ThumbUp,
-                            contentDescription = null,
-                            modifier = Modifier.padding(top = 0.dp).size(20.dp),
-                            tint = Color(0xFF000000),
-
-                        )
-                        Text(
-                            text = "${recipeWithIngredients.recipeEntity.rating}" + "%",
-                            modifier = Modifier
-                                .padding(
-                                    start = 0.dp,
-                                    end = 0.dp,
-                                    top = 0.dp,
-                                    bottom = 0.dp
-                                )
-                                .background(color = Color.Transparent),
-                            // .weight(1f),
-                            color = Color(0xFF000000),
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-                        )
                     }
                 }
 
@@ -236,65 +239,67 @@ fun RecipeCard(
 
                 Spacer(Modifier.fillMaxHeight().border(1.dp, Color(0xFFd8af84)).width(1.dp))
 
-                //Info Box
-                Column(
-                    Modifier.padding(start = 0.dp).width(60.dp).fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceAround,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-
-                    val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
-
-                    val icon: ImageVector = if (recipeWithIngredients.recipeEntity.isFavorite == 0) {
-                        Icons.Outlined.FavoriteBorder
-
-                    } else {
-                        Icons.Outlined.Favorite
-                    }
-
-                    FloatingActionButton(
-                        onClick = onFavoriteClick,
-                        elevation = FloatingActionButtonDefaults.elevation(8.dp),
-                        modifier = Modifier
-//                            .padding(end = 8.dp)
-                            .border(
-                                width = 2.dp,
-                                brush = (Brush.horizontalGradient(
-                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                    endX = gradientWidthButton,
-                                    tileMode = TileMode.Mirror)),
-                                shape = CircleShape
-                            )
-                            .size(36.dp)
-                            //the background of the square for this button, it stays a square even tho
-                            //we have shape = circle shape.  If this is not changed you see a solid
-                            //square for the "background" of this button.
-                            .background(color = Color.Transparent),
-                        shape = CircleShape,
-                        //this is the background color of the button after the "Shaping" is applied.
-                        //it is different then the background attribute above.
-                        backgroundColor = Color(0xFF682300)
+                //Right Side Column
+                if(currentScreen != "CookedTab") {
+                    Column(
+                        Modifier.padding(start = 0.dp).width(60.dp).fillMaxHeight(),
+                        verticalArrangement = Arrangement.SpaceAround,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
+
+                        val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
+
+                        val icon: ImageVector =
+                            if (recipeWithIngredients.recipeEntity.isFavorite == 0) {
+                                Icons.Outlined.FavoriteBorder
+
+                            } else {
+                                Icons.Outlined.Favorite
+                            }
+
+                        FloatingActionButton(
+                            onClick = onFavoriteClick,
+                            elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                            modifier = Modifier
+//                            .padding(end = 8.dp)
+                                .border(
+                                    width = 2.dp,
+                                    brush = (Brush.horizontalGradient(
+                                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                        endX = gradientWidthButton,
+                                        tileMode = TileMode.Mirror
+                                    )),
+                                    shape = CircleShape
+                                )
+                                .size(36.dp)
+                                //the background of the square for this button, it stays a square even tho
+                                //we have shape = circle shape.  If this is not changed you see a solid
+                                //square for the "background" of this button.
+                                .background(color = Color.Transparent),
+                            shape = CircleShape,
+                            //this is the background color of the button after the "Shaping" is applied.
+                            //it is different then the background attribute above.
+                            backgroundColor = Color(0xFF682300)
+                        ) {
+                            Icon(
+                                icon,
+                                tint = Color(0xFFd8af84),
+                                modifier = Modifier.size(20.dp),
+                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                contentDescription = null
+                            )
+                        }
+
                         Icon(
-                            icon,
-                            tint = Color(0xFFd8af84),
-                            modifier = Modifier.size(20.dp),
-                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                            contentDescription = null
+                            imageVector = Icons.Outlined.Share,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(36.dp),
+                            tint = Color(0xFFd8af84)
                         )
+
                     }
-
-                    Icon(
-                        imageVector = Icons.Outlined.Share,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(36.dp),
-                        tint = Color(0xFFd8af84)
-                    )
-
-
                 }
-
 
             }
 
@@ -318,35 +323,12 @@ fun RecipeCard(
                     )
                 )
             }
-            //        Top Right corner delete button
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxSize(),
-//            ){
-//
-//                if (currentScreen == "WeeklyMenuScreen"){
-//                    IconButton(
-//                        modifier = Modifier
-//                            .align(Alignment.TopEnd)
-//                            .size(36.dp),
-//                        onClick = onClick
-//                    )
-//                    {
-//                        Icon(
-//                            modifier = Modifier,
-//                            imageVector = Icons.Outlined.Close,
-//                            tint = Color(0xFF000000),
-//                            contentDescription = null
-//                        )
-//                    }
-//                }
-//            }
         }
 
         Spacer(Modifier.fillMaxWidth().border(1.dp, Color(0xFFd8af84)).height(1.dp))
 
         //Bottom Bar surface
-        if(currentScreen != "ProfileScreen"){
+        if(currentScreen != "FavoritesTab" && currentScreen != "CookedTab"){
 
             Surface(
                 modifier =

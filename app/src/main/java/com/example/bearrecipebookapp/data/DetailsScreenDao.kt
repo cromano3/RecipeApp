@@ -15,6 +15,11 @@ interface DetailsScreenDao {
 
 
     @Transaction
+    @Query("UPDATE recipe_table SET cooked_count = cooked_count + 1 WHERE recipe_name = :name")
+    fun addCooked(name: String)
+
+
+    @Transaction
     @Query("UPDATE recipe_table SET is_shopping_filter = 1")
     fun cleanShoppingFilters()
 

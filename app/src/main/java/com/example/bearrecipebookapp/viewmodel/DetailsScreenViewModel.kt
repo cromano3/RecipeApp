@@ -52,6 +52,10 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         repository.addToMenu(recipe.recipeEntity.recipeName)
     }
 
+    fun addCooked(recipe: RecipeWithIngredientsAndInstructions){
+        repository.addCooked(recipe)
+    }
+
 
     fun triggerCompletedAlert(recipe: RecipeWithIngredientsAndInstructions){
         uiAlertState.update { currentState ->

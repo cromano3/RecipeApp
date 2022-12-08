@@ -272,15 +272,15 @@ fun NewDetailsScreen(
 //                                    enabled = false,
                                         //!selected
                                         onClick = {
-//                                            if (selected) {
-//                                                detailsScreenViewModel.triggerCompletedAlert(
-//                                                    detailsScreenData
-//                                                )
-//                                            } else if (!selected) {
-//                                                detailsScreenViewModel.triggerCompletedAlert(
-//                                                    detailsScreenData
-//                                                )
-//                                            }
+                                            if (selected) {
+                                                detailsScreenViewModel.triggerCompletedAlert(
+                                                    detailsScreenData
+                                                )
+                                            } else if (!selected) {
+                                                detailsScreenViewModel.triggerCompletedAlert(
+                                                    detailsScreenData
+                                                )
+                                            }
                                         },
                                     ),
                                 shape = RoundedCornerShape(25.dp),
@@ -545,11 +545,16 @@ fun NewDetailsScreen(
                                      * Add completed count +1 to Database
                                      */
 
+                                    onCompleteClick(detailsScreenData)
+
+                                    detailsScreenViewModel.addCooked(detailsScreenData)
+
                                     if(detailsScreenData.recipeEntity.onMenu == 1) {
-                                        onCompleteClick(detailsScreenData)
                                         detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
                                     }
+
                                     detailsScreenViewModel.cancelCompletedAlert()
+
                                 }
                             ) {
                                 Text("Yes")

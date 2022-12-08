@@ -49,6 +49,12 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
         }
     }
 
+    fun addCooked(recipe: RecipeWithIngredientsAndInstructions){
+        coroutineScope.launch(Dispatchers.IO) {
+            detailsScreenDao.addCooked(recipe.recipeEntity.recipeName)
+        }
+    }
+
     fun cleanShoppingFilters(){
         coroutineScope.launch(Dispatchers.IO) {
             detailsScreenDao.cleanShoppingFilters()

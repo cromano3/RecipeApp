@@ -62,6 +62,10 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         }
     }
 
+    fun addCooked(recipe: RecipeWithIngredients){
+        repository.addCooked(recipe.recipeEntity.recipeName)
+    }
+
     fun cancelRemoveAlert(){
         uiAlertState.update { currentState ->
             currentState.copy(

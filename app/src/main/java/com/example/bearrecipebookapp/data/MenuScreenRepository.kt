@@ -20,6 +20,12 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
         }
     }
 
+    fun addCooked(recipeName: String){
+        coroutineScope.launch(Dispatchers.IO) {
+            menuScreenDao.addCooked(recipeName)
+        }
+    }
+
     fun cleanShoppingFilters(){
         coroutineScope.launch(Dispatchers.IO) {
             menuScreenDao.cleanShoppingFilters()

@@ -44,6 +44,10 @@ interface MenuScreenDao {
     @Query("UPDATE recipe_table SET is_favorite = :isFavoriteStatus WHERE recipe_name = :name")
     fun updateFavorite(name: String, isFavoriteStatus: Int)
 
+    @Transaction
+    @Query("UPDATE recipe_table SET cooked_count = cooked_count + 1 WHERE recipe_name = :name")
+    fun addCooked(name: String)
+
 
     /**
      * This query executes successfully and as intended in the DB Builder.

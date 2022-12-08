@@ -27,19 +27,20 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.RecipeCard
@@ -323,6 +324,7 @@ fun ProfileScreen(
                 }
             }
 
+            //Favorites List
             if (uiState.activeTab == "favorites")
                 Surface(
                     modifier = Modifier
@@ -350,7 +352,7 @@ fun ProfileScreen(
                                         ),
 //                                .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
                                     recipeWithIngredients = it,
-                                    currentScreen = "ProfileScreen",
+                                    currentScreen = "FavoritesTab",
                                     onFavoriteClick =
                                     {
                                         /*
@@ -416,6 +418,8 @@ fun ProfileScreen(
                         }
                     }
                 }
+
+            //Cooked list
             else if (uiState.activeTab == "cooked")
             {
                 Surface(
@@ -433,47 +437,22 @@ fun ProfileScreen(
                                 enter = EnterTransition.None,
                                 exit = ExitTransition.None,
                             ) {
-                                RecipeCard(
-                                    modifier = Modifier
-
-                                        .animateEnterExit(
-                                            enter = EnterTransition.None,
-                                            exit = scaleOut(
-                                                animationSpec = TweenSpec(250, 0, FastOutLinearInEasing)
-                                            )
-                                        ),
-//                                .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
+                                RecipeIcon(
                                     recipeWithIngredients = it,
-                                    currentScreen = "ProfileScreen",
-                                    onFavoriteClick =
-                                    {
-                                        /*
-                                        should trigger are you sure dialogue
-                                         */
-                                        profileScreenViewModel.triggerRemoveFavoriteAlert(it)
-
-//                                        profileScreenViewModel.toggleFavorite(it)
-//                                        onFavoriteClick(it)
-                                    },
-                                    onRemoveClick = {},
-                                    onCompleteClick = {},
                                     onDetailsClick = {
-//                                coroutineScope.launch(Dispatchers.IO) {
                                         profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
                                         onDetailsClick()
-//                                }
-                                    }
-                                )
+                                    })
                             }
                         }
 
-                        item() {
-                            Spacer(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                            )
-                        }
+//                        item() {
+//                            Spacer(
+//                                Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(16.dp)
+//                            )
+//                        }
                     }
 
                     Box(Modifier.fillMaxSize()){
@@ -525,6 +504,118 @@ class ProfileScreenViewModelFactory(val application: Application) : ViewModelPro
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return ProfileScreenViewModel(application) as T
     }
+}
+
+@Composable
+fun RecipeIcon(
+    recipeWithIngredients: RecipeWithIngredients,
+    onDetailsClick: () -> Unit
+){
+
+
+    var image = R.drawable.bagel
+
+    image = when(recipeWithIngredients.recipeEntity.recipeName){
+        "Bagels" -> R.drawable.bagel2
+        "Garlic Knots" -> R.drawable.garlic2
+        "Cauliflower Walnut Tacos" -> R.drawable.cauliflower
+        "Lentil Sweet Potato Curry" -> R.drawable.curry
+        "Thai Style Peanut Soup" -> R.drawable.thaisoup
+        "Yummy Rice with Marinated Tofu" -> R.drawable.yummyrice
+        "Corn Chowder" -> R.drawable.cornchowder
+        "Vegan Eggplant Parmesan" -> R.drawable.eggplant
+        "Mexican Style Rice" -> R.drawable.mexicanrice
+        "Wild Rice Salad" -> R.drawable.wildrice
+        "Rice Soup" -> R.drawable.ricesoup
+        else -> R.drawable.bagel
+    }
+
+    Column(
+        Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally)
+    {
+        Surface(
+            modifier = Modifier
+                .size(120.dp)
+                .padding(top = 8.dp, bottom = 4.dp)
+                .align(Alignment.CenterHorizontally)
+                .clickable(onClick = onDetailsClick),
+            shape = RoundedCornerShape(15.dp),
+            elevation = 6.dp,
+
+            ){
+            AsyncImage(
+                model = image,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
+                Text(
+                    text = recipeWithIngredients.recipeEntity.recipeName,
+                    fontSize = 20.sp,
+                    color = Color(0xFFFFFFFF),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.h4.copy(
+                        shadow = Shadow(
+                            color = Color.Black,
+                            offset = Offset(4f, 4f),
+                            blurRadius = 8f
+                        )
+                    )
+                )
+            }
+        }
+
+        Spacer(
+            Modifier
+                .size(2.dp)
+                .fillMaxWidth())
+
+
+        Surface(
+            modifier = Modifier
+                // .padding(top = 4.dp)
+                .wrapContentSize(),
+            //               .background(
+//                    brush = Brush.horizontalGradient(
+//                        colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
+//                        endX = gradientWidth,
+//                        tileMode = TileMode.Mirror
+//                    ),
+//                    shape = RoundedCornerShape((25.dp))
+//                ),
+            //   .clickable(enabled = !selected) { selected = !selected },
+            shape = RoundedCornerShape(25.dp),
+            color = Color(0xFF682300),
+            elevation = 6.dp,
+            //color = Color(0xFF682300),//Color(0xFFd8af84),
+            contentColor = Color(0xFFd8af84),
+        ){
+            Text(
+                text = "Times Cooked: ${recipeWithIngredients.recipeEntity.cookedCount}",
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 8.dp)
+                    .background(color = Color.Transparent),
+                color = Color(0xFFd8af84),
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+
+                )
+        }
+
+        Spacer(
+            Modifier
+                .size(16.dp)
+                .fillMaxWidth())
+    }
+
 }
 
 @Preview

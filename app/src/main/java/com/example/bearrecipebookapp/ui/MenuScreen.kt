@@ -122,31 +122,7 @@ fun MenuScreen(
                 }
 
         }
-//            Column(Modifier.verticalScroll(rememberScrollState())) {
-//                for (x in menuScreenData.indices) {
-//
-//                    var myInt = 0
-//                    if(x + 1 == menuScreenData.size){
-//                        myInt = 16
-//                    }
-//
-//                    RecipeCard(
-//                        modifier = Modifier.padding(bottom = myInt.dp),
-//                        recipeWithIngredients = menuScreenData[x],
-//                        currentScreen = "WeeklyMenuScreen",
-//                        onFavoriteClick =
-//                        {
-//                            menuScreenViewModel.toggleFavorite(menuScreenData[x])
-//                            onFavoriteClick(menuScreenData[x])
-//                        },
-//                        onRemoveClick = { menuScreenViewModel.triggerRemoveAlert(menuScreenData[x]) },
-//                        onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(menuScreenData[x]) },
-//                        onDetailsClick = { menuScreenViewModel.setDetailsScreenTarget(menuScreenData[x].recipeEntity.recipeName);
-//                            onDetailsClick()
-//                        }
-//                    )
-//                }
-//            }
+
             Box(Modifier.fillMaxSize()){
                 if(menuScreenData.isEmpty()) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -215,6 +191,7 @@ fun MenuScreen(
                                      * Add completed count +1 to Database
                                      */
                                     onCompleteClick(uiAlertState.recipe)
+                                    menuScreenViewModel.addCooked(uiAlertState.recipe)
                                     menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
                                     menuScreenViewModel.cancelCompletedAlert()
                                 }
