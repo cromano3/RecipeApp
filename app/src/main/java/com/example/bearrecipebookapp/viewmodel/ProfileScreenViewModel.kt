@@ -72,6 +72,11 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
     fun setActiveTab(tabName: String){
         uiState.update { currentState ->
             currentState.copy(
+                previousTab = currentState.activeTab
+            )
+        }
+        uiState.update { currentState ->
+            currentState.copy(
                 activeTab = tabName
             )
         }

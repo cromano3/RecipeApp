@@ -1,12 +1,9 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.TweenSpec
-import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -169,9 +166,10 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .height(80.dp)
             ) {
+
+                //Favorite button tab
                 Surface(
                     color = Color.Transparent,
-
                     modifier = Modifier
                         .fillMaxSize()
                         .weight(1f)
@@ -191,8 +189,6 @@ fun ProfileScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-
-                        //Favorite button
                         Surface(
                             elevation = 8.dp,
                             modifier = Modifier
@@ -219,9 +215,14 @@ fun ProfileScreen(
                                 )
                             }
                         }
-                        Text("Favorites", modifier = Modifier.alpha(if (uiState.activeTab == "favorites") 1f else 0.5f), color = Color(0xFFd8af84))
+                        Text(
+                            "Favorites",
+                            modifier = Modifier.alpha(if (uiState.activeTab == "favorites") 1f else 0.5f),
+                            color = Color(0xFFd8af84)
+                        )
                     }
                 }
+                //Cooked Button Tab
                 Surface(
                     color = Color.Transparent,
                     modifier = Modifier
@@ -242,8 +243,6 @@ fun ProfileScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-
-                        //Cooked button
                         Surface(
                             elevation = 8.dp,
                             color = Color(0xFF682300),
@@ -260,7 +259,7 @@ fun ProfileScreen(
                                 .alpha(if (uiState.activeTab == "cooked") 1f else 0.5f),
                             shape = CircleShape,
 
-                        ) {
+                            ) {
                             Box(contentAlignment = Alignment.Center) {
                                 Image(
                                     painter = painterResource(id = R.drawable.tray),
@@ -270,7 +269,11 @@ fun ProfileScreen(
                                 )
                             }
                         }
-                        Text("Cooked", color = Color(0xFFd8af84), modifier = Modifier.alpha(if (uiState.activeTab == "cooked") 1f else 0.5f))
+                        Text(
+                            "Cooked",
+                            color = Color(0xFFd8af84),
+                            modifier = Modifier.alpha(if (uiState.activeTab == "cooked") 1f else 0.5f)
+                        )
                     }
                 }
                 Surface(
@@ -294,7 +297,7 @@ fun ProfileScreen(
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
 
-                        //Favorite button
+                        //Review button
                         Surface(
                             elevation = 8.dp,
                             modifier = Modifier
@@ -321,60 +324,51 @@ fun ProfileScreen(
                                 )
                             }
                         }
-                        Text("Reviews", color = Color(0xFFd8af84), modifier = Modifier.alpha(if (uiState.activeTab == "reviews") 1f else 0.5f))
+                        Text(
+                            "Reviews",
+                            color = Color(0xFFd8af84),
+                            modifier = Modifier.alpha(if (uiState.activeTab == "reviews") 1f else 0.5f)
+                        )
                     }
                 }
             }
 
+            Surface(Modifier.fillMaxSize(), color = Color(0xFFd8af84)) {
+
+
             //Favorites List
-            if (uiState.activeTab == "favorites")
+            androidx.compose.animation.AnimatedVisibility(
+                visible = uiState.activeTab == "favorites",
+                enter = slideInHorizontally { -it },
+                exit = slideOutHorizontally { -it },
+            ) {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(bottom = 48.dp),
-                    color = Color(0xFFd8af84)
+                    color = Color.Transparent
 
                 ) {
-
                     LazyColumn() {
                         items(favoritesData, key = { it.recipeEntity.recipeName }) {
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = it.recipeEntity.isFavorite == 1,
-                                enter = EnterTransition.None,
-                                exit = ExitTransition.None,
-                            ) {
-                                RecipeCard(
-                                    modifier = Modifier
-
-                                        .animateEnterExit(
-                                            enter = EnterTransition.None,
-                                            exit = scaleOut(
-                                                animationSpec = TweenSpec(250, 0, FastOutLinearInEasing)
-                                            )
-                                        ),
-//                                .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
-                                    recipeWithIngredients = it,
-                                    currentScreen = "FavoritesTab",
-                                    onFavoriteClick =
-                                    {
-                                        /*
-                                        should trigger are you sure dialogue
-                                         */
-                                        profileScreenViewModel.triggerRemoveFavoriteAlert(it)
-
-//                                        profileScreenViewModel.toggleFavorite(it)
-//                                        onFavoriteClick(it)
-                                    },
-                                    onRemoveClick = {},
-                                    onCompleteClick = {},
-                                    onDetailsClick = {
+                            RecipeCard(
+                                modifier = Modifier,
+                                recipeWithIngredients = it,
+                                currentScreen = "FavoritesTab",
+                                onFavoriteClick =
+                                {
+                                    profileScreenViewModel.triggerRemoveFavoriteAlert(it)
+                                },
+                                onRemoveClick = {},
+                                onCompleteClick = {},
+                                onDetailsClick = {
 //                                coroutineScope.launch(Dispatchers.IO) {
-                                        profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
-                                        onDetailsClick()
+                                    profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
+                                    onDetailsClick()
 //                                }
-                                    }
-                                )
-                            }
+                                }
+                            )
+
                         }
 
                         item() {
@@ -385,50 +379,20 @@ fun ProfileScreen(
                             )
                         }
                     }
-
-                    Box(Modifier.fillMaxSize()){
-
-                        //Remove Alert
-                        if(uiAlertState.showRemoveFavoriteAlert){
-                            AlertDialog(
-                                onDismissRequest = {},
-                                text = {
-                                    Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
-                                            " from your Favorites?" )
-                                },
-                                confirmButton = {
-                                    TextButton(
-                                        onClick = {
-                                            onRemoveClick(uiAlertState.recipe)
-                                            profileScreenViewModel.removeFavorite(uiAlertState.recipe)
-                                            profileScreenViewModel.cancelRemoveAlert()
-                                        }
-                                    ) {
-                                        Text("Yes")
-                                    }
-                                },
-                                dismissButton = {
-                                    TextButton(
-                                        onClick = {
-                                            profileScreenViewModel.cancelRemoveAlert()
-                                        }
-                                    ) {
-                                        Text("Cancel")
-                                    }
-                                }
-                            )
-                        }
-                    }
                 }
+            }
 
             //Cooked list
-            else if (uiState.activeTab == "cooked")
-            {
+            androidx.compose.animation.AnimatedVisibility(
+                visible = uiState.activeTab == "cooked",
+                enter = if(uiState.previousTab == "favorites") slideInHorizontally { it } else slideInHorizontally { -it },
+                exit = if(uiState.activeTab == "favorites") slideOutHorizontally { it } else slideOutHorizontally { -it },
+            ) {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(bottom = 48.dp),
-                    color = Color(0xFFd8af84)
+                    color = Color.Transparent
 
                 ) {
 
@@ -439,18 +403,13 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.spacedBy(0.dp)
                     ) {
                         items(cookedData.size, key = { it }) { index ->
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = cookedData[index].recipeEntity.cookedCount > 0,
-                                enter = EnterTransition.None,
-                                exit = ExitTransition.None,
-                            ) {
-                                RecipeIcon(
-                                    recipeWithIngredients = cookedData[index],
-                                    onDetailsClick = {
-                                        profileScreenViewModel.setDetailsScreenTarget(cookedData[index].recipeEntity.recipeName);
-                                        onDetailsClick()
-                                    })
-                            }
+                            RecipeIcon(
+                                recipeWithIngredients = cookedData[index],
+                                onDetailsClick = {
+                                    profileScreenViewModel.setDetailsScreenTarget(cookedData[index].recipeEntity.recipeName);
+                                    onDetailsClick()
+                                }
+                            )
                         }
 
 //                        item() {
@@ -461,46 +420,46 @@ fun ProfileScreen(
 //                            )
 //                        }
                     }
-
-                    Box(Modifier.fillMaxSize()){
-
-                        //Remove Alert
-                        if(uiAlertState.showRemoveFavoriteAlert){
-                            AlertDialog(
-                                onDismissRequest = {},
-                                text = {
-                                    Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
-                                            " from your Favorites?" )
-                                },
-                                confirmButton = {
-                                    TextButton(
-                                        onClick = {
-                                            onRemoveClick(uiAlertState.recipe)
-                                            profileScreenViewModel.removeFavorite(uiAlertState.recipe)
-                                            profileScreenViewModel.cancelRemoveAlert()
-                                        }
-                                    ) {
-                                        Text("Yes")
-                                    }
-                                },
-                                dismissButton = {
-                                    TextButton(
-                                        onClick = {
-                                            profileScreenViewModel.cancelRemoveAlert()
-                                        }
-                                    ) {
-                                        Text("Cancel")
-                                    }
-                                }
-                            )
-                        }
-                    }
                 }
             }
-            else if (uiState.activeTab == "reviews")
+            if (uiState.activeTab == "reviews")
                 LazyColumn() {
 
                 }
+            }
+
+            //Remove Favorite Alert
+            Box(Modifier.fillMaxSize()){
+                if(uiAlertState.showRemoveFavoriteAlert){
+                    AlertDialog(
+                        onDismissRequest = {},
+                        text = {
+                            Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
+                                    " from your Favorites?" )
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    onRemoveClick(uiAlertState.recipe)
+                                    profileScreenViewModel.removeFavorite(uiAlertState.recipe)
+                                    profileScreenViewModel.cancelRemoveAlert()
+                                }
+                            ) {
+                                Text("Yes")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    profileScreenViewModel.cancelRemoveAlert()
+                                }
+                            ) {
+                                Text("Cancel")
+                            }
+                        }
+                    )
+                }
+            }
         }
     }
 }

@@ -1,3 +1,6 @@
 package com.example.bearrecipebookapp.datamodel
 
-data class ProfileScreenDataModel(val activeTab: String = "favorites")
+data class ProfileScreenDataModel(
+    val activeTab: String = "favorites",
+    val previousTab: String = ""
+)

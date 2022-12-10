@@ -88,6 +88,14 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         newRecipesList = repository.newRecipeList
     }
 
+    fun cancelScroll(){
+        uiFiltersState.update { currentState ->
+            currentState.copy(
+                triggerScroll = false
+            )
+        }
+    }
+
 
     fun triggerAlert(recipe: RecipeWithIngredients){
         uiAlertState.update { currentState ->
@@ -121,16 +129,13 @@ class HomeScreenViewModel(application: Application): ViewModel() {
                     currentState.copy(showAllRecipes = false)
                 }
 
+                //allows fade out animation
+                delay(300)
 
-//        coroutineScope.launch(Dispatchers.IO) {
-            async(Dispatchers.IO) { repository.removeOtherFilters(filter.filterName) }
-            async(Dispatchers.IO) { repository.filterBy(filter.filterName)  }
 
-//        }
+                withContext(Dispatchers.IO) { repository.removeOtherFilters(filter.filterName) }
+                withContext(Dispatchers.IO) { repository.filterBy(filter.filterName)  }
 
-///////////////////////////////////////////
-                delay(500)
-///////////////////////////////////////////
 
                 var match = false
 
@@ -145,18 +150,21 @@ class HomeScreenViewModel(application: Application): ViewModel() {
                     }
                     if (!match) {
                         referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
-                            repository.setRecipeToNotShown(it)
+                            withContext(Dispatchers.IO) { repository.setRecipeToNotShown(it) }
                         }
                     } else {
                         referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
-                            repository.setRecipeToShown(it)
+                            withContext(Dispatchers.IO) { repository.setRecipeToShown(it) }
                         }
                     }
                     match = false
                 }
 
                 uiFiltersState.update { currentState ->
-                    currentState.copy(showAllRecipes = true)
+                    currentState.copy(
+                        showAllRecipes = true,
+                        triggerScroll = true
+                    )
                 }
 
             } else if (filter.isActiveFilter == 2) {
@@ -166,7 +174,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
                 }
                 //this delay allows the fade out animation to take place/finish before getting cut
                 //off. It could/should be reduced to the duration of the animation itself.
-                delay(400)
+                delay(300)
 
 //                coroutineScope.launch(Dispatchers.IO) {
 //                println("zero")
@@ -182,7 +190,9 @@ class HomeScreenViewModel(application: Application): ViewModel() {
             }
 
         uiFiltersState.update { currentState ->
-            currentState.copy(isWorking = false)
+            currentState.copy(
+                isWorking = false,
+                )
         }
 
         }

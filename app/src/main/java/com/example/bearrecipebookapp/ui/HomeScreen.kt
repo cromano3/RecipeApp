@@ -40,6 +40,7 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.HomeScreenViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
@@ -82,12 +83,11 @@ fun HomeScreen(
         val uiAlertState by homeScreenViewModel.uiAlertState.collectAsState()
 
 
-        var filterSelectedClick by remember { mutableStateOf(false) }
-        var isFiltered by remember { mutableStateOf(false) }
+        var isScrollable by remember { mutableStateOf(true) }
 
 
 
-//        val coroutineScope = rememberCoroutineScope()
+        val coroutineScope = rememberCoroutineScope()
 //        val snackbarHostState = remember {SnackbarHostState()}
 
 
@@ -96,21 +96,14 @@ fun HomeScreen(
 //        val itemSizePx = with(density) { itemSize.toPx() }
         val listState = rememberLazyListState()
 
-        if(isFiltered){
-            LaunchedEffect(Unit) {
-                delay(150)
+        if(uiFiltersState.triggerScroll){
+            coroutineScope.launch {
+                delay(200)
                 listState.animateScrollToItem(0)
-//                listState.animateScrollBy(
-
-//                    /**
-//                     * Try setting the scroll count to the correct index of the item to make animation smoother
-//                     * and observe/better understand the effect
-//                     */
-//                    value = -(itemSizePx * uiFiltersState.filtersList.size),
-//                    animationSpec = tween(durationMillis = 300, delayMillis = 0)
-//                )
+                homeScreenViewModel.cancelScroll()
             }
         }
+
 
             Surface(
                 modifier = Modifier
@@ -120,83 +113,13 @@ fun HomeScreen(
             ){
 
                 Column{
-//                Row(
-//                    Modifier
-//                        .background(Color(0xFF682300))
-//                        .fillMaxWidth()
-//                        .height(54.dp)
-//                )
-//                {
-//                    Surface(
-//                        Modifier
-//                            .wrapContentSize()
-//                            .clickable(onClick = onSearchClick)
-//                            .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
-//                            .border(
-//                                width = 2.dp,
-//                                brush = (Brush.horizontalGradient(
-//                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-//                                    tileMode = TileMode.Mirror)),
-//                                shape = RoundedCornerShape(25.dp)
-//                            ),
-////                        color = Color(0xFF682300),
-//                        shape = RoundedCornerShape(25.dp)
-//                    ){
-//                        TextField(
-//                            value = "",
-//                            onValueChange = {},
-//                            modifier = Modifier
-////                                .alpha(.8f)
-//                            ,
-//                            enabled = false,
-//                            readOnly = true,
-//                            leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
-//                            shape = RoundedCornerShape(25.dp),
-//                            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0xFFd8af84), textColor = Color(0xFF000000))
-//                        )
-//                    }
-//                    Spacer(Modifier.weight(1f))
-//                    FloatingActionButton(
-//                        onClick = { },
-//                        elevation = FloatingActionButtonDefaults.elevation(8.dp),
-//                        modifier = Modifier
-//                            .padding(end = 8.dp)
-//                            .border(
-//                                width = 2.dp,
-//                                brush = (Brush.horizontalGradient(colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33),),
-//                                    tileMode = TileMode.Mirror)),
-//                                shape = CircleShape
-//                            )
-//                            .align(Alignment.CenterVertically)
-//                            .size(36.dp)
-//                            //the background of the square for this button, it stays a square even tho
-//                            //we have shape = circle shape.  If this is not changed you see a solid
-//                            //square for the "background" of this button.
-//                            .background(color = Color.Transparent),
-//                        shape = CircleShape,
-//                        //this is the background color of the button after the "Shaping" is applied.
-//                        //it is different then the background attribute above.
-//                        backgroundColor = Color(0xFF682300)
-//                    ) {
-//                        Icon(
-//                            Icons.Outlined.Person,
-//                            tint = Color(0xFFd8af84),
-//                            modifier = Modifier.size(20.dp),
-//                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-//                            contentDescription = null
-//                        )
-//                    }
-//                }
 
                     LazyRow(
                         modifier = Modifier.background(
-//                        Color(0xFFb15f33)
-//                                Color(0xFF682300)
                             Color(0xFFd8af84)
-//                        Color(0xFFf8ea9a)
                         ),
                         state = listState,
-                        userScrollEnabled = !isFiltered
+                        userScrollEnabled = isScrollable
                     ){
                         items(filtersList, key = { it.filterName }) {
 
@@ -208,8 +131,7 @@ fun HomeScreen(
                                 onFilterClick =
                                 {
                                     homeScreenViewModel.filterBy(it)
-                                    filterSelectedClick = !filterSelectedClick
-                                    isFiltered = !isFiltered
+                                    isScrollable = !isScrollable
                                 },
                             )
                         }
@@ -269,8 +191,6 @@ fun HomeScreen(
                                             ),
                                         recipe = newRecipeList[index].recipeEntity,
                                         ingredients = newRecipeList[index].ingredientsList,
-                                        //this does onMenu updates and related ingredients updates
-                                        //needs to be changed to menu button when we add menu button
                                         onFavoriteClick =
                                         {
                                             onFavoriteClick(newRecipeList[index])

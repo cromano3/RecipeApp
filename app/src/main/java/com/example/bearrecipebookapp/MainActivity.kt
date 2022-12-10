@@ -8,6 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -137,33 +139,29 @@ fun BearRecipeApp(
             navController = navController,
             startDestination = "RecipeScreen",
         ){
-//            composable(
-//                route = "ProfileScreen",
-//                enterTransition = { when (initialState.destination.route){
-//                    "WeeklyMenuScreen" -> null
-//                    else -> null }
-//                },
-//                exitTransition = {
-//                    when (targetState.destination.route) {
-//                        "WeeklyMenuScreen" ->
-//                            null
-//                        else -> null
-//                    }
-//                },
-//            ){
-//                ProfileScreen(
-//                    onDetailsClick = { navController.navigate("DetailsScreen")},
-//                    onRemoveClick = {coroutineScope.launch{
-//                    if(it.recipeEntity.isFavorite == 1)
-//                        scaffoldState.snackbarHostState.showSnackbar(
-//                            message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
-//                            duration = SnackbarDuration.Short)
-//                    else if(it.recipeEntity.isFavorite == 0)
-//                        scaffoldState.snackbarHostState.showSnackbar(
-//                            message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
-//                            duration = SnackbarDuration.Short)
-//                }},)
-//            }
+            composable(
+                route = "ProfileScreen",
+                enterTransition = {
+                    slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                },
+                exitTransition = {
+                    slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+
+                },
+            ){
+                ProfileScreen(
+                    onDetailsClick = { navController.navigate("DetailsScreen")},
+                    onRemoveClick = {coroutineScope.launch{
+                    if(it.recipeEntity.isFavorite == 1)
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
+                            duration = SnackbarDuration.Short)
+                    else if(it.recipeEntity.isFavorite == 0)
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
+                            duration = SnackbarDuration.Short)
+                }},)
+            }
 
             composable(route = "RecipeScreen",
                 enterTransition = {
@@ -172,6 +170,7 @@ fun BearRecipeApp(
                         "ShoppingScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
                         "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
                         "DetailsScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "ProfileScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
                         else -> null }
                 },
                 exitTransition = {
@@ -180,6 +179,7 @@ fun BearRecipeApp(
                         "ShoppingScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
                         "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
                         "DetailsScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "ProfileScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
                         else -> null
                     }
                 }
@@ -223,6 +223,7 @@ fun BearRecipeApp(
                         "ShoppingScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
                         "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
                         "DetailsScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "ProfileScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
                         else -> null
                     }
                 },
@@ -232,6 +233,7 @@ fun BearRecipeApp(
                         "ShoppingScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
                         "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
                         "DetailsScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "ProfileScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
                         else -> null
                     }
                 },
@@ -279,6 +281,7 @@ fun BearRecipeApp(
                         "WeeklyMenuScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
                         "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
                         "DetailsScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "ProfileScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
                         else -> null
                     }
                 },
@@ -288,6 +291,7 @@ fun BearRecipeApp(
                         "WeeklyMenuScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
                         "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
                         "DetailsScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "ProfileScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
                         else -> null
                     }
                 },){
@@ -314,6 +318,7 @@ fun BearRecipeApp(
                         "WeeklyMenuScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
                         "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
                         "ShoppingScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "ProfileScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
                         else -> null
                     }
                 },
@@ -323,6 +328,7 @@ fun BearRecipeApp(
                         "WeeklyMenuScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
                         "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
                         "ShoppingScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "ProfileScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
                         else -> null
                     }
                 },) {
@@ -584,151 +590,172 @@ fun BearAppTopBar(
             }
         }
 
-        if (show) {
-
-            Row(
+        androidx.compose.animation.AnimatedVisibility(
+            visible = show,
+            enter = slideInVertically { -it },
+            exit = slideOutVertically { -it },
+        ) {
+//            if (show) {
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(64.dp)
-                    .background(Color(0xFF682300)),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                if(showSearch){
-                    Surface(
-                        Modifier
-                            .height(56.dp)
-                            .clickable(onClick = onSearchClick)
-                            .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
-                            .border(
-                                width = 2.dp,
-                                brush = (Brush.horizontalGradient(
-                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                    tileMode = TileMode.Mirror
-                                )),
-                                shape = RoundedCornerShape(25.dp)
-                            ),
+                    .wrapContentHeight(),
+                color = Color.Transparent){
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .background(Color(0xFF682300)),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    if (showSearch) {
+                        Surface(
+                            Modifier
+                                .height(56.dp)
+                                .clickable(onClick = onSearchClick)
+                                .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
+                                .border(
+                                    width = 2.dp,
+                                    brush = (Brush.horizontalGradient(
+                                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                        tileMode = TileMode.Mirror
+                                    )),
+                                    shape = RoundedCornerShape(25.dp)
+                                ),
 //                        color = Color(0xFF682300),
-                        shape = RoundedCornerShape(25.dp)
-                    ){
-                        TextField(
-                            value = "",
-                            onValueChange = {},
-                            modifier = Modifier
+                            shape = RoundedCornerShape(25.dp)
+                        ) {
+                            TextField(
+                                value = "",
+                                onValueChange = {},
+                                modifier = Modifier
 //                                .alpha(.8f)
-                            ,
-                            enabled = false,
-                            readOnly = true,
-                            leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
-                            shape = RoundedCornerShape(25.dp),
-                            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0xFFd8af84), textColor = Color(0xFF000000))
-                        )
-                    }
-                }
-                else{
-                    IconButton(
-                        onClick = { clickEffectLeft() },
-                        modifier =
-                        Modifier
-                            .size(48.dp)
-                            .align(Alignment.CenterVertically)
-                            .background(color = Color.Transparent),
-                        // color = Color.Transparent
+                                ,
+                                enabled = false,
+                                readOnly = true,
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Outlined.Search,
+                                        contentDescription = null,
+                                        tint = Color(0xFF000000)
+                                    )
+                                },
+                                shape = RoundedCornerShape(25.dp),
+                                colors = TextFieldDefaults.textFieldColors(
+                                    backgroundColor = Color(
+                                        0xFFd8af84
+                                    ), textColor = Color(0xFF000000)
+                                )
+                            )
+                        }
+                    } else {
+                        IconButton(
+                            onClick = { clickEffectLeft() },
+                            modifier =
+                            Modifier
+                                .size(48.dp)
+                                .align(Alignment.CenterVertically)
+                                .background(color = Color.Transparent),
+                            // color = Color.Transparent
 
-                    ) {
+                        ) {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(24.dp),
+                                // .padding(start = 16.dp)
+                                // .clickable(onClick = {onGoBackClick(detailsScreenData)}),
+                                tint = Color(0xFFd8af84)
+                            )
+                        }
+                    }
+
+                    Spacer(Modifier.weight(1f))
+
+                    Text(
+                        text = title,
+                        modifier = textModifier,
+                        //  .weight(1f),
+                        color = Color(0xFFd8af84),
+                        textAlign = TextAlign.Center,
+                        fontSize = 22.sp,
+                        fontFamily = Cabin,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 1.0.em,
+                        style = MaterialTheme.typography.h4.merge(
+                            TextStyle(
+                                platformStyle = PlatformTextStyle(
+                                    includeFontPadding = false
+                                ),
+                                lineHeightStyle = LineHeightStyle(
+                                    alignment = LineHeightStyle.Alignment.Top,
+                                    trim = LineHeightStyle.Trim.FirstLineTop
+                                )
+                            )
+                        ),
+                    )
+
+                    Spacer(Modifier.weight(1f))
+
+                    if (showShare) {
                         Icon(
-                            imageVector = icon,
+                            imageVector = Icons.Outlined.Share,
                             contentDescription = null,
                             modifier = Modifier
                                 .size(24.dp),
-                            // .padding(start = 16.dp)
-                            // .clickable(onClick = {onGoBackClick(detailsScreenData)}),
                             tint = Color(0xFFd8af84)
                         )
                     }
-                }
 
-                Spacer(Modifier.weight(1f))
+                    Spacer(Modifier.size(16.dp))
 
-                Text(
-                    text = title,
-                    modifier = textModifier,
-                    //  .weight(1f),
-                    color = Color(0xFFd8af84),
-                    textAlign = TextAlign.Center,
-                    fontSize = 22.sp,
-                    fontFamily = Cabin,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 1.0.em,
-                    style = MaterialTheme.typography.h4.merge(
-                        TextStyle(
-                            platformStyle = PlatformTextStyle(
-                                includeFontPadding = false
-                            ),
-                            lineHeightStyle = LineHeightStyle(
-                                alignment = LineHeightStyle.Alignment.Top,
-                                trim = LineHeightStyle.Trim.FirstLineTop
-                            )
-                        )
-                    ),
-                )
+                    val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
 
-                Spacer(Modifier.weight(1f))
-
-                if(showShare){
-                    Icon(
-                        imageVector = Icons.Outlined.Share,
-                        contentDescription = null,
+                    FloatingActionButton(
+                        onClick = {
+                            clickEffectRight()
+                        },
+                        elevation = FloatingActionButtonDefaults.elevation(8.dp),
                         modifier = Modifier
-                            .size(24.dp),
-                        tint = Color(0xFFd8af84)
-                    )
-                }
+                            .padding(end = 8.dp)
+                            .border(
+                                width = 2.dp,
+                                brush = (Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFFd8af84),
+                                        Color(0xFFb15f33),
 
-                Spacer(Modifier.size(16.dp))
-
-                val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
-
-                FloatingActionButton(
-                    onClick = {
-                        clickEffectRight()
-                    },
-                    elevation = FloatingActionButtonDefaults.elevation(8.dp),
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .border(
-                            width = 2.dp,
-                            brush = (Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFFd8af84),
-                                    Color(0xFFb15f33),
-
-                                    ),
-                                endX = gradientWidthButton,
-                                tileMode = TileMode.Mirror
-                            )),
-                            shape = CircleShape
+                                        ),
+                                    endX = gradientWidthButton,
+                                    tileMode = TileMode.Mirror
+                                )),
+                                shape = CircleShape
+                            )
+                            .size(36.dp)
+                            //the background of the square for this button, it stays a square even tho
+                            //we have shape = circle shape.  If this is not changed you see a solid
+                            //square for the "background" of this button.
+                            .background(color = Color.Transparent),
+                        shape = CircleShape,
+                        //this is the background color of the button after the "Shaping" is applied.
+                        //it is different then the background attribute above.
+                        backgroundColor = Color(0xFF682300)
+                    ) {
+                        Icon(
+                            icon2,
+                            tint = Color(0xFFd8af84),
+                            modifier = Modifier.size(20.dp),
+                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                            contentDescription = null
                         )
-                        .size(36.dp)
-                        //the background of the square for this button, it stays a square even tho
-                        //we have shape = circle shape.  If this is not changed you see a solid
-                        //square for the "background" of this button.
-                        .background(color = Color.Transparent),
-                    shape = CircleShape,
-                    //this is the background color of the button after the "Shaping" is applied.
-                    //it is different then the background attribute above.
-                    backgroundColor = Color(0xFF682300)
-                ) {
-                    Icon(
-                        icon2,
-                        tint = Color(0xFFd8af84),
-                        modifier = Modifier.size(20.dp),
-                        // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                        contentDescription = null
-                    )
+                    }
+                    Spacer(Modifier.size(8.dp))
                 }
-                Spacer(Modifier.size(8.dp))
             }
+
+//            }
         }
     }
 }

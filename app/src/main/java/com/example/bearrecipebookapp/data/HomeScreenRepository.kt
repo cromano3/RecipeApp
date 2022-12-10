@@ -67,16 +67,16 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
 
     //
 
-    fun setRecipeToNotShown(name: String){
-        coroutineScope.launch(Dispatchers.IO) {
+    suspend fun setRecipeToNotShown(name: String){
+//        coroutineScope.launch(Dispatchers.IO) {
             homeScreenDao.setRecipeToNotShown(name)
-        }
+//        }
     }
 
-    fun setRecipeToShown(name: String){
-        coroutineScope.launch(Dispatchers.IO) {
+    suspend fun setRecipeToShown(name: String){
+//        coroutineScope.launch(Dispatchers.IO) {
             homeScreenDao.setRecipeToShown(name)
-        }
+//        }
     }
 
     //
