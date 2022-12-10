@@ -1,5 +1,6 @@
 package com.example.bearrecipebookapp
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -52,6 +53,7 @@ import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.TopBarViewModel
 import kotlinx.coroutines.launch
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +73,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun BearRecipeApp(
 ){

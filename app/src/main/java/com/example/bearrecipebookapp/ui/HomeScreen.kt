@@ -85,10 +85,10 @@ fun HomeScreen(
         var filterSelectedClick by remember { mutableStateOf(false) }
         var isFiltered by remember { mutableStateOf(false) }
 
+
+
 //        val coroutineScope = rememberCoroutineScope()
 //        val snackbarHostState = remember {SnackbarHostState()}
-
-
 
 
 //        val itemSize = 74.dp
@@ -109,18 +109,17 @@ fun HomeScreen(
 //                    value = -(itemSizePx * uiFiltersState.filtersList.size),
 //                    animationSpec = tween(durationMillis = 300, delayMillis = 0)
 //                )
+            }
         }
-        }
 
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 0.dp, bottom = 48.dp),
+                color = Color(0xFFd8af84)
+            ){
 
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 0.dp, bottom = 48.dp),
-            color = Color(0xFFd8af84)
-        ){
-
-            Column{
+                Column{
 //                Row(
 //                    Modifier
 //                        .background(Color(0xFF682300))
@@ -189,105 +188,116 @@ fun HomeScreen(
 //                    }
 //                }
 
-                LazyRow(
-                    modifier = Modifier.background(
+                    LazyRow(
+                        modifier = Modifier.background(
 //                        Color(0xFFb15f33)
 //                                Color(0xFF682300)
-                        Color(0xFFd8af84)
+                            Color(0xFFd8af84)
 //                        Color(0xFFf8ea9a)
-                    ),
-                    state = listState,
-                    userScrollEnabled = !isFiltered
-                ){
-                    items(filtersList, key = { it.filterName }) {
+                        ),
+                        state = listState,
+                        userScrollEnabled = !isFiltered
+                    ){
+                        items(filtersList, key = { it.filterName }) {
 
-                        FiltersButton(
-                            modifier = Modifier
-                                .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
-                            filterEntity = it,
-                            isWorking = uiFiltersState.isWorking,
-                            onFilterClick =
-                            {
-                                homeScreenViewModel.filterBy(it)
-                                filterSelectedClick = !filterSelectedClick
-                                isFiltered = !isFiltered
-                            },
-                        )
+                            FiltersButton(
+                                modifier = Modifier
+                                    .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
+                                filterEntity = it,
+                                isWorking = uiFiltersState.isWorking,
+                                onFilterClick =
+                                {
+                                    homeScreenViewModel.filterBy(it)
+                                    filterSelectedClick = !filterSelectedClick
+                                    isFiltered = !isFiltered
+                                },
+                            )
+                        }
+                        item{
+                            Spacer(Modifier.size(8.dp))
+                        }
                     }
-                    item{
-                        Spacer(Modifier.size(8.dp))
-                    }
-                }
 
-                Spacer(Modifier.background(Brush.horizontalGradient(colors = listOf(Color(0xFFb15f33), Color(0xFF682300)), tileMode = TileMode.Mirror)).fillMaxWidth().height(2.dp))
+                    Spacer(
+                        Modifier
+                            .background(
+                                Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFFb15f33),
+                                        Color(0xFF682300)
+                                    ), tileMode = TileMode.Mirror
+                                )
+                            )
+                            .fillMaxWidth()
+                            .height(2.dp))
 
 
-                Box {
-                    androidx.compose.animation.AnimatedVisibility(
-                        visible = uiFiltersState.showAllRecipes,
-                        enter = EnterTransition.None,
-                        exit = ExitTransition.None,
-                    ) {
-
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            modifier = Modifier
-                                .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    Box {
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = uiFiltersState.showAllRecipes,
+                            enter = EnterTransition.None,
+                            exit = ExitTransition.None,
                         ) {
 
-                            items(newRecipeList.size, key = { it }) { index ->
-                                var bottomPadding = 0
-                                if (index + 1 == newRecipeList.size) {
-                                    bottomPadding = 16
-                                }
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(2),
+                                modifier = Modifier
+                                    .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
 
-                                SmallRecipeCard(
-                                    modifier = Modifier
-                                        .padding(bottom = bottomPadding.dp)
-                                        .animateEnterExit(
-                                            enter = scaleIn(
-                                                TweenSpec(150, 0, FastOutLinearInEasing)
-                                            ),
-                                            exit = scaleOut(
-                                                animationSpec = TweenSpec(
-                                                    150,
-                                                    0,
-                                                    FastOutLinearInEasing
+                                items(newRecipeList.size, key = { it }) { index ->
+                                    var bottomPadding = 0
+                                    if (index + 1 == newRecipeList.size) {
+                                        bottomPadding = 16
+                                    }
+
+                                    SmallRecipeCard(
+                                        modifier = Modifier
+                                            .padding(bottom = bottomPadding.dp)
+                                            .animateEnterExit(
+                                                enter = scaleIn(
+                                                    TweenSpec(150, 0, FastOutLinearInEasing)
+                                                ),
+                                                exit = scaleOut(
+                                                    animationSpec = TweenSpec(
+                                                        150,
+                                                        0,
+                                                        FastOutLinearInEasing
+                                                    )
                                                 )
-                                            )
-                                        ),
-                                    recipe = newRecipeList[index].recipeEntity,
-                                    ingredients = newRecipeList[index].ingredientsList,
-                                    //this does onMenu updates and related ingredients updates
-                                    //needs to be changed to menu button when we add menu button
-                                    onFavoriteClick =
-                                    {
-                                        onFavoriteClick(newRecipeList[index])
-                                        homeScreenViewModel.toggleFavorite(newRecipeList[index])
-                                    },
-                                    onMenuClick =
-                                    {
-                                        if (newRecipeList[index].recipeEntity.onMenu == 0){
-                                            homeScreenViewModel.toggleMenu(newRecipeList[index])
-                                            onMenuClick(newRecipeList[index])
-                                    }
-                                        else if(newRecipeList[index].recipeEntity.onMenu == 1){
-                                            homeScreenViewModel.triggerAlert(newRecipeList[index])
-                                        }
-                                    },
+                                            ),
+                                        recipe = newRecipeList[index].recipeEntity,
+                                        ingredients = newRecipeList[index].ingredientsList,
+                                        //this does onMenu updates and related ingredients updates
+                                        //needs to be changed to menu button when we add menu button
+                                        onFavoriteClick =
+                                        {
+                                            onFavoriteClick(newRecipeList[index])
+                                            homeScreenViewModel.toggleFavorite(newRecipeList[index])
+                                        },
+                                        onMenuClick =
+                                        {
+                                            if (newRecipeList[index].recipeEntity.onMenu == 0){
+                                                homeScreenViewModel.toggleMenu(newRecipeList[index])
+                                                onMenuClick(newRecipeList[index])
+                                            }
+                                            else if(newRecipeList[index].recipeEntity.onMenu == 1){
+                                                homeScreenViewModel.triggerAlert(newRecipeList[index])
+                                            }
+                                        },
 //
-                                    onDetailsClick = {
-                                        homeScreenViewModel.setDetailsScreenTarget(newRecipeList[index].recipeEntity.recipeName)
-                                        onDetailsClick()
-                                    }
-                                )
+                                        onDetailsClick = {
+                                            homeScreenViewModel.setDetailsScreenTarget(newRecipeList[index].recipeEntity.recipeName)
+                                            onDetailsClick()
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
-            Box(Modifier.fillMaxSize()){
+                Box(Modifier.fillMaxSize()){
 //                SnackbarHost(
 //                    modifier = Modifier.align(Alignment.BottomCenter),
 //                    hostState = snackbarHostState,
@@ -303,37 +313,38 @@ fun HomeScreen(
 //                        }
 //                    }
 //                )
-                if(uiAlertState.showAlert){
-                    AlertDialog(
-                        onDismissRequest = {},
-                        text = {
-                            Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
-                                    " from the Menu? (This will also remove it from the Shopping List.)" )
-                        },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    onMenuRemovedClick(uiAlertState.recipe)
-                                    homeScreenViewModel.toggleMenu(uiAlertState.recipe)
-                                    homeScreenViewModel.cancelAlert()
+                    if(uiAlertState.showAlert){
+                        AlertDialog(
+                            onDismissRequest = {},
+                            text = {
+                                Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
+                                        " from the Menu? (This will also remove it from the Shopping List.)" )
+                            },
+                            confirmButton = {
+                                TextButton(
+                                    onClick = {
+                                        onMenuRemovedClick(uiAlertState.recipe)
+                                        homeScreenViewModel.toggleMenu(uiAlertState.recipe)
+                                        homeScreenViewModel.cancelAlert()
+                                    }
+                                ) {
+                                    Text("Yes")
                                 }
-                            ) {
-                                Text("Yes")
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(
-                                onClick = {
-                                    homeScreenViewModel.cancelAlert()
+                            },
+                            dismissButton = {
+                                TextButton(
+                                    onClick = {
+                                        homeScreenViewModel.cancelAlert()
+                                    }
+                                ) {
+                                    Text("Cancel")
                                 }
-                            ) {
-                                Text("Cancel")
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
-        }
+
     }
 }
 

@@ -13,6 +13,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -430,17 +432,22 @@ fun ProfileScreen(
 
                 ) {
 
-                    LazyColumn() {
-                        items(cookedData, key = { it.recipeEntity.recipeName }) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
+                        horizontalArrangement = Arrangement.spacedBy(0.dp)
+                    ) {
+                        items(cookedData.size, key = { it }) { index ->
                             androidx.compose.animation.AnimatedVisibility(
-                                visible = it.recipeEntity.cookedCount > 0,
+                                visible = cookedData[index].recipeEntity.cookedCount > 0,
                                 enter = EnterTransition.None,
                                 exit = ExitTransition.None,
                             ) {
                                 RecipeIcon(
-                                    recipeWithIngredients = it,
+                                    recipeWithIngredients = cookedData[index],
                                     onDetailsClick = {
-                                        profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
+                                        profileScreenViewModel.setDetailsScreenTarget(cookedData[index].recipeEntity.recipeName);
                                         onDetailsClick()
                                     })
                             }
