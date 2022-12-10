@@ -5,6 +5,9 @@ import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -42,15 +45,15 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.*
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.TopBarViewModel
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.launch
 
 
@@ -73,12 +76,13 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun BearRecipeApp(
 ){
 
-    val navController: NavHostController = rememberNavController()
+    val navController: NavHostController = rememberAnimatedNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentScreen = currentBackStackEntry?.destination?.route ?: "RecipeScreen"
@@ -129,26 +133,57 @@ fun BearRecipeApp(
 
         }
     ){
-        NavHost(
+        AnimatedNavHost(
             navController = navController,
             startDestination = "RecipeScreen",
         ){
-            composable(route = "ProfileScreen"){
-                ProfileScreen(
-                    onDetailsClick = { navController.navigate("DetailsScreen")},
-                    onRemoveClick = {coroutineScope.launch{
-                    if(it.recipeEntity.isFavorite == 1)
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
-                            duration = SnackbarDuration.Short)
-                    else if(it.recipeEntity.isFavorite == 0)
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
-                            duration = SnackbarDuration.Short)
-                }},)
-            }
+//            composable(
+//                route = "ProfileScreen",
+//                enterTransition = { when (initialState.destination.route){
+//                    "WeeklyMenuScreen" -> null
+//                    else -> null }
+//                },
+//                exitTransition = {
+//                    when (targetState.destination.route) {
+//                        "WeeklyMenuScreen" ->
+//                            null
+//                        else -> null
+//                    }
+//                },
+//            ){
+//                ProfileScreen(
+//                    onDetailsClick = { navController.navigate("DetailsScreen")},
+//                    onRemoveClick = {coroutineScope.launch{
+//                    if(it.recipeEntity.isFavorite == 1)
+//                        scaffoldState.snackbarHostState.showSnackbar(
+//                            message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
+//                            duration = SnackbarDuration.Short)
+//                    else if(it.recipeEntity.isFavorite == 0)
+//                        scaffoldState.snackbarHostState.showSnackbar(
+//                            message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
+//                            duration = SnackbarDuration.Short)
+//                }},)
+//            }
 
-            composable(route = "RecipeScreen"){
+            composable(route = "RecipeScreen",
+                enterTransition = {
+                    when (initialState.destination.route){
+                        "WeeklyMenuScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
+                        "ShoppingScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
+                        "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "DetailsScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        else -> null }
+                },
+                exitTransition = {
+                    when (targetState.destination.route) {
+                        "WeeklyMenuScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                        "ShoppingScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                        "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "DetailsScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        else -> null
+                    }
+                }
+            ){
                 //Recipe Book Main Screen
                 HomeScreen(
 //                    onSearchClick = {navController.navigate("SearchScreen")},
@@ -181,7 +216,26 @@ fun BearRecipeApp(
                 )
             }
 
-            composable(route = "WeeklyMenuScreen"){
+            composable(route = "WeeklyMenuScreen",
+                enterTransition = {
+                    when (initialState.destination.route){
+                        "RecipeScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                        "ShoppingScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
+                        "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "DetailsScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        else -> null
+                    }
+                },
+                exitTransition = {
+                    when (targetState.destination.route) {
+                        "RecipeScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
+                        "ShoppingScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                        "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "DetailsScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        else -> null
+                    }
+                },
+            ){
                 //Weekly menu screen
                 MenuScreen(
                     onDetailsClick = { navController.navigate("DetailsScreen")},
@@ -217,27 +271,61 @@ fun BearRecipeApp(
                 )
             }
 
-            composable(route = "ShoppingScreen"){
+            composable(
+                route = "ShoppingScreen",
+                enterTransition = {
+                    when (initialState.destination.route){
+                        "RecipeScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                        "WeeklyMenuScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
+                        "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "DetailsScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        else -> null
+                    }
+                },
+                exitTransition = {
+                    when (targetState.destination.route) {
+                        "RecipeScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
+                        "WeeklyMenuScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
+                        "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "DetailsScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        else -> null
+                    }
+                },){
                 ShoppingListScreen(
                     onDetailsClick = { navController.navigate("DetailsScreen") },
                     onSystemBackClick = {
                         navController.navigate("RecipeScreen"){
-
                             popUpTo(navController.graph.findStartDestination().id)
 //                            {
 //                                saveState = true
 //                            }
 //                            launchSingleTop = true
                             restoreState = true
-
                         }
                     }
                 )
-
             }
 
-            composable(route = "DetailsScreen") {
-
+            composable(
+                route = "DetailsScreen",
+                enterTransition = {
+                    when (initialState.destination.route){
+                        "RecipeScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "WeeklyMenuScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "ShoppingScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        else -> null
+                    }
+                },
+                exitTransition = {
+                    when (targetState.destination.route) {
+                        "RecipeScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "WeeklyMenuScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "ShoppingScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        else -> null
+                    }
+                },) {
                 NewDetailsScreen(
                     onGoBackClick = { navController.popBackStack() },
                     onMenuAddClick = {coroutineScope.launch {
@@ -270,7 +358,15 @@ fun BearRecipeApp(
                 )
             }
 
-            composable(route = "SearchScreen"){
+            composable(
+                route = "SearchScreen",
+                enterTransition = {
+                    slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                },
+                exitTransition = {
+                     slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                },
+            ){
                 SearchScreen(
                     onGoBackClick = { navController.popBackStack() },
                     onDetailsClick = { navController.navigate("DetailsScreen") },
