@@ -13,7 +13,7 @@ class TopBarRepository(private val topBarDao: TopBarDao) {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions> = topBarDao.getData()
-    var textFieldValue: LiveData<String> = topBarDao.getTextFieldValue()
+//    var textFieldValue: LiveData<String> = topBarDao.getTextFieldValue()
     var showResults: LiveData<Int> = topBarDao.getShowResults()
 
 
@@ -21,6 +21,14 @@ class TopBarRepository(private val topBarDao: TopBarDao) {
         coroutineScope.launch(Dispatchers.IO) {
             topBarDao.updateFavorite(recipeName, isFavoriteStatus)
         }
+    }
+
+    suspend fun getTextFieldValue(): String{
+        return topBarDao.getTextFieldValue()
+    }
+
+    suspend fun setTextFieldValue(input: String){
+        topBarDao.setTextFieldValue(input)
     }
 
     suspend fun getRecipeNamesReferenceList(): List<String>{

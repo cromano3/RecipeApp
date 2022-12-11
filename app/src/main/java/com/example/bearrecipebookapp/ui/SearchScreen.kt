@@ -163,7 +163,6 @@ fun SearchScreen(
 
                     //Preview list
                     if(showResults == 0){
-                        println("x0$showResults")
                         LazyColumn(
                             state = listState,
                             modifier = Modifier.padding(bottom = 0.dp).pointerInput(Unit) {
@@ -205,7 +204,6 @@ fun SearchScreen(
 //                    if(uiState.showResults){
                     //Results Cards
                     if(showResults == 1){
-                        println("x1$showResults")
 
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),

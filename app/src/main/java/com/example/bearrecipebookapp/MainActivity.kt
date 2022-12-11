@@ -524,7 +524,7 @@ fun BearAppTopBar(
         val detailsScreenData by topBarViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
         val uiState by topBarViewModel.uiState.collectAsState()
 
-        val textFieldValue by topBarViewModel.textFieldValue.observeAsState()
+//        val textFieldValue by topBarViewModel.textFieldValue.observeAsState()
         val showResults by topBarViewModel.showResults.observeAsState()
 
         var title = ""
@@ -548,6 +548,10 @@ fun BearAppTopBar(
 //                topBarViewModel.updatePreview( TextFieldValue(""), "")
                 focusRequester.requestFocus()
             }
+        }
+
+        if(showResults == 1 && currentScreen == "SearchScreen"){
+            topBarViewModel.updateSearchText()
         }
 
         when (currentScreen) {
@@ -816,7 +820,6 @@ fun BearAppTopBar(
                             value =  uiState.currentInput,
                             onValueChange =
                             {
-                                println(it.text +"ZZZ")
                                 topBarViewModel.updatePreview( it, it.text)
                             },
                             modifier = Modifier.focusRequester(focusRequester),

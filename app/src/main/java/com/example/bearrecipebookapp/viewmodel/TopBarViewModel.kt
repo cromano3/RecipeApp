@@ -22,7 +22,7 @@ class TopBarViewModel(application: Application, ): ViewModel() {
 
     var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
 
-    var textFieldValue: LiveData<String>
+//    var textFieldValue: LiveData<String>
     var showResults: LiveData<Int>
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -37,7 +37,7 @@ class TopBarViewModel(application: Application, ): ViewModel() {
         repository = TopBarRepository(topBarDao)
 
         detailsScreenData = repository.detailsScreenData
-        textFieldValue = repository.textFieldValue
+//        textFieldValue = repository.textFieldValue
         showResults = repository.showResults
 
         setReferenceList()
@@ -127,10 +127,18 @@ class TopBarViewModel(application: Application, ): ViewModel() {
         }
     }
 
+    fun updateSearchText(){
+        coroutineScope.launch(Dispatchers.IO){
+            uiState.update {
+                it.copy(
+                    currentInput = TextFieldValue(repository.getTextFieldValue())
+                )
+            }
+        }
+    }
+
     fun updatePreview(textFieldValueInput: TextFieldValue, input: String){
         coroutineScope.launch(Dispatchers.IO) {
-
-            println("PLZ" + input)
 
             repository.clearResults()
             repository.setShowResults(0)
@@ -140,6 +148,8 @@ class TopBarViewModel(application: Application, ): ViewModel() {
                     currentInput = textFieldValueInput
                 )
             }
+
+//            repository.setTextFieldValue(input)
 
 //            var previewList = mutableListOf<SearchItemWithCategory>()
             var previewList = mutableListOf<String>()

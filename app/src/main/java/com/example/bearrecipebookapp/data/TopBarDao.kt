@@ -10,6 +10,9 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructi
 @Dao
 interface TopBarDao {
 
+    @Transaction
+    @Query("UPDATE search_table SET text_field_value = :input")
+    fun setTextFieldValue(input: String)
 
     @Transaction
     @Query("SELECT show_results FROM search_table")
@@ -17,7 +20,7 @@ interface TopBarDao {
 
     @Transaction
     @Query("SELECT text_field_value FROM search_table")
-    fun getTextFieldValue(): LiveData<String>
+    fun getTextFieldValue(): String
 
     @Transaction
     @Query("SELECT recipe_table.* FROM recipe_table INNER JOIN details_screen_target_table ON details_screen_target_table.target_name = recipe_table.recipe_name")
