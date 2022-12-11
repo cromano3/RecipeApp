@@ -12,6 +12,8 @@ class SearchScreenRepository(private val searchScreenDao: SearchScreenDao) {
 
 //    var allRecipes: LiveData<List<HomeScreenDataModel>> = searchScreenDao.getAllRecipes()
     var results: LiveData<List<HomeScreenDataModel>> = searchScreenDao.getResults()
+    var showResults: LiveData<Int> = searchScreenDao.getShowResults()
+    var previewList: LiveData<String> = searchScreenDao.getPreviewList()
 
     suspend fun getRecipeNamesReferenceList(): List<String>{
         return searchScreenDao.getRecipeNamesReferenceList()
@@ -39,6 +41,18 @@ class SearchScreenRepository(private val searchScreenDao: SearchScreenDao) {
 //        coroutineScope.launch(Dispatchers.IO) {
             searchScreenDao.clearResults()
 //        }
+    }
+
+    fun setShowResults(isShown: Int){
+        coroutineScope.launch(Dispatchers.IO) {
+            searchScreenDao.setShowResults(isShown)
+        }
+    }
+
+    fun setTextFieldValue(input: String){
+        coroutineScope.launch(Dispatchers.IO) {
+            searchScreenDao.setTextFieldValue(input)
+        }
     }
 
     fun updateFavorite(recipeName: String, isFavoriteStatus: Int) {

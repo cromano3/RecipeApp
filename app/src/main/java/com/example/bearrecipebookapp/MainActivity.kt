@@ -17,25 +17,30 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -516,19 +521,34 @@ fun BearAppTopBar(
             )
         )
 
+        val detailsScreenData by topBarViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
+        val uiState by topBarViewModel.uiState.collectAsState()
+
+        val textFieldValue by topBarViewModel.textFieldValue.observeAsState()
+        val showResults by topBarViewModel.showResults.observeAsState()
+
         var title = ""
         var show = false
         var showShare = false
-        var showSearch = false
+        var showSearchButton = false
+        var showTitle = false
+        var showSearchField = false
         var icon = Icons.Outlined.Home
         var icon2 = Icons.Outlined.Home
         var clickEffectLeft = onHomeClick
         var clickEffectRight = onHomeClick
         var textModifier = Modifier.wrapContentWidth()
 
-        val detailsScreenData by topBarViewModel.detailsScreenData.observeAsState(
-            RecipeWithIngredientsAndInstructions()
-        )
+        val focusManager = LocalFocusManager.current
+        val focusRequester = remember { FocusRequester() }
+
+//      if(!uiState.showResults && currentScreen == "SearchScreen") {
+        if(showResults == 0 && currentScreen == "SearchScreen") {
+            LaunchedEffect(Unit) {
+//                topBarViewModel.updatePreview( TextFieldValue(""), "")
+                focusRequester.requestFocus()
+            }
+        }
 
         when (currentScreen) {
             "RecipeScreen" -> {
@@ -538,7 +558,9 @@ fun BearAppTopBar(
                 icon2 = Icons.Outlined.Person
                 clickEffectLeft = onHomeClick
                 clickEffectRight = onProfileClick
-                showSearch = true
+                showSearchButton = true
+                showTitle = false
+                showSearchField = false
                 showShare = false
             }
             "WeeklyMenuScreen" -> {
@@ -549,7 +571,9 @@ fun BearAppTopBar(
                 icon2 = Icons.Outlined.Person
                 clickEffectLeft = onHomeClick
                 clickEffectRight = onProfileClick
-                showSearch = false
+                showTitle = true
+                showSearchField = false
+                showSearchButton = false
                 showShare = false
             }
             "ShoppingScreen" -> {
@@ -560,11 +584,24 @@ fun BearAppTopBar(
                 icon2 = Icons.Outlined.Person
                 clickEffectLeft = onHomeClick
                 clickEffectRight = onProfileClick
-                showSearch = false
+                showTitle = true
+                showSearchField = false
+                showSearchButton = false
                 showShare = false
             }
             "SearchScreen" -> {
-                show = false
+                show = true
+                textModifier = Modifier.width(0.dp)
+                title = ""
+                icon = Icons.Outlined.ArrowBack
+                icon2 = Icons.Outlined.Person
+                clickEffectLeft = onBackClick
+                clickEffectRight = {}
+                showTitle = false
+                showSearchField = true
+                showSearchButton = false
+                showShare = false
+
             }
             "DetailsScreen" -> {
                 show = true
@@ -578,8 +615,11 @@ fun BearAppTopBar(
                     topBarViewModel.toggleFavorite(detailsScreenData)
                     onFavoriteClick(detailsScreenData)
                 }
-                showSearch = false
+                showTitle = true
+                showSearchField = false
+                showSearchButton = false
                 showShare = true
+
 
                 icon2 = if (detailsScreenData.recipeEntity.isFavorite == 0) {
                     Icons.Outlined.FavoriteBorder
@@ -589,6 +629,15 @@ fun BearAppTopBar(
                 }
             }
         }
+
+//        println("yy")
+//        BackHandler(enabled = true) {
+//            println("xx")
+//            if(currentScreen == "SearchScreen"){
+//                println("XX")
+//                topBarViewModel.updatePreview( TextFieldValue(""), "")
+//            }
+//        }
 
         androidx.compose.animation.AnimatedVisibility(
             visible = show,
@@ -609,7 +658,8 @@ fun BearAppTopBar(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
-                    if (showSearch) {
+                    //shows clickable only search button on main screen to go to search screen
+                    if (showSearchButton) {
                         Surface(
                             Modifier
                                 .height(56.dp)
@@ -649,9 +699,13 @@ fun BearAppTopBar(
                                 )
                             )
                         }
-                    } else {
+                    }
+                    else {
                         IconButton(
-                            onClick = { clickEffectLeft() },
+                            onClick = {
+//                                if(currentScreen == "SearchScreen") topBarViewModel.updatePreview( TextFieldValue(""), "");
+                                clickEffectLeft()
+                                      },
                             modifier =
                             Modifier
                                 .size(48.dp)
@@ -674,28 +728,31 @@ fun BearAppTopBar(
 
                     Spacer(Modifier.weight(1f))
 
-                    Text(
-                        text = title,
-                        modifier = textModifier,
-                        //  .weight(1f),
-                        color = Color(0xFFd8af84),
-                        textAlign = TextAlign.Center,
-                        fontSize = 22.sp,
-                        fontFamily = Cabin,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 1.0.em,
-                        style = MaterialTheme.typography.h4.merge(
-                            TextStyle(
-                                platformStyle = PlatformTextStyle(
-                                    includeFontPadding = false
-                                ),
-                                lineHeightStyle = LineHeightStyle(
-                                    alignment = LineHeightStyle.Alignment.Top,
-                                    trim = LineHeightStyle.Trim.FirstLineTop
+                    if(showTitle){
+                        Text(
+                            text = title,
+                            modifier = textModifier,
+                            //  .weight(1f),
+                            color = Color(0xFFd8af84),
+                            textAlign = TextAlign.Center,
+                            fontSize = 22.sp,
+                            fontFamily = Cabin,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 1.0.em,
+                            style = MaterialTheme.typography.h4.merge(
+                                TextStyle(
+                                    platformStyle = PlatformTextStyle(
+                                        includeFontPadding = false
+                                    ),
+                                    lineHeightStyle = LineHeightStyle(
+                                        alignment = LineHeightStyle.Alignment.Top,
+                                        trim = LineHeightStyle.Trim.FirstLineTop
+                                    )
                                 )
-                            )
-                        ),
-                    )
+                            ),
+                        )
+                    }
+
 
                     Spacer(Modifier.weight(1f))
 
@@ -713,42 +770,82 @@ fun BearAppTopBar(
 
                     val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
 
-                    FloatingActionButton(
-                        onClick = {
-                            clickEffectRight()
-                        },
-                        elevation = FloatingActionButtonDefaults.elevation(8.dp),
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .border(
-                                width = 2.dp,
-                                brush = (Brush.horizontalGradient(
-                                    colors = listOf(
-                                        Color(0xFFd8af84),
-                                        Color(0xFFb15f33),
 
-                                        ),
-                                    endX = gradientWidthButton,
-                                    tileMode = TileMode.Mirror
-                                )),
-                                shape = CircleShape
+                    if (!showSearchField){
+                        FloatingActionButton(
+                            onClick = {
+                                clickEffectRight()
+                            },
+                            elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .border(
+                                    width = 2.dp,
+                                    brush = (Brush.horizontalGradient(
+                                        colors = listOf(
+                                            Color(0xFFd8af84),
+                                            Color(0xFFb15f33),
+
+                                            ),
+                                        endX = gradientWidthButton,
+                                        tileMode = TileMode.Mirror
+                                    )),
+                                    shape = CircleShape
+                                )
+                                .size(36.dp)
+                                //the background of the square for this button, it stays a square even tho
+                                //we have shape = circle shape.  If this is not changed you see a solid
+                                //square for the "background" of this button.
+                                .background(color = Color.Transparent),
+                            shape = CircleShape,
+                            //this is the background color of the button after the "Shaping" is applied.
+                            //it is different then the background attribute above.
+                            backgroundColor = Color(0xFF682300)
+                        ) {
+                            Icon(
+                                icon2,
+                                tint = Color(0xFFd8af84),
+                                modifier = Modifier.size(20.dp),
+                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                contentDescription = null
                             )
-                            .size(36.dp)
-                            //the background of the square for this button, it stays a square even tho
-                            //we have shape = circle shape.  If this is not changed you see a solid
-                            //square for the "background" of this button.
-                            .background(color = Color.Transparent),
-                        shape = CircleShape,
-                        //this is the background color of the button after the "Shaping" is applied.
-                        //it is different then the background attribute above.
-                        backgroundColor = Color(0xFF682300)
-                    ) {
-                        Icon(
-                            icon2,
-                            tint = Color(0xFFd8af84),
-                            modifier = Modifier.size(20.dp),
-                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                            contentDescription = null
+                        }
+                    }
+                    else{
+                        TextField(
+                            value =  uiState.currentInput,
+                            onValueChange =
+                            {
+                                println(it.text +"ZZZ")
+                                topBarViewModel.updatePreview( it, it.text)
+                            },
+                            modifier = Modifier.focusRequester(focusRequester),
+                            textStyle = TextStyle.Default.copy(color = Color(0xFF000000), fontSize = 16.sp),
+                            leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
+                            trailingIcon =
+                            {
+                                if(uiState.currentInput.text.isNotEmpty()){
+                                    Surface(
+                                        color = Color.Transparent,
+                                        modifier = Modifier.clickable {  topBarViewModel.updatePreview( TextFieldValue(""), "") }
+                                    )
+                                    {
+                                        Icon(
+                                            Icons.Outlined.Close,
+                                            contentDescription = null,
+                                            tint = Color(0xFF000000)
+                                        )
+                                    }
+                                }
+                            },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                            keyboardActions = KeyboardActions(
+                                onSearch = {
+                                    topBarViewModel.liveSearchForClick()
+//                                searchScreenViewModel.searchFor(text)
+                                    focusManager.clearFocus()
+                                })
+//                        colors =
                         )
                     }
                     Spacer(Modifier.size(8.dp))

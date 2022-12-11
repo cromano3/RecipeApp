@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "603b71d3dfb494e09d00153a0ba33302",
+    "identityHash": "2baa434b3f65f119b40698acb9f84287",
     "entities": [
       {
         "tableName": "recipe_table",
@@ -259,12 +259,50 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "search_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`preview_list` TEXT NOT NULL, `results_list` TEXT NOT NULL, `show_results` INTEGER NOT NULL, `text_field_value` TEXT NOT NULL, PRIMARY KEY(`text_field_value`))",
+        "fields": [
+          {
+            "fieldPath": "previewList",
+            "columnName": "preview_list",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "resultsList",
+            "columnName": "results_list",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "showResults",
+            "columnName": "show_results",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "textFieldValue",
+            "columnName": "text_field_value",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "text_field_value"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '603b71d3dfb494e09d00153a0ba33302')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2baa434b3f65f119b40698acb9f84287')"
     ]
   }
 }

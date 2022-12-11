@@ -1,7 +1,6 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -12,29 +11,21 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.runtime.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
@@ -64,19 +55,24 @@ fun SearchScreen(
         val uiState by searchScreenViewModel.uiState.collectAsState()
 //        val allRecipes by searchScreenViewModel.allRecipes.observeAsState()
         val results by searchScreenViewModel.results.observeAsState(listOf())
+        val previewList by searchScreenViewModel.previewList.observeAsState()
 
-        val focusRequester = remember { FocusRequester() }
+        val myPreviewList: List<String> = previewList?.split(",") ?: listOf("")
+
+        val showResults by searchScreenViewModel.showResults.observeAsState()
+
+//        val focusRequester = remember { FocusRequester() }
         val focusManager = LocalFocusManager.current
 
-        val text by remember { mutableStateOf("") }
+//        val text by remember { mutableStateOf("") }
 
-        var isKeyboardOpen by remember { mutableStateOf(true) }
+//        var isKeyboardOpen by remember { mutableStateOf(true) }
 
-        if(!uiState.showResults) {
-            LaunchedEffect(Unit) {
-                focusRequester.requestFocus()
-            }
-        }
+//        if(!uiState.showResults) {
+//            LaunchedEffect(Unit) {
+//                focusRequester.requestFocus()
+//            }
+//        }
 
 //        BackHandler( onBack = {focusManager.clearFocus()} )
 
@@ -84,68 +80,67 @@ fun SearchScreen(
 
         Surface(){
             Column(){
-                Row(){
+//                Row(){
+//
+//                    //Go back button
+//                    IconButton(
+//                        onClick = { onGoBackClick() },
+//                        modifier =
+//                        Modifier
+//                            .size(48.dp)
+//                            .align(Alignment.CenterVertically)
+//                            .background(color = Color.Transparent),
+//                        // color = Color.Transparent
+//
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Outlined.ArrowBack,
+//                            contentDescription = null,
+//                            modifier = Modifier
+//                                .size(24.dp),
+//                            // .padding(start = 16.dp)
+//                            // .clickable(onClick = {onGoBackClick(detailsScreenData)}),
+//                            tint = Color(0xFF000000)
+//                        )
+//                    }
+//
+//                    //Search field
+//                    TextField(
+//                        value = uiState.currentInput,
+//                        onValueChange =
+//                        {
+//                            searchScreenViewModel.updatePreview( it, it.text)
+//                        },
+//                        modifier = Modifier.focusRequester(focusRequester),
+//                        textStyle = TextStyle.Default.copy(color = Color(0xFF000000), fontSize = 16.sp),
+//                        leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
+//                        trailingIcon =
+//                        {
+//                            if(uiState.currentInput.text.isNotEmpty()){
+//                                Surface(
+//                                    color = Color.Transparent,
+//                                    modifier = Modifier.clickable {  searchScreenViewModel.updatePreview( TextFieldValue(""), "") }
+//                                )
+//                                {
+//                                    Icon(
+//                                        Icons.Outlined.Close,
+//                                        contentDescription = null,
+//                                        tint = Color(0xFF000000)
+//                                    )
+//                                }
+//                            }
+//                        },
+//                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+//                        keyboardActions = KeyboardActions(
+//                            onSearch = {
+//                                searchScreenViewModel.liveSearchForClick()
+////                                searchScreenViewModel.searchFor(text)
+//                                focusManager.clearFocus()
+//                            })
+////                        colors =
+//                    )
+//                }
 
-                    //Go back button
-                    IconButton(
-                        onClick = { onGoBackClick() },
-                        modifier =
-                        Modifier
-                            .size(48.dp)
-                            .align(Alignment.CenterVertically)
-                            .background(color = Color.Transparent),
-                        // color = Color.Transparent
-
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(24.dp),
-                            // .padding(start = 16.dp)
-                            // .clickable(onClick = {onGoBackClick(detailsScreenData)}),
-                            tint = Color(0xFF000000)
-                        )
-                    }
-
-                    //Search field
-                    TextField(
-                        value = uiState.currentInput,
-                        onValueChange =
-                        {
-                            searchScreenViewModel.updatePreview( it, it.text)
-                        },
-                        modifier = Modifier.focusRequester(focusRequester),
-                        textStyle = TextStyle.Default.copy(color = Color(0xFF000000), fontSize = 16.sp),
-                        leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
-                        trailingIcon =
-                        {
-                            if(uiState.currentInput.text.isNotEmpty()){
-                                Surface(
-                                    color = Color.Transparent,
-                                    modifier = Modifier.clickable {  searchScreenViewModel.updatePreview( TextFieldValue(""), "") }
-                                )
-                                {
-                                    Icon(
-                                        Icons.Outlined.Close,
-                                        contentDescription = null,
-                                        tint = Color(0xFF000000)
-                                    )
-                                }
-                            }
-                        },
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                        keyboardActions = KeyboardActions(
-                            onSearch = {
-                                searchScreenViewModel.liveSearchForClick()
-//                                searchScreenViewModel.searchFor(text)
-                                focusManager.clearFocus()
-                            })
-//                        colors =
-                    )
-
-                //Profile Screen button
-                }
                 Surface(
                     Modifier
                         .fillMaxSize()
@@ -160,13 +155,15 @@ fun SearchScreen(
                         }
                 )
                 {
-                    var listState = rememberLazyListState()
+                    val listState = rememberLazyListState()
 
                     if(listState.isScrollInProgress){
                         focusManager.clearFocus()
                     }
 
-                    if(!uiState.showResults){
+                    //Preview list
+                    if(showResults == 0){
+                        println("x0$showResults")
                         LazyColumn(
                             state = listState,
                             modifier = Modifier.padding(bottom = 0.dp).pointerInput(Unit) {
@@ -180,19 +177,20 @@ fun SearchScreen(
                         }
                         )
                         {
-                            items(items = uiState.previewList, key = {it.name}){
+                            items(items = myPreviewList, key = {it}){
+//                            items(items = uiState.previewList, key = {it.name}){
                                 Surface(
                                     Modifier
                                         .wrapContentSize()
                                         .clickable(onClick = {
-                                            searchScreenViewModel.liveSearchForPush(it.name)
+                                            searchScreenViewModel.liveSearchForPush(it)
 //                                            searchScreenViewModel.searchForClick(it)
                                             focusManager.clearFocus()
                                         })
                                 )
                                 {
                                     Text(
-                                        text = it.name,
+                                        text = it,
                                         modifier = Modifier.padding(start = 16.dp, top = 8.dp),
                                         color = Color(0xFF000000))
                                 }
@@ -204,7 +202,10 @@ fun SearchScreen(
                     }
 
                     //search results
-                    if(uiState.showResults){
+//                    if(uiState.showResults){
+                    //Results Cards
+                    if(showResults == 1){
+                        println("x1$showResults")
 
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),

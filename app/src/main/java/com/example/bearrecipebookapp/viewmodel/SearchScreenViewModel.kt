@@ -1,20 +1,17 @@
 package com.example.bearrecipebookapp.viewmodel
 
 import android.app.Application
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.SearchScreenRepository
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
-import com.example.bearrecipebookapp.datamodel.SearchItemWithCategory
 import com.example.bearrecipebookapp.datamodel.UiSearchScreenDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SearchScreenViewModel (application: Application): ViewModel() {
 
@@ -26,6 +23,8 @@ class SearchScreenViewModel (application: Application): ViewModel() {
 
 //    val allRecipes: LiveData<List<HomeScreenDataModel>>
     val results: LiveData<List<HomeScreenDataModel>>
+    val previewList: LiveData<String>
+    val showResults: LiveData<Int>
 
     init {
 
@@ -35,11 +34,13 @@ class SearchScreenViewModel (application: Application): ViewModel() {
 
 //        allRecipes = repository.allRecipes
         results = repository.results
+        showResults = repository.showResults
+        previewList = repository.previewList
 
-        coroutineScope.launch { repository.clearResults() }
+//        coroutineScope.launch { repository.clearResults() }
 
         //Get reference list from DB and assign to uiState
-        setReferenceList()
+//        setReferenceList()
 
     }
 
@@ -60,75 +61,75 @@ class SearchScreenViewModel (application: Application): ViewModel() {
         }
     }
 
-    private fun setReferenceList(){
-        coroutineScope.launch(Dispatchers.IO) {
-            val recipeNames = repository.getRecipeNamesReferenceList()
-            val ingredientNames = repository.getIngredientNamesReferenceList()
-            val filterNames = repository.getFilterNamesReferenceList()
+//    private fun setReferenceList(){
+//        coroutineScope.launch(Dispatchers.IO) {
+//            val recipeNames = repository.getRecipeNamesReferenceList()
+//            val ingredientNames = repository.getIngredientNamesReferenceList()
+//            val filterNames = repository.getFilterNamesReferenceList()
+//
+//            uiState.update { currentState ->
+//                currentState.copy(
+//                    recipeNames = recipeNames,
+//                    ingredientNames = ingredientNames,
+//                    filterNames = filterNames
+//                )
+//            }
+//        }
+//    }
 
-            uiState.update { currentState ->
-                currentState.copy(
-                    recipeNames = recipeNames,
-                    ingredientNames = ingredientNames,
-                    filterNames = filterNames
-                )
-            }
-        }
-    }
-
-    fun liveSearchForClick(){
-
-        val badChars =  "[\$&+,:;=?@#|/'<>.^*()%!-]".toCharArray()
-        var hasBad = false
-
-        for(x in badChars.indices){
-            if(uiState.value.currentInput.text.contains(badChars[x]))
-            {
-                hasBad = true
-            }
-        }
-
-        if(uiState.value.currentInput.text.isNotEmpty() && !hasBad){
-
-            coroutineScope.launch(Dispatchers.IO) {
-
-                withContext(Dispatchers.IO){repository.clearResults()}
-
-                val data: List<HomeScreenDataModel> = repository.getRecipes()
-
-                for(x in 0 until (data.size)){
-                    //check names
-                    if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].recipeEntity.recipeName)){
-
-                        withContext(Dispatchers.IO){ repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)}
-                    }
-
-                    for(y in 0 until (data[x].ingredientsList.size)){
-                        if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].ingredientsList[y].ingredientName)){
-
-                            withContext(Dispatchers.IO){ repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)}
-                        }
-                    }
-                    for (y in 0 until (data[x].filtersList.size)){
-                        if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].filtersList[y].filterName)){
-
-                            withContext(Dispatchers.IO){ repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)}
-
-                        }
-                    }
-                }
-
-                uiState.update {
-                    it.copy(
-                        showResults = true
-                    )
-                }
-
-            }
-
-        }
-
-    }
+//    fun liveSearchForClick(){
+//
+//        val badChars =  "[\$&+,:;=?@#|/'<>.^*()%!-]".toCharArray()
+//        var hasBad = false
+//
+//        for(x in badChars.indices){
+//            if(uiState.value.currentInput.text.contains(badChars[x]))
+//            {
+//                hasBad = true
+//            }
+//        }
+//
+//        if(uiState.value.currentInput.text.isNotEmpty() && !hasBad){
+//
+//            coroutineScope.launch(Dispatchers.IO) {
+//
+//                withContext(Dispatchers.IO){repository.clearResults()}
+//
+//                val data: List<HomeScreenDataModel> = repository.getRecipes()
+//
+//                for(x in 0 until (data.size)){
+//                    //check names
+//                    if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].recipeEntity.recipeName)){
+//
+//                        withContext(Dispatchers.IO){ repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)}
+//                    }
+//
+//                    for(y in 0 until (data[x].ingredientsList.size)){
+//                        if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].ingredientsList[y].ingredientName)){
+//
+//                            withContext(Dispatchers.IO){ repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)}
+//                        }
+//                    }
+//                    for (y in 0 until (data[x].filtersList.size)){
+//                        if (uiState.value.currentInput.text.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(data[x].filtersList[y].filterName)){
+//
+//                            withContext(Dispatchers.IO){ repository.setSearchResult(recipeName = data[x].recipeEntity.recipeName, isResult = 1)}
+//
+//                        }
+//                    }
+//                }
+//
+//                uiState.update {
+//                    it.copy(
+//                        showResults = true
+//                    )
+//                }
+//
+//            }
+//
+//        }
+//
+//    }
 
     fun liveSearchForPush(input: String){
 
@@ -158,12 +159,15 @@ class SearchScreenViewModel (application: Application): ViewModel() {
                     }
                 }
 
-                uiState.update {
-                    it.copy(
-                        currentInput = TextFieldValue(text = input),
-                        showResults = true
-                    )
-                }
+                repository.setShowResults(1)
+                repository.setTextFieldValue(input)
+
+//                uiState.update {
+//                    it.copy(
+//                        currentInput = TextFieldValue(text = input),
+//                        showResults = true
+//                    )
+//                }
             }
 
         }
@@ -171,69 +175,69 @@ class SearchScreenViewModel (application: Application): ViewModel() {
     }
 
 
-    fun updatePreview(textFieldValueInput: TextFieldValue, input: String){
-        coroutineScope.launch(Dispatchers.IO) {
-
-            repository.clearResults()
-
-            uiState.update {
-                it.copy(
-                    showResults = false,
-                    currentInput = textFieldValueInput
-                )
-            }
-
-            var previewList = mutableListOf<SearchItemWithCategory>()
-
-            val badChars =  "[\$&+,:;=?@#|/'<>.^*()%!-]".toCharArray()
-            var hasBad = false
-
-            for(x in badChars.indices){
-                if(input.contains(badChars[x]))
-                {
-                    hasBad = true
-                }
-            }
-            if(input == "" || hasBad){
-                previewList = mutableListOf<SearchItemWithCategory>()
-
-            }
-            else{
-
-
-                for(x in 0 until uiState.value.recipeNames.size){
-                    if(input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(uiState.value.recipeNames[x])){
-                        previewList.add(SearchItemWithCategory(name = uiState.value.recipeNames[x], category = "Recipe"))
-                    }
-                }
-
-                for(x in 0 until uiState.value.ingredientNames.size){
-                    if(input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(uiState.value.ingredientNames[x])){
-                        previewList.add(SearchItemWithCategory(name = uiState.value.ingredientNames[x], category = "Ingredient"))
-                    }
-                }
-
-                for(x in 0 until uiState.value.filterNames.size){
-                    if(input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(uiState.value.filterNames[x])){
-                        previewList.add(SearchItemWithCategory(name = uiState.value.filterNames[x], category = "Filter"))
-                    }
-                }
-
-            }
-
-            if(previewList.size > 1){
-                previewList = previewList.sortedWith(compareBy{it.name}) as MutableList<SearchItemWithCategory>
-            }
-
-
-            uiState.update { currentState ->
-                currentState.copy(
-                    previewList = previewList
-                )
-            }
-
-        }
-    }
+//    fun updatePreview(textFieldValueInput: TextFieldValue, input: String){
+//        coroutineScope.launch(Dispatchers.IO) {
+//
+//            repository.clearResults()
+//
+//            uiState.update {
+//                it.copy(
+//                    showResults = false,
+//                    currentInput = textFieldValueInput
+//                )
+//            }
+//
+//            var previewList = mutableListOf<SearchItemWithCategory>()
+//
+//            val badChars =  "[\$&+,:;=?@#|/'<>.^*()%!-]".toCharArray()
+//            var hasBad = false
+//
+//            for(x in badChars.indices){
+//                if(input.contains(badChars[x]))
+//                {
+//                    hasBad = true
+//                }
+//            }
+//            if(input == "" || hasBad){
+//                previewList = mutableListOf<SearchItemWithCategory>()
+//
+//            }
+//            else{
+//
+//
+//                for(x in 0 until uiState.value.recipeNames.size){
+//                    if(input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(uiState.value.recipeNames[x])){
+//                        previewList.add(SearchItemWithCategory(name = uiState.value.recipeNames[x], category = "Recipe"))
+//                    }
+//                }
+//
+//                for(x in 0 until uiState.value.ingredientNames.size){
+//                    if(input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(uiState.value.ingredientNames[x])){
+//                        previewList.add(SearchItemWithCategory(name = uiState.value.ingredientNames[x], category = "Ingredient"))
+//                    }
+//                }
+//
+//                for(x in 0 until uiState.value.filterNames.size){
+//                    if(input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(uiState.value.filterNames[x])){
+//                        previewList.add(SearchItemWithCategory(name = uiState.value.filterNames[x], category = "Filter"))
+//                    }
+//                }
+//
+//            }
+//
+//            if(previewList.size > 1){
+//                previewList = previewList.sortedWith(compareBy{it.name}) as MutableList<SearchItemWithCategory>
+//            }
+//
+//
+//            uiState.update { currentState ->
+//                currentState.copy(
+//                    previewList = previewList
+//                )
+//            }
+//
+//        }
+//    }
 
     fun toggleFavorite(recipe: HomeScreenDataModel){
         if(recipe.recipeEntity.isFavorite == 0){

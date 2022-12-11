@@ -98,7 +98,7 @@ fun HomeScreen(
 
         if(uiFiltersState.triggerScroll){
             coroutineScope.launch {
-                delay(200)
+                delay(2000)
                 listState.animateScrollToItem(0)
                 homeScreenViewModel.cancelScroll()
             }
@@ -113,7 +113,6 @@ fun HomeScreen(
             ){
 
                 Column{
-
                     LazyRow(
                         modifier = Modifier.background(
                             Color(0xFFd8af84)

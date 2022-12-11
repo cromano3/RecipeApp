@@ -31,6 +31,22 @@ interface SearchScreenDao {
 //    fun getAllRecipes(): LiveData<List<HomeScreenDataModel>>
 
     @Transaction
+    @Query("UPDATE search_table SET show_results = :isShown")
+    fun setShowResults(isShown: Int)
+
+    @Transaction
+    @Query("UPDATE search_table SET text_field_value = :input")
+    fun setTextFieldValue(input: String)
+
+    @Transaction
+    @Query("SELECT show_results FROM search_table")
+    fun getShowResults(): LiveData<Int>
+
+    @Transaction
+    @Query("SELECT preview_list FROM search_table")
+    fun getPreviewList(): LiveData<String>
+
+    @Transaction
     @Query("SELECT * FROM recipe_table WHERE is_search_result = 1 ORDER BY recipe_name ASC")
     fun getResults(): LiveData<List<HomeScreenDataModel>>
 
