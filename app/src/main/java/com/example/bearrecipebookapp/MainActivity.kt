@@ -106,7 +106,19 @@ fun BearRecipeApp(
         topBar = { BearAppTopBar(
             currentScreen = currentScreen,
             navController = navController,
-            onHomeClick = {},
+            onHomeClick = {
+                if(currentScreen == "ProfileScreen"){
+                    navController.popBackStack()
+                }
+                navController.navigate("RecipeScreen"){
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+
+                }
+            },
             onBackClick = { navController.popBackStack() },
             onProfileClick = { navController.navigate("ProfileScreen") },
             onSearchClick = { navController.navigate("SearchScreen") },
@@ -433,7 +445,7 @@ fun BearAppBottomBar(
 
         val backStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = backStackEntry?.destination?.route
-        val queue = navController.backQueue
+//        val queue = navController.backQueue
 
         val routes = listOf("RecipeScreen", "WeeklyMenuScreen", "ShoppingScreen")
 
