@@ -98,7 +98,7 @@ fun HomeScreen(
 
         if(uiFiltersState.triggerScroll){
             coroutineScope.launch {
-                delay(2000)
+                delay(200)
                 listState.animateScrollToItem(0)
                 homeScreenViewModel.cancelScroll()
             }

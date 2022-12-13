@@ -2,6 +2,7 @@ package com.example.bearrecipebookapp
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -808,13 +809,65 @@ fun BearAppTopBar(
                     Spacer(Modifier.weight(1f))
 
                     if (showShare) {
-                        Icon(
-                            imageVector = Icons.Outlined.Share,
-                            contentDescription = null,
+
+
+
+                        val context = LocalContext.current
+
+
+
+                        IconButton(
+                            onClick = {
+
+                                var myString = detailsScreenData.recipeEntity.recipeName + '\n' + '\n'
+
+                                for(x in detailsScreenData.ingredientsList.indices){
+                                    myString += detailsScreenData.ingredientsList[x].ingredientName + '\n'
+                                }
+
+                                myString += '\n'
+
+                                for(x in detailsScreenData.instructionsList.indices){
+                                    myString += detailsScreenData.instructionsList[x].instruction + '\n'
+                                }
+
+                                val sendIntent: Intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, myString)
+//                                    putExtra(Intent.EXTRA_TITLE, detailsScreenData.recipeEntity.recipeName)
+                                    type = "text/plain"
+                                }
+
+                                val shareIntent = Intent.createChooser(sendIntent, null)
+
+                                context.startActivity(shareIntent)
+
+
+                            },
                             modifier = Modifier
-                                .size(24.dp),
-                            tint = Color(0xFFd8af84)
-                        )
+                                .size(48.dp)
+                                .align(Alignment.CenterVertically)
+                                .background(color = Color.Transparent)
+                                .padding(start = 8.dp)
+                                .border(
+                                    width = 2.dp,
+                                    brush = (Brush.horizontalGradient(
+                                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                        tileMode = TileMode.Mirror,
+                                    )),
+                                    shape = CircleShape
+                                ),
+                            // color = Color.Transparent
+
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Share,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(24.dp),
+                                tint = Color(0xFFd8af84)
+                            )
+                        }
                         Spacer(Modifier.size(16.dp))
                     }
 
