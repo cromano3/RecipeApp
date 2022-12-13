@@ -26,8 +26,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -148,12 +151,42 @@ fun ProfileScreen(
                     Spacer(Modifier.height(4.dp))
 
                     //Will be progress bar
-                    Spacer(
-                        Modifier
-                            .width(50.dp)
-                            .height(4.dp)
-                            .background(Color(0xFFFFFFFF))
-                    )
+
+                    androidx.compose.foundation.Canvas(modifier = Modifier.height(40.dp).fillMaxWidth()){
+                        val canvasWidth = size.width
+                        val barWidth = 600f
+                        val barHeight = 50f
+
+                        val expPercentage = 0.25f
+
+                        //outer boarder
+                        drawRoundRect(
+                            brush = (Brush.horizontalGradient(
+                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                startX = canvasWidth / 2 - barWidth/2,
+                                endX = canvasWidth - (canvasWidth / 2 - barWidth/2),
+                            )
+                                    ),
+                            topLeft = Offset(canvasWidth / 2 - barWidth/2, 0f),
+                            size = Size(barWidth, barHeight),
+                            cornerRadius = CornerRadius(25f, 25f),
+                            style = Stroke(10f)
+                        )
+                        //Inner progress bar
+                        drawRoundRect(
+                            brush = (Brush.horizontalGradient(
+                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                startX = canvasWidth / 2 - barWidth/2,
+                                endX = canvasWidth - (canvasWidth / 2 - barWidth/2),
+                            )
+                                    ),
+                            //starting position
+                            topLeft = Offset(canvasWidth / 2 - barWidth/2, 0f),
+
+                            size = Size(barWidth * expPercentage, barHeight),
+                            cornerRadius = CornerRadius(25f, 25f),
+                        )
+                    }
                 }
 
 //            Text(text = "lvl 2", modifier = Modifier
