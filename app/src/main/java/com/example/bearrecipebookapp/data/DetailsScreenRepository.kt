@@ -55,6 +55,10 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
         }
     }
 
+    suspend fun addExpToGive(expToGive: Int){
+        detailsScreenDao.addExpToGive(expToGive)
+    }
+
     fun cleanShoppingFilters(){
         coroutineScope.launch(Dispatchers.IO) {
             detailsScreenDao.cleanShoppingFilters()

@@ -18,6 +18,14 @@ interface ProfileScreenDao {
     @Query("SELECT * FROM recipe_table WHERE cooked_count > 0 ORDER BY cooked_count DESC")
     fun getCooked(): LiveData<List<RecipeWithIngredients>>
 
+    @Transaction
+    @Query("SELECT exp_to_give FROM user_table")
+    fun getExpToGive(): LiveData<Int>
+
+    @Transaction
+    @Query("SELECT exp_total FROM user_table")
+    fun getExp(): LiveData<Int>
+
     @Query("UPDATE recipe_table SET is_favorite = :isFavoriteStatus WHERE recipe_name = :name")
     fun updateFavorite(name: String, isFavoriteStatus: Int)
 

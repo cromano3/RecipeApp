@@ -15,6 +15,7 @@ import androidx.room.RoomDatabase
                         RecipeFiltersJoinEntity::class,
                         DetailsScreenTargetEntity::class,
                         SearchEntity::class,
+                        UserEntity::class,
 
                      ],
     version = 1,
@@ -44,10 +45,10 @@ public abstract class RecipeAppDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                RecipeAppDatabase::class.java, "app_database30.db"
+                RecipeAppDatabase::class.java, "app_database33.db"
             )
               //  .allowMainThreadQueries()
-                .createFromAsset("database/app_database30.db")
+                .createFromAsset("database/app_database33.db")
                 .build()
                 // prepopulate the database after onCreate was called
 //                .addCallback(object : Callback() {

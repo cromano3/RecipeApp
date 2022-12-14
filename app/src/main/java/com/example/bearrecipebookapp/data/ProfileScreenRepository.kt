@@ -12,6 +12,8 @@ class ProfileScreenRepository(private val profileScreenDao: ProfileScreenDao) {
 
     var favoritesData: LiveData<List<RecipeWithIngredients>> = profileScreenDao.getFavorites()
     var cookedData: LiveData<List<RecipeWithIngredients>> = profileScreenDao.getCooked()
+    var expToGive: LiveData<Int> = profileScreenDao.getExpToGive()
+    var exp: LiveData<Int> = profileScreenDao.getExp()
 
     fun updateFavorite(recipeName: String, isFavoriteStatus: Int) {
         coroutineScope.launch(Dispatchers.IO) {

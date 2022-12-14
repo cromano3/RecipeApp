@@ -94,9 +94,6 @@ fun RecipeCard(
     }
 
 
-
-    val gradientWidth = with(LocalDensity.current) { 400.dp.toPx() }
-
     Column(modifier = modifier){
 
         Surface(

@@ -193,6 +193,7 @@ fun MenuScreen(
                                     onCompleteClick(uiAlertState.recipe)
                                     menuScreenViewModel.addCooked(uiAlertState.recipe)
                                     menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
+                                    menuScreenViewModel.addExp(uiAlertState.recipe)
                                     menuScreenViewModel.cancelCompletedAlert()
                                 }
                             ) {

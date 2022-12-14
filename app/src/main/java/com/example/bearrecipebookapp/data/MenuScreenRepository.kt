@@ -14,6 +14,11 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
     var menuScreenData: LiveData<List<RecipeWithIngredients>> = menuScreenDao.getData()
 
 
+
+    suspend fun addExpToGive(expToGive: Int){
+        menuScreenDao.addExpToGive(expToGive)
+    }
+
     fun setDetailsScreenTarget(recipeName: String){
         coroutineScope.launch(Dispatchers.IO) {
             menuScreenDao.setDetailsScreenTarget(recipeName)

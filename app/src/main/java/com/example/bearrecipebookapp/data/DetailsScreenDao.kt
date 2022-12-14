@@ -48,4 +48,8 @@ interface DetailsScreenDao {
     @Transaction
     @Query("UPDATE recipe_table SET on_menu = 1 WHERE recipe_name = :recipeName")
     fun addToMenu(recipeName: String)
+
+    @Transaction
+    @Query("UPDATE user_table SET exp_to_give = exp_to_give + :expToGive")
+    fun addExpToGive(expToGive: Int)
 }

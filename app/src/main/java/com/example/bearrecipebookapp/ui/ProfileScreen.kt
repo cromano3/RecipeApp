@@ -2,6 +2,8 @@ package com.example.bearrecipebookapp.ui
 
 import android.app.Application
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
@@ -19,9 +21,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Reviews
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +48,9 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.viewmodel.ProfileScreenViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -70,12 +73,98 @@ fun ProfileScreen(
 
         val favoritesData by profileScreenViewModel.favoritesData.observeAsState(listOf())
         val cookedData by profileScreenViewModel.cookedData.observeAsState(listOf())
+        val expToGive by profileScreenViewModel.expToGive.observeAsState()
+        val exp by profileScreenViewModel.exp.observeAsState()
 
         val uiAlertState by profileScreenViewModel.uiAlertState.collectAsState()
 
         val fadedColors = listOf(Color(0x80D8AF84), Color(0x80B15F33))
         val fullColors = listOf(Color(0xFFd8af84), Color(0xFFb15f33))
 
+
+        val coroutineScope = rememberCoroutineScope()
+
+        var expPercentage = 0.0f
+        var level  = 0
+        var chefTitle = ""
+
+        if((exp ?: 0) >= 2700){
+            level = 10
+            expPercentage = 1.0f
+            chefTitle = "Iron Chef"
+        }
+        else if ((exp ?: 0) >= 2200){
+            level = 9
+            expPercentage = ((2700 - exp!!) / 500).toFloat()
+            chefTitle = "Master Chef"
+        }
+        else if (((exp ?: 0) >= 1750)){
+            level = 8
+            expPercentage = ((2200 - exp!!) / 450).toFloat()
+            chefTitle = "Pro Chef"
+        }
+        else if (((exp ?: 0) >= 1350)){
+            level = 7
+            expPercentage = ((1750 - exp!!) / 400).toFloat()
+            chefTitle = "Expert Chef"
+        }
+        else if (((exp ?: 0) >= 1000)){
+            level = 6
+            expPercentage = ((1350 - exp!!) / 350).toFloat()
+            chefTitle = "Advanced Chef"
+        }
+        else if (((exp ?: 0) >= 700)){
+            level = 5
+            expPercentage = ((1000 - exp!!) / 300).toFloat()
+            chefTitle = "Skilled Chef"
+        }
+        else if (((exp ?: 0) >= 450)){
+            level = 4
+            expPercentage = ((700 - exp!!) / 250).toFloat()
+            chefTitle = "Sous Chef"
+        }
+        else if (((exp ?: 0) >= 250)){
+            level = 3
+            expPercentage = ((450 - exp!!) / 200).toFloat()
+            chefTitle = "Apprentice Chef"
+        }
+        else if (((exp ?: 0) >= 100)){
+            level = 2
+            expPercentage = ((250 - exp!!) / 150).toFloat()
+            chefTitle = "Novice Chef"
+        }
+        else{
+            level = 1
+            expPercentage = 0.0f
+            chefTitle = "Beginner Chef"
+        }
+
+        val animatedFloat = remember { Animatable(expPercentage) }
+
+        if((expToGive ?: 0) > 0){
+
+            val totalExpFromCurrentLvlToNextLvl = 100 + (50 * (level - 1))
+
+            if((expToGive ?: 0) > totalExpFromCurrentLvlToNextLvl){
+
+                coroutineScope.launch(Dispatchers.Main) {
+                    delay(1000)
+                    animatedFloat.animateTo(1f, animationSpec = tween(500))
+                    profileScreenViewModel.updateExp(level, exp ?: 0, expToGive ?: 0, true)
+                }
+
+            }
+
+            else{
+
+                coroutineScope.launch(Dispatchers.Main) {
+                    delay(1000)
+                    animatedFloat.animateTo(1xxf, animationSpec = tween(500))
+                    profileScreenViewModel.updateExp(level, exp ?: 0, expToGive ?: 0, false)
+                }
+
+            }
+        }
 
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -98,22 +187,31 @@ fun ProfileScreen(
                     modifier = Modifier.wrapContentSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+
+                    Spacer(
+                        Modifier
+                            .height(8.dp)
+                            .fillMaxWidth())
+
+                    Text(
+                        text = chefTitle,
+                        color = Color(0xFFd8af84),
+                    )
+
+                    Spacer(
+                        Modifier
+                            .height(8.dp)
+                            .fillMaxWidth())
+
                     Surface(modifier = Modifier.size(150.dp), shape = RoundedCornerShape(50.dp)) {
                         Box(
                             modifier = Modifier
                                 .size(150.dp)
-//                    .border(4.dp, color = Color(0xFFFFFFFF), shape = RoundedCornerShape(100.dp))
                                 .border(
                                     width = 2.dp,
                                     brush = (Brush.verticalGradient(
                                         colors = listOf(
                                             Color(0xFFFFFFFF),
-//                                //    Color(0xFFFFFFFF),
-//                                    Color(0xFFE10600),
-//                                    Color(0xFFFFFFFF),
-//                                    Color(0xFF6769f1),
-//                                    Color(0xFFFFFFFF),
-//                                    Color(0xFFb15f33),
                                             Color(0xFFb15f33),
                                             Color(0xFFb15f33),
                                             Color(0xFFb15f33)
@@ -132,32 +230,29 @@ fun ProfileScreen(
                                 alignment = Alignment.Center,
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .size(120.dp)
-//                            .border(4.dp, color = Color(0xFFFFFFFF), shape = RoundedCornerShape(50.dp))
-                                ,
-
-
+                                    .size(120.dp),
                                 )
                         }
-
                     }
-
-
 
                     Spacer(Modifier.height(4.dp))
 
-                    Text(text = "lvl 2")
+                    Text(
+                        text = "level $level",
+                        color = Color(0xFFd8af84),
+                    )
 
                     Spacer(Modifier.height(4.dp))
 
                     //Will be progress bar
 
-                    androidx.compose.foundation.Canvas(modifier = Modifier.height(40.dp).fillMaxWidth()){
+                    androidx.compose.foundation.Canvas(modifier = Modifier
+                        .height(40.dp)
+                        .fillMaxWidth()){
                         val canvasWidth = size.width
                         val barWidth = 600f
                         val barHeight = 50f
 
-                        val expPercentage = 0.25f
 
                         //outer boarder
                         drawRoundRect(
@@ -172,6 +267,7 @@ fun ProfileScreen(
                             cornerRadius = CornerRadius(25f, 25f),
                             style = Stroke(10f)
                         )
+
                         //Inner progress bar
                         drawRoundRect(
                             brush = (Brush.horizontalGradient(
@@ -182,8 +278,10 @@ fun ProfileScreen(
                                     ),
                             //starting position
                             topLeft = Offset(canvasWidth / 2 - barWidth/2, 0f),
-
-                            size = Size(barWidth * expPercentage, barHeight),
+                            /**
+                            Animate this for exp changes
+                             */
+                            size = Size(barWidth * animatedFloat.value, barHeight),
                             cornerRadius = CornerRadius(25f, 25f),
                         )
                     }

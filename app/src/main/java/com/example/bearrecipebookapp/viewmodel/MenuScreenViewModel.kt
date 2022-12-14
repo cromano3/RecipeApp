@@ -66,6 +66,23 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         repository.addCooked(recipe.recipeEntity.recipeName)
     }
 
+    fun addExp(recipe: RecipeWithIngredients){
+
+        coroutineScope.launch(Dispatchers.IO) {
+            val cookedCountMultiplier =
+                if(recipe.recipeEntity.cookedCount < 10){
+                    1 - (recipe.recipeEntity.cookedCount * .05)
+                }
+                else{
+                    .50
+                }
+            val exp = 50 + ((1 + (recipe.recipeEntity.difficulty - 1) * .25) * cookedCountMultiplier)
+
+            repository.addExpToGive(exp.toInt())
+        }
+
+    }
+
     fun cancelRemoveAlert(){
         uiAlertState.update { currentState ->
             currentState.copy(

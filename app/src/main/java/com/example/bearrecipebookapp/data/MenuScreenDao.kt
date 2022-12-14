@@ -48,6 +48,10 @@ interface MenuScreenDao {
     @Query("UPDATE recipe_table SET cooked_count = cooked_count + 1 WHERE recipe_name = :name")
     fun addCooked(name: String)
 
+    @Transaction
+    @Query("UPDATE user_table SET exp_to_give = exp_to_give + :expToGive")
+    fun addExpToGive(expToGive: Int)
+
 
     /**
      * This query executes successfully and as intended in the DB Builder.

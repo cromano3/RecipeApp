@@ -23,6 +23,9 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
     var favoritesData: LiveData<List<RecipeWithIngredients>>
     var cookedData: LiveData<List<RecipeWithIngredients>>
 
+    var expToGive: LiveData<Int>
+    var exp: LiveData<Int>
+
     init{
         val appDb = RecipeAppDatabase.getInstance(application)
         val profileScreenDao = appDb.ProfileScreenDao()
@@ -30,6 +33,41 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
         favoritesData = repository.favoritesData
         cookedData = repository.cookedData
+        expToGive = repository.expToGive
+        exp = repository.exp
+    }
+
+    fun updateExp(level: Int, currentExp: Int, expToGive: Int, levelUp: Boolean){
+
+        if(levelUp){
+
+            var nextTotalTnl: Int = 0
+
+            when(level){
+                9 -> nextTotalTnl = 2700
+                8 -> nextTotalTnl = 2200
+                7 -> nextTotalTnl = 1750
+                6 -> nextTotalTnl = 1350
+                5 -> nextTotalTnl = 1000
+                4 -> nextTotalTnl = 700
+                3 -> nextTotalTnl = 450
+                2 -> nextTotalTnl = 250
+                1 -> nextTotalTnl = 100
+            }
+
+            val expChange = nextTotalTnl - currentExp
+
+            repository.addToExp(expChange)
+            repository.removeFromExpToGive(expChange)
+        }
+        else{
+
+            repository.addToExp(expToGive)
+            repository.clearExpToGive()
+
+        }
+
+
     }
 
     fun toggleFavorite(recipe: RecipeWithIngredients){

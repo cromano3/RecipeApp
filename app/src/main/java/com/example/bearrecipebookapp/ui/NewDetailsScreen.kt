@@ -549,6 +549,8 @@ fun NewDetailsScreen(
 
                                     detailsScreenViewModel.addCooked(detailsScreenData)
 
+                                    detailsScreenViewModel.addExp(uiAlertState.recipe)
+
                                     if(detailsScreenData.recipeEntity.onMenu == 1) {
                                         detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
                                     }

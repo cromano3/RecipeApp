@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2baa434b3f65f119b40698acb9f84287",
+    "identityHash": "60c78d1da12fece074e23916d4b98a5d",
     "entities": [
       {
         "tableName": "recipe_table",
@@ -297,12 +297,44 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "user_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `exp_to_give` INTEGER NOT NULL, `exp_total` INTEGER NOT NULL, PRIMARY KEY(`user_id`))",
+        "fields": [
+          {
+            "fieldPath": "userID",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expToGive",
+            "columnName": "exp_to_give",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expTotal",
+            "columnName": "exp_total",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "user_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2baa434b3f65f119b40698acb9f84287')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '60c78d1da12fece074e23916d4b98a5d')"
     ]
   }
 }

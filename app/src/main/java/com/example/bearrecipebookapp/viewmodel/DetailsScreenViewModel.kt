@@ -8,12 +8,17 @@ import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.UiAlertStateDetailsScreenDataModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
     private val repository: DetailsScreenRepository
+
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
 
@@ -54,6 +59,23 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
     fun addCooked(recipe: RecipeWithIngredientsAndInstructions){
         repository.addCooked(recipe)
+    }
+
+    fun addExp(recipe: RecipeWithIngredientsAndInstructions){
+
+        coroutineScope.launch(Dispatchers.IO) {
+            val cookedCountMultiplier =
+                if(recipe.recipeEntity.cookedCount < 10){
+                    1 - (recipe.recipeEntity.cookedCount * .05)
+                }
+                else{
+                    .50
+                }
+            val exp = 50 + ((1 + (recipe.recipeEntity.difficulty - 1) * .25) * cookedCountMultiplier)
+
+            repository.addExpToGive(exp.toInt())
+        }
+
     }
 
 
