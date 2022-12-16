@@ -20,12 +20,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Grade
 import androidx.compose.material.icons.outlined.Reviews
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -148,83 +150,7 @@ fun ProfileScreen(
                 profileScreenViewModel.startNextAnimation()
             }
         }
-//
-//        //first animation of some animations
-//        if(uiState.animationsPlayed == 0 && uiState.totalAnimationsToPlay > 0) {
-//            mySize = Size(animatedFirstValue.value * barWidth, barHeight)
-//        }
-//        //no animations
-//        else if (uiState.animationsPlayed == 0 && uiState.totalAnimationsToPlay == 0) {
-//            mySize = Size(uiState.animationStartValue * barWidth, barHeight)
-//        }
-//        //after first and only animation
-//        else if (uiState.animationsPlayed == 1 && uiState.totalAnimationsToPlay == 1){
-//            mySize = Size(uiState.animationTargetFirst * barWidth, barHeight)
-//        }
-//        //after second or more animation
-//        else if (uiState.animationsPlayed > 0 && uiState.totalAnimationsToPlay > 1 && uiState.animationsPlayed == uiState.totalAnimationsToPlay){
-//            mySize = Size(uiState.animationTargetSecond * barWidth, barHeight)
-//        }
-//        //during second or more animation
-//        else if (uiState.animationsPlayed > 0 && uiState.totalAnimationsToPlay > 1){
-//            mySize = Size(animatedSecondValue.value * barWidth, barHeight)
-//        }
-//
-//
-//
-//        coroutineScope.launch {
-//
-//            if(uiState.xpToGive > 0 && uiState.animationsPlayed == 0){
-//
-//                animatedFirstValue.animateTo(uiState.animationStartValue, animationSpec = tween(5))
-//                delay(1000)
-//                animatedFirstValue.animateTo(uiState.animationTargetFirst, animationSpec = tween(500))
-//
-//                profileScreenViewModel.updateExp()
-//
-//
-//            }
-//            else if (uiState.totalAnimationsToPlay > 0 && uiState.animationsPlayed > 0 && uiState.totalAnimationsToPlay > uiState.animationsPlayed ){
-//
-//                delay(1000)
-//                animatedSecondValue.animateTo(uiState.animationTargetSecond, animationSpec = tween(500))
-//
-//                profileScreenViewModel.updateExp()
-//
-//            }
-//        }
 
-//        if(uiState.xpToGive > 0 && uiState.animationsPlayed == 0){
-//
-////            profileScreenViewModel.getFirstAnimationTarget()
-//
-//            coroutineScope.launch(Dispatchers.Main) {
-//                delay(1000)
-//                println("before")
-//                animatedFirstValue.animateTo(uiState.animationTargetFirst, animationSpec = tween(500))
-//                println("after")
-//
-//            }
-//            profileScreenViewModel.updateExp()
-//
-//
-//        }
-//        else if (uiState.totalAnimationsToPlay > 0 && uiState.animationsPlayed > 0 && uiState.totalAnimationsToPlay > uiState.animationsPlayed ){
-//
-////            profileScreenViewModel.getSecondOrMoreAnimationTarget()
-//
-//            coroutineScope.launch(Dispatchers.Main) {
-//                delay(1000)
-//                println("before")
-//                animatedSecondValue.animateTo(uiState.animationTargetSecond, animationSpec = tween(500))
-//                println("after")
-//
-//            }
-//
-//            profileScreenViewModel.updateExp()
-//
-//
-//        }
 
 
 
@@ -265,6 +191,7 @@ fun ProfileScreen(
                             .fillMaxWidth())
 
                     Surface(modifier = Modifier.size(150.dp), shape = RoundedCornerShape(50.dp)) {
+                        //image box
                         Box(
                             modifier = Modifier
                                 .size(150.dp)
@@ -281,7 +208,10 @@ fun ProfileScreen(
                                     )),
                                     shape = RoundedCornerShape(50.dp)
                                 )
-                                .background(color = Color(0xFFd8af84)),
+                                .background(color =
+//                                Color(0xFFd8af84)
+                                Color(0xFF682300)
+                                ),
                             contentAlignment = Alignment.Center,
                         ) {
                             Image(
@@ -293,8 +223,318 @@ fun ProfileScreen(
                                 modifier = Modifier
                                     .size(120.dp),
                                 )
+
+                            //star box upper
+                            Box(
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .requiredHeight(75.dp)
+                                    .clip(RoundedCornerShape(50.dp, 50.dp, 0.dp, 0.dp))
+                                    .align(Alignment.TopCenter),
+                            ){
+                                //star 1
+                                Surface(
+                                    elevation = 8.dp,
+                                    modifier = Modifier
+                                        .padding(top = 2.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                            shape = CircleShape
+                                        )
+                                        .size(24.dp)
+                                        .align(Alignment.TopCenter),
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            Icons.Outlined.Grade,
+                                            tint = Color(0xFFd8af84),
+                                            modifier = Modifier.size(20.dp),
+                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                                //star 2
+                                Surface(
+                                    elevation = 8.dp,
+                                    modifier = Modifier
+                                        .padding(end = 18.dp, top = 6.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                            shape = CircleShape
+                                        )
+                                        .size(24.dp)
+                                        .align(Alignment.TopEnd)
+                                        ,
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            Icons.Outlined.Grade,
+                                            tint = Color(0xFFd8af84),
+                                            modifier = Modifier.size(20.dp),
+                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                                //star 3
+                                Surface(
+                                    elevation = 8.dp,
+                                    modifier = Modifier
+                                        .padding(bottom = 4.dp, end = 2.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                            shape = CircleShape
+                                        )
+                                        .size(24.dp)
+                                        .align(Alignment.BottomEnd),
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            Icons.Outlined.Grade,
+                                            tint = Color(0xFFd8af84),
+                                            modifier = Modifier.size(20.dp),
+                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                                //star 9
+                                Surface(
+                                    elevation = 8.dp,
+                                    modifier = Modifier
+                                        .padding(bottom = 4.dp, start = 2.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                            shape = CircleShape
+                                        )
+                                        .size(24.dp)
+                                        .align(Alignment.BottomStart),
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            Icons.Outlined.Grade,
+                                            tint = Color(0xFFd8af84),
+                                            modifier = Modifier.size(20.dp),
+                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                                //star 10
+                                Surface(
+                                    elevation = 8.dp,
+                                    modifier = Modifier
+                                        .padding(start = 18.dp, top = 6.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                            shape = CircleShape
+                                        )
+                                        .size(24.dp)
+                                        .align(Alignment.TopStart),
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            Icons.Outlined.Grade,
+                                            tint = Color(0xFFd8af84),
+                                            modifier = Modifier.size(20.dp),
+                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+
+
+
+                            }
+
+                            //star box lower
+                            Box(
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .requiredHeight(75.dp)
+                                    .clip(RoundedCornerShape(0.dp, 0.dp, 50.dp, 50.dp))
+                                    .align(Alignment.BottomCenter),
+                            ){
+                                //star 4
+                                Surface(
+                                    elevation = 0.dp,
+                                    modifier = Modifier
+                                        .padding(end = 2.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                            shape = CircleShape
+                                        )
+                                        .size(24.dp)
+                                        .align(Alignment.TopEnd),
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            Icons.Outlined.Grade,
+                                            tint = Color(0xFFd8af84),
+                                            modifier = Modifier.size(20.dp),
+                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                                //star 5
+                                Surface(
+                                    elevation = 0.dp,
+                                    modifier = Modifier
+                                        .padding(end = 18.dp, bottom = 6.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                            shape = CircleShape
+                                        )
+                                        .size(24.dp)
+                                        .align(Alignment.BottomEnd)
+                                    ,
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            Icons.Outlined.Grade,
+                                            tint = Color(0xFFd8af84),
+                                            modifier = Modifier.size(20.dp),
+                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                                //star 6
+                                Surface(
+                                    elevation = 0.dp,
+                                    modifier = Modifier
+                                        .padding(bottom = 2.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                            shape = CircleShape
+                                        )
+                                        .size(24.dp)
+                                        .align(Alignment.BottomCenter),
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            Icons.Outlined.Grade,
+                                            tint = Color(0xFFd8af84),
+                                            modifier = Modifier.size(20.dp),
+                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                                //star 7
+                                Surface(
+                                    elevation = 0.dp,
+                                    modifier = Modifier
+                                        .padding(start = 18.dp, bottom = 6.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                            shape = CircleShape
+                                        )
+                                        .size(24.dp)
+                                        .align(Alignment.BottomStart),
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            Icons.Outlined.Grade,
+                                            tint = Color(0xFFd8af84),
+                                            modifier = Modifier.size(20.dp),
+                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                                //star 8
+                                Surface(
+                                    elevation = 0.dp,
+                                    modifier = Modifier
+                                        .padding(start = 2.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                            shape = CircleShape
+                                        )
+                                        .size(24.dp)
+                                        .align(Alignment.TopStart),
+                                    shape = CircleShape,
+                                    color = Color.Transparent
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            Icons.Outlined.Grade,
+                                            tint = Color(0xFFd8af84),
+                                            modifier = Modifier.size(20.dp),
+                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+
+
+
+                            }
                         }
                     }
+
+
 
                     Spacer(Modifier.height(4.dp))
 
@@ -348,11 +588,6 @@ fun ProfileScreen(
                         }
                     }
                 }
-
-//            Text(text = "lvl 2", modifier = Modifier
-//                .align(Alignment.BottomStart)
-//                .padding(bottom = 20.dp, start = 20.dp))
-
             }
             Row(
                 modifier = Modifier
@@ -664,6 +899,37 @@ class ProfileScreenViewModelFactory(val application: Application) : ViewModelPro
         return ProfileScreenViewModel(application) as T
     }
 }
+
+
+//@Composable
+//fun Star(alignment: Alignment) {
+//    Surface(
+//        elevation = 8.dp,
+//        modifier = Modifier
+//            .border(
+//                width = 2.dp,
+//                brush = (Brush.horizontalGradient(
+//                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                    tileMode = TileMode.Mirror
+//                )),
+//                shape = CircleShape
+//            )
+//            .size(36.dp)
+//            .align(alignment),
+//        shape = CircleShape,
+//        color = Color(0xFF682300)
+//    ) {
+//        Box(contentAlignment = Alignment.Center) {
+//            Icon(
+//                Icons.Outlined.Grade,
+//                tint = Color(0xFFd8af84),
+//                modifier = Modifier.size(20.dp),
+//                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+//                contentDescription = null
+//            )
+//        }
+//    }
+//}
 
 @Composable
 fun RecipeIcon(
