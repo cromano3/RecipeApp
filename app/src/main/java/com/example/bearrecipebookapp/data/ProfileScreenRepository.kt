@@ -15,6 +15,14 @@ class ProfileScreenRepository(private val profileScreenDao: ProfileScreenDao) {
     var expToGive: LiveData<Int> = profileScreenDao.getExpToGive()
     var exp: LiveData<Int> = profileScreenDao.getExp()
 
+    suspend fun getExpToGive(): Int{
+        return profileScreenDao.getExpToGive1()
+    }
+
+    suspend fun getExp(): Int{
+        return profileScreenDao.getExp1()
+    }
+
     fun updateFavorite(recipeName: String, isFavoriteStatus: Int) {
         coroutineScope.launch(Dispatchers.IO) {
             profileScreenDao.updateFavorite(recipeName, isFavoriteStatus)
@@ -25,6 +33,24 @@ class ProfileScreenRepository(private val profileScreenDao: ProfileScreenDao) {
         coroutineScope.launch(Dispatchers.IO) {
             profileScreenDao.setDetailsScreenTarget(recipeName)
         }
+    }
+
+    suspend fun addToExp(expChange: Int){
+//        coroutineScope.launch(Dispatchers.IO) {
+            profileScreenDao.addToExp(expChange)
+//        }
+    }
+
+    suspend fun removeFromExpToGive(expChange: Int){
+//        coroutineScope.launch(Dispatchers.IO) {
+            profileScreenDao.removeFromExpToGive(expChange)
+//        }
+    }
+
+    suspend fun clearExpToGive(){
+//        coroutineScope.launch(Dispatchers.IO) {
+            profileScreenDao.clearExpToGive()
+//        }
     }
 
 }

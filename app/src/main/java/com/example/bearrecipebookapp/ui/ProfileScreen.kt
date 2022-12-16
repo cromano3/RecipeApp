@@ -3,6 +3,7 @@ package com.example.bearrecipebookapp.ui
 import android.app.Application
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.SnapSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -48,7 +49,6 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.viewmodel.ProfileScreenViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -73,8 +73,8 @@ fun ProfileScreen(
 
         val favoritesData by profileScreenViewModel.favoritesData.observeAsState(listOf())
         val cookedData by profileScreenViewModel.cookedData.observeAsState(listOf())
-        val expToGive by profileScreenViewModel.expToGive.observeAsState()
-        val exp by profileScreenViewModel.exp.observeAsState()
+//        val expToGive by profileScreenViewModel.expToGive.observeAsState()
+//        val exp by profileScreenViewModel.exp.observeAsState()
 
         val uiAlertState by profileScreenViewModel.uiAlertState.collectAsState()
 
@@ -84,87 +84,145 @@ fun ProfileScreen(
 
         val coroutineScope = rememberCoroutineScope()
 
-        var expPercentage = 0.0f
-        var level  = 0
-        var chefTitle = ""
 
-        if((exp ?: 0) >= 2700){
-            level = 10
-            expPercentage = 1.0f
-            chefTitle = "Iron Chef"
-        }
-        else if ((exp ?: 0) >= 2200){
-            level = 9
-            expPercentage = ((2700 - exp!!) / 500).toFloat()
-            chefTitle = "Master Chef"
-        }
-        else if (((exp ?: 0) >= 1750)){
-            level = 8
-            expPercentage = ((2200 - exp!!) / 450).toFloat()
-            chefTitle = "Pro Chef"
-        }
-        else if (((exp ?: 0) >= 1350)){
-            level = 7
-            expPercentage = ((1750 - exp!!) / 400).toFloat()
-            chefTitle = "Expert Chef"
-        }
-        else if (((exp ?: 0) >= 1000)){
-            level = 6
-            expPercentage = ((1350 - exp!!) / 350).toFloat()
-            chefTitle = "Advanced Chef"
-        }
-        else if (((exp ?: 0) >= 700)){
-            level = 5
-            expPercentage = ((1000 - exp!!) / 300).toFloat()
-            chefTitle = "Skilled Chef"
-        }
-        else if (((exp ?: 0) >= 450)){
-            level = 4
-            expPercentage = ((700 - exp!!) / 250).toFloat()
-            chefTitle = "Sous Chef"
-        }
-        else if (((exp ?: 0) >= 250)){
-            level = 3
-            expPercentage = ((450 - exp!!) / 200).toFloat()
-            chefTitle = "Apprentice Chef"
-        }
-        else if (((exp ?: 0) >= 100)){
-            level = 2
-            expPercentage = ((250 - exp!!) / 150).toFloat()
-            chefTitle = "Novice Chef"
-        }
-        else{
-            level = 1
-            expPercentage = 0.0f
-            chefTitle = "Beginner Chef"
-        }
 
-        val animatedFloat = remember { Animatable(expPercentage) }
 
-        if((expToGive ?: 0) > 0){
+//        val startFloat = if(exp == null){
+//            1f
+//        }
+//        else if(exp!! >= 1800){
+//            1f
+//        }
+//        else if (exp!! >= 1600){
+//            ((200 - (200 * 9 - exp!!)) / 200f)
+//        }
+//        else if (exp!! >= 1400){
+//             ((200 - (200 * 8 - exp!!)) / 200f)
+//        }
+//        else if (exp!! >= 1200){
+//            ((200 - (200 * 7 - exp!!)) / 200f)
+//        }
+//        else if (exp!!  >= 1000){
+//            ((200 - (200 * 6 - exp!!)) / 200f)
+//        }
+//        else if (exp!!  >= 800){
+//            ((200 - (200 * 5 - exp!!)) / 200f)
+//        }
+//        else if (exp!!  >= 600){
+//            ((200 - (200 * 4 - exp!!)) / 200f)
+//        }
+//        else if (exp!! >= 400){
+//            ((200 - (200 * 3 - exp!!)) / 200f)
+//        }
+//        else if (exp!! >= 200){
+//             ((200 - (200 * 2 - exp!!)) / 200f)
+//        }
+//        else{
+//            ((200 - (200 * 1 - exp!!)) / 200f)
+//        }
 
-            val totalExpFromCurrentLvlToNextLvl = 100 + (50 * (level - 1))
 
-            if((expToGive ?: 0) > totalExpFromCurrentLvlToNextLvl){
 
-                coroutineScope.launch(Dispatchers.Main) {
-                    delay(1000)
-                    animatedFloat.animateTo(1f, animationSpec = tween(500))
-                    profileScreenViewModel.updateExp(level, exp ?: 0, expToGive ?: 0, true)
-                }
+        val animatedFirstValue = remember { Animatable(0f) }
+//        val animatedSecondValue = remember { Animatable(0f) }
+//
+        val barWidth = 600f
+        val barHeight = 50f
+//
+        var mySize = Size(animatedFirstValue.value * barWidth, barHeight-10f)
 
-            }
-
-            else{
-
-                coroutineScope.launch(Dispatchers.Main) {
-                    delay(1000)
-                    animatedFloat.animateTo(1xxf, animationSpec = tween(500))
-                    profileScreenViewModel.updateExp(level, exp ?: 0, expToGive ?: 0, false)
-                }
-
+        if(uiState.doAnimation){
+            coroutineScope.launch {
+                delay(1000)
+                animatedFirstValue.animateTo(uiState.animationTargetFirst, animationSpec = tween(500))
+                profileScreenViewModel.endAnimation()
             }
         }
+
+        if(uiState.resetAnimation){
+            coroutineScope.launch {
+                animatedFirstValue.animateTo(0f, animationSpec = SnapSpec(0))
+//                profileScreenViewModel.startNextAnimation()
+            }
+        }
+//
+//        //first animation of some animations
+//        if(uiState.animationsPlayed == 0 && uiState.totalAnimationsToPlay > 0) {
+//            mySize = Size(animatedFirstValue.value * barWidth, barHeight)
+//        }
+//        //no animations
+//        else if (uiState.animationsPlayed == 0 && uiState.totalAnimationsToPlay == 0) {
+//            mySize = Size(uiState.animationStartValue * barWidth, barHeight)
+//        }
+//        //after first and only animation
+//        else if (uiState.animationsPlayed == 1 && uiState.totalAnimationsToPlay == 1){
+//            mySize = Size(uiState.animationTargetFirst * barWidth, barHeight)
+//        }
+//        //after second or more animation
+//        else if (uiState.animationsPlayed > 0 && uiState.totalAnimationsToPlay > 1 && uiState.animationsPlayed == uiState.totalAnimationsToPlay){
+//            mySize = Size(uiState.animationTargetSecond * barWidth, barHeight)
+//        }
+//        //during second or more animation
+//        else if (uiState.animationsPlayed > 0 && uiState.totalAnimationsToPlay > 1){
+//            mySize = Size(animatedSecondValue.value * barWidth, barHeight)
+//        }
+//
+//
+//
+//        coroutineScope.launch {
+//
+//            if(uiState.xpToGive > 0 && uiState.animationsPlayed == 0){
+//
+//                animatedFirstValue.animateTo(uiState.animationStartValue, animationSpec = tween(5))
+//                delay(1000)
+//                animatedFirstValue.animateTo(uiState.animationTargetFirst, animationSpec = tween(500))
+//
+//                profileScreenViewModel.updateExp()
+//
+//
+//            }
+//            else if (uiState.totalAnimationsToPlay > 0 && uiState.animationsPlayed > 0 && uiState.totalAnimationsToPlay > uiState.animationsPlayed ){
+//
+//                delay(1000)
+//                animatedSecondValue.animateTo(uiState.animationTargetSecond, animationSpec = tween(500))
+//
+//                profileScreenViewModel.updateExp()
+//
+//            }
+//        }
+
+//        if(uiState.xpToGive > 0 && uiState.animationsPlayed == 0){
+//
+////            profileScreenViewModel.getFirstAnimationTarget()
+//
+//            coroutineScope.launch(Dispatchers.Main) {
+//                delay(1000)
+//                println("before")
+//                animatedFirstValue.animateTo(uiState.animationTargetFirst, animationSpec = tween(500))
+//                println("after")
+//
+//            }
+//            profileScreenViewModel.updateExp()
+//
+//
+//        }
+//        else if (uiState.totalAnimationsToPlay > 0 && uiState.animationsPlayed > 0 && uiState.totalAnimationsToPlay > uiState.animationsPlayed ){
+//
+////            profileScreenViewModel.getSecondOrMoreAnimationTarget()
+//
+//            coroutineScope.launch(Dispatchers.Main) {
+//                delay(1000)
+//                println("before")
+//                animatedSecondValue.animateTo(uiState.animationTargetSecond, animationSpec = tween(500))
+//                println("after")
+//
+//            }
+//
+//            profileScreenViewModel.updateExp()
+//
+//
+//        }
+
 
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -194,7 +252,7 @@ fun ProfileScreen(
                             .fillMaxWidth())
 
                     Text(
-                        text = chefTitle,
+                        text = uiState.title,
                         color = Color(0xFFd8af84),
                     )
 
@@ -238,7 +296,7 @@ fun ProfileScreen(
                     Spacer(Modifier.height(4.dp))
 
                     Text(
-                        text = "level $level",
+                        text = "level ${uiState.level}",
                         color = Color(0xFFd8af84),
                     )
 
@@ -250,8 +308,7 @@ fun ProfileScreen(
                         .height(40.dp)
                         .fillMaxWidth()){
                         val canvasWidth = size.width
-                        val barWidth = 600f
-                        val barHeight = 50f
+
 
 
                         //outer boarder
@@ -269,21 +326,23 @@ fun ProfileScreen(
                         )
 
                         //Inner progress bar
-                        drawRoundRect(
-                            brush = (Brush.horizontalGradient(
-                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                startX = canvasWidth / 2 - barWidth/2,
-                                endX = canvasWidth - (canvasWidth / 2 - barWidth/2),
+                        if(!uiState.resetAnimation) {
+                            drawRoundRect(
+                                brush = (Brush.horizontalGradient(
+                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                    startX = canvasWidth / 2 - barWidth / 2,
+                                    endX = canvasWidth - (canvasWidth / 2 - barWidth / 2),
+                                )
+                                        ),
+                                //starting position
+                                topLeft = Offset(canvasWidth / 2 - barWidth / 2, 5f),
+                                /**
+                                Animate this for exp changes
+                                 */
+                                size = mySize,
+                                cornerRadius = CornerRadius(25f, 25f),
                             )
-                                    ),
-                            //starting position
-                            topLeft = Offset(canvasWidth / 2 - barWidth/2, 0f),
-                            /**
-                            Animate this for exp changes
-                             */
-                            size = Size(barWidth * animatedFloat.value, barHeight),
-                            cornerRadius = CornerRadius(25f, 25f),
-                        )
+                        }
                     }
                 }
 

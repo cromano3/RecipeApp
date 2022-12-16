@@ -26,11 +26,31 @@ interface ProfileScreenDao {
     @Query("SELECT exp_total FROM user_table")
     fun getExp(): LiveData<Int>
 
+    @Transaction
+    @Query("SELECT exp_to_give FROM user_table")
+    fun getExpToGive1(): Int
+
+    @Transaction
+    @Query("SELECT exp_total FROM user_table")
+    fun getExp1(): Int
+
     @Query("UPDATE recipe_table SET is_favorite = :isFavoriteStatus WHERE recipe_name = :name")
     fun updateFavorite(name: String, isFavoriteStatus: Int)
 
     @Transaction
     @Query("UPDATE details_screen_target_table SET target_name = :recipeName")
     fun setDetailsScreenTarget(recipeName: String)
+
+    @Transaction
+    @Query("UPDATE user_table SET exp_total = exp_total + :expChange")
+    fun addToExp(expChange: Int)
+
+    @Transaction
+    @Query("UPDATE user_table SET exp_to_give = exp_to_give - :expChange")
+    fun removeFromExpToGive(expChange: Int)
+
+    @Transaction
+    @Query("UPDATE user_table SET exp_to_give = 0")
+    fun clearExpToGive()
 
 }
