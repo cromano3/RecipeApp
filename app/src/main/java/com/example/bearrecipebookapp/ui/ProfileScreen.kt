@@ -19,8 +19,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.Grade
 import androidx.compose.material.icons.outlined.Reviews
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -72,13 +72,11 @@ fun ProfileScreen(
 
 
         val uiState by profileScreenViewModel.uiState.collectAsState()
+        val uiAlertState by profileScreenViewModel.uiAlertState.collectAsState()
+        val uiStarsState by profileScreenViewModel.uiStarsState.collectAsState()
 
         val favoritesData by profileScreenViewModel.favoritesData.observeAsState(listOf())
         val cookedData by profileScreenViewModel.cookedData.observeAsState(listOf())
-//        val expToGive by profileScreenViewModel.expToGive.observeAsState()
-//        val exp by profileScreenViewModel.exp.observeAsState()
-
-        val uiAlertState by profileScreenViewModel.uiAlertState.collectAsState()
 
         val fadedColors = listOf(Color(0x80D8AF84), Color(0x80B15F33))
         val fullColors = listOf(Color(0xFFd8af84), Color(0xFFb15f33))
@@ -86,50 +84,11 @@ fun ProfileScreen(
 
         val coroutineScope = rememberCoroutineScope()
 
-
-
-
-//        val startFloat = if(exp == null){
-//            1f
-//        }
-//        else if(exp!! >= 1800){
-//            1f
-//        }
-//        else if (exp!! >= 1600){
-//            ((200 - (200 * 9 - exp!!)) / 200f)
-//        }
-//        else if (exp!! >= 1400){
-//             ((200 - (200 * 8 - exp!!)) / 200f)
-//        }
-//        else if (exp!! >= 1200){
-//            ((200 - (200 * 7 - exp!!)) / 200f)
-//        }
-//        else if (exp!!  >= 1000){
-//            ((200 - (200 * 6 - exp!!)) / 200f)
-//        }
-//        else if (exp!!  >= 800){
-//            ((200 - (200 * 5 - exp!!)) / 200f)
-//        }
-//        else if (exp!!  >= 600){
-//            ((200 - (200 * 4 - exp!!)) / 200f)
-//        }
-//        else if (exp!! >= 400){
-//            ((200 - (200 * 3 - exp!!)) / 200f)
-//        }
-//        else if (exp!! >= 200){
-//             ((200 - (200 * 2 - exp!!)) / 200f)
-//        }
-//        else{
-//            ((200 - (200 * 1 - exp!!)) / 200f)
-//        }
-
-
-
         val animatedFirstValue = remember { Animatable(0f) }
 
         val barWidth = 600f
         val barHeight = 50f
-//
+
         val mySize = Size(animatedFirstValue.value * barWidth, barHeight-10f)
 
         if(uiState.doAnimation){
@@ -208,9 +167,10 @@ fun ProfileScreen(
                                     )),
                                     shape = RoundedCornerShape(50.dp)
                                 )
-                                .background(color =
+                                .background(
+                                    color =
 //                                Color(0xFFd8af84)
-                                Color(0xFF682300)
+                                    Color(0xFF682300)
                                 ),
                             contentAlignment = Alignment.Center,
                         ) {
@@ -221,7 +181,8 @@ fun ProfileScreen(
                                 alignment = Alignment.Center,
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .size(120.dp),
+                                    .height(90.dp).width(120.dp),
+                                colorFilter = ColorFilter.tint(Color(0xFFd8af84))
                                 )
 
                             //star box upper
@@ -240,7 +201,10 @@ fun ProfileScreen(
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 tileMode = TileMode.Mirror
                                             )),
                                             shape = CircleShape
@@ -251,24 +215,29 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            Icons.Outlined.Grade,
-                                            tint = Color(0xFFd8af84),
-                                            modifier = Modifier.size(20.dp),
-                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                                            contentDescription = null
-                                        )
+                                        if(uiStarsState.starList[0] == Icons.Filled.Grade){
+                                            Icon(
+                                                uiStarsState.starList[0],
+                                                tint = Color(0xFFd8af84),
+                                                modifier = Modifier.size(20.dp),
+                                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                                contentDescription = null
+                                            )
+                                        }
                                     }
                                 }
                                 //star 2
                                 Surface(
                                     elevation = 8.dp,
                                     modifier = Modifier
-                                        .padding(end = 18.dp, top = 6.dp)
+                                        .padding(end = 20.dp, top = 7.dp)
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 tileMode = TileMode.Mirror
                                             )),
                                             shape = CircleShape
@@ -280,24 +249,29 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            Icons.Outlined.Grade,
-                                            tint = Color(0xFFd8af84),
-                                            modifier = Modifier.size(20.dp),
-                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                                            contentDescription = null
-                                        )
+                                        if(uiStarsState.starList[1] == Icons.Filled.Grade){
+                                            Icon(
+                                                uiStarsState.starList[1],
+                                                tint = Color(0xFFd8af84),
+                                                modifier = Modifier.size(20.dp),
+                                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                                contentDescription = null
+                                            )
+                                        }
                                     }
                                 }
                                 //star 3
                                 Surface(
                                     elevation = 8.dp,
                                     modifier = Modifier
-                                        .padding(bottom = 4.dp, end = 2.dp)
+                                        .padding(bottom = 8.dp, end = 2.dp)
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 tileMode = TileMode.Mirror
                                             )),
                                             shape = CircleShape
@@ -308,24 +282,29 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            Icons.Outlined.Grade,
-                                            tint = Color(0xFFd8af84),
-                                            modifier = Modifier.size(20.dp),
-                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                                            contentDescription = null
-                                        )
+                                        if(uiStarsState.starList[2] == Icons.Filled.Grade) {
+                                            Icon(
+                                                uiStarsState.starList[2],
+                                                tint = Color(0xFFd8af84),
+                                                modifier = Modifier.size(20.dp),
+                                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                                contentDescription = null
+                                            )
+                                        }
                                     }
                                 }
                                 //star 9
                                 Surface(
                                     elevation = 8.dp,
                                     modifier = Modifier
-                                        .padding(bottom = 4.dp, start = 2.dp)
+                                        .padding(bottom = 8.dp, start = 2.dp)
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 tileMode = TileMode.Mirror
                                             )),
                                             shape = CircleShape
@@ -336,24 +315,29 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            Icons.Outlined.Grade,
-                                            tint = Color(0xFFd8af84),
-                                            modifier = Modifier.size(20.dp),
-                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                                            contentDescription = null
-                                        )
+                                        if(uiStarsState.starList[8] == Icons.Filled.Grade) {
+                                            Icon(
+                                                uiStarsState.starList[8],
+                                                tint = Color(0xFFd8af84),
+                                                modifier = Modifier.size(20.dp),
+                                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                                contentDescription = null
+                                            )
+                                        }
                                     }
                                 }
                                 //star 10
                                 Surface(
                                     elevation = 8.dp,
                                     modifier = Modifier
-                                        .padding(start = 18.dp, top = 6.dp)
+                                        .padding(start = 20.dp, top = 7.dp)
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 tileMode = TileMode.Mirror
                                             )),
                                             shape = CircleShape
@@ -364,13 +348,15 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            Icons.Outlined.Grade,
-                                            tint = Color(0xFFd8af84),
-                                            modifier = Modifier.size(20.dp),
-                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                                            contentDescription = null
-                                        )
+                                        if(uiStarsState.starList[9] == Icons.Filled.Grade) {
+                                            Icon(
+                                                uiStarsState.starList[9],
+                                                tint = Color(0xFFd8af84),
+                                                modifier = Modifier.size(20.dp),
+                                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                                contentDescription = null
+                                            )
+                                        }
                                     }
                                 }
 
@@ -390,11 +376,14 @@ fun ProfileScreen(
                                 Surface(
                                     elevation = 0.dp,
                                     modifier = Modifier
-                                        .padding(end = 2.dp)
+                                        .padding(top = 8.dp, end = 2.dp)
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 tileMode = TileMode.Mirror
                                             )),
                                             shape = CircleShape
@@ -405,24 +394,29 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            Icons.Outlined.Grade,
-                                            tint = Color(0xFFd8af84),
-                                            modifier = Modifier.size(20.dp),
-                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                                            contentDescription = null
-                                        )
+                                        if(uiStarsState.starList[3] == Icons.Filled.Grade) {
+                                            Icon(
+                                                uiStarsState.starList[3],
+                                                tint = Color(0xFFd8af84),
+                                                modifier = Modifier.size(20.dp),
+                                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                                contentDescription = null
+                                            )
+                                        }
                                     }
                                 }
                                 //star 5
                                 Surface(
                                     elevation = 0.dp,
                                     modifier = Modifier
-                                        .padding(end = 18.dp, bottom = 6.dp)
+                                        .padding(end = 20.dp, bottom = 7.dp)
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 tileMode = TileMode.Mirror
                                             )),
                                             shape = CircleShape
@@ -434,13 +428,15 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            Icons.Outlined.Grade,
-                                            tint = Color(0xFFd8af84),
-                                            modifier = Modifier.size(20.dp),
-                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                                            contentDescription = null
-                                        )
+                                        if(uiStarsState.starList[4] == Icons.Filled.Grade) {
+                                            Icon(
+                                                uiStarsState.starList[4],
+                                                tint = Color(0xFFd8af84),
+                                                modifier = Modifier.size(20.dp),
+                                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                                contentDescription = null
+                                            )
+                                        }
                                     }
                                 }
                                 //star 6
@@ -451,7 +447,10 @@ fun ProfileScreen(
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 tileMode = TileMode.Mirror
                                             )),
                                             shape = CircleShape
@@ -462,24 +461,29 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            Icons.Outlined.Grade,
-                                            tint = Color(0xFFd8af84),
-                                            modifier = Modifier.size(20.dp),
-                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                                            contentDescription = null
-                                        )
+                                        if(uiStarsState.starList[5] == Icons.Filled.Grade) {
+                                            Icon(
+                                                uiStarsState.starList[5],
+                                                tint = Color(0xFFd8af84),
+                                                modifier = Modifier.size(20.dp),
+                                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                                contentDescription = null
+                                            )
+                                        }
                                     }
                                 }
                                 //star 7
                                 Surface(
                                     elevation = 0.dp,
                                     modifier = Modifier
-                                        .padding(start = 18.dp, bottom = 6.dp)
+                                        .padding(start = 20.dp, bottom = 7.dp)
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 tileMode = TileMode.Mirror
                                             )),
                                             shape = CircleShape
@@ -490,24 +494,29 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            Icons.Outlined.Grade,
-                                            tint = Color(0xFFd8af84),
-                                            modifier = Modifier.size(20.dp),
-                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                                            contentDescription = null
-                                        )
+                                        if(uiStarsState.starList[6] == Icons.Filled.Grade) {
+                                            Icon(
+                                                uiStarsState.starList[6],
+                                                tint = Color(0xFFd8af84),
+                                                modifier = Modifier.size(20.dp),
+                                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                                contentDescription = null
+                                            )
+                                        }
                                     }
                                 }
                                 //star 8
                                 Surface(
                                     elevation = 0.dp,
                                     modifier = Modifier
-                                        .padding(start = 2.dp)
+                                        .padding(top = 8.dp, start = 2.dp)
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 tileMode = TileMode.Mirror
                                             )),
                                             shape = CircleShape
@@ -518,23 +527,20 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Icon(
-                                            Icons.Outlined.Grade,
-                                            tint = Color(0xFFd8af84),
-                                            modifier = Modifier.size(20.dp),
-                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                                            contentDescription = null
-                                        )
+                                        if (uiStarsState.starList[7] == Icons.Filled.Grade) {
+                                            Icon(
+                                                uiStarsState.starList[7],
+                                                tint = Color(0xFFd8af84),
+                                                modifier = Modifier.size(20.dp),
+                                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                                contentDescription = null
+                                            )
+                                        }
                                     }
                                 }
-
-
-
                             }
                         }
                     }
-
-
 
                     Spacer(Modifier.height(4.dp))
 
@@ -545,14 +551,10 @@ fun ProfileScreen(
 
                     Spacer(Modifier.height(4.dp))
 
-                    //Will be progress bar
-
                     androidx.compose.foundation.Canvas(modifier = Modifier
                         .height(40.dp)
                         .fillMaxWidth()){
                         val canvasWidth = size.width
-
-
 
                         //outer boarder
                         drawRoundRect(

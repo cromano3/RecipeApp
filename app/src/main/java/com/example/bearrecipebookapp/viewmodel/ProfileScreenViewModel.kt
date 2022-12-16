@@ -1,19 +1,20 @@
 package com.example.bearrecipebookapp.viewmodel
 
 import android.app.Application
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Grade
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.ProfileScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.ProfileScreenDataModel
+import com.example.bearrecipebookapp.datamodel.ProfileScreenStarsDataModel
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.UiAlertStateProfileScreenDataModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class ProfileScreenViewModel(application: Application): ViewModel() {
 
@@ -22,8 +23,8 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     val uiState = MutableStateFlow(ProfileScreenDataModel())
-
     val uiAlertState = MutableStateFlow(UiAlertStateProfileScreenDataModel())
+    val uiStarsState = MutableStateFlow(ProfileScreenStarsDataModel())
 
     var favoritesData: LiveData<List<RecipeWithIngredients>>
     var cookedData: LiveData<List<RecipeWithIngredients>>
@@ -119,6 +120,8 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
             levelHelper(xp)
 
+            withContext(Dispatchers.IO) { drawStars() }
+
 //            if (xpToGive > 0){
             val totalAnimations = getAnimationTotal(xp, xpToGive)
 
@@ -135,6 +138,33 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 //                getSecondOrMoreAnimationTarget()
 //            }
 
+        }
+
+    }
+
+    private suspend fun drawStars(){
+
+        delay(1000)
+
+        for(x in 0 until uiState.value.level){
+
+            println(uiStarsState.value.starList)
+
+            var myList = uiStarsState.value.starList
+
+            /**
+             * map or mapIndexed creates a new list object which allows recomposition to take place.
+             * Using a mutable list to change list items doesn't create a new list and doesn't trigger
+             * recomposition.
+             */
+            myList = myList.mapIndexed() { index, it -> if(index == x) Icons.Filled.Grade else it }
+
+            uiStarsState.update {
+                it.copy(
+                    starList = myList
+                )
+            }
+            delay(200)
         }
 
     }
