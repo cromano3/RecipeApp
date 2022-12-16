@@ -1,7 +1,6 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.SnapSpec
 import androidx.compose.animation.core.tween
@@ -49,10 +48,11 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.viewmodel.ProfileScreenViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ProfileScreen(
     onRemoveClick: (RecipeWithIngredients) -> Unit,
@@ -65,7 +65,7 @@ fun ProfileScreen(
         val profileScreenViewModel: ProfileScreenViewModel = viewModel(
             it,
             "ProfileScreenViewModel",
-            ProfileScreenViewModelFactory(LocalContext.current.applicationContext as Application,)
+            ProfileScreenViewModelFactory(LocalContext.current.applicationContext as Application)
         )
 
 
@@ -124,25 +124,28 @@ fun ProfileScreen(
 
 
         val animatedFirstValue = remember { Animatable(0f) }
-//        val animatedSecondValue = remember { Animatable(0f) }
-//
+
         val barWidth = 600f
         val barHeight = 50f
 //
-        var mySize = Size(animatedFirstValue.value * barWidth, barHeight-10f)
+        val mySize = Size(animatedFirstValue.value * barWidth, barHeight-10f)
 
         if(uiState.doAnimation){
             coroutineScope.launch {
+                profileScreenViewModel.stopDoAnimation()
                 delay(1000)
-                animatedFirstValue.animateTo(uiState.animationTargetFirst, animationSpec = tween(500))
+                println("before")
+                withContext(Dispatchers.Main) { animatedFirstValue.animateTo(uiState.animationTargetFirst, animationSpec = tween(500)) }
+                println("after")
                 profileScreenViewModel.endAnimation()
             }
         }
 
         if(uiState.resetAnimation){
             coroutineScope.launch {
-                animatedFirstValue.animateTo(0f, animationSpec = SnapSpec(0))
-//                profileScreenViewModel.startNextAnimation()
+                profileScreenViewModel.stopReset()
+                withContext(Dispatchers.Main) { animatedFirstValue.animateTo(0f, animationSpec = SnapSpec(0)) }
+                profileScreenViewModel.startNextAnimation()
             }
         }
 //
@@ -539,7 +542,7 @@ fun ProfileScreen(
                     color = Color.Transparent
 
                 ) {
-                    LazyColumn() {
+                    LazyColumn {
                         items(favoritesData, key = { it.recipeEntity.recipeName }) {
                             RecipeCard(
                                 modifier = Modifier,
@@ -553,7 +556,7 @@ fun ProfileScreen(
                                 onCompleteClick = {},
                                 onDetailsClick = {
 //                                coroutineScope.launch(Dispatchers.IO) {
-                                    profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
+                                    profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
                                     onDetailsClick()
 //                                }
                                 }
@@ -561,7 +564,7 @@ fun ProfileScreen(
 
                         }
 
-                        item() {
+                        item {
                             Spacer(
                                 Modifier
                                     .fillMaxWidth()
@@ -596,7 +599,7 @@ fun ProfileScreen(
                             RecipeIcon(
                                 recipeWithIngredients = cookedData[index],
                                 onDetailsClick = {
-                                    profileScreenViewModel.setDetailsScreenTarget(cookedData[index].recipeEntity.recipeName);
+                                    profileScreenViewModel.setDetailsScreenTarget(cookedData[index].recipeEntity.recipeName)
                                     onDetailsClick()
                                 }
                             )
@@ -613,7 +616,7 @@ fun ProfileScreen(
                 }
             }
             if (uiState.activeTab == "reviews")
-                LazyColumn() {
+                LazyColumn {
 
                 }
             }
@@ -669,9 +672,7 @@ fun RecipeIcon(
 ){
 
 
-    var image = R.drawable.bagel
-
-    image = when(recipeWithIngredients.recipeEntity.recipeName){
+    val image: Int = when(recipeWithIngredients.recipeEntity.recipeName){
         "Bagels" -> R.drawable.bagel2
         "Garlic Knots" -> R.drawable.garlic2
         "Cauliflower Walnut Tacos" -> R.drawable.cauliflower

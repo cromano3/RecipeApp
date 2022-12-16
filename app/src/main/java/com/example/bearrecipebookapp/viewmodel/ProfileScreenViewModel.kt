@@ -11,7 +11,6 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.UiAlertStateProfileScreenDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,8 +28,8 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
     var favoritesData: LiveData<List<RecipeWithIngredients>>
     var cookedData: LiveData<List<RecipeWithIngredients>>
 
-    var expToGive: LiveData<Int>
-    var exp: LiveData<Int>
+//    var expToGive: LiveData<Int>
+//    var exp: LiveData<Int>
 
     init{
         val appDb = RecipeAppDatabase.getInstance(application)
@@ -39,19 +38,27 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
         favoritesData = repository.favoritesData
         cookedData = repository.cookedData
-        expToGive = repository.expToGive
-        exp = repository.exp
+//        expToGive = repository.expToGive
+//        exp = repository.exp
 
         animationSetup()
 
     }
 
+    fun stopDoAnimation(){
+        uiState.update {
+            it.copy(
+                doAnimation = false
+            )
+        }
+    }
+
     fun endAnimation(){
         coroutineScope.launch(Dispatchers.IO){
-            delay(600)
+
             uiState.update {
                 it.copy(
-                    doAnimation = false,
+//                    doAnimation = false,
                     totalAnimationsToPlay = uiState.value.totalAnimationsToPlay - 1
                 )
             }
@@ -59,34 +66,41 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
             updateExp()
 
             if(uiState.value.totalAnimationsToPlay > 0){
+                println(uiState.value.totalAnimationsToPlay)
                 uiState.update {
                     it.copy(
                         resetAnimation = true
                     )
                 }
 
-                delay(200)
-
-                uiState.update{
-                    it.copy(
-                        resetAnimation = false,
-                        doAnimation = true
-                    )
-                }
+//                delay(500)
+//
+//                uiState.update{
+//                    it.copy(
+//                        resetAnimation = false,
+//                        doAnimation = true
+//                    )
+//                }
             }
         }
     }
+    fun stopReset(){
+        uiState.update {
+            it.copy(
+                resetAnimation = false
+            )
+        }
 
-//    fun startNextAnimation(){
-//        coroutineScope.launch {
-//            delay(100)
-//            uiState.update {
-//                it.copy(
-//
-//                )
-//            }
-//        }
-//    }
+    }
+
+    fun startNextAnimation(){
+            uiState.update {
+                it.copy(
+//                    resetAnimation = false,
+                    doAnimation = true
+                )
+            }
+    }
 
 
     private fun animationSetup(){
@@ -108,6 +122,8 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 //            if (xpToGive > 0){
             val totalAnimations = getAnimationTotal(xp, xpToGive)
 
+            println("init $totalAnimations")
+
 
             uiState.update { currentState ->
                 currentState.copy(
@@ -124,26 +140,25 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
     }
 
     private fun getAnimationTotal(xp: Int, xpToGive: Int): Int{
-        if(xpToGive == 0)
-            return 1
+
+        return if(xpToGive == 0)
+            1
         else if((uiState.value.level * 200) - xp > xpToGive){
-            return 1
-        }
-        else{
+            1
+        } else{
             if(xpToGive - (uiState.value.level * 200) - xp > 200){
-                return recursionRemainder(xpToGive - (uiState.value.level * 200) - xp) + 1
-            }
-            else
-                return 2
+                recursionRemainder(xpToGive - (uiState.value.level * 200) - xp)
+            } else
+                2
         }
 
     }
 
     private fun recursionRemainder(remainder: Int): Int{
-        if(remainder > 200)
-            return recursionRemainder(remainder - 200) + 1
+        return if(remainder > 200)
+            recursionRemainder(remainder - 200) + 1
         else
-            return 1
+            2
     }
 
     private fun levelHelper(totalCurrentExp: Int){
@@ -299,13 +314,13 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 //        }
 //    }
 
-    private fun updateExp(){
+    private suspend fun updateExp(){
 
-        coroutineScope.launch(Dispatchers.IO) {
+//        coroutineScope.launch(Dispatchers.IO) {
 
             if(uiState.value.xpToGive > ((uiState.value.level * 200) - uiState.value.xp)){
 
-                var nextTotalTnl: Int = 0
+                var nextTotalTnl = 0
 
                 when(uiState.value.level){
                     9 -> nextTotalTnl = 1800
@@ -321,7 +336,7 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
                 val expChange = nextTotalTnl - uiState.value.xp
 
-                levelHelper(uiState.value.xp + (nextTotalTnl - uiState.value.xp))
+//                levelHelper(uiState.value.xp + (nextTotalTnl - uiState.value.xp))
 
                 repository.addToExp(expChange)
                 repository.removeFromExpToGive(expChange)
@@ -347,7 +362,9 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
                 )
             }
 
-        }
+            levelHelper(xp)
+
+//        }
 
     }
 
