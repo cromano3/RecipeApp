@@ -603,7 +603,7 @@ fun ProfileScreen(
                                 /**
                                 Animate this for exp changes
                                  */
-                                size = if(uiState.totalAnimationsToPlay == 0) Size(uiState.animationTargetFirst * barWidth, barHeight-10f) else mySize,
+                                size = if(uiState.xpToGive == 0) Size(uiState.animationTargetFirst * barWidth, barHeight-10f) else mySize,
                                 cornerRadius = CornerRadius(25f, 25f),
                             )
                         }
