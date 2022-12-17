@@ -64,10 +64,10 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
                 )
             }
 
-            updateExp()
+            withContext(Dispatchers.IO){ updateExp() }
 
             if(uiState.value.totalAnimationsToPlay > 0){
-                println(uiState.value.totalAnimationsToPlay)
+
                 uiState.update {
                     it.copy(
                         resetAnimation = true
@@ -85,6 +85,27 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
             }
         }
     }
+
+    private fun levelUpStar(){
+
+            var myList = uiStarsState.value.starList
+
+            /**
+             * map or mapIndexed creates a new list object which allows recomposition to take place.
+             * Using a mutable list to change list items doesn't create a new list and doesn't trigger
+             * recomposition.
+             */
+            myList = myList.mapIndexed { index, it -> if(index == uiState.value.level) Icons.Filled.Grade else it }
+
+            uiStarsState.update {
+                it.copy(
+                    starList = myList
+                )
+            }
+//            delay(200)
+
+    }
+
     fun stopReset(){
         uiState.update {
             it.copy(
@@ -118,15 +139,16 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
                 )
             }
 
+            repository.clearExpToGive()
+            repository.addToExp(uiState.value.xpToGive)
+
             levelHelper(xp)
 
-            withContext(Dispatchers.IO) { drawStars() }
+            delay(1000)
 
-//            if (xpToGive > 0){
+            drawStars()
+
             val totalAnimations = getAnimationTotal(xp, xpToGive)
-
-            println("init $totalAnimations")
-
 
             uiState.update { currentState ->
                 currentState.copy(
@@ -134,21 +156,14 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
                     doAnimation = true,
                 )
             }
-//                getFirstAnimationTarget()
-//                getSecondOrMoreAnimationTarget()
-//            }
-
         }
-
     }
 
     private suspend fun drawStars(){
 
-        delay(1000)
-
         for(x in 0 until uiState.value.level){
 
-            println(uiStarsState.value.starList)
+//            println(uiStarsState.value.starList)
 
             var myList = uiStarsState.value.starList
 
@@ -157,7 +172,7 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
              * Using a mutable list to change list items doesn't create a new list and doesn't trigger
              * recomposition.
              */
-            myList = myList.mapIndexed() { index, it -> if(index == x) Icons.Filled.Grade else it }
+            myList = myList.mapIndexed { index, it -> if(index == x) Icons.Filled.Grade else it }
 
             uiStarsState.update {
                 it.copy(
@@ -182,6 +197,16 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
                 2
         }
 
+    }
+
+    fun cancelAnimationStack(){
+        uiState.update {
+            it.copy(
+                xp = uiState.value.xp + uiState.value.xpToGive,
+                xpToGive = 0,
+                totalAnimationsToPlay = 0
+            )
+        }
     }
 
     private fun recursionRemainder(remainder: Int): Int{
@@ -350,6 +375,8 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
             if(uiState.value.xpToGive > ((uiState.value.level * 200) - uiState.value.xp)){
 
+                levelUpStar()
+
                 var nextTotalTnl = 0
 
                 when(uiState.value.level){
@@ -368,31 +395,42 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
 //                levelHelper(uiState.value.xp + (nextTotalTnl - uiState.value.xp))
 
-                repository.addToExp(expChange)
-                repository.removeFromExpToGive(expChange)
+//                repository.addToExp(expChange)
+//                repository.removeFromExpToGive(expChange)
 
+                uiState.update { currentState ->
+                    currentState.copy(
+                        xp = uiState.value.xp + expChange,
+                        xpToGive = uiState.value.xpToGive - expChange,
+                    )
+                }
 
             }
 
             else{
+//                repository.addToExp(uiState.value.xpToGive)
+//                repository.clearExpToGive()
 
-                repository.addToExp(uiState.value.xpToGive)
-                repository.clearExpToGive()
-
+                uiState.update { currentState ->
+                    currentState.copy(
+                        xp = uiState.value.xp + uiState.value.xpToGive,
+                        xpToGive = 0,
+                    )
+                }
             }
 
-            val xpToGive = repository.getExpToGive()
-            val xp = repository.getExp()
+//            val xpToGive = repository.getExpToGive()
+//            val xp = repository.getExp()
 
             uiState.update { currentState ->
                 currentState.copy(
-                    xp = xp,
-                    xpToGive = xpToGive,
+//                    xp = xp,
+//                    xpToGive = xpToGive,
                     animationsPlayed =  uiState.value.animationsPlayed + 1
                 )
             }
 
-            levelHelper(xp)
+            levelHelper(uiState.value.xp)
 
 //        }
 

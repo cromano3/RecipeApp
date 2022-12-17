@@ -171,7 +171,7 @@ fun BearRecipeApp(
                 },
             ){
                 ProfileScreen(
-                    onDetailsClick = { navController.navigate("DetailsScreen")},
+                    onDetailsClick = { navController.navigate("DetailsScreen") },
                     onRemoveClick = {coroutineScope.launch{
                     if(it.recipeEntity.isFavorite == 1)
                         scaffoldState.snackbarHostState.showSnackbar(

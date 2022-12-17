@@ -1,11 +1,10 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
+import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.SnapSpec
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -51,10 +50,10 @@ import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.viewmodel.ProfileScreenViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ProfileScreen(
     onRemoveClick: (RecipeWithIngredients) -> Unit,
@@ -94,10 +93,10 @@ fun ProfileScreen(
         if(uiState.doAnimation){
             coroutineScope.launch {
                 profileScreenViewModel.stopDoAnimation()
-                delay(1000)
-                println("before")
+//                delay(1000)
+//                println("before")
                 withContext(Dispatchers.Main) { animatedFirstValue.animateTo(uiState.animationTargetFirst, animationSpec = tween(500)) }
-                println("after")
+//                println("after")
                 profileScreenViewModel.endAnimation()
             }
         }
@@ -215,7 +214,9 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        if(uiStarsState.starList[0] == Icons.Filled.Grade){
+                                        this@Column.AnimatedVisibility((uiStarsState.starList[0] == Icons.Filled.Grade), enter = scaleIn(tween(200))
+                                        ){
+                                    //                                        if(uiStarsState.starList[0] == Icons.Filled.Grade){
                                             Icon(
                                                 uiStarsState.starList[0],
                                                 tint = Color(0xFFd8af84),
@@ -249,7 +250,9 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        if(uiStarsState.starList[1] == Icons.Filled.Grade){
+                                        this@Column.AnimatedVisibility((uiStarsState.starList[1] == Icons.Filled.Grade), enter = scaleIn(tween(200))
+                                        ){
+//                                        if(uiStarsState.starList[1] == Icons.Filled.Grade){
                                             Icon(
                                                 uiStarsState.starList[1],
                                                 tint = Color(0xFFd8af84),
@@ -282,7 +285,9 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        if(uiStarsState.starList[2] == Icons.Filled.Grade) {
+                                        this@Column.AnimatedVisibility((uiStarsState.starList[2] == Icons.Filled.Grade), enter = scaleIn(tween(200))
+                                        ){
+//                                        if(uiStarsState.starList[2] == Icons.Filled.Grade) {
                                             Icon(
                                                 uiStarsState.starList[2],
                                                 tint = Color(0xFFd8af84),
@@ -315,7 +320,9 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        if(uiStarsState.starList[8] == Icons.Filled.Grade) {
+                                        this@Column.AnimatedVisibility((uiStarsState.starList[8] == Icons.Filled.Grade), enter = scaleIn(tween(200))
+                                        ){
+//                                        if(uiStarsState.starList[8] == Icons.Filled.Grade) {
                                             Icon(
                                                 uiStarsState.starList[8],
                                                 tint = Color(0xFFd8af84),
@@ -348,7 +355,9 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        if(uiStarsState.starList[9] == Icons.Filled.Grade) {
+                                        this@Column.AnimatedVisibility((uiStarsState.starList[9] == Icons.Filled.Grade), enter = scaleIn(tween(200))
+                                        ){
+//                                        if(uiStarsState.starList[9] == Icons.Filled.Grade) {
                                             Icon(
                                                 uiStarsState.starList[9],
                                                 tint = Color(0xFFd8af84),
@@ -394,7 +403,9 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        if(uiStarsState.starList[3] == Icons.Filled.Grade) {
+                                        this@Column.AnimatedVisibility((uiStarsState.starList[3] == Icons.Filled.Grade), enter = scaleIn(tween(200))
+                                        ){
+//                                        if(uiStarsState.starList[3] == Icons.Filled.Grade) {
                                             Icon(
                                                 uiStarsState.starList[3],
                                                 tint = Color(0xFFd8af84),
@@ -428,7 +439,9 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        if(uiStarsState.starList[4] == Icons.Filled.Grade) {
+                                        this@Column.AnimatedVisibility((uiStarsState.starList[4] == Icons.Filled.Grade), enter = scaleIn(tween(200))
+                                        ){
+//                                        if(uiStarsState.starList[4] == Icons.Filled.Grade) {
                                             Icon(
                                                 uiStarsState.starList[4],
                                                 tint = Color(0xFFd8af84),
@@ -461,7 +474,9 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        if(uiStarsState.starList[5] == Icons.Filled.Grade) {
+                                        this@Column.AnimatedVisibility((uiStarsState.starList[5] == Icons.Filled.Grade), enter = scaleIn(tween(200))
+                                        ){
+//                                        if(uiStarsState.starList[5] == Icons.Filled.Grade) {
                                             Icon(
                                                 uiStarsState.starList[5],
                                                 tint = Color(0xFFd8af84),
@@ -494,7 +509,9 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        if(uiStarsState.starList[6] == Icons.Filled.Grade) {
+                                        this@Column.AnimatedVisibility((uiStarsState.starList[6] == Icons.Filled.Grade), enter = scaleIn(tween(200))
+                                        ){
+//                                        if(uiStarsState.starList[6] == Icons.Filled.Grade) {
                                             Icon(
                                                 uiStarsState.starList[6],
                                                 tint = Color(0xFFd8af84),
@@ -527,7 +544,9 @@ fun ProfileScreen(
                                     color = Color.Transparent
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        if (uiStarsState.starList[7] == Icons.Filled.Grade) {
+                                        this@Column.AnimatedVisibility((uiStarsState.starList[7] == Icons.Filled.Grade), enter = scaleIn(tween(200))
+                                        ){
+//                                        if (uiStarsState.starList[7] == Icons.Filled.Grade) {
                                             Icon(
                                                 uiStarsState.starList[7],
                                                 tint = Color(0xFFd8af84),
@@ -584,7 +603,7 @@ fun ProfileScreen(
                                 /**
                                 Animate this for exp changes
                                  */
-                                size = mySize,
+                                size = if(uiState.totalAnimationsToPlay == 0) Size(uiState.animationTargetFirst * barWidth, barHeight-10f) else mySize,
                                 cornerRadius = CornerRadius(25f, 25f),
                             )
                         }
@@ -793,6 +812,7 @@ fun ProfileScreen(
                                 onCompleteClick = {},
                                 onDetailsClick = {
 //                                coroutineScope.launch(Dispatchers.IO) {
+                                    profileScreenViewModel.cancelAnimationStack()
                                     profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
                                     onDetailsClick()
 //                                }
