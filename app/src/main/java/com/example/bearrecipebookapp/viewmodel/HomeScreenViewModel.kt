@@ -46,7 +46,6 @@ class HomeScreenViewModel(application: Application): ViewModel() {
     val uiAlertState = MutableStateFlow(UiAlertStateDataModel())
 
     private var filterCount: Int
-    private var isFiltered: Boolean
     private var myFiltersList: MutableList<String>
 
     private var isSecondFiltered: Boolean
@@ -62,7 +61,6 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 //        newGetData()
 
         filterCount = 0
-        isFiltered = false
         isSecondFiltered = false
         myFiltersList = mutableListOf()
 
@@ -126,11 +124,19 @@ class HomeScreenViewModel(application: Application): ViewModel() {
                 filter.isActiveFilter == 1
             ) {
                 uiFiltersState.update { currentState ->
-                    currentState.copy(showAllRecipes = false)
+                    currentState.copy(
+                        showAllRecipes = false,
+                    )
                 }
 
                 //allows fade out animation
                 delay(300)
+
+                uiFiltersState.update { currentState ->
+                    currentState.copy(
+                        isFiltered = true,
+                    )
+                }
 
 
                 withContext(Dispatchers.IO) { repository.removeOtherFilters(filter.filterName) }
@@ -176,6 +182,12 @@ class HomeScreenViewModel(application: Application): ViewModel() {
                 //off. It could/should be reduced to the duration of the animation itself.
                 delay(300)
 
+                uiFiltersState.update { currentState ->
+                    currentState.copy(
+                        isFiltered = false,
+                    )
+                }
+
 //                coroutineScope.launch(Dispatchers.IO) {
 //                println("zero")
                     withContext(Dispatchers.IO) { repository.cleanRecipes() }
@@ -185,7 +197,9 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 //                }
 
                 uiFiltersState.update { currentState ->
-                    currentState.copy(showAllRecipes = true)
+                    currentState.copy(
+                        showAllRecipes = true,
+                    )
                 }
             }
 

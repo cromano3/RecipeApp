@@ -6,18 +6,17 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckBox
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckBoxOutlineBlank
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
@@ -26,13 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -55,6 +51,7 @@ import kotlinx.coroutines.launch
 fun ShoppingListScreen(
     onDetailsClick: () -> Unit,
     onSystemBackClick: () -> Unit,
+    onAddRecipeClick: () -> Unit,
 ) {
     val owner = LocalViewModelStoreOwner.current
 
@@ -74,6 +71,7 @@ fun ShoppingListScreen(
         var filterWasClicked by remember { mutableStateOf(false) }
 
         val uiState by shoppingListScreenViewModel.shoppingScreenUiState.collectAsState()
+        val uiAlertState by shoppingListScreenViewModel.uiAlertState.collectAsState()
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -165,7 +163,8 @@ fun ShoppingListScreen(
                             recipeWithIngredients = it,
                             isWorking = uiState.isWorking,
                             onFilterClick = {shoppingListScreenViewModel.filterBy(it); filterWasClicked = !filterWasClicked},
-                            onDetailsClick = { shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
+                            onDetailsClick = {
+                                shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
                                 onDetailsClick() }
                         )
 
@@ -186,13 +185,6 @@ fun ShoppingListScreen(
             }
             if (selectedIngredients.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                        Spacer(
-//                            Modifier
-//                                .fillMaxWidth()
-//                                .weight(1f)
-//                        )
-//                        Text(text = "The Menu is empty", color = Color(0xFF682300))
                     Image(
 
                         painter = painterResource(id = R.drawable.shoppingscreenempty),
@@ -201,13 +193,109 @@ fun ShoppingListScreen(
                         alpha = .5f,
                         colorFilter = ColorFilter.tint(Color(0xFF682300))
                     )
-//                        Text(text = "add some recipes", color = Color(0xFF682300))
-//                        Spacer(
-//                            Modifier
-//                                .fillMaxWidth()
-//                                .weight(1f)
-//                        )
-//                    }
+                }
+                Box(Modifier.fillMaxSize(), contentAlignment =  Alignment.BottomEnd){
+                    FloatingActionButton(
+                        onClick = { shoppingListScreenViewModel.triggerAddRecipeOrCustomItemAlert() },
+                        elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                        modifier = Modifier
+                            .padding(bottom = 40.dp, end = 24.dp)
+                            .border(
+                                width = 2.dp,
+                                brush = (Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFFd8af84),
+                                        Color(0xFFb15f33),
+
+                                        ),
+                                    tileMode = TileMode.Mirror
+                                )),
+                                shape = CircleShape
+                            )
+                            .align(Alignment.BottomEnd)
+                            .size(56.dp)
+                            //the background of the square for this button, it stays a square even tho
+                            //we have shape = circle shape.  If this is not changed you see a solid
+                            //square for the "background" of this button.
+                            .background(color = Color.Transparent),
+                        shape = CircleShape,
+                        //this is the background color of the button after the "Shaping" is applied.
+                        //it is different then the background attribute above.
+                        backgroundColor = Color(0xFF682300)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            tint = Color(0xFFd8af84),
+                            modifier = Modifier.size(28.dp),
+                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                            contentDescription = null
+                        )
+                    }
+                }
+                Box(Modifier.fillMaxSize()){
+                    //add recipe or custom item
+                    if(uiAlertState.showAddRecipeOrCustomItemAlert){
+                        AlertDialog(
+                            onDismissRequest = {shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()},
+                            text = {
+                                Text(text = "Add a recipe, or a custom item to the shopping list?" )
+                            },
+                            confirmButton = {
+                                TextButton(
+                                    onClick = {
+                                        shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
+                                        shoppingListScreenViewModel.triggerAddCustomItemAlert()
+
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    border = BorderStroke(2.dp, Color.Black)
+
+                                ) {
+                                    Text("Add Custom Item")
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(
+                                    onClick = {
+                                        shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
+                                        onAddRecipeClick()
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    border = BorderStroke(2.dp, Color.Black),
+                                ) {
+                                    Text("Add Recipe")
+                                }
+                            }
+                        )
+                    }
+                    else if(uiAlertState.showAddCustomItemAlert){
+                        AlertDialog(
+                            onDismissRequest = {shoppingListScreenViewModel.cancelAddCustomItemAlert()},
+                            text = {
+                                Text(text = "Add custom item:" )
+                            },
+                            confirmButton = {
+                                TextButton(
+                                    onClick = {
+
+                                        /** add the item */
+
+                                    }
+                                ) {
+                                    Text("Add Item")
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(
+                                    onClick = {
+                                        shoppingListScreenViewModel.cancelAddCustomItemAlert()
+                                    }
+                                ) {
+                                    Text("Cancel")
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -224,10 +312,7 @@ fun RecipeIconWithButton(
     onDetailsClick: () -> Unit
 ){
 
-
-    var image = R.drawable.bagel
-
-    image = when(recipeWithIngredients.recipeEntity.recipeName){
+    val image = when(recipeWithIngredients.recipeEntity.recipeName){
         "Bagels" -> R.drawable.bagel2
         "Garlic Knots" -> R.drawable.garlic2
         "Cauliflower Walnut Tacos" -> R.drawable.cauliflower
@@ -242,7 +327,7 @@ fun RecipeIconWithButton(
         else -> R.drawable.bagel
     }
 
-    val gradientWidth = with(LocalDensity.current) { 100.dp.toPx() }
+//    val gradientWidth = with(LocalDensity.current) { 100.dp.toPx() }
 
     val alphaAnim: Float by animateFloatAsState(
         targetValue =
@@ -368,7 +453,7 @@ fun ShoppingListItemWithButton(
 
     val selected: Boolean
 
-    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
+//    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
 
     val myIcon: ImageVector
     val checkBoxBackgroundColor: Color

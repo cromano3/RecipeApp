@@ -7,4 +7,5 @@ data class UiFiltersStateDataModel(
     val isWorking: Boolean = false,
     val showAllRecipes: Boolean = true,
     val triggerScroll: Boolean = false,
+    val isFiltered: Boolean = false,
 )

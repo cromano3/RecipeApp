@@ -3,6 +3,8 @@ package com.example.bearrecipebookapp.viewmodel
 import android.app.Application
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Grade
+import androidx.compose.material.icons.outlined.Grade
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.ProfileScreenRepository
@@ -29,7 +31,7 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
     var favoritesData: LiveData<List<RecipeWithIngredients>>
     var cookedData: LiveData<List<RecipeWithIngredients>>
 
-//    var expToGive: LiveData<Int>
+    var expToGive: LiveData<Int>
 //    var exp: LiveData<Int>
 
     init{
@@ -39,10 +41,10 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
         favoritesData = repository.favoritesData
         cookedData = repository.cookedData
-//        expToGive = repository.expToGive
+        expToGive = repository.expToGive
 //        exp = repository.exp
 
-        animationSetup()
+//        animationSetup()
 
     }
 
@@ -125,9 +127,25 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
     }
 
 
-    private fun animationSetup(){
+    fun animationSetup(){
 
         coroutineScope.launch(Dispatchers.IO) {
+
+            uiStarsState.update {
+                it.copy(
+                    starList = listOf<ImageVector>(
+                        Icons.Outlined.Grade,
+                        Icons.Outlined.Grade,
+                        Icons.Outlined.Grade,
+                        Icons.Outlined.Grade,
+                        Icons.Outlined.Grade,
+                        Icons.Outlined.Grade,
+                        Icons.Outlined.Grade,
+                        Icons.Outlined.Grade,
+                        Icons.Outlined.Grade,
+                        Icons.Outlined.Grade)
+                )
+            }
 
             val xpToGive = repository.getExpToGive()
             val xp = repository.getExp()
@@ -138,6 +156,8 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
                     xpToGive = xpToGive,
                 )
             }
+
+            println("here")
 
             repository.clearExpToGive()
             repository.addToExp(uiState.value.xpToGive)
@@ -186,15 +206,26 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
     private fun getAnimationTotal(xp: Int, xpToGive: Int): Int{
 
-        return if(xpToGive == 0)
+        println("xp to give $xpToGive")
+        println("xp $xp")
+        println("lvl ${uiState.value.level}")
+
+        return if(xpToGive == 0){
+            println("0 xp")
             1
+        }
         else if((uiState.value.level * 200) - xp > xpToGive){
+            println("no lvl up")
             1
         } else{
-            if(xpToGive - (uiState.value.level * 200) - xp > 200){
-                recursionRemainder(xpToGive - (uiState.value.level * 200) - xp)
-            } else
+            if(xpToGive - ((uiState.value.level * 200) - xp) > 200){
+                println("do recursion")
+                recursionRemainder(xpToGive - ((uiState.value.level * 200) - xp))
+            } else{
+                println("1 lvl up")
                 2
+            }
+
         }
 
     }
@@ -204,16 +235,21 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
             it.copy(
                 xp = uiState.value.xp + uiState.value.xpToGive,
                 xpToGive = 0,
-                totalAnimationsToPlay = 0
+                totalAnimationsToPlay = 0,
             )
         }
     }
 
     private fun recursionRemainder(remainder: Int): Int{
-        return if(remainder > 200)
+        return if(remainder > 200){
+            println("recursion again")
             recursionRemainder(remainder - 200) + 1
-        else
+        }
+
+        else {
+            println("end recursion")
             2
+        }
     }
 
     private fun levelHelper(totalCurrentExp: Int){

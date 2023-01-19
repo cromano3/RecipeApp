@@ -77,9 +77,12 @@ fun ProfileScreen(
         val favoritesData by profileScreenViewModel.favoritesData.observeAsState(listOf())
         val cookedData by profileScreenViewModel.cookedData.observeAsState(listOf())
 
+        val expToGive by profileScreenViewModel.expToGive.observeAsState()
+
+        var startAnimation by remember { mutableStateOf(true) }
+
         val fadedColors = listOf(Color(0x80D8AF84), Color(0x80B15F33))
         val fullColors = listOf(Color(0xFFd8af84), Color(0xFFb15f33))
-
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -89,6 +92,12 @@ fun ProfileScreen(
         val barHeight = 50f
 
         val mySize = Size(animatedFirstValue.value * barWidth, barHeight-10f)
+
+        if(startAnimation){
+            println("help")
+            startAnimation = false
+            profileScreenViewModel.animationSetup()
+        }
 
         if(uiState.doAnimation){
             coroutineScope.launch {
@@ -180,7 +189,8 @@ fun ProfileScreen(
                                 alignment = Alignment.Center,
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .height(90.dp).width(120.dp),
+                                    .height(90.dp)
+                                    .width(120.dp),
                                 colorFilter = ColorFilter.tint(Color(0xFFd8af84))
                                 )
 
@@ -856,6 +866,7 @@ fun ProfileScreen(
                             RecipeIcon(
                                 recipeWithIngredients = cookedData[index],
                                 onDetailsClick = {
+                                    profileScreenViewModel.cancelAnimationStack()
                                     profileScreenViewModel.setDetailsScreenTarget(cookedData[index].recipeEntity.recipeName)
                                     onDetailsClick()
                                 }

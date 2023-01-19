@@ -6,11 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -38,7 +35,6 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -163,15 +159,16 @@ fun BearRecipeApp(
             composable(
                 route = "ProfileScreen",
                 enterTransition = {
-                    slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                    fadeIn(animationSpec = tween(700))
                 },
                 exitTransition = {
-                    slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                    fadeOut(animationSpec = tween(700))
 
                 },
             ){
                 ProfileScreen(
                     onDetailsClick = { navController.navigate("DetailsScreen") },
+//                    { navController.navigate("DetailsScreen"){ popUpTo("ProfileScreen"){ inclusive = true } } },
                     onRemoveClick = {coroutineScope.launch{
                     if(it.recipeEntity.isFavorite == 1)
                         scaffoldState.snackbarHostState.showSnackbar(
@@ -184,14 +181,22 @@ fun BearRecipeApp(
                 }},)
             }
 
+            composable(
+                route = "AddRecipeScreen",
+            ){
+                AddRecipeScreen(
+
+                )
+            }
+
             composable(route = "RecipeScreen",
                 enterTransition = {
                     when (initialState.destination.route){
                         "WeeklyMenuScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
                         "ShoppingScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
                         "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
-                        "DetailsScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
-                        "ProfileScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "DetailsScreen" -> fadeIn(animationSpec = tween(700))
+                        "ProfileScreen" -> fadeIn(animationSpec = tween(700))
                         else -> null }
                 },
                 exitTransition = {
@@ -199,8 +204,8 @@ fun BearRecipeApp(
                         "WeeklyMenuScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
                         "ShoppingScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
                         "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
-                        "DetailsScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
-                        "ProfileScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "DetailsScreen" -> fadeOut(animationSpec = tween(700))
+                        "ProfileScreen" -> fadeOut(animationSpec = tween(700))
                         else -> null
                     }
                 }
@@ -234,6 +239,7 @@ fun BearRecipeApp(
                             duration = SnackbarDuration.Short
                         )
                     }},
+                    onCreateRecipeClick = {navController.navigate("AddRecipeScreen")}
                 )
             }
 
@@ -242,9 +248,9 @@ fun BearRecipeApp(
                     when (initialState.destination.route){
                         "RecipeScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
                         "ShoppingScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
-                        "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
-                        "DetailsScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
-                        "ProfileScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "SearchScreen" -> fadeIn(animationSpec = tween(700))
+                        "DetailsScreen" -> fadeIn(animationSpec = tween(700))
+                        "ProfileScreen" -> fadeIn(animationSpec = tween(700))
                         else -> null
                     }
                 },
@@ -252,9 +258,9 @@ fun BearRecipeApp(
                     when (targetState.destination.route) {
                         "RecipeScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
                         "ShoppingScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
-                        "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
-                        "DetailsScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
-                        "ProfileScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "SearchScreen" -> fadeOut(animationSpec = tween(700))
+                        "DetailsScreen" -> fadeOut(animationSpec = tween(700))
+                        "ProfileScreen" -> fadeOut(animationSpec = tween(700))
                         else -> null
                     }
                 },
@@ -300,9 +306,9 @@ fun BearRecipeApp(
                     when (initialState.destination.route){
                         "RecipeScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
                         "WeeklyMenuScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
-                        "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
-                        "DetailsScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
-                        "ProfileScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "SearchScreen" -> fadeIn(animationSpec = tween(700))
+                        "DetailsScreen" -> fadeIn(animationSpec = tween(700))
+                        "ProfileScreen" -> fadeIn(animationSpec = tween(700))
                         else -> null
                     }
                 },
@@ -310,9 +316,9 @@ fun BearRecipeApp(
                     when (targetState.destination.route) {
                         "RecipeScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
                         "WeeklyMenuScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
-                        "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
-                        "DetailsScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
-                        "ProfileScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "SearchScreen" -> fadeOut(animationSpec = tween(700))
+                        "DetailsScreen" -> fadeOut(animationSpec = tween(700))
+                        "ProfileScreen" -> fadeOut(animationSpec = tween(700))
                         else -> null
                     }
                 },){
@@ -321,11 +327,13 @@ fun BearRecipeApp(
                     onSystemBackClick = {
                         navController.navigate("RecipeScreen"){
                             popUpTo(navController.graph.findStartDestination().id)
-//                            {
-//                                saveState = true
-//                            }
-//                            launchSingleTop = true
                             restoreState = true
+                        }
+                    },
+                    onAddRecipeClick = {
+                        navController.navigate("RecipeScreen"){
+                            popUpTo(navController.graph.findStartDestination().id)
+                            restoreState = false
                         }
                     }
                 )
@@ -335,21 +343,21 @@ fun BearRecipeApp(
                 route = "DetailsScreen",
                 enterTransition = {
                     when (initialState.destination.route){
-                        "RecipeScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
-                        "WeeklyMenuScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
-                        "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
-                        "ShoppingScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
-                        "ProfileScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        "RecipeScreen" -> fadeIn(animationSpec = tween(700))
+                        "WeeklyMenuScreen" -> fadeIn(animationSpec = tween(700))
+                        "SearchScreen" -> fadeIn(animationSpec = tween(700))
+                        "ShoppingScreen" -> fadeIn(animationSpec = tween(700))
+                        "ProfileScreen" -> fadeIn(animationSpec = tween(700))
                         else -> null
                     }
                 },
                 exitTransition = {
                     when (targetState.destination.route) {
-                        "RecipeScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
-                        "WeeklyMenuScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
-                        "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
-                        "ShoppingScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
-                        "ProfileScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        "RecipeScreen" -> fadeOut(animationSpec = tween(700))
+                        "WeeklyMenuScreen" -> fadeOut(animationSpec = tween(700))
+                        "SearchScreen" -> fadeOut(animationSpec = tween(700))
+                        "ShoppingScreen" -> fadeOut(animationSpec = tween(700))
+                        "ProfileScreen" -> fadeOut(animationSpec = tween(700))
                         else -> null
                     }
                 },) {
@@ -388,10 +396,16 @@ fun BearRecipeApp(
             composable(
                 route = "SearchScreen",
                 enterTransition = {
-                    slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                    when (targetState.destination.route) {
+                        "RecipeScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
+                        else -> fadeIn(animationSpec = tween(700))
+                    }
                 },
                 exitTransition = {
-                     slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                    when (targetState.destination.route) {
+                        "RecipeScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
+                        else -> fadeOut(animationSpec = tween(700))
+                    }
                 },
             ){
                 SearchScreen(
@@ -450,11 +464,11 @@ fun BearAppBottomBar(
 
         val routes = listOf("RecipeScreen", "WeeklyMenuScreen", "ShoppingScreen")
 
-        var selected = false
-        var alpha = 1f
+        var selected: Boolean
+        var alpha: Float
 
 
-        routes.forEach{ it ->
+        routes.forEach{
             if(it == currentRoute){
                 selected = true
                 alpha = 1f
@@ -470,6 +484,9 @@ fun BearAppBottomBar(
                 onClick = {
 
                     if(currentRoute == "SearchScreen" && it == "RecipeScreen"){
+                        navController.popBackStack()
+                    }
+                    if(currentRoute == "AddRecipeScreen" && it == "RecipeScreen"){
                         navController.popBackStack()
                     }
                     if(currentRoute == "DetailsScreen"){
@@ -513,7 +530,7 @@ fun BearAppBottomBar(
     }
 }
 
-@OptIn(ExperimentalTextApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BearAppTopBar(
     currentScreen: String,
@@ -642,6 +659,21 @@ fun BearAppTopBar(
                 showIcon2 = false
 
             }
+            "AddRecipeScreen" -> {
+                show = true
+                textModifier = Modifier.wrapContentWidth()
+                title = "Add Custom Recipe"
+                icon = Icons.Outlined.ArrowBack
+                icon2 = Icons.Outlined.Person
+                clickEffectLeft = onBackClick
+                clickEffectRight = {}
+                showTitle = true
+                showSearchField = false
+                showSearchButton = false
+                showShare = false
+                showIcon2 = false
+
+            }
             "DetailsScreen" -> {
                 show = true
 
@@ -670,14 +702,7 @@ fun BearAppTopBar(
             }
         }
 
-//        println("yy")
-//        BackHandler(enabled = true) {
-//            println("xx")
-//            if(currentScreen == "SearchScreen"){
-//                println("XX")
-//                topBarViewModel.updatePreview( TextFieldValue(""), "")
-//            }
-//        }
+
 
         androidx.compose.animation.AnimatedVisibility(
             visible = show,
@@ -875,6 +900,9 @@ fun BearAppTopBar(
                     val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
 
 
+                    if(currentScreen == "AddRecipeScreen"){
+                        Spacer(Modifier.width(48.dp))
+                    }
 
                     if(showIcon2) {
                         FloatingActionButton(

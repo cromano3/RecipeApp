@@ -8,6 +8,7 @@ import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.ShoppingListScreenRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.ShoppingScreenUiState
+import com.example.bearrecipebookapp.datamodel.UiAlertStateShoppingScreenDataModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -22,6 +23,7 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
 
     val shoppingScreenUiState = MutableStateFlow(ShoppingScreenUiState())
+    val uiAlertState = MutableStateFlow(UiAlertStateShoppingScreenDataModel())
 
     init {
         val appDb = RecipeAppDatabase.getInstance(application)
@@ -88,6 +90,30 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
         }
 
+    }
+
+    fun triggerAddRecipeOrCustomItemAlert(){
+        uiAlertState.update {
+            it.copy(showAddRecipeOrCustomItemAlert = true)
+        }
+    }
+
+    fun cancelAddRecipeOrCustomItemAlert(){
+        uiAlertState.update {
+            it.copy(showAddRecipeOrCustomItemAlert = false)
+        }
+    }
+
+    fun triggerAddCustomItemAlert() {
+        uiAlertState.update {
+            it.copy(showAddCustomItemAlert = true)
+        }
+    }
+
+    fun cancelAddCustomItemAlert() {
+        uiAlertState.update {
+            it.copy(showAddCustomItemAlert = false)
+        }
     }
 
 

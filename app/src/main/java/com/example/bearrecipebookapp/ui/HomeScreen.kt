@@ -2,12 +2,15 @@ package com.example.bearrecipebookapp.ui
 
 
 import android.app.Application
-import androidx.compose.animation.*
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,6 +30,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,13 +42,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.FilterEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.ui.components.AddRecipeCard
 import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.HomeScreenViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
+    ExperimentalTextApi::class
+)
 @Composable
 fun HomeScreen(
 //    onSearchClick: () -> Unit,
@@ -51,6 +59,7 @@ fun HomeScreen(
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
     onMenuClick: (RecipeWithIngredients) -> Unit,
     onMenuRemovedClick: (RecipeWithIngredients) -> Unit,
+    onCreateRecipeClick: () -> Unit,
 ) {
 
     val owner = LocalViewModelStoreOwner.current
@@ -150,14 +159,15 @@ fun HomeScreen(
                                 )
                             )
                             .fillMaxWidth()
-                            .height(2.dp))
+                            .height(2.dp)
+                    )
 
 
                     Box {
                         androidx.compose.animation.AnimatedVisibility(
                             visible = uiFiltersState.showAllRecipes,
-                            enter = EnterTransition.None,
-                            exit = ExitTransition.None,
+                            enter = fadeIn(TweenSpec(150, 0, FastOutLinearInEasing)),
+                            exit = fadeOut(TweenSpec(150, 0, FastOutLinearInEasing)),
                         ) {
 
                             LazyVerticalGrid(
@@ -176,18 +186,19 @@ fun HomeScreen(
                                     SmallRecipeCard(
                                         modifier = Modifier
                                             .padding(bottom = bottomPadding.dp)
-                                            .animateEnterExit(
-                                                enter = scaleIn(
-                                                    TweenSpec(150, 0, FastOutLinearInEasing)
-                                                ),
-                                                exit = scaleOut(
-                                                    animationSpec = TweenSpec(
-                                                        150,
-                                                        0,
-                                                        FastOutLinearInEasing
-                                                    )
-                                                )
-                                            ),
+//                                            .animateEnterExit(
+//                                                enter = scaleIn(
+//                                                    TweenSpec(150, 0, FastOutLinearInEasing)
+//                                                ),
+//                                                exit = scaleOut(
+//                                                    animationSpec = TweenSpec(
+//                                                        150,
+//                                                        0,
+//                                                        FastOutLinearInEasing
+//                                                    )
+//                                                )
+//                                            )
+                                        ,
                                         recipe = newRecipeList[index].recipeEntity,
                                         ingredients = newRecipeList[index].ingredientsList,
                                         onFavoriteClick =
@@ -212,9 +223,66 @@ fun HomeScreen(
                                         }
                                     )
                                 }
+
+                                if(!uiFiltersState.isFiltered) {
+                                    item(span = { GridItemSpan(2) }) {
+
+                                        Box(
+                                            Modifier
+                                                .background(
+                                                    Brush.horizontalGradient(
+                                                        colors = listOf(
+                                                            Color(0xFFb15f33),
+                                                            Color(0xFF682300)
+                                                        ), tileMode = TileMode.Mirror
+                                                    )
+                                                )
+                                                .height(2.dp)
+                                                .fillMaxWidth()
+//                                            .animateEnterExit(
+//                                                enter = fadeIn(TweenSpec(150, 150, FastOutLinearInEasing)),
+//                                                exit = fadeOut(animationSpec = TweenSpec(150, 0, FastOutLinearInEasing)),)
+                                            ,
+                                        )
+
+                                        Spacer(Modifier.fillMaxWidth().height(2.dp))
+
+                                        Text(
+                                            text = "Custom Recipes",
+                                            fontSize = 18.sp,
+                                            style = TextStyle(
+                                                brush = Brush.horizontalGradient(
+                                                    colors = listOf(
+                                                        Color(0xFFb15f33),
+                                                        Color(0xFF682300)
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    }
+
+
+                                }
+
+                                if(!uiFiltersState.isFiltered) {
+                                    item {
+                                        var bottomPadding = 16
+                                        AddRecipeCard(
+                                            modifier = Modifier
+                                                .padding(bottom = bottomPadding.dp)
+//                                            .animateEnterExit(
+//                                            enter = scaleIn(TweenSpec(150, 0, FastOutLinearInEasing)),
+//                                            exit = scaleOut(animationSpec = TweenSpec(150, 0, FastOutLinearInEasing)),)
+                                            ,
+                                            onCreateRecipeClick = onCreateRecipeClick
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
+
+
                 }
                 Box(Modifier.fillMaxSize()){
 //                SnackbarHost(
@@ -403,7 +471,7 @@ fun FiltersButton(
 @Composable
 @Preview
 fun MyPreview420() {
-    HomeScreen(onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {}, onMenuRemovedClick = {} )
+    HomeScreen(onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {}, onMenuRemovedClick = {}, onCreateRecipeClick = {} )
 
 
 }

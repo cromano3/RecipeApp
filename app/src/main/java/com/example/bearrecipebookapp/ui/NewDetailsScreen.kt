@@ -128,7 +128,6 @@ fun NewDetailsScreen(
 
         val scrollState = rememberScrollState()
 
-
         Surface(
             modifier = Modifier
                 .fillMaxSize(),

@@ -84,7 +84,7 @@ fun SmallRecipeCard(
         modifier = modifier
             .padding(top = 16.dp)
             .size(
-                width = 170.dp,
+                width = 180.dp,
                 height = 270.dp
             )
             .border(
@@ -357,7 +357,7 @@ fun SnackCardPreview() {
     BearRecipeBookAppTheme {
 
         val myRE =
-            RecipeEntity(recipeName = "Cauliflower Walnut Tacos", onMenu = 0,1, timeToMake = 60, rating = 98)
+            RecipeEntity(recipeName = "", onMenu = 0,1, timeToMake = 60, rating = 98)
         val myList: List<IngredientEntity> = listOf(
             IngredientEntity(ingredientName = "Ing. Name", quantityOwned = 0, quantityNeeded = 1)
         )
