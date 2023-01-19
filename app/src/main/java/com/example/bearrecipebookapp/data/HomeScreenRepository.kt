@@ -22,7 +22,7 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
 
 
 
-    var newRecipeList: LiveData<List<RecipeWithIngredients>> = homeScreenDao.getRecipeList()
+    var shownRecipeList: LiveData<List<RecipeWithIngredients>> = homeScreenDao.getRecipeList()
 
 
     fun cleanShoppingFilters(){

@@ -85,7 +85,7 @@ fun HomeScreen(
 
 
 
-        val newRecipeList by homeScreenViewModel.newRecipesList.observeAsState(listOf())
+        val shownRecipeList by homeScreenViewModel.shownRecipeList.observeAsState(listOf())
         val filtersList by homeScreenViewModel.filtersList.observeAsState(listOf())
 
         val uiFiltersState by homeScreenViewModel.uiFiltersState.collectAsState()
@@ -177,9 +177,9 @@ fun HomeScreen(
                                 horizontalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
 
-                                items(newRecipeList.size, key = { it }) { index ->
+                                items(shownRecipeList.size, key = { it }) { index ->
                                     var bottomPadding = 0
-                                    if (index + 1 == newRecipeList.size) {
+                                    if (index + 1 == shownRecipeList.size) {
                                         bottomPadding = 16
                                     }
 
@@ -199,32 +199,32 @@ fun HomeScreen(
 //                                                )
 //                                            )
                                         ,
-                                        recipe = newRecipeList[index].recipeEntity,
-                                        ingredients = newRecipeList[index].ingredientsList,
+                                        recipe = shownRecipeList[index].recipeEntity,
+                                        ingredients = shownRecipeList[index].ingredientsList,
                                         onFavoriteClick =
                                         {
-                                            onFavoriteClick(newRecipeList[index])
-                                            homeScreenViewModel.toggleFavorite(newRecipeList[index])
+                                            onFavoriteClick(shownRecipeList[index])
+                                            homeScreenViewModel.toggleFavorite(shownRecipeList[index])
                                         },
                                         onMenuClick =
                                         {
-                                            if (newRecipeList[index].recipeEntity.onMenu == 0){
-                                                homeScreenViewModel.toggleMenu(newRecipeList[index])
-                                                onMenuClick(newRecipeList[index])
+                                            if (shownRecipeList[index].recipeEntity.onMenu == 0){
+                                                homeScreenViewModel.toggleMenu(shownRecipeList[index])
+                                                onMenuClick(shownRecipeList[index])
                                             }
-                                            else if(newRecipeList[index].recipeEntity.onMenu == 1){
-                                                homeScreenViewModel.triggerAlert(newRecipeList[index])
+                                            else if(shownRecipeList[index].recipeEntity.onMenu == 1){
+                                                homeScreenViewModel.triggerAlert(shownRecipeList[index])
                                             }
                                         },
 //
                                         onDetailsClick = {
-                                            homeScreenViewModel.setDetailsScreenTarget(newRecipeList[index].recipeEntity.recipeName)
+                                            homeScreenViewModel.setDetailsScreenTarget(shownRecipeList[index].recipeEntity.recipeName)
                                             onDetailsClick()
                                         }
                                     )
                                 }
 
-                                if(!uiFiltersState.isFiltered) {
+                                if(!uiFiltersState.isFiltered && shownRecipeList.isNotEmpty()) {
                                     item(span = { GridItemSpan(2) }) {
 
                                         Box(
@@ -264,7 +264,7 @@ fun HomeScreen(
 
                                 }
 
-                                if(!uiFiltersState.isFiltered) {
+                                if(!uiFiltersState.isFiltered && shownRecipeList.isNotEmpty()) {
                                     item {
                                         var bottomPadding = 16
                                         AddRecipeCard(

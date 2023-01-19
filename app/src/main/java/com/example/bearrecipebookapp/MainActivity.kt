@@ -396,7 +396,7 @@ fun BearRecipeApp(
             composable(
                 route = "SearchScreen",
                 enterTransition = {
-                    when (targetState.destination.route) {
+                    when (initialState.destination.route) {
                         "RecipeScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
                         else -> fadeIn(animationSpec = tween(700))
                     }

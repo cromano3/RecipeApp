@@ -30,7 +30,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
     var filtersList: LiveData<List<FilterEntity>>
     //GOOD!!
 
-    var newRecipesList: LiveData<List<RecipeWithIngredients>>
+    var shownRecipeList: LiveData<List<RecipeWithIngredients>>
 
 
 
@@ -83,7 +83,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 
 
 
-        newRecipesList = repository.newRecipeList
+        shownRecipeList = repository.shownRecipeList
     }
 
     fun cancelScroll(){
