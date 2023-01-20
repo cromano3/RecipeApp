@@ -3,9 +3,9 @@ package com.example.bearrecipebookapp.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.bearrecipebookapp.data.DetailsScreenRepository
+import com.example.bearrecipebookapp.data.repository.DetailsScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
-import com.example.bearrecipebookapp.data.RecipeEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.UiAlertStateDetailsScreenDataModel
 import kotlinx.coroutines.CoroutineScope

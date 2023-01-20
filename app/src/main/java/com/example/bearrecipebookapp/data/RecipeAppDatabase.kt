@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.bearrecipebookapp.data.dao.*
+import com.example.bearrecipebookapp.data.entity.*
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
 @Database(entities = [
@@ -16,6 +18,7 @@ import androidx.room.RoomDatabase
                         DetailsScreenTargetEntity::class,
                         SearchEntity::class,
                         UserEntity::class,
+                        ShoppingListCustomItemsEntity::class,
 
                      ],
     version = 1,
@@ -45,10 +48,10 @@ public abstract class RecipeAppDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                RecipeAppDatabase::class.java, "app_database33.db"
+                RecipeAppDatabase::class.java, "app_database39.db"
             )
               //  .allowMainThreadQueries()
-                .createFromAsset("database/app_database33.db")
+                .createFromAsset("database/app_database39.db")
                 .build()
                 // prepopulate the database after onCreate was called
 //                .addCallback(object : Callback() {

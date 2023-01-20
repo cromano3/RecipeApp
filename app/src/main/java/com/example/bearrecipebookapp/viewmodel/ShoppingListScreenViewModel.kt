@@ -3,9 +3,10 @@ package com.example.bearrecipebookapp.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.bearrecipebookapp.data.IngredientEntity
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
-import com.example.bearrecipebookapp.data.ShoppingListScreenRepository
+import com.example.bearrecipebookapp.data.entity.IngredientEntity
+import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
+import com.example.bearrecipebookapp.data.repository.ShoppingListScreenRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.ShoppingScreenUiState
 import com.example.bearrecipebookapp.datamodel.UiAlertStateShoppingScreenDataModel
@@ -20,6 +21,7 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
     var shoppingListScreenData: LiveData<List<RecipeWithIngredients>>
     var selectedIngredients: LiveData<List<IngredientEntity>>
+    var customIngredients: LiveData<List<ShoppingListCustomItemsEntity>>
 
 
     val shoppingScreenUiState = MutableStateFlow(ShoppingScreenUiState())
@@ -32,6 +34,7 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
         shoppingListScreenData = repository.shoppingListScreenData
         selectedIngredients = repository.selectedIngredients
+        customIngredients = repository.customIngredients
 
         coroutineScope.launch(Dispatchers.IO) {
             async(Dispatchers.IO){repository.cleanIngredients()}
@@ -77,6 +80,11 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
                     match = false
                 }
 
+                shoppingScreenUiState.update {
+                    it.copy(isFiltered = true)
+                }
+
+
             } else if (recipe.recipeEntity.isShoppingFilter == 2) {
 
                     withContext(Dispatchers.IO) {
@@ -84,12 +92,34 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
                         repository.cleanFilters()
                     }
 
+                shoppingScreenUiState.update {
+                    it.copy(isFiltered = false)
+                }
+
             }
 
             shoppingScreenUiState.value.isWorking = false
 
         }
 
+    }
+
+    fun addCustomItem(){
+        repository.addCustomItem(
+            ShoppingListCustomItemsEntity(uiAlertState.value.inputText))
+        uiAlertState.update {
+            it.copy(
+                showAddCustomItemAlert = false,
+                inputText = "",
+            )
+        }
+    }
+
+
+    fun updateInputText(text: String){
+        uiAlertState.update {
+            it.copy(inputText = text)
+        }
     }
 
     fun triggerAddRecipeOrCustomItemAlert(){
@@ -112,11 +142,21 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
     fun cancelAddCustomItemAlert() {
         uiAlertState.update {
-            it.copy(showAddCustomItemAlert = false)
+            it.copy(
+                showAddCustomItemAlert = false,
+                inputText = "",
+            )
         }
     }
 
 
+    fun customItemSelected(item: ShoppingListCustomItemsEntity){
+        repository.setCustomItemToSelected(item)
+    }
+
+    fun customItemDeselected(item: ShoppingListCustomItemsEntity){
+        repository.setCustomItemToDeselected(item)
+    }
 
     fun ingredientSelected(ingredientEntity: IngredientEntity){
         shoppingScreenUiState.update {

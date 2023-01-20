@@ -1,9 +1,9 @@
-package com.example.bearrecipebookapp.data
+package com.example.bearrecipebookapp.data.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
+import com.example.bearrecipebookapp.data.entity.IngredientEntity
+import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 
 @Dao
@@ -18,9 +18,13 @@ interface ShoppingListScreenDao {
     @Query("SELECT * FROM ingredient_table WHERE quantity_needed > 0 ORDER BY is_shown DESC, ingredient_name ASC")
     fun getNeededIngredients(): LiveData<List<IngredientEntity>>
 
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addCustomItem(item: ShoppingListCustomItemsEntity)
 
-
-
+    @Transaction
+    @Query("SELECT * FROM shopping_list_custom_items_table")
+    fun getCustomIngredients(): LiveData<List<ShoppingListCustomItemsEntity>>
 
     @Transaction
     @Query("UPDATE recipe_table SET is_shopping_filter = 1")
@@ -52,7 +56,13 @@ interface ShoppingListScreenDao {
 
 
 
+    @Transaction
+    @Query("UPDATE shopping_list_custom_items_table SET selected = 1 WHERE item = :item")
+    fun setCustomItemToSelected(item: String)
 
+    @Transaction
+    @Query("UPDATE shopping_list_custom_items_table SET selected = 0 WHERE item = :item")
+    fun setCustomItemToDeselected(item: String)
 
     @Transaction
     @Query("UPDATE ingredient_table SET quantity_owned = quantity_needed WHERE ingredient_name = :name")

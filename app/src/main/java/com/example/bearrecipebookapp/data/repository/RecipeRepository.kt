@@ -1,6 +1,8 @@
-package com.example.bearrecipebookapp.data
+package com.example.bearrecipebookapp.data.repository
 
 import androidx.lifecycle.LiveData
+import com.example.bearrecipebookapp.data.dao.RecipeDao
+import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +46,7 @@ class RecipeRepository (private val recipeDao: RecipeDao) {
 
 
 
-    //see Dao for more details about why this didn't work and potential future solutions.
+    //see dao for more details about why this didn't work and potential future solutions.
     //****************************//
    // var detailsWithInstructions: RecipeWithInstructions = recipeDao.getInstructions("Bagels")
 //

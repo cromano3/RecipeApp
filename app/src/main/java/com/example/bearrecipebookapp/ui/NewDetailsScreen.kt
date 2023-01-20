@@ -39,9 +39,9 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
-import com.example.bearrecipebookapp.data.IngredientEntity
-import com.example.bearrecipebookapp.data.InstructionEntity
-import com.example.bearrecipebookapp.data.RecipeEntity
+import com.example.bearrecipebookapp.data.entity.IngredientEntity
+import com.example.bearrecipebookapp.data.entity.InstructionEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.RecipeWithInstructions

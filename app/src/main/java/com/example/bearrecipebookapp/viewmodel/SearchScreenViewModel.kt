@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
-import com.example.bearrecipebookapp.data.SearchScreenRepository
+import com.example.bearrecipebookapp.data.repository.SearchScreenRepository
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
 import com.example.bearrecipebookapp.datamodel.UiSearchScreenDataModel
 import kotlinx.coroutines.CoroutineScope

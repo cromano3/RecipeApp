@@ -3,13 +3,13 @@ package com.example.bearrecipebookapp.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.bearrecipebookapp.data.FilterEntity
-import com.example.bearrecipebookapp.data.HomeScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
-import com.example.bearrecipebookapp.data.RecipeEntity
+import com.example.bearrecipebookapp.data.entity.FilterEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
+import com.example.bearrecipebookapp.data.repository.HomeScreenRepository
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
-import com.example.bearrecipebookapp.datamodel.UiAlertStateDataModel
+import com.example.bearrecipebookapp.datamodel.UiAlertStateHomeScreenDataModel
 import com.example.bearrecipebookapp.datamodel.UiFiltersStateDataModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +43,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 //    val uiState = MutableStateFlow(HomeScreenUiStateDataModel())
 
     val uiFiltersState = MutableStateFlow(UiFiltersStateDataModel())
-    val uiAlertState = MutableStateFlow(UiAlertStateDataModel())
+    val uiAlertState = MutableStateFlow(UiAlertStateHomeScreenDataModel())
 
     private var filterCount: Int
     private var myFiltersList: MutableList<String>

@@ -30,7 +30,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.bearrecipebookapp.data.RecipeEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.SearchScreenViewModel
 

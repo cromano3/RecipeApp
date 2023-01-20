@@ -1,6 +1,9 @@
-package com.example.bearrecipebookapp.data
+package com.example.bearrecipebookapp.data.repository
 
 import androidx.lifecycle.LiveData
+import com.example.bearrecipebookapp.data.dao.ShoppingListScreenDao
+import com.example.bearrecipebookapp.data.entity.IngredientEntity
+import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,8 +14,8 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     var shoppingListScreenData: LiveData<List<RecipeWithIngredients>> = shoppingListScreenDao.getData()
-
     var selectedIngredients:  LiveData<List<IngredientEntity>> = shoppingListScreenDao.getNeededIngredients()
+    var customIngredients: LiveData<List<ShoppingListCustomItemsEntity>> = shoppingListScreenDao.getCustomIngredients()
 
     fun setDetailsScreenTarget(recipeName: String){
         coroutineScope.launch(Dispatchers.IO) {
@@ -29,6 +32,12 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
     fun setIngredientToShown(name: String){
         coroutineScope.launch(Dispatchers.IO) {
             shoppingListScreenDao.setIngredientToShown(name)
+        }
+    }
+
+    fun addCustomItem(item: ShoppingListCustomItemsEntity){
+        coroutineScope.launch(Dispatchers.IO) {
+            shoppingListScreenDao.addCustomItem(item)
         }
     }
 
@@ -60,6 +69,18 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
         }
     }
 
+
+    fun setCustomItemToSelected(item: ShoppingListCustomItemsEntity){
+        coroutineScope.launch(Dispatchers.IO) {
+            shoppingListScreenDao.setCustomItemToSelected(item.item)
+        }
+    }
+
+    fun setCustomItemToDeselected(item: ShoppingListCustomItemsEntity){
+        coroutineScope.launch(Dispatchers.IO) {
+            shoppingListScreenDao.setCustomItemToDeselected(item.item)
+        }
+    }
 
 
 

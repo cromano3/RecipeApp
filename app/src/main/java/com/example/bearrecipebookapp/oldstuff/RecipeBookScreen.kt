@@ -1,7 +1,7 @@
 package com.example.bearrecipebookapp.ui
 
 import androidx.compose.runtime.Composable
-import com.example.bearrecipebookapp.data.RecipeEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 
 @Composable
 fun RecipeBookScreen(

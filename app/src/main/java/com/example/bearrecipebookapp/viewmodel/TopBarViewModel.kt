@@ -5,7 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
-import com.example.bearrecipebookapp.data.TopBarRepository
+import com.example.bearrecipebookapp.data.repository.TopBarRepository
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.UiTopBarDataModel

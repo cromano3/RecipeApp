@@ -3,9 +3,9 @@ package com.example.bearrecipebookapp.oldstuff
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.bearrecipebookapp.data.IngredientEntity
+import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
-import com.example.bearrecipebookapp.data.RecipeRepository
+import com.example.bearrecipebookapp.data.repository.RecipeRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import kotlinx.coroutines.flow.MutableStateFlow

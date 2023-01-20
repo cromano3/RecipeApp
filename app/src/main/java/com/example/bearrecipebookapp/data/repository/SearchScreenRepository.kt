@@ -1,6 +1,8 @@
-package com.example.bearrecipebookapp.data
+package com.example.bearrecipebookapp.data.repository
 
 import androidx.lifecycle.LiveData
+import com.example.bearrecipebookapp.data.dao.SearchScreenDao
+import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.datamodel.HomeScreenDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

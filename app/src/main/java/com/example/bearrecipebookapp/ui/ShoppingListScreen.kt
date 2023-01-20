@@ -6,6 +6,8 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +32,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -40,8 +43,10 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
-import com.example.bearrecipebookapp.data.IngredientEntity
+import com.example.bearrecipebookapp.data.entity.IngredientEntity
+import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.ShoppingListScreenViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -67,6 +72,7 @@ fun ShoppingListScreen(
 
         val shoppingListScreenData by shoppingListScreenViewModel.shoppingListScreenData.observeAsState(listOf())
         val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
+        val customIngredients by shoppingListScreenViewModel.customIngredients.observeAsState(listOf())
 
         var filterWasClicked by remember { mutableStateOf(false) }
 
@@ -86,7 +92,7 @@ fun ShoppingListScreen(
 //            LaunchedEffect(Unit) {
             coroutineScope.launch {
 
-                delay(200)
+                delay(250)
                 listState.animateScrollToItem(0)
                 listState2.animateScrollToItem(0)
                 filterWasClicked = false
@@ -115,7 +121,7 @@ fun ShoppingListScreen(
 //                        .padding(bottom = 48.dp)
                     ,
 
-                    userScrollEnabled = true,
+                    userScrollEnabled = !filterWasClicked,
 //                        .verticalScroll(rememberScrollState()),
 
                     ) {
@@ -125,13 +131,80 @@ fun ShoppingListScreen(
 
                     items(selectedIngredients, key = { it.ingredientName }) {
                         ShoppingListItemWithButton(
-                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
+                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(200, delay = 0))),
                             ingredientEntity = it,
                             isWorking = uiState.isWorking,
                             onClickIngredientSelected = { shoppingListScreenViewModel.ingredientSelected(it) },
                             onClickIngredientDeselected = { shoppingListScreenViewModel.ingredientDeselected(it) },
                         )
                     }
+
+
+//                    if(customIngredients.isNotEmpty() && !filterWasClicked){
+                        item{
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = (customIngredients.isNotEmpty() && !filterWasClicked),
+                                enter = fadeIn(TweenSpec(50)),
+                                exit = fadeOut(TweenSpec(50)),
+                            ) {
+                                Text(text = "Custom Items",
+                                    modifier = Modifier.padding(top = 8.dp, start = 8.dp, bottom = 2.dp),
+                                    fontSize = 18.sp,
+                                    fontFamily = Cabin,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF682300)
+                                )
+                            }
+                        }
+                        item{
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = (customIngredients.isNotEmpty() && !filterWasClicked),
+                                enter = fadeIn(TweenSpec(50)),
+                                exit = fadeOut(TweenSpec(50)),
+                            ) {
+                                Spacer(
+                                    Modifier.height(2.dp).fillMaxWidth().border(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                        shape = RectangleShape
+                                    ),
+                                )
+                            }
+                        }
+                        items(customIngredients, key = {it.item}) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = (customIngredients.isNotEmpty() && !filterWasClicked),
+                                enter = fadeIn(TweenSpec(50)),
+                                exit = fadeOut(TweenSpec(50)),
+                            ) {
+                                CustomShoppingListItem(
+                                    modifier = Modifier.animateItemPlacement(
+                                        animationSpec = (TweenSpec(
+                                            200,
+                                            delay = 0
+                                        ))
+                                    ),
+                                    shoppingListCustomItemEntity = it,
+                                    isWorking = uiState.isWorking,
+                                    isFiltered = uiState.isFiltered,
+                                    onClickItemSelected = {
+                                        shoppingListScreenViewModel.customItemSelected(
+                                            it
+                                        )
+                                    },
+                                    onClickItemDeselected = {
+                                        shoppingListScreenViewModel.customItemDeselected(
+                                            it
+                                        )
+                                    },
+                                )
+                            }
+                        }
+//                    }
+
                     item{
                         Spacer(
                             Modifier
@@ -154,12 +227,13 @@ fun ShoppingListScreen(
 //                        .fillMaxHeight()
                         .weight(0.40f),
                     state = listState2,
+                    userScrollEnabled = !filterWasClicked,
 //                        .verticalScroll(rememberScrollState()),
                         ) {
 
                     items(shoppingListScreenData, key = { it.recipeEntity.recipeName }) {
                         RecipeIconWithButton(
-                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
+                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(200, delay = 0))),
                             recipeWithIngredients = it,
                             isWorking = uiState.isWorking,
                             onFilterClick = {shoppingListScreenViewModel.filterBy(it); filterWasClicked = !filterWasClicked},
@@ -183,7 +257,7 @@ fun ShoppingListScreen(
 //                    }
                 }
             }
-            if (selectedIngredients.isEmpty()) {
+            if (selectedIngredients.isEmpty() && customIngredients.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Image(
 
@@ -194,7 +268,7 @@ fun ShoppingListScreen(
                         colorFilter = ColorFilter.tint(Color(0xFF682300))
                     )
                 }
-                Box(Modifier.fillMaxSize(), contentAlignment =  Alignment.BottomEnd){
+                Box(Modifier.fillMaxSize(), contentAlignment =  Alignment.BottomEnd) {
                     FloatingActionButton(
                         onClick = { shoppingListScreenViewModel.triggerAddRecipeOrCustomItemAlert() },
                         elevation = FloatingActionButtonDefaults.elevation(8.dp),
@@ -232,70 +306,81 @@ fun ShoppingListScreen(
                         )
                     }
                 }
-                Box(Modifier.fillMaxSize()){
-                    //add recipe or custom item
-                    if(uiAlertState.showAddRecipeOrCustomItemAlert){
-                        AlertDialog(
-                            onDismissRequest = {shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()},
-                            text = {
-                                Text(text = "Add a recipe, or a custom item to the shopping list?" )
-                            },
-                            confirmButton = {
-                                TextButton(
-                                    onClick = {
-                                        shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
-                                        shoppingListScreenViewModel.triggerAddCustomItemAlert()
+            }
 
-                                    },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    border = BorderStroke(2.dp, Color.Black)
+            Box(Modifier.fillMaxSize()){
+                //add recipe or custom item
+                if(uiAlertState.showAddRecipeOrCustomItemAlert){
+                    AlertDialog(
+                        onDismissRequest = {shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()},
+                        text = {
+                            Text(text = "Add a recipe, or a custom item to the shopping list?" )
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
+                                    shoppingListScreenViewModel.triggerAddCustomItemAlert()
 
-                                ) {
-                                    Text("Add Custom Item")
-                                }
-                            },
-                            dismissButton = {
-                                TextButton(
-                                    onClick = {
-                                        shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
-                                        onAddRecipeClick()
-                                    },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    border = BorderStroke(2.dp, Color.Black),
-                                ) {
-                                    Text("Add Recipe")
-                                }
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                border = BorderStroke(2.dp, Color.Black)
+
+                            ) {
+                                Text("Add Custom Item")
                             }
-                        )
-                    }
-                    else if(uiAlertState.showAddCustomItemAlert){
-                        AlertDialog(
-                            onDismissRequest = {shoppingListScreenViewModel.cancelAddCustomItemAlert()},
-                            text = {
-                                Text(text = "Add custom item:" )
-                            },
-                            confirmButton = {
-                                TextButton(
-                                    onClick = {
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
+                                    onAddRecipeClick()
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                border = BorderStroke(2.dp, Color.Black),
+                            ) {
+                                Text("Add Recipe")
+                            }
+                        }
+                    )
+                }
+                else if(uiAlertState.showAddCustomItemAlert){
 
-                                        /** add the item */
-
-                                    }
-                                ) {
-                                    Text("Add Item")
-                                }
-                            },
-                            dismissButton = {
-                                TextButton(
-                                    onClick = {
-                                        shoppingListScreenViewModel.cancelAddCustomItemAlert()
-                                    }
+                    AlertDialog(
+                        onDismissRequest = {
+                            shoppingListScreenViewModel.cancelAddCustomItemAlert()
+                        },
+                        title = {
+                            Text(text = "Enter item: ")
+                        },
+                        text = {
+                            Column() {
+                                TextField(
+                                    value = uiAlertState.inputText,
+                                    onValueChange = { shoppingListScreenViewModel.updateInputText(it) }
+                                )
+                            }
+                        },
+                        buttons = {
+                            Row(
+                                modifier = Modifier.padding(all = 8.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Button(
+                                    modifier = Modifier.wrapContentSize(),
+                                    onClick = { shoppingListScreenViewModel.cancelAddCustomItemAlert() }
                                 ) {
                                     Text("Cancel")
                                 }
+                                Button(
+                                    modifier = Modifier.wrapContentSize(),
+                                    onClick = { shoppingListScreenViewModel.addCustomItem() }
+                                ) {
+                                    Text("Add To List")
+                                }
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
         }
@@ -584,6 +669,137 @@ fun ShoppingListItemWithButton(
                     fontSize = 16.sp
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun CustomShoppingListItem(
+    modifier: Modifier,
+    shoppingListCustomItemEntity: ShoppingListCustomItemsEntity,
+    isWorking: Boolean,
+    isFiltered: Boolean,
+    onClickItemSelected: () -> Unit,
+    onClickItemDeselected: () -> Unit
+){
+
+    val selected: Boolean
+
+//    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
+
+    val myIcon: ImageVector
+    val checkBoxBackgroundColor: Color
+    val decoration : TextDecoration
+    var alphaLevel : Float
+
+
+    if(shoppingListCustomItemEntity.selected == 1){
+
+        selected = true
+        myIcon = Icons.Filled.CheckBox
+        checkBoxBackgroundColor = Color(0xFFd8af84)
+        decoration = TextDecoration.LineThrough
+        alphaLevel = 0.55f
+
+
+    }
+    else{
+
+        selected = false
+        myIcon = Icons.Outlined.CheckBoxOutlineBlank
+        checkBoxBackgroundColor = Color(0xFFd8af84)
+        decoration = TextDecoration.None
+        alphaLevel = 1f
+
+    }
+
+    if (isFiltered) alphaLevel = 0.30f
+
+
+    val alphaAnim: Float by animateFloatAsState(
+        targetValue = alphaLevel,
+        animationSpec = tween(
+            durationMillis = 150,
+            delayMillis = 0,
+            easing = LinearEasing,
+        )
+    )
+
+
+    Surface(
+        modifier = modifier
+            .padding(start = 8.dp, top = 8.dp)
+            .width(240.dp)
+            .height(36.dp)
+            .alpha(alphaAnim)
+//            .background(
+//                brush = Brush.horizontalGradient(
+//                    colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
+//                    endX = gradientWidth,
+//                    tileMode = TileMode.Mirror
+//                ),
+//                shape = RoundedCornerShape((14.dp))
+//            )
+            .clickable(
+                enabled = !selected && !isWorking,
+                onClick = onClickItemSelected,
+            ),
+        shape = RoundedCornerShape(25.dp),
+        color = Color(0xFF682300),
+        elevation = 4.dp,
+        //color = Color(0xFF682300),//Color(0xFFd8af84),
+        contentColor = Color(0xFFd8af84),
+    ){
+        /*
+            if selected then show X
+         */
+        if (selected){
+            Box{
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .size(36.dp),
+                    onClick = onClickItemDeselected,
+                    enabled = !isWorking
+                ){
+                    Icon(
+                        modifier = Modifier,
+                        imageVector = Icons.Outlined.Close,
+                        tint = Color(0xFFFFFFFF),
+                        contentDescription = null
+                    )
+                }
+            }
+        }
+        Row(
+            Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Start
+        )
+        {
+            Icon(
+                imageVector = myIcon,
+                tint = checkBoxBackgroundColor,
+
+                //  .background(color = Color(0xFFFFFFFF)),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(start = 6.dp, top = 2.dp, end = 2.dp, bottom = 2.dp)
+                    .size(28.dp)
+                    .align(Alignment.CenterVertically)
+                    .alpha(alphaLevel)
+                //.weight(1f)
+
+            )
+            Text(
+                modifier = Modifier
+                    // .weight(1f)
+                    .padding(start = 4.dp)
+                    .align(Alignment.CenterVertically)
+                    .alpha(alphaLevel),
+                text = shoppingListCustomItemEntity.item,
+                textDecoration = decoration,
+                fontSize = 16.sp
+            )
         }
     }
 }

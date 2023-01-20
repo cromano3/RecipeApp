@@ -2,8 +2,8 @@ package com.example.bearrecipebookapp.datamodel
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.example.bearrecipebookapp.data.InstructionEntity
-import com.example.bearrecipebookapp.data.RecipeEntity
+import com.example.bearrecipebookapp.data.entity.InstructionEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 
 data class RecipeWithInstructions(
     @Embedded

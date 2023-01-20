@@ -40,7 +40,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
-import com.example.bearrecipebookapp.data.FilterEntity
+import com.example.bearrecipebookapp.data.entity.FilterEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.AddRecipeCard
 import com.example.bearrecipebookapp.ui.components.SmallRecipeCard

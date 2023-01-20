@@ -1,8 +1,8 @@
 package com.example.bearrecipebookapp.datamodel
 
-import com.example.bearrecipebookapp.data.RecipeEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 
-data class UiAlertStateDataModel(
+data class UiAlertStateHomeScreenDataModel(
     val showAlert: Boolean = false,
     val recipe: RecipeWithIngredients = RecipeWithIngredients(RecipeEntity(), listOf()),
     )

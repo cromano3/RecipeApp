@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
-import com.example.bearrecipebookapp.data.IngredientEntity
-import com.example.bearrecipebookapp.data.RecipeEntity
+import com.example.bearrecipebookapp.data.entity.IngredientEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 
 @OptIn(ExperimentalTextApi::class)

@@ -1,4 +1,4 @@
-package com.example.bearrecipebookapp.data
+package com.example.bearrecipebookapp.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

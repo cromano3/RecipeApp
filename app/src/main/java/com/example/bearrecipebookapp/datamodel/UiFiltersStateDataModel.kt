@@ -1,6 +1,6 @@
 package com.example.bearrecipebookapp.datamodel
 
-import com.example.bearrecipebookapp.data.FilterEntity
+import com.example.bearrecipebookapp.data.entity.FilterEntity
 
 data class UiFiltersStateDataModel(
     val filtersList: List<FilterEntity> = listOf(),

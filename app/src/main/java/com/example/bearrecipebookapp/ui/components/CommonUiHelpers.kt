@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
-import com.example.bearrecipebookapp.data.IngredientEntity
-import com.example.bearrecipebookapp.data.RecipeEntity
+import com.example.bearrecipebookapp.data.entity.IngredientEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 
@@ -525,7 +525,8 @@ fun DefaultPreview2() {
                 onMenu = 0, isDetailsScreenTarget = 1, timeToMake = 60, rating = 98, difficulty = 3)
 
             var myList: List<IngredientEntity> = listOf<IngredientEntity>(
-                IngredientEntity(ingredientName = "Ing. Name", quantityOwned = 0, quantityNeeded = 1))
+                IngredientEntity(ingredientName = "Ing. Name", quantityOwned = 0, quantityNeeded = 1)
+            )
 
         Surface(
             modifier = Modifier.fillMaxSize(),

@@ -3,9 +3,9 @@ package com.example.bearrecipebookapp.datamodel
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.example.bearrecipebookapp.data.IngredientEntity
-import com.example.bearrecipebookapp.data.RecipeEntity
-import com.example.bearrecipebookapp.data.RecipeIngredientJoinEntity
+import com.example.bearrecipebookapp.data.entity.IngredientEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
+import com.example.bearrecipebookapp.data.entity.RecipeIngredientJoinEntity
 
 
 data class RecipeWithIngredients(

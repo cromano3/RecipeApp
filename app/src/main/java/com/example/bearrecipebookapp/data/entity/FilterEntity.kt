@@ -1,4 +1,4 @@
-package com.example.bearrecipebookapp.data
+package com.example.bearrecipebookapp.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
