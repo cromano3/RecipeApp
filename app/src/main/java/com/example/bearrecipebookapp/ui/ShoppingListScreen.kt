@@ -144,94 +144,82 @@ fun ShoppingListScreen(
                     }
 
 
-//                    if(customIngredients.isNotEmpty() && !filterWasClicked){
-                        item{
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = (customIngredients.isNotEmpty() && !filterWasClicked),
-                                enter = fadeIn(TweenSpec(50)),
-                                exit = fadeOut(TweenSpec(50)),
-                            ) {
-                                Text(text = "Custom Items",
-                                    modifier = Modifier.padding(top = 8.dp, start = 8.dp, bottom = 2.dp),
-                                    fontSize = 18.sp,
-                                    fontFamily = Cabin,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF682300)
-                                )
-                            }
+                    item{
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = (customIngredients.isNotEmpty() && !filterWasClicked),
+                            enter = fadeIn(TweenSpec(20)),
+                            exit = fadeOut(TweenSpec(20)),
+                        ) {
+                            Text(text = "Custom Items",
+                                modifier = Modifier.padding(top = 8.dp, start = 8.dp, bottom = 2.dp),
+                                fontSize = 18.sp,
+                                fontFamily = Cabin,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF682300)
+                            )
                         }
-                        item{
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = (customIngredients.isNotEmpty() && !filterWasClicked),
-                                enter = fadeIn(TweenSpec(50)),
-                                exit = fadeOut(TweenSpec(50)),
-                            ) {
-                                Spacer(
-                                    Modifier
-                                        .height(2.dp)
-                                        .fillMaxWidth()
-                                        .border(
-                                            width = 2.dp,
-                                            brush = (Brush.horizontalGradient(
-                                                colors = listOf(
-                                                    Color(0xFFd8af84),
-                                                    Color(0xFFb15f33)
-                                                ),
-                                                tileMode = TileMode.Mirror
-                                            )),
-                                            shape = RectangleShape
-                                        ),
-                                )
-                            }
-                        }
-                        items(customIngredients, key = {it.item}) {
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = (customIngredients.isNotEmpty() && !filterWasClicked),
-                                enter = fadeIn(TweenSpec(50)),
-                                exit = fadeOut(TweenSpec(50)),
-                            ) {
-                                CustomShoppingListItem(
-                                    modifier = Modifier.animateItemPlacement(
-                                        animationSpec = (TweenSpec(
-                                            200,
-                                            delay = 0
-                                        ))
+                    }
+                    item{
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = (customIngredients.isNotEmpty() && !filterWasClicked),
+                            enter = fadeIn(TweenSpec(20)),
+                            exit = fadeOut(TweenSpec(20)),
+                        ) {
+                            Spacer(
+                                Modifier
+                                    .height(2.dp)
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            colors = listOf(
+                                                Color(0xFFd8af84),
+                                                Color(0xFFb15f33)
+                                            ),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                        shape = RectangleShape
                                     ),
-                                    shoppingListCustomItemEntity = it,
-                                    isWorking = uiState.isWorking,
-                                    isFiltered = uiState.isFiltered,
-                                    onClickItemSelected = { shoppingListScreenViewModel.customItemSelected(it) },
-                                    onClickItemDeselected = { shoppingListScreenViewModel.customItemDeselected(it) },
-                                    onClickDeleteCustomItem = { shoppingListScreenViewModel.deleteCustomItem(it) }
-                                )
-                            }
+                            )
                         }
-//                    }
+                    }
+                    items(customIngredients, key = {it.item}) {
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = (customIngredients.isNotEmpty() && !filterWasClicked),
+                            enter = fadeIn(TweenSpec(20)),
+                            exit = fadeOut(TweenSpec(20)),
+                        ) {
+                            CustomShoppingListItem(
+                                modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(20, delay = 0))),
+                                shoppingListCustomItemEntity = it,
+                                isWorking = uiState.isWorking,
+                                isFiltered = uiState.isFiltered,
+                                onClickItemSelected = { shoppingListScreenViewModel.customItemSelected(it) },
+                                onClickItemDeselected = { shoppingListScreenViewModel.customItemDeselected(it) },
+                                onClickDeleteCustomItem = { shoppingListScreenViewModel.deleteCustomItem(it) }
+                            )
+                        }
+                    }
+
 
                     item {
                         androidx.compose.animation.AnimatedVisibility(
                             visible = (
-                                (customIngredients.isNotEmpty() && !filterWasClicked) ||
-                                (selectedIngredients.isNotEmpty() && !filterWasClicked)
+                                (customIngredients.isNotEmpty() && !filterWasClicked && !uiState.isFiltered) ||
+                                (selectedIngredients.isNotEmpty() && !filterWasClicked  && !uiState.isFiltered)
                             ),
-                            enter = fadeIn(TweenSpec(50)),
-                            exit = fadeOut(TweenSpec(50)),
+                            enter = fadeIn(TweenSpec(20)),
+                            exit = fadeOut(TweenSpec(20)),
                         ) {
                             AddCustomItemButton(
                                 modifier = Modifier,
                                 isWorking = uiState.isWorking,
-                                isFiltered = uiState.isFiltered,
                                 onClickAddItem = { shoppingListScreenViewModel.triggerAddCustomItemAlert() }
                             )
                         }
                     }
 
-                    item{
-                        Spacer(
-                            Modifier
-                                .size(20.dp)
-                                .fillMaxWidth())
-                    }
+                    item{ Spacer(Modifier.size(20.dp).fillMaxWidth()) }
 
 //                    selectedIngredients.forEach {
 //                        ShoppingListItemWithButton(
@@ -257,6 +245,7 @@ fun ShoppingListScreen(
                             modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(200, delay = 0))),
                             recipeWithIngredients = it,
                             isWorking = uiState.isWorking,
+                            isClickable = shoppingListScreenData.size != 1,
                             onFilterClick = {shoppingListScreenViewModel.filterBy(it); filterWasClicked = !filterWasClicked},
                             onDetailsClick = {
                                 shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
@@ -379,7 +368,7 @@ fun ShoppingListScreen(
                             Text(text = "Enter item: ", color = Color(0xFF682300))
                         },
                         text = {
-                            Column() {
+                            Column {
                                 TextField(
                                     value = uiAlertState.inputText,
                                     onValueChange = { shoppingListScreenViewModel.updateInputText(it) },
@@ -405,6 +394,14 @@ fun ShoppingListScreen(
                                     onClick = { shoppingListScreenViewModel.cancelAddCustomItemAlert() },
                                     elevation = ButtonDefaults.elevation(6.dp),
                                     shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
                                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
                                 ) {
                                     Text("Cancel")
@@ -415,6 +412,14 @@ fun ShoppingListScreen(
                                     onClick = { shoppingListScreenViewModel.addCustomItem() },
                                     elevation = ButtonDefaults.elevation(6.dp),
                                     shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
                                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
                                 ) {
                                     Text("Add To List")
@@ -436,6 +441,7 @@ fun RecipeIconWithButton(
     modifier: Modifier,
     recipeWithIngredients: RecipeWithIngredients,
     isWorking: Boolean,
+    isClickable: Boolean,
     onFilterClick: () -> Unit,
     onDetailsClick: () -> Unit
 ){
@@ -484,7 +490,18 @@ fun RecipeIconWithButton(
                 .size(120.dp)
                 .padding(top = 8.dp, bottom = 4.dp)
                 .align(Alignment.CenterHorizontally)
-                .clickable(enabled = !isWorking, onClick = onFilterClick),
+                .border(
+                    width = 2.dp,
+                    brush = (Brush.horizontalGradient(
+                        startX = -10f,
+                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                        tileMode = TileMode.Mirror
+                    )),
+                    shape = RoundedCornerShape(15.dp)
+                )
+                .clickable(
+                    enabled = !isWorking && isClickable,
+                    onClick = onFilterClick),
             shape = RoundedCornerShape(15.dp),
             elevation = 6.dp,
 
@@ -534,6 +551,15 @@ fun RecipeIconWithButton(
             modifier = Modifier
                 // .padding(top = 4.dp)
                 .wrapContentSize()
+                .border(
+                    width = 2.dp,
+                    brush = (Brush.horizontalGradient(
+                        startX = -10f,
+                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                        tileMode = TileMode.Mirror
+                    )),
+                    shape = RoundedCornerShape(25.dp)
+                )
                 .clickable(enabled = !isWorking) { onDetailsClick() },
  //               .background(
 //                    brush = Brush.horizontalGradient(
@@ -629,18 +655,17 @@ fun ShoppingListItemWithButton(
             .width(240.dp)
             .height(36.dp)
             .alpha(alphaAnim)
-//            .background(
-//                brush = Brush.horizontalGradient(
-//                    colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
-//                    endX = gradientWidth,
-//                    tileMode = TileMode.Mirror
-//                ),
-//                shape = RoundedCornerShape((14.dp))
-//            )
+            .border(
+                width = 2.dp,
+                brush = (Brush.horizontalGradient(
+                    startX = -10f,
+                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                    tileMode = TileMode.Mirror
+                )),
+                shape = RoundedCornerShape(25.dp)
+            )
             .clickable(
-                enabled =
-//                !selected &&
-                !isWorking,
+                enabled = !isWorking && (ingredientEntity.isShown == 1),
                 onClick = if (selected) onClickIngredientDeselected else onClickIngredientSelected,
             ),// { selected = !selected },
         shape = RoundedCornerShape(25.dp),
@@ -778,6 +803,15 @@ fun CustomShoppingListItem(
             .width(240.dp)
             .height(36.dp)
             .alpha(alphaAnim)
+            .border(
+                width = 2.dp,
+                brush = (Brush.horizontalGradient(
+                    startX = -10f,
+                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                    tileMode = TileMode.Mirror
+                )),
+                shape = RoundedCornerShape(25.dp)
+            )
 //            .background(
 //                brush = Brush.horizontalGradient(
 //                    colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
@@ -787,7 +821,7 @@ fun CustomShoppingListItem(
 //                shape = RoundedCornerShape((14.dp))
 //            )
             .clickable(
-                enabled = !isWorking,
+                enabled = (!isWorking  && !isFiltered),
                 onClick = if (selected) onClickItemDeselected else onClickItemSelected,
             ),
         shape = RoundedCornerShape(25.dp),
@@ -854,14 +888,10 @@ fun CustomShoppingListItem(
 fun AddCustomItemButton(
     modifier: Modifier,
     isWorking: Boolean,
-    isFiltered: Boolean,
     onClickAddItem: () -> Unit,
 ){
 
-    var alphaLevel : Float = 1f
-    val checkBoxBackgroundColor: Color = Color(0xFFd8af84)
-
-    if (isFiltered) alphaLevel = 0.30f
+    val alphaLevel : Float = 1f
 
     val alphaAnim: Float by animateFloatAsState(
         targetValue = alphaLevel,
@@ -879,14 +909,15 @@ fun AddCustomItemButton(
             .width(240.dp)
             .height(36.dp)
             .alpha(alphaAnim)
-//            .background(
-//                brush = Brush.horizontalGradient(
-//                    colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
-//                    endX = gradientWidth,
-//                    tileMode = TileMode.Mirror
-//                ),
-//                shape = RoundedCornerShape((14.dp))
-//            )
+            .border(
+                width = 2.dp,
+                brush = (Brush.horizontalGradient(
+                    startX = -10f,
+                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                    tileMode = TileMode.Mirror
+                )),
+                shape = RoundedCornerShape(25.dp)
+            )
             .clickable(
                 enabled = !isWorking,
                 onClick = onClickAddItem,
@@ -894,7 +925,6 @@ fun AddCustomItemButton(
         shape = RoundedCornerShape(25.dp),
         color = Color(0xFFd8af84),
         elevation = 4.dp,
-        //color = Color(0xFF682300),//Color(0xFFd8af84),
         contentColor = Color(0xFF682300),
     ){
 
@@ -908,7 +938,7 @@ fun AddCustomItemButton(
                     // .weight(1f)
                     .padding(start = 4.dp)
                     .align(Alignment.CenterVertically)
-                    .alpha(alphaLevel),
+                    .alpha(alphaAnim),
                 text = "Add Item",
                 fontSize = 16.sp
             )
@@ -916,42 +946,6 @@ fun AddCustomItemButton(
     }
 }
 
-
-
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun DefaultPreview() {
-//    var myRecipe: RecipeEntity = RecipeEntity(recipeName = "Cauliflower Walnut Tacos", onMenu = 0,1, timeToMake = 60, rating = 98)
-//
-//    var ing1: IngredientEntity = IngredientEntity(ingredientName = "Ingredient 1", quantityOwned = 0, quantityNeeded = 0)
-//    var ing2: IngredientEntity = IngredientEntity(ingredientName = "Ingredient 2", quantityOwned = 0, quantityNeeded = 0)
-//    var ing3: IngredientEntity = IngredientEntity(ingredientName = "Ingredient 3", quantityOwned = 0, quantityNeeded = 0)
-//
-//    var ins1: InstructionEntity = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it.")
-//    var ins2: InstructionEntity = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!.")
-//    var ins3: InstructionEntity = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!!.")
-//
-//    var recList = listOf(
-//        RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)),
-//        RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)))
-//
-//    var recInsList = listOf(
-//        RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
-//        RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
-//    )
-//
-//    var recipeAll = RecipeWithIngredientsAndInstructions(myRecipe,listOf(ing1, ing2), listOf(ins1, ins2))
-//
-//    BearRecipeBookAppTheme {
-//        ShoppingListScreen(
-//            listOf(ing1, ing2, ing3),
-//            listOf(recipeAll),
-//            {},
-//            {},
-//            {}
-//        )
-//    }
-//}
 
 class ShoppingListScreenViewModelFactory(
     val application: Application,
