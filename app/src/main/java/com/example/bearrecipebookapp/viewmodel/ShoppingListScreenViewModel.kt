@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.viewmodel
 
 import android.app.Application
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
@@ -105,20 +106,34 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
     }
 
     fun addCustomItem(){
-        repository.addCustomItem(
-            ShoppingListCustomItemsEntity(uiAlertState.value.inputText))
-        uiAlertState.update {
-            it.copy(
-                showAddCustomItemAlert = false,
-                inputText = "",
-            )
+        if (uiAlertState.value.inputText.text.length > 20) {
+
+            uiAlertState.update {
+                it.copy(
+                    inputText = TextFieldValue(""),
+                )
+            }
+
+        }
+        else {
+            repository.addCustomItem(ShoppingListCustomItemsEntity(uiAlertState.value.inputText.text))
+
+            uiAlertState.update {
+                it.copy(
+                    showAddCustomItemAlert = false,
+                    inputText = TextFieldValue(""),
+                )
+            }
+
         }
     }
 
 
-    fun updateInputText(text: String){
+    fun updateInputText(input: TextFieldValue){
+
+
         uiAlertState.update {
-            it.copy(inputText = text)
+            it.copy(inputText = input)
         }
     }
 
@@ -144,7 +159,7 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
         uiAlertState.update {
             it.copy(
                 showAddCustomItemAlert = false,
-                inputText = "",
+                inputText = TextFieldValue(""),
             )
         }
     }
@@ -156,6 +171,10 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
     fun customItemDeselected(item: ShoppingListCustomItemsEntity){
         repository.setCustomItemToDeselected(item)
+    }
+
+    fun deleteCustomItem(item: ShoppingListCustomItemsEntity){
+        repository.deleteCustomItem(item)
     }
 
     fun ingredientSelected(ingredientEntity: IngredientEntity){

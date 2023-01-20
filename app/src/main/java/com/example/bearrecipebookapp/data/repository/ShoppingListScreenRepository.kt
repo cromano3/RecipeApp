@@ -82,6 +82,12 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
         }
     }
 
+    fun deleteCustomItem(item: ShoppingListCustomItemsEntity){
+        coroutineScope.launch(Dispatchers.IO) {
+            shoppingListScreenDao.deleteCustomItem(item.item)
+        }
+    }
+
 
 
     fun setIngredientToOwned(ingredientEntity: IngredientEntity){

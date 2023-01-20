@@ -26,6 +26,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -83,6 +85,8 @@ fun ShoppingListScreen(
 
         val listState = rememberLazyListState()
         val listState2 = rememberLazyListState()
+
+        val focusRequester = remember { FocusRequester() }
 
         BackHandler {
             onSystemBackClick()
@@ -163,14 +167,20 @@ fun ShoppingListScreen(
                                 exit = fadeOut(TweenSpec(50)),
                             ) {
                                 Spacer(
-                                    Modifier.height(2.dp).fillMaxWidth().border(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                        shape = RectangleShape
-                                    ),
+                                    Modifier
+                                        .height(2.dp)
+                                        .fillMaxWidth()
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                            shape = RectangleShape
+                                        ),
                                 )
                             }
                         }
@@ -190,20 +200,31 @@ fun ShoppingListScreen(
                                     shoppingListCustomItemEntity = it,
                                     isWorking = uiState.isWorking,
                                     isFiltered = uiState.isFiltered,
-                                    onClickItemSelected = {
-                                        shoppingListScreenViewModel.customItemSelected(
-                                            it
-                                        )
-                                    },
-                                    onClickItemDeselected = {
-                                        shoppingListScreenViewModel.customItemDeselected(
-                                            it
-                                        )
-                                    },
+                                    onClickItemSelected = { shoppingListScreenViewModel.customItemSelected(it) },
+                                    onClickItemDeselected = { shoppingListScreenViewModel.customItemDeselected(it) },
+                                    onClickDeleteCustomItem = { shoppingListScreenViewModel.deleteCustomItem(it) }
                                 )
                             }
                         }
 //                    }
+
+                    item {
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = (
+                                (customIngredients.isNotEmpty() && !filterWasClicked) ||
+                                (selectedIngredients.isNotEmpty() && !filterWasClicked)
+                            ),
+                            enter = fadeIn(TweenSpec(50)),
+                            exit = fadeOut(TweenSpec(50)),
+                        ) {
+                            AddCustomItemButton(
+                                modifier = Modifier,
+                                isWorking = uiState.isWorking,
+                                isFiltered = uiState.isFiltered,
+                                onClickAddItem = { shoppingListScreenViewModel.triggerAddCustomItemAlert() }
+                            )
+                        }
+                    }
 
                     item{
                         Spacer(
@@ -321,7 +342,6 @@ fun ShoppingListScreen(
                                 onClick = {
                                     shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
                                     shoppingListScreenViewModel.triggerAddCustomItemAlert()
-
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 border = BorderStroke(2.dp, Color.Black)
@@ -346,35 +366,56 @@ fun ShoppingListScreen(
                 }
                 else if(uiAlertState.showAddCustomItemAlert){
 
+                    LaunchedEffect(Unit) {
+                        delay(200)
+                        focusRequester.requestFocus()
+                    }
+
                     AlertDialog(
                         onDismissRequest = {
                             shoppingListScreenViewModel.cancelAddCustomItemAlert()
                         },
                         title = {
-                            Text(text = "Enter item: ")
+                            Text(text = "Enter item: ", color = Color(0xFF682300))
                         },
                         text = {
                             Column() {
                                 TextField(
                                     value = uiAlertState.inputText,
-                                    onValueChange = { shoppingListScreenViewModel.updateInputText(it) }
+                                    onValueChange = { shoppingListScreenViewModel.updateInputText(it) },
+                                    modifier = Modifier.focusRequester(focusRequester),
+                                    singleLine = true,
+                                )
+                                Text(
+                                    text = "${uiAlertState.inputText.text.length}/20",
+                                    color = if(uiAlertState.inputText.text.length > 20) Color.Red else Color.Black
                                 )
                             }
                         },
                         buttons = {
                             Row(
-                                modifier = Modifier.padding(all = 8.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                modifier = Modifier
+                                    .padding(all = 8.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
+
                                 Button(
                                     modifier = Modifier.wrapContentSize(),
-                                    onClick = { shoppingListScreenViewModel.cancelAddCustomItemAlert() }
+                                    onClick = { shoppingListScreenViewModel.cancelAddCustomItemAlert() },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
                                 ) {
                                     Text("Cancel")
                                 }
+
                                 Button(
                                     modifier = Modifier.wrapContentSize(),
-                                    onClick = { shoppingListScreenViewModel.addCustomItem() }
+                                    onClick = { shoppingListScreenViewModel.addCustomItem() },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
                                 ) {
                                     Text("Add To List")
                                 }
@@ -387,6 +428,8 @@ fun ShoppingListScreen(
 
     }
 }
+
+
 
 @Composable
 fun RecipeIconWithButton(
@@ -595,8 +638,10 @@ fun ShoppingListItemWithButton(
 //                shape = RoundedCornerShape((14.dp))
 //            )
             .clickable(
-                enabled = !selected && !isWorking,
-                onClick = onClickIngredientSelected,
+                enabled =
+//                !selected &&
+                !isWorking,
+                onClick = if (selected) onClickIngredientDeselected else onClickIngredientSelected,
             ),// { selected = !selected },
         shape = RoundedCornerShape(25.dp),
         color = Color(0xFF682300),
@@ -607,24 +652,24 @@ fun ShoppingListItemWithButton(
         /*
             if selected then show X
          */
-        if (selected){
-            Box{
-                IconButton(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .size(36.dp),
-                    onClick = onClickIngredientDeselected, //{ selected = !selected }
-                    enabled = !isWorking
-                ){
-                    Icon(
-                        modifier = Modifier,
-                        imageVector = Icons.Outlined.Close,
-                        tint = Color(0xFFFFFFFF),
-                        contentDescription = null
-                    )
-                }
-            }
-        }
+//        if (selected){
+//            Box{
+//                IconButton(
+//                    modifier = Modifier
+//                        .align(Alignment.CenterEnd)
+//                        .size(36.dp),
+//                    onClick = onClickIngredientDeselected, //{ selected = !selected }
+//                    enabled = !isWorking
+//                ){
+//                    Icon(
+//                        modifier = Modifier,
+//                        imageVector = Icons.Outlined.Close,
+//                        tint = Color(0xFFFFFFFF),
+//                        contentDescription = null
+//                    )
+//                }
+//            }
+//        }
         Row(
             Modifier.fillMaxSize(),
         horizontalArrangement = Arrangement.Start
@@ -680,7 +725,8 @@ fun CustomShoppingListItem(
     isWorking: Boolean,
     isFiltered: Boolean,
     onClickItemSelected: () -> Unit,
-    onClickItemDeselected: () -> Unit
+    onClickItemDeselected: () -> Unit,
+    onClickDeleteCustomItem: () -> Unit,
 ){
 
     val selected: Boolean
@@ -741,8 +787,8 @@ fun CustomShoppingListItem(
 //                shape = RoundedCornerShape((14.dp))
 //            )
             .clickable(
-                enabled = !selected && !isWorking,
-                onClick = onClickItemSelected,
+                enabled = !isWorking,
+                onClick = if (selected) onClickItemDeselected else onClickItemSelected,
             ),
         shape = RoundedCornerShape(25.dp),
         color = Color(0xFF682300),
@@ -750,7 +796,7 @@ fun CustomShoppingListItem(
         //color = Color(0xFF682300),//Color(0xFFd8af84),
         contentColor = Color(0xFFd8af84),
     ){
-        /*
+        /**
             if selected then show X
          */
         if (selected){
@@ -759,7 +805,7 @@ fun CustomShoppingListItem(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .size(36.dp),
-                    onClick = onClickItemDeselected,
+                    onClick = onClickDeleteCustomItem,
                     enabled = !isWorking
                 ){
                     Icon(
@@ -798,6 +844,72 @@ fun CustomShoppingListItem(
                     .alpha(alphaLevel),
                 text = shoppingListCustomItemEntity.item,
                 textDecoration = decoration,
+                fontSize = 16.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun AddCustomItemButton(
+    modifier: Modifier,
+    isWorking: Boolean,
+    isFiltered: Boolean,
+    onClickAddItem: () -> Unit,
+){
+
+    var alphaLevel : Float = 1f
+    val checkBoxBackgroundColor: Color = Color(0xFFd8af84)
+
+    if (isFiltered) alphaLevel = 0.30f
+
+    val alphaAnim: Float by animateFloatAsState(
+        targetValue = alphaLevel,
+        animationSpec = tween(
+            durationMillis = 150,
+            delayMillis = 0,
+            easing = LinearEasing,
+        )
+    )
+
+
+    Surface(
+        modifier = modifier
+            .padding(start = 8.dp, top = 8.dp)
+            .width(240.dp)
+            .height(36.dp)
+            .alpha(alphaAnim)
+//            .background(
+//                brush = Brush.horizontalGradient(
+//                    colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
+//                    endX = gradientWidth,
+//                    tileMode = TileMode.Mirror
+//                ),
+//                shape = RoundedCornerShape((14.dp))
+//            )
+            .clickable(
+                enabled = !isWorking,
+                onClick = onClickAddItem,
+            ),
+        shape = RoundedCornerShape(25.dp),
+        color = Color(0xFFd8af84),
+        elevation = 4.dp,
+        //color = Color(0xFF682300),//Color(0xFFd8af84),
+        contentColor = Color(0xFF682300),
+    ){
+
+        Row(
+            Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center
+        )
+        {
+            Text(
+                modifier = Modifier
+                    // .weight(1f)
+                    .padding(start = 4.dp)
+                    .align(Alignment.CenterVertically)
+                    .alpha(alphaLevel),
+                text = "Add Item",
                 fontSize = 16.sp
             )
         }

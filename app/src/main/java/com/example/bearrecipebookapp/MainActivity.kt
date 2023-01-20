@@ -704,7 +704,7 @@ fun BearAppTopBar(
 
 
 
-        androidx.compose.animation.AnimatedVisibility(
+        AnimatedVisibility(
             visible = show,
             enter = slideInVertically { -it },
             exit = slideOutVertically { -it },

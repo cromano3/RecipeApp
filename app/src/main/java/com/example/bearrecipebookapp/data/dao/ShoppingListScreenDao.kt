@@ -63,6 +63,14 @@ interface ShoppingListScreenDao {
     @Transaction
     @Query("UPDATE shopping_list_custom_items_table SET selected = 0 WHERE item = :item")
     fun setCustomItemToDeselected(item: String)
+    @Transaction
+    @Query("DELETE FROM shopping_list_custom_items_table WHERE item = :item")
+    fun deleteCustomItem(item: String)
+
+
+
+
+
 
     @Transaction
     @Query("UPDATE ingredient_table SET quantity_owned = quantity_needed WHERE ingredient_name = :name")
