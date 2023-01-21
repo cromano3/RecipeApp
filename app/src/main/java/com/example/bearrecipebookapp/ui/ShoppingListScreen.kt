@@ -34,9 +34,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -283,7 +286,7 @@ fun ShoppingListScreen(
                         onClick = { shoppingListScreenViewModel.triggerAddRecipeOrCustomItemAlert() },
                         elevation = FloatingActionButtonDefaults.elevation(8.dp),
                         modifier = Modifier
-                            .padding(bottom = 40.dp, end = 24.dp)
+                            .padding(bottom = 70.dp, end = 24.dp)
                             .border(
                                 width = 2.dp,
                                 brush = (Brush.horizontalGradient(
@@ -324,31 +327,74 @@ fun ShoppingListScreen(
                     AlertDialog(
                         onDismissRequest = {shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()},
                         text = {
-                            Text(text = "Add a recipe, or a custom item to the shopping list?" )
-                        },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
-                                    shoppingListScreenViewModel.triggerAddCustomItemAlert()
+                            Text(
+                                text =
+                                buildAnnotatedString
+                                {
+                                    append("Add a ")
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
+                                        append("Recipe")
+                                    }
+                                    append(" or a ")
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
+                                        append("Custom Item")
+                                    }
+                                    append(" to the shopping list?")
                                 },
-                                modifier = Modifier.fillMaxWidth(),
-                                border = BorderStroke(2.dp, Color.Black)
+                                color = Color(0xFF682300),
+                                fontSize = 16.sp,
+//                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        buttons = {
+                            Column(
+                                modifier = Modifier
+                                    .padding(all = 8.dp)
+                                    .fillMaxWidth(),
+//                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                Button(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onClick = {
+                                        shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
+                                        onAddRecipeClick()
+                                              },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                ) {
+                                    Text("Add Recipe")
+                                }
 
-                            ) {
-                                Text("Add Custom Item")
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(
-                                onClick = {
-                                    shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
-                                    onAddRecipeClick()
-                                },
-                                modifier = Modifier.fillMaxWidth(),
-                                border = BorderStroke(2.dp, Color.Black),
-                            ) {
-                                Text("Add Recipe")
+                                Button(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onClick = {
+                                        shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
+                                        shoppingListScreenViewModel.triggerAddCustomItemAlert()
+                                    },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                ) {
+                                    Text("Add Custom Item")
+                                }
                             }
                         }
                     )

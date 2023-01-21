@@ -275,7 +275,7 @@ fun NewDetailsScreen(
                                                 detailsScreenViewModel.triggerCompletedAlert(
                                                     detailsScreenData
                                                 )
-                                            } else if (!selected) {
+                                            } else {
                                                 detailsScreenViewModel.triggerCompletedAlert(
                                                     detailsScreenData
                                                 )
