@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
 )
 @Composable
 fun HomeScreen(
-//    onSearchClick: () -> Unit,
+//    triggerTutorialAlert: String,
     onDetailsClick: () -> Unit,
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
     onMenuClick: (RecipeWithIngredients) -> Unit,
@@ -85,6 +85,8 @@ fun HomeScreen(
 
         val shownRecipeList by homeScreenViewModel.shownRecipeList.observeAsState(listOf())
         val filtersList by homeScreenViewModel.filtersList.observeAsState(listOf())
+
+        val showTutorial by homeScreenViewModel.showTutorial.observeAsState()
 
         val uiFiltersState by homeScreenViewModel.uiFiltersState.collectAsState()
         val uiAlertState by homeScreenViewModel.uiAlertState.collectAsState()
@@ -298,6 +300,51 @@ fun HomeScreen(
 //                        }
 //                    }
 //                )
+                    if(showTutorial.toBoolean()){
+                        AlertDialog(
+                            onDismissRequest = {
+                                homeScreenViewModel.cancelTutorialAlert()
+                            },
+                            text = {
+                                Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
+                                        " from the Menu? (This will also remove it from the Shopping List.)",
+                                    color = Color(0xFF682300),
+                                    fontSize = 16.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                            },
+                            buttons = {
+                                Row(
+                                    modifier = Modifier
+                                        .padding(all = 8.dp)
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                ) {
+                                    Button(
+                                        modifier = Modifier.wrapContentSize(),
+                                        onClick = {
+                                            homeScreenViewModel.cancelTutorialAlert()
+                                        },
+                                        elevation = ButtonDefaults.elevation(6.dp),
+                                        shape = RoundedCornerShape(25.dp),
+                                        border = BorderStroke(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                startX = -10f,
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                        ),
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                    ) {
+                                        Text("Got it!")
+                                    }
+                                }
+                            },
+
+                            )
+
+                    }
                     if(uiAlertState.showAlert){
                         AlertDialog(
                             onDismissRequest = {},
@@ -505,7 +552,7 @@ fun FiltersButton(
 @Composable
 @Preview
 fun MyPreview420() {
-    HomeScreen(onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {}, onMenuRemovedClick = {}, onCreateRecipeClick = {} )
+    HomeScreen( onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {}, onMenuRemovedClick = {}, onCreateRecipeClick = {} )
 
 
 }

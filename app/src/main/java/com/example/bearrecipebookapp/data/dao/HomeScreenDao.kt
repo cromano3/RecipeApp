@@ -126,6 +126,14 @@ interface HomeScreenDao {
     @Query("UPDATE recipe_table SET is_shown = :isShown WHERE recipe_name = :recipeName")
     fun setIsShown(recipeName: String, isShown: Int)
 
+    @Transaction
+    @Query("SELECT show_tutorial FROM user_table")
+    fun getShowTutorial(): LiveData<String>
+
+    @Transaction
+    @Query("UPDATE user_table SET show_tutorial = 'false'")
+    fun clearTutorialAlert()
+
 
 //    @Transaction
 //    @Query("SELECT * FROM recipe_table")

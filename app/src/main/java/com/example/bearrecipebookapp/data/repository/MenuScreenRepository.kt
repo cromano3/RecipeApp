@@ -27,6 +27,14 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
         }
     }
 
+
+    fun addTutorialAlert(){
+        coroutineScope.launch(Dispatchers.IO) {
+            menuScreenDao.addTutorialAlert()
+        }
+    }
+
+
     fun addCooked(recipeName: String){
         coroutineScope.launch(Dispatchers.IO) {
             menuScreenDao.addCooked(recipeName)

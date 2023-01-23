@@ -26,6 +26,13 @@ interface ShoppingListScreenDao {
     @Query("SELECT * FROM shopping_list_custom_items_table")
     fun getCustomIngredients(): LiveData<List<ShoppingListCustomItemsEntity>>
 
+
+    @Transaction
+    @Query("UPDATE user_table SET show_tutorial = 'true' ")
+    fun addTutorialAlert()
+
+
+
     @Transaction
     @Query("UPDATE recipe_table SET is_shopping_filter = 1")
     fun cleanFilters()

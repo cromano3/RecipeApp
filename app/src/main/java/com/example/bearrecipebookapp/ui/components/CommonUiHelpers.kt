@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -287,6 +288,62 @@ fun RecipeCard(
                                 contentDescription = null
                             )
                         }
+
+                        val context = LocalContext.current
+
+
+//                        IconButton(
+//                            onClick = {
+//
+//                                var myString = recipeWithIngredients.recipeEntity.recipeName + '\n' + '\n'
+//
+//                                for(x in recipeWithIngredients.ingredientsList.indices){
+//                                    myString += recipeWithIngredients.ingredientsList[x].ingredientName + '\n'
+//                                }
+//
+//                                myString += '\n'
+//
+//                                for(x in recipeWithIngredients.instructionsList.indices){
+//                                    myString += recipeWithIngredients.instructionsList[x].instruction + '\n'
+//                                }
+//
+//                                val sendIntent: Intent = Intent().apply {
+//                                    action = Intent.ACTION_SEND
+//                                    putExtra(Intent.EXTRA_TEXT, myString)
+////                                    putExtra(Intent.EXTRA_TITLE, detailsScreenData.recipeEntity.recipeName)
+//                                    type = "text/plain"
+//                                }
+//
+//                                val shareIntent = Intent.createChooser(sendIntent, null)
+//
+//                                context.startActivity(shareIntent)
+//
+//
+//                            },
+//                            modifier = Modifier
+//                                .size(48.dp)
+//                                .background(color = Color.Transparent)
+//                                .padding(start = 8.dp)
+//                                .border(
+//                                    width = 2.dp,
+//                                    brush = (Brush.horizontalGradient(
+//                                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                        tileMode = TileMode.Mirror,
+//                                    )),
+//                                    shape = CircleShape
+//                                ),
+//                            // color = Color.Transparent
+//
+//                        ) {
+//                            Icon(
+//                                imageVector = Icons.Outlined.Share,
+//                                contentDescription = null,
+//                                modifier = Modifier
+//                                    .size(24.dp),
+//                                tint = Color(0xFFd8af84)
+//                            )
+//                        }
+
 
                         Icon(
                             imageVector = Icons.Outlined.Share,

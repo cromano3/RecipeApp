@@ -42,6 +42,11 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
     }
 
 
+    fun addTutorialAlert(){
+        shoppingListScreenDao.addTutorialAlert()
+    }
+
+
 
     fun cleanFilters(){
         coroutineScope.launch(Dispatchers.IO) {

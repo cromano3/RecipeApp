@@ -181,14 +181,9 @@ fun BearRecipeApp(
                 }},)
             }
 
-            composable(
-                route = "AddRecipeScreen",
-            ){
-                AddRecipeScreen(
+            composable(route = "AddRecipeScreen"){ AddRecipeScreen() }
 
-                )
-            }
-
+//            composable(route = "RecipeScreen/{triggerTutorialAlert}",
             composable(route = "RecipeScreen",
                 enterTransition = {
                     when (initialState.destination.route){
@@ -210,9 +205,12 @@ fun BearRecipeApp(
                     }
                 }
             ){
+
+//                val triggerTutorialAlert = it.arguments?.getString("triggerTutorialAlert")
+
                 //Recipe Book Main Screen
                 HomeScreen(
-//                    onSearchClick = {navController.navigate("SearchScreen")},
+//                    triggerTutorialAlert = triggerTutorialAlert ?: "false",
                     onDetailsClick = {
                         navController.navigate("DetailsScreen",
 //                            navOptions { popUpTo("DetailsScreen") { inclusive = true } }
@@ -296,6 +294,26 @@ fun BearRecipeApp(
                             restoreState = true
 
                         }
+                    },
+                    onAddRecipeClick = {
+
+                        navController.navigate("RecipeScreen"){
+
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+
+                        }
+
+                        val backStackEntry = navController.currentBackStackEntry
+                        val currentRoute = backStackEntry?.destination?.route
+
+                        if(currentRoute == "SearchScreen") {
+                            navController.popBackStack()
+                        }
+
                     }
                 )
             }
@@ -353,6 +371,9 @@ fun BearRecipeApp(
                 )
             }
 
+//          composable(route = "DetailsScreen/{recipeName}"){ it ->
+//            val recipeName = it.arguments?.getString("recipeName")
+//            recipeName?.let{NewDetailsScreen(recipeName = recipeName, onGoBackClick = {})}
             composable(
                 route = "DetailsScreen",
                 enterTransition = {
@@ -375,36 +396,48 @@ fun BearRecipeApp(
                         else -> null
                     }
                 },) {
-                NewDetailsScreen(
-                    onGoBackClick = { navController.popBackStack() },
-                    onMenuAddClick = {coroutineScope.launch {
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            message = "Added " + it.recipeEntity.recipeName + " to the Menu.",
-                            duration = SnackbarDuration.Short
-                        )
-                    }},
-                    onMenuRemoveClick = {coroutineScope.launch {
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            message = "Removed " + it.recipeEntity.recipeName + " from the Menu.",
-                            duration = SnackbarDuration.Short
-                        )
-                    }},
-                    onFavoriteClick = {coroutineScope.launch{
-                        if(it.recipeEntity.isFavorite == 1)
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
-                                duration = SnackbarDuration.Short)
-                        else if(it.recipeEntity.isFavorite == 0)
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
-                                duration = SnackbarDuration.Short)
-                    }},
-                    onCompleteClick = {coroutineScope.launch{
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            message = "Completed cooking " + it.recipeEntity.recipeName + "!!",
-                            duration = SnackbarDuration.Short)
-                    }}
-                )
+                    NewDetailsScreen(
+                        onGoBackClick = { navController.popBackStack() },
+                        onMenuAddClick = {
+                            coroutineScope.launch {
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    message = "Added " + it.recipeEntity.recipeName + " to the Menu.",
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        },
+                        onMenuRemoveClick = {
+                            coroutineScope.launch {
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    message = "Removed " + it.recipeEntity.recipeName + " from the Menu.",
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        },
+                        onFavoriteClick = {
+                            coroutineScope.launch {
+                                if (it.recipeEntity.isFavorite == 1)
+                                    scaffoldState.snackbarHostState.showSnackbar(
+                                        message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
+                                        duration = SnackbarDuration.Short
+                                    )
+                                else if (it.recipeEntity.isFavorite == 0)
+                                    scaffoldState.snackbarHostState.showSnackbar(
+                                        message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
+                                        duration = SnackbarDuration.Short
+                                    )
+                            }
+                        },
+                        onCompleteClick = {
+                            coroutineScope.launch {
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    message = "Completed cooking " + it.recipeEntity.recipeName + "!!",
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        }
+                    )
+
             }
 
             composable(

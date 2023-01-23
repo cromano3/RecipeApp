@@ -164,6 +164,12 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
         }
     }
 
+    fun addTutorialAlert(){
+        coroutineScope.launch(Dispatchers.IO){
+            repository.addTutorialAlert()
+        }
+    }
+
 
     fun customItemSelected(item: ShoppingListCustomItemsEntity){
         repository.setCustomItemToSelected(item)

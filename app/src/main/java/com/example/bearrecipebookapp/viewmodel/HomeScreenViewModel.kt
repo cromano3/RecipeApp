@@ -32,6 +32,8 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 
     var shownRecipeList: LiveData<List<RecipeWithIngredients>>
 
+    var showTutorial: LiveData<String>
+
 
 
 
@@ -67,6 +69,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         homeScreenData = repository.homeScreenData
         filtersList = repository.filtersList
         referenceList = repository.referenceList
+        showTutorial = repository.showTutorial
 
         unfilteredList = repository.unfilteredList
         filteredList1 = repository.filteredList1
@@ -113,6 +116,11 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         }
     }
 
+    fun cancelTutorialAlert(){
+        coroutineScope.launch(Dispatchers.IO) {
+            repository.clearTutorialAlert()
+        }
+    }
 
     fun filterBy(filter: FilterEntity){
         coroutineScope.launch(Dispatchers.Main) {

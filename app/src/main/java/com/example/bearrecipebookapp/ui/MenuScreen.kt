@@ -8,14 +8,15 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,6 +48,7 @@ fun MenuScreen(
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
     onCompleteClick: (RecipeWithIngredients) -> Unit,
     onRemoveClick: (RecipeWithIngredients) -> Unit,
+    onAddRecipeClick: () -> Unit,
     onSystemBackClick: () -> Unit,
 ) {
 
@@ -146,6 +148,113 @@ fun MenuScreen(
                                 .fillMaxWidth()
                                 .weight(1f))
                     }
+
+                        FloatingActionButton(
+                            onClick = {
+                                menuScreenViewModel.triggerAddRecipeAlert()
+                                      },
+                            elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                            modifier = Modifier
+                                .padding(bottom = 70.dp, end = 24.dp)
+                                .border(
+                                    width = 2.dp,
+                                    brush = (Brush.horizontalGradient(
+                                        colors = listOf(
+                                            Color(0xFFd8af84),
+                                            Color(0xFFb15f33),
+
+                                            ),
+                                        tileMode = TileMode.Mirror
+                                    )),
+                                    shape = CircleShape
+                                )
+                                .align(Alignment.BottomEnd)
+                                .size(56.dp)
+                                //the background of the square for this button, it stays a square even tho
+                                //we have shape = circle shape.  If this is not changed you see a solid
+                                //square for the "background" of this button.
+                                .background(color = Color.Transparent),
+                            shape = CircleShape,
+                            //this is the background color of the button after the "Shaping" is applied.
+                            //it is different then the background attribute above.
+                            backgroundColor = Color(0xFF682300)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Add,
+                                tint = Color(0xFFd8af84),
+                                modifier = Modifier.size(28.dp),
+                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                contentDescription = null
+                            )
+                        }
+
+                }
+
+                //Add Recipe Alert
+                if(uiAlertState.showAddRecipeAlert){
+                    AlertDialog(
+                        onDismissRequest = {
+                            menuScreenViewModel.cancelAddRecipeAlert()
+                        },
+                        text = {
+                            Text(text = "Would you like to add a recipe to your Menu?",
+                                color = Color(0xFF682300),
+                                fontSize = 16.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        buttons = {
+                            Row(
+                                modifier = Modifier
+                                    .padding(all = 8.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+
+                                Button(
+                                    modifier = Modifier.wrapContentSize(),
+                                    onClick = {
+                                        menuScreenViewModel.cancelAddRecipeAlert()
+                                    },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                ) {
+                                    Text("Cancel")
+                                }
+
+                                Button(
+                                    modifier = Modifier.wrapContentSize(),
+                                    onClick = {
+                                        menuScreenViewModel.cancelAddRecipeAlert()
+                                        menuScreenViewModel.addTutorialAlert()
+                                        onAddRecipeClick()
+                                    },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                ) {
+                                    Text("Yes")
+                                }
+                            }
+                        },
+                    )
                 }
 
                 //Remove Alert

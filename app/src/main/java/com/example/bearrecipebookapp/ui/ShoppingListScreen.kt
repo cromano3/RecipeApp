@@ -357,6 +357,7 @@ fun ShoppingListScreen(
                                     modifier = Modifier.fillMaxWidth(),
                                     onClick = {
                                         shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
+                                        shoppingListScreenViewModel.addTutorialAlert()
                                         onAddRecipeClick()
                                               },
                                     elevation = ButtonDefaults.elevation(6.dp),

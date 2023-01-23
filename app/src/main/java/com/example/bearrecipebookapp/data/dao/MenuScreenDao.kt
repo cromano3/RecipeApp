@@ -25,6 +25,13 @@ interface MenuScreenDao {
     @Query("UPDATE details_screen_target_table SET target_name = :recipeName")
     fun setDetailsScreenTarget(recipeName: String)
 
+
+    @Transaction
+    @Query("UPDATE user_table SET show_tutorial = 'true' ")
+    fun addTutorialAlert()
+
+
+
     @Transaction
     @Query("UPDATE ingredient_table SET quantity_needed = :quantityNeeded WHERE ingredient_name = :name")
     fun updateQuantityNeeded(name: String, quantityNeeded: Int)

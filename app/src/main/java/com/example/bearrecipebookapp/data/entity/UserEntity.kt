@@ -17,4 +17,7 @@ class UserEntity(
     @ColumnInfo(name = "exp_total")
     var expTotal: Int = 0,
 
+    @ColumnInfo(name = "show_tutorial")
+    var showTutorial: String = "false",
+
 )

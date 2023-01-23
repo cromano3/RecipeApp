@@ -19,6 +19,8 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
     var filtersList: LiveData<List<FilterEntity>> = homeScreenDao.getFilters()
     var referenceList: LiveData<List<HomeScreenDataModel>> = homeScreenDao.getReferenceList()
 
+    var showTutorial: LiveData<String> = homeScreenDao.getShowTutorial()
+
     var unfilteredList: LiveData<List<RecipeWithIngredients>> = homeScreenDao.getUnfilteredList()
     var filteredList1: LiveData<List<RecipeWithIngredients>> = homeScreenDao.getFilteredList1()
     var filteredList2: LiveData<List<RecipeWithIngredients>> = homeScreenDao.getFilteredList2()
@@ -37,6 +39,12 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
     fun cleanIngredients(){
         coroutineScope.launch(Dispatchers.IO) {
             homeScreenDao.cleanIngredients()
+        }
+    }
+
+    fun clearTutorialAlert(){
+        coroutineScope.launch(Dispatchers.IO) {
+            homeScreenDao.clearTutorialAlert()
         }
     }
 

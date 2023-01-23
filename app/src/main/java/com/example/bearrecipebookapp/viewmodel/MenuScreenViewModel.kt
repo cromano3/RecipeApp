@@ -3,9 +3,9 @@ package com.example.bearrecipebookapp.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.bearrecipebookapp.data.repository.MenuScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
+import com.example.bearrecipebookapp.data.repository.MenuScreenRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.UiAlertStateMenuScreenDataModel
 import kotlinx.coroutines.CoroutineScope
@@ -60,6 +60,26 @@ class MenuScreenViewModel(application: Application): ViewModel() {
                 recipe = recipe
             )
         }
+    }
+
+    fun triggerAddRecipeAlert(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showAddRecipeAlert = true,
+            )
+        }
+    }
+
+    fun cancelAddRecipeAlert(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showAddRecipeAlert = false
+            )
+        }
+    }
+
+    fun addTutorialAlert(){
+        repository.addTutorialAlert()
     }
 
     fun addCooked(recipe: RecipeWithIngredients){
