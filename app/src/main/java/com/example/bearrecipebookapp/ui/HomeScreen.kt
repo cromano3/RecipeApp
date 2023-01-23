@@ -15,10 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -32,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -305,28 +303,64 @@ fun HomeScreen(
                             onDismissRequest = {},
                             text = {
                                 Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
-                                        " from the Menu? (This will also remove it from the Shopping List.)" )
+                                        " from the Menu? (This will also remove it from the Shopping List.)",
+                                    color = Color(0xFF682300),
+                                    fontSize = 16.sp,
+                                    textAlign = TextAlign.Center
+                                )
                             },
-                            confirmButton = {
-                                TextButton(
-                                    onClick = {
-                                        onMenuRemovedClick(uiAlertState.recipe)
-                                        homeScreenViewModel.toggleMenu(uiAlertState.recipe)
-                                        homeScreenViewModel.cancelAlert()
-                                    }
+                            buttons = {
+                                Row(
+                                    modifier = Modifier
+                                        .padding(all = 8.dp)
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
                                 ) {
-                                    Text("Yes")
+
+                                    Button(
+                                        modifier = Modifier.wrapContentSize(),
+                                        onClick = {
+                                            homeScreenViewModel.cancelAlert()
+                                        },
+                                        elevation = ButtonDefaults.elevation(6.dp),
+                                        shape = RoundedCornerShape(25.dp),
+                                        border = BorderStroke(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                startX = -10f,
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                        ),
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                    ) {
+                                        Text("Cancel")
+                                    }
+
+                                    Button(
+                                        modifier = Modifier.wrapContentSize(),
+                                        onClick = {
+                                            onMenuRemovedClick(uiAlertState.recipe)
+                                            homeScreenViewModel.toggleMenu(uiAlertState.recipe)
+                                            homeScreenViewModel.cancelAlert()
+                                        },
+                                        elevation = ButtonDefaults.elevation(6.dp),
+                                        shape = RoundedCornerShape(25.dp),
+                                        border = BorderStroke(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                startX = -10f,
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                        ),
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                    ) {
+                                        Text("Yes")
+                                    }
                                 }
                             },
-                            dismissButton = {
-                                TextButton(
-                                    onClick = {
-                                        homeScreenViewModel.cancelAlert()
-                                    }
-                                ) {
-                                    Text("Cancel")
-                                }
-                            }
+
                         )
                     }
                 }

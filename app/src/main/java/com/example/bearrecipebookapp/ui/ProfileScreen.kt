@@ -5,10 +5,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.SnapSpec
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -87,6 +84,34 @@ fun ProfileScreen(
         val coroutineScope = rememberCoroutineScope()
 
         val animatedFirstValue = remember { Animatable(0f) }
+
+
+//        val animatedFirstValue1 by lazy {
+//            runBlocking {
+//                val value = database.getAnimatedFirstValue()
+//                Animatable(value)
+//            }
+//        }
+
+//        val myVariable by lazy {
+//            val deferred = GlobalScope.async {
+//                // code to retrieve value from database
+//            }
+//            deferred.await()
+//        }
+
+//        fun main() = runBlocking {
+//            val deferred = async {
+//                // Do some long-running task here
+//                delay(1000)
+//                "Task complete"
+//            }
+//            println("Before await")
+//            val result = deferred.await()
+//            println("After await: $result")
+//        }
+
+
 
         val barWidth = 600f
         val barHeight = 50f
@@ -896,28 +921,63 @@ fun ProfileScreen(
                         onDismissRequest = {},
                         text = {
                             Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
-                                    " from your Favorites?" )
+                                    " from your Favorites?",
+                                color = Color(0xFF682300),
+                                fontSize = 16.sp,
+                                textAlign = TextAlign.Center
+                            )
                         },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    onRemoveClick(uiAlertState.recipe)
-                                    profileScreenViewModel.removeFavorite(uiAlertState.recipe)
-                                    profileScreenViewModel.cancelRemoveAlert()
-                                }
+                        buttons = {
+                            Row(
+                                modifier = Modifier
+                                    .padding(all = 8.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
-                                Text("Yes")
+
+                                Button(
+                                    modifier = Modifier.wrapContentSize(),
+                                    onClick = {
+                                        profileScreenViewModel.cancelRemoveAlert()
+                                    },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                ) {
+                                    Text("Cancel")
+                                }
+
+                                Button(
+                                    modifier = Modifier.wrapContentSize(),
+                                    onClick = {
+                                        onRemoveClick(uiAlertState.recipe)
+                                        profileScreenViewModel.removeFavorite(uiAlertState.recipe)
+                                        profileScreenViewModel.cancelRemoveAlert()
+                                    },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                ) {
+                                    Text("Yes")
+                                }
                             }
                         },
-                        dismissButton = {
-                            TextButton(
-                                onClick = {
-                                    profileScreenViewModel.cancelRemoveAlert()
-                                }
-                            ) {
-                                Text("Cancel")
-                            }
-                        }
                     )
                 }
             }

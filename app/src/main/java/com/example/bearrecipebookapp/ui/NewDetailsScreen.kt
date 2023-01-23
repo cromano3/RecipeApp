@@ -492,28 +492,63 @@ fun NewDetailsScreen(
                         onDismissRequest = {},
                         text = {
                             Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
-                                    " from the Menu? (This will also remove it from the Shopping List.)" )
+                                    " from the Menu? (This will also remove it from the Shopping List.)",
+                                color = Color(0xFF682300),
+                                fontSize = 16.sp,
+                                textAlign = TextAlign.Center
+                            )
                         },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    onMenuRemoveClick(detailsScreenData)
-                                    detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
-                                    detailsScreenViewModel.cancelRemoveAlert()
-                                }
+                        buttons = {
+                            Row(
+                                modifier = Modifier
+                                    .padding(all = 8.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
-                                Text("Yes")
+
+                                Button(
+                                    modifier = Modifier.wrapContentSize(),
+                                    onClick = {
+                                        detailsScreenViewModel.cancelRemoveAlert()
+                                    },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                ) {
+                                    Text("Cancel")
+                                }
+
+                                Button(
+                                    modifier = Modifier.wrapContentSize(),
+                                    onClick = {
+                                        onMenuRemoveClick(detailsScreenData)
+                                        detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
+                                        detailsScreenViewModel.cancelRemoveAlert()
+                                    },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                ) {
+                                    Text("Yes")
+                                }
                             }
                         },
-                        dismissButton = {
-                            TextButton(
-                                onClick = {
-                                    detailsScreenViewModel.cancelRemoveAlert()
-                                }
-                            ) {
-                                Text("Cancel")
-                            }
-                        }
                     )
                 }
 
@@ -535,41 +570,70 @@ fun NewDetailsScreen(
                     AlertDialog(
                         onDismissRequest = {},
                         text = {
-                            Text(text = finishedText )
+                            Text(text = finishedText,
+                                color = Color(0xFF682300),
+                                fontSize = 16.sp,
+                                textAlign = TextAlign.Center
+                            )
                         },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    /**
-                                     * Add completed count +1 to Database
-                                     */
-
-                                    onCompleteClick(detailsScreenData)
-
-                                    detailsScreenViewModel.addCooked(detailsScreenData)
-
-                                    detailsScreenViewModel.addExp(uiAlertState.recipe)
-
-                                    if(detailsScreenData.recipeEntity.onMenu == 1) {
-                                        detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
-                                    }
-
-                                    detailsScreenViewModel.cancelCompletedAlert()
-
-                                }
+                        buttons = {
+                            Row(
+                                modifier = Modifier
+                                    .padding(all = 8.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
-                                Text("Yes")
+
+                                Button(
+                                    modifier = Modifier.wrapContentSize(),
+                                    onClick = {
+                                        detailsScreenViewModel.cancelCompletedAlert()
+                                    },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                ) {
+                                    Text("Cancel")
+                                }
+
+                                Button(
+                                    modifier = Modifier.wrapContentSize(),
+                                    onClick = {
+                                        /**
+                                         * Add completed count +1 to Database
+                                         */
+                                        onCompleteClick(detailsScreenData)
+                                        detailsScreenViewModel.addCooked(detailsScreenData)
+                                        detailsScreenViewModel.addExp(uiAlertState.recipe)
+                                        if(detailsScreenData.recipeEntity.onMenu == 1) {
+                                            detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
+                                        }
+                                        detailsScreenViewModel.cancelCompletedAlert()
+                                    },
+                                    elevation = ButtonDefaults.elevation(6.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    border = BorderStroke(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            startX = -10f,
+                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                ) {
+                                    Text("Yes")
+                                }
                             }
                         },
-                        dismissButton = {
-                            TextButton(
-                                onClick = {
-                                    detailsScreenViewModel.cancelCompletedAlert()
-                                }
-                            ) {
-                                Text("Cancel")
-                            }
-                        }
                     )
                 }
             }

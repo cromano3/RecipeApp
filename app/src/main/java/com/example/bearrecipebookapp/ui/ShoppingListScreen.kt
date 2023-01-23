@@ -343,7 +343,6 @@ fun ShoppingListScreen(
                                 },
                                 color = Color(0xFF682300),
                                 fontSize = 16.sp,
-//                                fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center
                             )
                         },
@@ -479,7 +478,6 @@ fun ShoppingListScreen(
 
     }
 }
-
 
 
 @Composable

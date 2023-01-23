@@ -331,10 +331,24 @@ fun BearRecipeApp(
                         }
                     },
                     onAddRecipeClick = {
+
                         navController.navigate("RecipeScreen"){
-                            popUpTo(navController.graph.findStartDestination().id)
-                            restoreState = false
+
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+
                         }
+
+                        val backStackEntry = navController.currentBackStackEntry
+                        val currentRoute = backStackEntry?.destination?.route
+
+                        if(currentRoute == "SearchScreen") {
+                            navController.popBackStack()
+                        }
+
                     }
                 )
             }

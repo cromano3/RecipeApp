@@ -106,8 +106,9 @@ fun RecipeCard(
                     brush = Brush.horizontalGradient(
                         colors = listOf(Color(0xFFb15f33),Color(0xFF682300)),
                         tileMode = TileMode.Mirror),
-                    shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
-            shape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp),
+                    shape = if(currentScreen == "FavoritesTab" ) RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp) else RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp),
+                ),
+            shape = if(currentScreen == "FavoritesTab" ) RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp) else RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp),
             color = Color.Transparent,
 //            elevation = 8.dp,
             )

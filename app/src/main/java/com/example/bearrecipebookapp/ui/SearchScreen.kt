@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -11,21 +12,23 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
@@ -308,39 +311,71 @@ fun SearchScreen(
                             AlertDialog(
                                 onDismissRequest = {},
                                 text = {
-                                    Text(text = "Are you sure you want to remove " + uiState.alertRecipe.recipeEntity.recipeName +
-                                            " from the Menu? (This will also remove it from the Shopping List.)" )
+                                    Text(
+                                        text = "Are you sure you want to remove " + uiState.alertRecipe.recipeEntity.recipeName +
+                                            " from the Menu? (This will also remove it from the Shopping List.)",
+                                        color = Color(0xFF682300),
+                                        fontSize = 16.sp,
+                                        textAlign = TextAlign.Center
+                                    )
                                 },
-                                confirmButton = {
-                                    TextButton(
-                                        onClick = {
-                                            onMenuClick(uiState.alertRecipe.recipeEntity)
-                                            searchScreenViewModel.toggleMenu(uiState.alertRecipe)
-                                            searchScreenViewModel.cancelAlert()
-                                        }
+                                buttons = {
+                                    Row(
+                                        modifier = Modifier
+                                            .padding(all = 8.dp)
+                                            .fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
                                     ) {
-                                        Text("Yes")
+
+                                        Button(
+                                            modifier = Modifier.wrapContentSize(),
+                                            onClick = {
+                                                searchScreenViewModel.cancelAlert()
+                                                      },
+                                            elevation = ButtonDefaults.elevation(6.dp),
+                                            shape = RoundedCornerShape(25.dp),
+                                            border = BorderStroke(
+                                                width = 2.dp,
+                                                brush = (Brush.horizontalGradient(
+                                                    startX = -10f,
+                                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                    tileMode = TileMode.Mirror
+                                                )),
+                                            ),
+                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                        ) {
+                                            Text("Cancel")
+                                        }
+
+                                        Button(
+                                            modifier = Modifier.wrapContentSize(),
+                                            onClick = {
+                                                onMenuClick(uiState.alertRecipe.recipeEntity)
+                                                searchScreenViewModel.toggleMenu(uiState.alertRecipe)
+                                                searchScreenViewModel.cancelAlert()
+                                            },
+                                            elevation = ButtonDefaults.elevation(6.dp),
+                                            shape = RoundedCornerShape(25.dp),
+                                            border = BorderStroke(
+                                                width = 2.dp,
+                                                brush = (Brush.horizontalGradient(
+                                                    startX = -10f,
+                                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                    tileMode = TileMode.Mirror
+                                                )),
+                                            ),
+                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                        ) {
+                                            Text("Yes")
+                                        }
                                     }
                                 },
-                                dismissButton = {
-                                    TextButton(
-                                        onClick = {
-                                            searchScreenViewModel.cancelAlert()
-                                        }
-                                    ) {
-                                        Text("Cancel")
-                                    }
-                                }
                             )
                         }
                     }
-
                 }
-
-
             }
         }
-
     }
 }
 
