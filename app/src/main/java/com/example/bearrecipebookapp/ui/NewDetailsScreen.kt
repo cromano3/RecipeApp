@@ -251,8 +251,6 @@ fun NewDetailsScreen(
                                         fontWeight = FontWeight.Bold
                                     )
                                 }
-
-
                             }
 
                             //

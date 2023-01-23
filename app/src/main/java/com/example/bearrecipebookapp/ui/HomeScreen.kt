@@ -14,8 +14,11 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -29,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -245,7 +249,10 @@ fun HomeScreen(
                                             ,
                                         )
 
-                                        Spacer(Modifier.fillMaxWidth().height(2.dp))
+                                        Spacer(
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .height(2.dp))
 
                                         Text(
                                             text = "Custom Recipes",
@@ -306,12 +313,108 @@ fun HomeScreen(
                                 homeScreenViewModel.cancelTutorialAlert()
                             },
                             text = {
-                                Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
-                                        " from the Menu? (This will also remove it from the Shopping List.)",
-                                    color = Color(0xFF682300),
-                                    fontSize = 16.sp,
-                                    textAlign = TextAlign.Center
-                                )
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        "You can click the ",
+                                        color = Color(0xFF682300),
+                                        fontSize = 16.sp,
+                                    )
+
+                                    FloatingActionButton(
+                                        onClick = { },
+                                        elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                                        modifier = Modifier
+                                            .padding(top = 8.dp, bottom = 8.dp)
+                                            .border(
+                                                width = 2.dp,
+                                                brush = (Brush.horizontalGradient(
+                                                    colors = listOf(
+                                                        Color(0xFFd8af84),
+                                                        Color(0xFFb15f33),
+
+                                                        ),
+                                                    tileMode = TileMode.Mirror
+                                                )),
+                                                shape = CircleShape
+                                            )
+                                            .size(36.dp)
+                                            //the background of the square for this button, it stays a square even tho
+                                            //we have shape = circle shape.  If this is not changed you see a solid
+                                            //square for the "background" of this button.
+                                            .background(color = Color.Transparent),
+                                        shape = CircleShape,
+                                        //this is the background color of the button after the "Shaping" is applied.
+                                        //it is different then the background attribute above.
+                                        backgroundColor = Color(0xFF682300)
+                                    ) {
+                                        Icon(
+                                            Icons.Outlined.Restaurant,
+                                            tint = Color(0xFFd8af84),
+                                            modifier = Modifier.size(20.dp),
+                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                            contentDescription = null
+                                        )
+                                    }
+
+                                    Text(
+                                        " to add a recipe to your Menu and its ingredients to your" +
+                                                " Shopping List, or you can click on any of the recipe cards to see " +
+                                                "all the detailed information about the recipe and then click on the ",
+                                        color = Color(0xFF682300),
+                                        fontSize = 16.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+
+                                    Surface(
+                                        modifier = Modifier
+                                            .padding(top = 8.dp, bottom = 8.dp)
+                                            .wrapContentSize()
+                                            .border(
+                                                width = 2.dp,
+                                                brush = (Brush.horizontalGradient(
+                                                    colors = listOf(
+                                                        Color(0xFFd8af84),
+                                                        Color(0xFFb15f33)
+                                                    ),
+                                                    tileMode = TileMode.Mirror
+                                                )),
+                                                shape = CircleShape
+                                            ),
+                                        shape = RoundedCornerShape(25.dp),
+                                        color = Color(0xFF682300),
+                                        elevation = 4.dp,
+                                    ) {
+                                        Row(
+                                            horizontalArrangement = Arrangement.Start,
+                                            modifier = Modifier.padding(
+                                                start = 12.dp,
+                                                end = 12.dp,
+                                                top = 12.dp,
+                                                bottom = 12.dp
+                                            )
+                                        )
+                                        {
+                                            Text(
+                                                text = "Add to Menu",
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterVertically)
+                                                    .alpha(1f),
+                                                color = Color(0xFFd8af84),
+                                                fontSize = 18.sp,
+                                                textAlign = TextAlign.Center,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+                                    }
+
+                                    Text(
+                                        " button.",
+                                        color = Color(0xFF682300),
+                                        fontSize = 16.sp,
+                                    )
+                                }
                             },
                             buttons = {
                                 Row(
