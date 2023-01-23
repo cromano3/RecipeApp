@@ -8,7 +8,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -41,7 +44,7 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructi
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.viewmodel.MenuScreenViewModel
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MenuScreen(
     onDetailsClick: () -> Unit,
@@ -81,7 +84,7 @@ fun MenuScreen(
 
         ) {
 
-            LazyColumn() {
+            LazyColumn {
                 items(menuScreenData, key = { it.recipeEntity.recipeName }) {
                     androidx.compose.animation.AnimatedVisibility(
                         visible = it.recipeEntity.onMenu == 1,
@@ -109,7 +112,7 @@ fun MenuScreen(
                             onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(it) },
                             onDetailsClick = {
 //                                coroutineScope.launch(Dispatchers.IO) {
-                                    menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
+                                    menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
                                     onDetailsClick()
 //                                }
 
@@ -118,7 +121,7 @@ fun MenuScreen(
 
                     }
                 }
-                item() {
+                item {
                     Spacer(
                         Modifier
                             .fillMaxWidth()
