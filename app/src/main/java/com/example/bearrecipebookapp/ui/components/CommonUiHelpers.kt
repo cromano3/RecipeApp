@@ -1,5 +1,6 @@
 package com.example.bearrecipebookapp.ui.components
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,14 +33,14 @@ import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 
 //the recipe card with name, ingredients, image, and instructions
 @Composable
 fun RecipeCard(
     modifier: Modifier,
-    recipeWithIngredients: RecipeWithIngredients,
+    recipeWithIngredientsAndInstructions: RecipeWithIngredientsAndInstructions,
     currentScreen: String,
     onFavoriteClick: () -> Unit,
     onRemoveClick: () -> Unit,
@@ -56,7 +57,7 @@ fun RecipeCard(
 
     var image = R.drawable.bagel
 
-    image = when(recipeWithIngredients.recipeEntity.recipeName){
+    image = when(recipeWithIngredientsAndInstructions.recipeEntity.recipeName){
         "Bagels" -> R.drawable.bagel2
         "Garlic Knots" -> R.drawable.garlic2
         "Cauliflower Walnut Tacos" -> R.drawable.cauliflower
@@ -78,11 +79,11 @@ fun RecipeCard(
     val remainder: Int
     val quotient: Int
 
-    if (recipeWithIngredients.recipeEntity.timeToMake <= 60) {
-        formattedTime = recipeWithIngredients.recipeEntity.timeToMake.toString() + " mins."
+    if (recipeWithIngredientsAndInstructions.recipeEntity.timeToMake <= 60) {
+        formattedTime = recipeWithIngredientsAndInstructions.recipeEntity.timeToMake.toString() + " mins."
     } else {
-        quotient = recipeWithIngredients.recipeEntity.timeToMake / 60
-        remainder = recipeWithIngredients.recipeEntity.timeToMake % 60
+        quotient = recipeWithIngredientsAndInstructions.recipeEntity.timeToMake / 60
+        remainder = recipeWithIngredientsAndInstructions.recipeEntity.timeToMake % 60
         if (remainder == 0) {
             formattedTime = "$quotient hrs."
         } else {
@@ -171,7 +172,7 @@ fun RecipeCard(
                                     modifier = Modifier.size(20.dp),
                                     tint = Color(0xFF000000),
                                 )
-                                if(recipeWithIngredients.recipeEntity.difficulty > 1){
+                                if(recipeWithIngredientsAndInstructions.recipeEntity.difficulty > 1){
                                     Icon(
                                         Icons.Outlined.Star,
                                         contentDescription = null,
@@ -180,7 +181,7 @@ fun RecipeCard(
                                     )
                                 }
                             }
-                            if(recipeWithIngredients.recipeEntity.difficulty > 2){
+                            if(recipeWithIngredientsAndInstructions.recipeEntity.difficulty > 2){
                                 Icon(
                                     Icons.Outlined.Star,
                                     contentDescription = null,
@@ -203,7 +204,7 @@ fun RecipeCard(
 
                             )
                             Text(
-                                text = "${recipeWithIngredients.recipeEntity.rating}" + "%",
+                                text = "${recipeWithIngredientsAndInstructions.recipeEntity.rating}" + "%",
                                 modifier = Modifier
                                     .padding(
                                         start = 0.dp,
@@ -249,7 +250,7 @@ fun RecipeCard(
                         val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
 
                         val icon: ImageVector =
-                            if (recipeWithIngredients.recipeEntity.isFavorite == 0) {
+                            if (recipeWithIngredientsAndInstructions.recipeEntity.isFavorite == 0) {
                                 Icons.Outlined.FavoriteBorder
 
                             } else {
@@ -292,66 +293,65 @@ fun RecipeCard(
                         val context = LocalContext.current
 
 
-//                        IconButton(
-//                            onClick = {
-//
-//                                var myString = recipeWithIngredients.recipeEntity.recipeName + '\n' + '\n'
-//
-//                                for(x in recipeWithIngredients.ingredientsList.indices){
-//                                    myString += recipeWithIngredients.ingredientsList[x].ingredientName + '\n'
-//                                }
-//
-//                                myString += '\n'
-//
-//                                for(x in recipeWithIngredients.instructionsList.indices){
-//                                    myString += recipeWithIngredients.instructionsList[x].instruction + '\n'
-//                                }
-//
-//                                val sendIntent: Intent = Intent().apply {
-//                                    action = Intent.ACTION_SEND
-//                                    putExtra(Intent.EXTRA_TEXT, myString)
-////                                    putExtra(Intent.EXTRA_TITLE, detailsScreenData.recipeEntity.recipeName)
-//                                    type = "text/plain"
-//                                }
-//
-//                                val shareIntent = Intent.createChooser(sendIntent, null)
-//
-//                                context.startActivity(shareIntent)
-//
-//
-//                            },
-//                            modifier = Modifier
-//                                .size(48.dp)
-//                                .background(color = Color.Transparent)
-//                                .padding(start = 8.dp)
-//                                .border(
-//                                    width = 2.dp,
-//                                    brush = (Brush.horizontalGradient(
-//                                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-//                                        tileMode = TileMode.Mirror,
-//                                    )),
-//                                    shape = CircleShape
-//                                ),
-//                            // color = Color.Transparent
-//
-//                        ) {
-//                            Icon(
-//                                imageVector = Icons.Outlined.Share,
-//                                contentDescription = null,
-//                                modifier = Modifier
-//                                    .size(24.dp),
-//                                tint = Color(0xFFd8af84)
-//                            )
-//                        }
+                        IconButton(
+                            onClick = {
 
+                                var myString = recipeWithIngredientsAndInstructions.recipeEntity.recipeName + '\n' + '\n'
 
-                        Icon(
-                            imageVector = Icons.Outlined.Share,
-                            contentDescription = null,
+                                for(x in recipeWithIngredientsAndInstructions.ingredientsList.indices){
+                                    myString += recipeWithIngredientsAndInstructions.ingredientsList[x].ingredientName + '\n'
+                                }
+
+                                myString += '\n'
+
+                                for(x in recipeWithIngredientsAndInstructions.instructionsList.indices){
+                                    myString += recipeWithIngredientsAndInstructions.instructionsList[x].instruction + '\n'
+                                }
+
+                                val sendIntent: Intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, myString)
+//                                    putExtra(Intent.EXTRA_TITLE, detailsScreenData.recipeEntity.recipeName)
+                                    type = "text/plain"
+                                }
+
+                                val shareIntent = Intent.createChooser(sendIntent, null)
+
+                                context.startActivity(shareIntent)
+
+                            },
                             modifier = Modifier
+                                .background(color = Color.Transparent)
+                                .padding(start = 0.dp)
+                                .border(
+                                    width = 2.dp,
+                                    brush = (Brush.horizontalGradient(
+                                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                        tileMode = TileMode.Mirror,
+                                    )),
+                                    shape = CircleShape
+                                )
                                 .size(36.dp),
-                            tint = Color(0xFFd8af84)
-                        )
+                            // color = Color.Transparent
+
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Share,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(20.dp),
+                                tint = Color(0xFFd8af84)
+                            )
+                        }
+
+
+//                        Icon(
+//                            imageVector = Icons.Outlined.Share,
+//                            contentDescription = null,
+//                            modifier = Modifier
+//                                .size(36.dp),
+//                            tint = Color(0xFFd8af84)
+//                        )
 
                     }
                 }
@@ -365,7 +365,7 @@ fun RecipeCard(
             ){
                 Text(
                     modifier = Modifier.align(Alignment.Center),
-                    text = recipeWithIngredients.recipeEntity.recipeName,
+                    text = recipeWithIngredientsAndInstructions.recipeEntity.recipeName,
                     fontSize = 36.sp,
                     color = Color(0xFFFFFFFF),
                     textAlign = TextAlign.Center,
@@ -593,7 +593,7 @@ fun DefaultPreview2() {
         ) {
             RecipeCard(
                 modifier = Modifier,
-                recipeWithIngredients = RecipeWithIngredients(
+                recipeWithIngredientsAndInstructions = RecipeWithIngredientsAndInstructions(
                     recipeEntity = myRE,
                     ingredientsList = myList
                 ),

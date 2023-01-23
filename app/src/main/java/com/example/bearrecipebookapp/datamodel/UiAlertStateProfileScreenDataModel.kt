@@ -4,5 +4,5 @@ import com.example.bearrecipebookapp.data.entity.RecipeEntity
 
 data class UiAlertStateProfileScreenDataModel(
     val showRemoveFavoriteAlert: Boolean = false,
-    val recipe: RecipeWithIngredients = RecipeWithIngredients(RecipeEntity(), listOf()),
+    val recipe: RecipeWithIngredientsAndInstructions = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf()),
 )

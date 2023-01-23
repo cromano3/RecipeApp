@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 
 @Dao
 interface MenuScreenDao {
 
     @Transaction
-    @Query("SELECT * FROM recipe_table WHERE on_menu > 0")
-    fun getData(): LiveData<List<RecipeWithIngredients>>
+    @Query("SELECT recipe_table.* FROM recipe_table INNER JOIN details_screen_target_table ON details_screen_target_table.target_name = recipe_table.recipe_name WHERE on_menu > 0")
+    fun getData(): LiveData<List<RecipeWithIngredientsAndInstructions>>
 
     @Transaction
     @Query("UPDATE recipe_table SET is_shopping_filter = 1")

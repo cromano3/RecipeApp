@@ -3,6 +3,7 @@ package com.example.bearrecipebookapp.data.repository
 import androidx.lifecycle.LiveData
 import com.example.bearrecipebookapp.data.dao.ProfileScreenDao
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -11,7 +12,7 @@ class ProfileScreenRepository(private val profileScreenDao: ProfileScreenDao) {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    var favoritesData: LiveData<List<RecipeWithIngredients>> = profileScreenDao.getFavorites()
+    var favoritesData: LiveData<List<RecipeWithIngredientsAndInstructions>> = profileScreenDao.getFavorites()
     var cookedData: LiveData<List<RecipeWithIngredients>> = profileScreenDao.getCooked()
     var expToGive: LiveData<Int> = profileScreenDao.getExpToGive()
     var exp: LiveData<Int> = profileScreenDao.getExp()

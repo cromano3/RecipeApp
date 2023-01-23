@@ -3,7 +3,7 @@ package com.example.bearrecipebookapp.data.repository
 import androidx.lifecycle.LiveData
 import com.example.bearrecipebookapp.data.dao.MenuScreenDao
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,7 +13,7 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
-    var menuScreenData: LiveData<List<RecipeWithIngredients>> = menuScreenDao.getData()
+    var menuScreenData: LiveData<List<RecipeWithIngredientsAndInstructions>> = menuScreenDao.getData()
 
 
 

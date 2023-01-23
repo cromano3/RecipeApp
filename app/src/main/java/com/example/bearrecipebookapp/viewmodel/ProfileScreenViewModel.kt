@@ -7,13 +7,10 @@ import androidx.compose.material.icons.outlined.Grade
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.bearrecipebookapp.data.repository.ProfileScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
-import com.example.bearrecipebookapp.datamodel.ProfileScreenDataModel
-import com.example.bearrecipebookapp.datamodel.ProfileScreenStarsDataModel
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
-import com.example.bearrecipebookapp.datamodel.UiAlertStateProfileScreenDataModel
+import com.example.bearrecipebookapp.data.repository.ProfileScreenRepository
+import com.example.bearrecipebookapp.datamodel.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -28,7 +25,7 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
     val uiAlertState = MutableStateFlow(UiAlertStateProfileScreenDataModel())
     val uiStarsState = MutableStateFlow(ProfileScreenStarsDataModel())
 
-    var favoritesData: LiveData<List<RecipeWithIngredients>>
+    var favoritesData: LiveData<List<RecipeWithIngredientsAndInstructions>>
     var cookedData: LiveData<List<RecipeWithIngredients>>
 
     var expToGive: LiveData<Int>
@@ -482,12 +479,12 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
     }
 
-    fun removeFavorite(recipe: RecipeWithIngredients){
+    fun removeFavorite(recipe: RecipeWithIngredientsAndInstructions){
             repository.updateFavorite(recipe.recipeEntity.recipeName, 0)
 
     }
 
-    fun triggerRemoveFavoriteAlert(recipe: RecipeWithIngredients){
+    fun triggerRemoveFavoriteAlert(recipe: RecipeWithIngredientsAndInstructions){
         uiAlertState.update { currentState ->
             currentState.copy(
                 showRemoveFavoriteAlert = true,
@@ -500,7 +497,7 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
         uiAlertState.update { currentState ->
             currentState.copy(
                 showRemoveFavoriteAlert = false,
-                recipe = RecipeWithIngredients(RecipeEntity(), listOf())
+                recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
             )
         }
     }

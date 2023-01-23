@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.data.repository.MenuScreenRepository
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.UiAlertStateMenuScreenDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +21,7 @@ class MenuScreenViewModel(application: Application): ViewModel() {
 
     private val repository: MenuScreenRepository
 
-    var menuScreenData: LiveData<List<RecipeWithIngredients>>
+    var menuScreenData: LiveData<List<RecipeWithIngredientsAndInstructions>>
 
     val uiAlertState = MutableStateFlow(UiAlertStateMenuScreenDataModel())
 
@@ -35,7 +35,7 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         menuScreenData = repository.menuScreenData
     }
 
-    fun triggerCompletedAlert(recipe: RecipeWithIngredients){
+    fun triggerCompletedAlert(recipe: RecipeWithIngredientsAndInstructions){
         uiAlertState.update { currentState ->
             currentState.copy(
                 showCompletedAlert = true,
@@ -48,12 +48,12 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         uiAlertState.update { currentState ->
             currentState.copy(
                 showCompletedAlert = false,
-                recipe = RecipeWithIngredients(RecipeEntity(), listOf())
+                recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
             )
         }
     }
 
-    fun triggerRemoveAlert(recipe: RecipeWithIngredients){
+    fun triggerRemoveAlert(recipe: RecipeWithIngredientsAndInstructions){
         uiAlertState.update { currentState ->
             currentState.copy(
                 showRemoveAlert = true,
@@ -82,11 +82,11 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         repository.addTutorialAlert()
     }
 
-    fun addCooked(recipe: RecipeWithIngredients){
+    fun addCooked(recipe: RecipeWithIngredientsAndInstructions){
         repository.addCooked(recipe.recipeEntity.recipeName)
     }
 
-    fun addExp(recipe: RecipeWithIngredients){
+    fun addExp(recipe: RecipeWithIngredientsAndInstructions){
 
         coroutineScope.launch(Dispatchers.IO) {
             val cookedCountMultiplier =
@@ -107,7 +107,7 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         uiAlertState.update { currentState ->
             currentState.copy(
                 showRemoveAlert = false,
-                recipe = RecipeWithIngredients(RecipeEntity(), listOf())
+                recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
             )
         }
     }
@@ -118,7 +118,7 @@ class MenuScreenViewModel(application: Application): ViewModel() {
     }
 
 
-    fun removeFromMenu(recipe: RecipeWithIngredients){
+    fun removeFromMenu(recipe: RecipeWithIngredientsAndInstructions){
 
         repository.cleanIngredients()
         repository.cleanShoppingFilters()
@@ -137,7 +137,7 @@ class MenuScreenViewModel(application: Application): ViewModel() {
 
     }
 
-    fun toggleFavorite(recipe: RecipeWithIngredients){
+    fun toggleFavorite(recipe: RecipeWithIngredientsAndInstructions){
         if(recipe.recipeEntity.isFavorite == 0){
             repository.updateFavorite(recipe.recipeEntity.recipeName, 1)
         }

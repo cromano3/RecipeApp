@@ -43,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.viewmodel.ProfileScreenViewModel
@@ -53,7 +54,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ProfileScreen(
-    onRemoveClick: (RecipeWithIngredients) -> Unit,
+    onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onDetailsClick: () -> Unit,
 ) {
 
@@ -837,7 +838,7 @@ fun ProfileScreen(
                         items(favoritesData, key = { it.recipeEntity.recipeName }) {
                             RecipeCard(
                                 modifier = Modifier,
-                                recipeWithIngredients = it,
+                                recipeWithIngredientsAndInstructions = it,
                                 currentScreen = "FavoritesTab",
                                 onFavoriteClick =
                                 {

@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 
 
 @Dao
@@ -12,7 +13,7 @@ interface ProfileScreenDao {
 
     @Transaction
     @Query("SELECT * FROM recipe_table WHERE is_favorite > 0")
-    fun getFavorites(): LiveData<List<RecipeWithIngredients>>
+    fun getFavorites(): LiveData<List<RecipeWithIngredientsAndInstructions>>
 
     @Transaction
     @Query("SELECT * FROM recipe_table WHERE cooked_count > 0 ORDER BY cooked_count DESC")

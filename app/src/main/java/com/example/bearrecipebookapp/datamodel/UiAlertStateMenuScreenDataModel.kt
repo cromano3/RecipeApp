@@ -6,6 +6,6 @@ data class UiAlertStateMenuScreenDataModel(
     val showRemoveAlert: Boolean = false,
     val showCompletedAlert: Boolean = false,
     val showAddRecipeAlert: Boolean = false,
-    val recipe: RecipeWithIngredients = RecipeWithIngredients(RecipeEntity(), listOf()),
+    val recipe: RecipeWithIngredientsAndInstructions = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf()),
 )
 

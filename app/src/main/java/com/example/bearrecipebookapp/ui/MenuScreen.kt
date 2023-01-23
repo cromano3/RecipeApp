@@ -37,7 +37,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.viewmodel.MenuScreenViewModel
 
@@ -45,9 +45,9 @@ import com.example.bearrecipebookapp.viewmodel.MenuScreenViewModel
 @Composable
 fun MenuScreen(
     onDetailsClick: () -> Unit,
-    onFavoriteClick: (RecipeWithIngredients) -> Unit,
-    onCompleteClick: (RecipeWithIngredients) -> Unit,
-    onRemoveClick: (RecipeWithIngredients) -> Unit,
+    onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onAddRecipeClick: () -> Unit,
     onSystemBackClick: () -> Unit,
 ) {
@@ -98,7 +98,7 @@ fun MenuScreen(
                                     )
                                 ),
 //                                .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
-                            recipeWithIngredients = it,
+                            recipeWithIngredientsAndInstructions = it,
                             currentScreen = "WeeklyMenuScreen",
                             onFavoriteClick =
                             {
