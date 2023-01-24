@@ -84,8 +84,20 @@ fun ProfileScreen(
 
         val coroutineScope = rememberCoroutineScope()
 
-        val animatedFirstValue = remember { Animatable(0f) }
+        val animatedFirstValue = remember {Animatable(0f) }
 
+
+//        val animatedFirstValue =
+//            remember{
+//                lazy{
+//                    coroutineScope.launch{
+//                        val result = async { Animatable(profileScreenViewModel.getStart()) }
+//                        result.await()
+//                    }
+//
+//                    Animatable(0f)
+//                }
+//            }
 
 //        val animatedFirstValue1 by lazy {
 //            runBlocking {

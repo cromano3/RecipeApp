@@ -99,7 +99,7 @@ fun ShoppingListScreen(
 //            LaunchedEffect(Unit) {
             coroutineScope.launch {
 
-                delay(250)
+                delay(420)
                 listState.animateScrollToItem(0)
                 listState2.animateScrollToItem(0)
                 filterWasClicked = false
@@ -138,7 +138,7 @@ fun ShoppingListScreen(
 
                     items(selectedIngredients, key = { it.ingredientName }) {
                         ShoppingListItemWithButton(
-                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(200, delay = 0))),
+                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
                             ingredientEntity = it,
                             isWorking = uiState.isWorking,
                             onClickIngredientSelected = { shoppingListScreenViewModel.ingredientSelected(it) },
@@ -247,6 +247,7 @@ fun ShoppingListScreen(
                         RecipeIconWithButton(
                             modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(200, delay = 0))),
                             recipeWithIngredients = it,
+                            filterWasClicked = filterWasClicked,
                             isWorking = uiState.isWorking,
                             isClickable = shoppingListScreenData.size != 1,
                             onFilterClick = {shoppingListScreenViewModel.filterBy(it); filterWasClicked = !filterWasClicked},
@@ -486,6 +487,7 @@ fun RecipeIconWithButton(
     modifier: Modifier,
     recipeWithIngredients: RecipeWithIngredients,
     isWorking: Boolean,
+    filterWasClicked: Boolean,
     isClickable: Boolean,
     onFilterClick: () -> Unit,
     onDetailsClick: () -> Unit
@@ -545,7 +547,7 @@ fun RecipeIconWithButton(
                     shape = RoundedCornerShape(15.dp)
                 )
                 .clickable(
-                    enabled = !isWorking && isClickable,
+                    enabled = !isWorking && isClickable && !filterWasClicked,
                     onClick = onFilterClick),
             shape = RoundedCornerShape(15.dp),
             elevation = 6.dp,
@@ -605,7 +607,7 @@ fun RecipeIconWithButton(
                     )),
                     shape = RoundedCornerShape(25.dp)
                 )
-                .clickable(enabled = !isWorking) { onDetailsClick() },
+                .clickable(enabled = !isWorking && !filterWasClicked) { onDetailsClick() },
  //               .background(
 //                    brush = Brush.horizontalGradient(
 //                        colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),

@@ -134,10 +134,11 @@ class HomeScreenViewModel(application: Application): ViewModel() {
                 uiFiltersState.update { currentState ->
                     currentState.copy(
                         showAllRecipes = false,
+                        triggerScroll = true
                     )
                 }
 
-                //allows fade out animation
+                //allows fade out animation 300
                 delay(300)
 
                 uiFiltersState.update { currentState ->
@@ -146,10 +147,8 @@ class HomeScreenViewModel(application: Application): ViewModel() {
                     )
                 }
 
-
                 withContext(Dispatchers.IO) { repository.removeOtherFilters(filter.filterName) }
                 withContext(Dispatchers.IO) { repository.filterBy(filter.filterName)  }
-
 
                 var match = false
 
@@ -177,7 +176,6 @@ class HomeScreenViewModel(application: Application): ViewModel() {
                 uiFiltersState.update { currentState ->
                     currentState.copy(
                         showAllRecipes = true,
-                        triggerScroll = true
                     )
                 }
 

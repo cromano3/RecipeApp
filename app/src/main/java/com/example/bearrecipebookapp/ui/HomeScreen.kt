@@ -7,6 +7,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -111,9 +112,11 @@ fun HomeScreen(
 
         if(uiFiltersState.triggerScroll){
             coroutineScope.launch {
-                delay(200)
-                listState.animateScrollToItem(0)
                 homeScreenViewModel.cancelScroll()
+                delay(420)
+//                listState.animateScrollToItem(0)
+                listState.animateScrollBy(value= -5000f, animationSpec = tween(durationMillis = 1000))
+
             }
         }
 
@@ -137,7 +140,7 @@ fun HomeScreen(
 
                             FiltersButton(
                                 modifier = Modifier
-                                    .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
+                                    .animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
                                 filterEntity = it,
                                 isWorking = uiFiltersState.isWorking,
                                 onFilterClick =
