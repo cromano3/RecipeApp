@@ -45,6 +45,8 @@ import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.RecipeWithInstructions
+import com.example.bearrecipebookapp.ui.components.BasicAlert
+import com.example.bearrecipebookapp.ui.components.StarRatingAlert
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.viewmodel.DetailsScreenViewModel
 
@@ -62,9 +64,9 @@ fun NewDetailsScreen(
 
     val owner = LocalViewModelStoreOwner.current
 
-    owner?.let {
+    owner?.let {viewModelStoreOwner ->
         val detailsScreenViewModel: DetailsScreenViewModel = viewModel(
-            it,
+            viewModelStoreOwner,
             "DetailsScreenViewModel",
             DetailsScreenViewModelFactory(
                 LocalContext.current.applicationContext
@@ -206,7 +208,8 @@ fun NewDetailsScreen(
                                         width = 2.dp,
                                         brush = (Brush.horizontalGradient(
                                             colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror)),
+                                            tileMode = TileMode.Mirror
+                                        )),
                                         shape = CircleShape
                                     )
                                     .clickable(
@@ -262,7 +265,8 @@ fun NewDetailsScreen(
                                         width = 2.dp,
                                         brush = (Brush.horizontalGradient(
                                             colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror)),
+                                            tileMode = TileMode.Mirror
+                                        )),
                                         shape = CircleShape
                                     )
                                     .clickable(
@@ -614,7 +618,7 @@ fun NewDetailsScreen(
                                         if(detailsScreenData.recipeEntity.onMenu == 1) {
                                             detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
                                         }
-                                        detailsScreenViewModel.cancelCompletedAlert()
+                                        detailsScreenViewModel.triggerRatingAlert()
                                     },
                                     elevation = ButtonDefaults.elevation(6.dp),
                                     shape = RoundedCornerShape(25.dp),
@@ -633,6 +637,35 @@ fun NewDetailsScreen(
                             }
                         },
                     )
+                }
+                
+                if(uiAlertState.showRatingAlert){
+                    StarRatingAlert(
+                        title = "",
+                        starCount = uiAlertState.starCount,
+                        confirmButtonText = "Confirm",
+                        cancelButtonText = "Cancel",
+                        onStarClick = { detailsScreenViewModel.updateStarCount(it) },
+                        onConfirmClick =  { detailsScreenViewModel.confirmRating() },
+                        onCancelClick = { detailsScreenViewModel.cancelRatingAlert() },
+                        onDismiss = { detailsScreenViewModel.cancelRatingAlert() },
+                    )
+                }
+
+                if(uiAlertState.showFavoriteAlert){
+                    BasicAlert(
+                        title = ,
+                        text = ,
+                        confirmButtonText = ,
+                        cancelButtonText = ,
+                        onConfirmClick = { /*TODO*/ },
+                        onCancelClick = { /*TODO*/ }) {
+                        
+                    }
+
+                }
+                if(uiAlertState.showWriteReviewAlert){
+                    
                 }
             }
         }

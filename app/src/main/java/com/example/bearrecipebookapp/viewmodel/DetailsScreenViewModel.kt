@@ -3,9 +3,9 @@ package com.example.bearrecipebookapp.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.bearrecipebookapp.data.repository.DetailsScreenRepository
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
+import com.example.bearrecipebookapp.data.repository.DetailsScreenRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.UiAlertStateDetailsScreenDataModel
 import kotlinx.coroutines.CoroutineScope
@@ -93,6 +93,61 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
             currentState.copy(
                 showCompletedAlert = false,
                 recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
+            )
+        }
+    }
+
+    fun triggerRatingAlert(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showCompletedAlert = false,
+                showRatingAlert = true,
+            )
+        }
+    }
+
+    fun cancelRatingAlert(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showRatingAlert = false,
+                starCount = 0,
+            )
+        }
+    }
+
+    fun confirmRating(){
+
+        /** write rating to database here */
+
+        if (uiAlertState.value.starCount == 1){
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showRatingAlert = false,
+                    showWriteReviewAlert = true,
+                    starCount = 0,
+                )
+            }
+        }
+        else if(uiAlertState.value.starCount > 1){
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showRatingAlert = false,
+                    showFavoriteAlert = true,
+                    starCount = 0,
+                )
+            }
+        }
+        else {
+            cancelRatingAlert()
+        }
+
+    }
+
+
+    fun updateStarCount(count: Int){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                starCount = count,
             )
         }
     }
