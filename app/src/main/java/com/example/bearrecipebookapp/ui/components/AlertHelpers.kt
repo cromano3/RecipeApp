@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun BasicAlert(
-    title: String,
     text: String,
     confirmButtonText: String,
     cancelButtonText: String,
@@ -33,7 +32,6 @@ fun BasicAlert(
 ){
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { if(title != "") AlertTitle(title) },
         text = { AlertText(text) },
         buttons = { AlertButtonsRow(confirmButtonText, cancelButtonText, onConfirmClick, onCancelClick) },
     )
@@ -41,7 +39,6 @@ fun BasicAlert(
 
 @Composable
 fun StarRatingAlert(
-    title: String,
     starCount: Int,
     confirmButtonText: String,
     cancelButtonText: String,
@@ -54,7 +51,6 @@ fun StarRatingAlert(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { AlertTitle(title) },
         text =
         {
             AlertStarRating(
@@ -73,11 +69,22 @@ fun AlertStarRating(
     starCount: Int,
     onStarClick: (Int) -> Unit,
 ){
-    Row(Modifier.padding(all = 8.dp)
+    Row(Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
     ){
-        AlertStar(starCount > 0) { if (starCount > 0) onStarClick(0) else onStarClick(1) }
-        AlertStar(starCount > 1) { if (starCount > 1) onStarClick(1) else onStarClick(2) }
-        AlertStar(starCount > 2) { if (starCount > 2) onStarClick(2) else onStarClick(3) }
+        AlertStar(starCount > 0) { onStarClick(starUpdater(1, starCount)) }
+        AlertStar(starCount > 1) { onStarClick(starUpdater(2, starCount)) }
+        AlertStar(starCount > 2) { onStarClick(starUpdater(3, starCount)) }
+    }
+}
+
+private fun starUpdater(clickedStar: Int, starCount: Int): Int{
+
+    return when(clickedStar){
+        1 -> if(starCount == 1) 0 else 1
+        2 -> if(starCount == 2) 1 else 2
+        3 -> if(starCount == 3) 2 else 3
+        else -> 0
     }
 }
 
@@ -85,35 +92,36 @@ fun AlertStarRating(
 fun AlertStar(
     filled: Boolean,
     onClick: () -> Unit
-){
-    Surface(
-        elevation = 8.dp,
-        modifier = Modifier
-            .padding(all = 8.dp)
-            .border(
-                width = 2.dp,
-                brush = (Brush.horizontalGradient(
-                    colors = listOf(
-                        Color(0xFFd8af84),
-                        Color(0xFFb15f33)
-                    ),
-                    tileMode = TileMode.Mirror
-                )),
-                shape = CircleShape
-            )
-            .size(48.dp)
-            .clickable { onClick() },
-        shape = CircleShape,
-        color = Color.Transparent
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(
-                if (filled) Icons.Filled.Grade else Icons.Outlined.Grade,
-                tint = Color(0xFFd8af84),
-                modifier = Modifier.size(36.dp),
-                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                contentDescription = null
-            )
+) {
+    Box() {
+        Surface(
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp)
+                .border(
+                    width = 2.dp,
+                    brush = (Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFFd8af84),
+                            Color(0xFFb15f33)
+                        ),
+                        tileMode = TileMode.Mirror
+                    )),
+                    shape = CircleShape
+                )
+                .size(48.dp)
+                .clickable { onClick() },
+            shape = CircleShape,
+            color = Color(0xFF682300)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    if (filled) Icons.Filled.Grade else Icons.Outlined.Grade,
+                    tint = Color(0xFFd8af84),
+                    modifier = Modifier.size(48.dp),
+                    // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                    contentDescription = null
+                )
+            }
         }
     }
 }

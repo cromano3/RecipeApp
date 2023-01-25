@@ -143,6 +143,58 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
     }
 
+    fun addToFavorite(){
+
+        /** add to favorites in DB */
+
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showFavoriteAlert = false,
+                showWriteReviewAlert = true,
+            )
+        }
+    }
+
+    fun doNotAddToFavorite(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showFavoriteAlert = false,
+                showWriteReviewAlert = true,
+            )
+        }
+    }
+
+    fun cancelFavoriteAlert(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showFavoriteAlert = false,
+            )
+        }
+    }
+
+    fun writeReview() {
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showWriteReviewAlert = false,
+                showReviewTextInputAlert = true
+            )
+        }
+    }
+    fun doNotAddWriteReview() {
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showWriteReviewAlert = false,
+            )
+        }
+    }
+    fun cancelShowWriteReviewAlert() {
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showWriteReviewAlert = false
+            )
+        }
+    }
+
 
     fun updateStarCount(count: Int){
         uiAlertState.update { currentState ->

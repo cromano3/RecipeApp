@@ -641,7 +641,6 @@ fun NewDetailsScreen(
                 
                 if(uiAlertState.showRatingAlert){
                     StarRatingAlert(
-                        title = "",
                         starCount = uiAlertState.starCount,
                         confirmButtonText = "Confirm",
                         cancelButtonText = "Cancel",
@@ -654,18 +653,26 @@ fun NewDetailsScreen(
 
                 if(uiAlertState.showFavoriteAlert){
                     BasicAlert(
-                        title = ,
-                        text = ,
-                        confirmButtonText = ,
-                        cancelButtonText = ,
-                        onConfirmClick = { /*TODO*/ },
-                        onCancelClick = { /*TODO*/ }) {
+                        text = "Add to your Favorites?",
+                        confirmButtonText = "Yes",
+                        cancelButtonText = "No",
+                        onConfirmClick = { detailsScreenViewModel.addToFavorite() },
+                        onCancelClick = { detailsScreenViewModel.doNotAddToFavorite() },
+                        onDismiss = { detailsScreenViewModel.cancelFavoriteAlert() }
+                    )
                         
-                    }
+
 
                 }
                 if(uiAlertState.showWriteReviewAlert){
-                    
+                    BasicAlert(
+                        text = "Leave a tip or comment about this recipe?",
+                        confirmButtonText = "Yes",
+                        cancelButtonText = "No",
+                        onConfirmClick = { detailsScreenViewModel.writeReview() },
+                        onCancelClick = { detailsScreenViewModel.doNotAddWriteReview() },
+                        onDismiss = { detailsScreenViewModel.cancelShowWriteReviewAlert() }
+                    )
                 }
             }
         }
