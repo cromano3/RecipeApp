@@ -1,7 +1,6 @@
 package com.example.bearrecipebookapp.ui.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -9,7 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Grade
-import androidx.compose.material.icons.outlined.Grade
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,18 +45,20 @@ fun StarRatingAlert(
     onCancelClick: () -> Unit,
     onDismiss: () -> Unit,
     onStarClick: (Int) -> Unit,
+    reviewText: String,
+    onTextChange: (String) -> Unit
 ){
 //    var starCount by remember { mutableStateOf(0) }
+
 
     AlertDialog(
         onDismissRequest = onDismiss,
         text =
         {
-            AlertStarRating(
-                starCount = starCount,
-                onStarClick = {onStarClick(it)}
-//                { starCount = it }
-            )
+            Column{
+//                AlertStarRating(starCount = starCount, onStarClick = { onStarClick(it) })
+                AlertReviewBox(reviewText) { onTextChange(it) }
+            }
         },
         buttons = { AlertButtonsRow(confirmButtonText, cancelButtonText, onConfirmClick, onCancelClick) },
     )
@@ -65,28 +66,48 @@ fun StarRatingAlert(
 }
 
 @Composable
+fun AlertReviewBox(reviewText: String, onTextChange: (String) -> Unit){
+    Column{
+        Text(text = "Share a tip for other chefs.")
+        TextField(
+            value = reviewText,
+            onValueChange = {onTextChange(it)},
+        )
+    }
+}
+
+@Composable
 fun AlertStarRating(
     starCount: Int,
     onStarClick: (Int) -> Unit,
 ){
-    Row(Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp),
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 8.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ){
-        AlertStar(starCount > 0) { onStarClick(starUpdater(1, starCount)) }
-        AlertStar(starCount > 1) { onStarClick(starUpdater(2, starCount)) }
-        AlertStar(starCount > 2) { onStarClick(starUpdater(3, starCount)) }
+        for(x in 1..5){
+            AlertStar(filled = starCount >= x) { onStarClick(x) }
+        }
+//        AlertStar(starCount > 0) { onStarClick(starUpdater(1)) }
+//        AlertStar(starCount > 1) { onStarClick(starUpdater(2)) }
+//        AlertStar(starCount > 2) { onStarClick(starUpdater(3)) }
     }
 }
 
-private fun starUpdater(clickedStar: Int, starCount: Int): Int{
 
-    return when(clickedStar){
-        1 -> if(starCount == 1) 0 else 1
-        2 -> if(starCount == 2) 1 else 2
-        3 -> if(starCount == 3) 2 else 3
-        else -> 0
-    }
-}
+
+
+//private fun starUpdater(clickedStar: Int, starCount: Int): Int{
+//
+//    return when(clickedStar){
+//        1 -> if(starCount == 1) 0 else 1
+//        2 -> if(starCount == 2) 1 else 2
+//        3 -> if(starCount == 3) 2 else 3
+//        else -> 0
+//    }
+//}
 
 @Composable
 fun AlertStar(
@@ -97,27 +118,27 @@ fun AlertStar(
         Surface(
             modifier = Modifier
                 .padding(start = 8.dp, end = 8.dp)
-                .border(
-                    width = 2.dp,
-                    brush = (Brush.horizontalGradient(
-                        colors = listOf(
-                            Color(0xFFd8af84),
-                            Color(0xFFb15f33)
-                        ),
-                        tileMode = TileMode.Mirror
-                    )),
-                    shape = CircleShape
-                )
-                .size(48.dp)
+//                .border(
+//                    width = 2.dp,
+//                    brush = (Brush.horizontalGradient(
+//                        colors = listOf(
+//                            Color(0xFFd8af84),
+//                            Color(0xFFb15f33)
+//                        ),
+//                        tileMode = TileMode.Mirror
+//                    )),
+//                    shape = CircleShape
+//                )
+                .size(36.dp)
                 .clickable { onClick() },
             shape = CircleShape,
-            color = Color(0xFF682300)
+            color = Color(0xFFd8af84)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
-                    if (filled) Icons.Filled.Grade else Icons.Outlined.Grade,
-                    tint = Color(0xFFd8af84),
-                    modifier = Modifier.size(48.dp),
+                    if (filled) Icons.Filled.Grade else Icons.Outlined.StarOutline,
+                    tint = Color( 0xFF682300),
+                    modifier = Modifier.size(36.dp),
                     // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
                     contentDescription = null
                 )

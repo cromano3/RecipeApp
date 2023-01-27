@@ -648,6 +648,8 @@ fun NewDetailsScreen(
                         onConfirmClick =  { detailsScreenViewModel.confirmRating() },
                         onCancelClick = { detailsScreenViewModel.cancelRatingAlert() },
                         onDismiss = { detailsScreenViewModel.cancelRatingAlert() },
+                        reviewText = uiAlertState.reviewText,
+                        onTextChange = { detailsScreenViewModel.updateReviewText(it)}
                     )
                 }
 
@@ -664,16 +666,16 @@ fun NewDetailsScreen(
 
 
                 }
-                if(uiAlertState.showWriteReviewAlert){
-                    BasicAlert(
-                        text = "Leave a tip or comment about this recipe?",
-                        confirmButtonText = "Yes",
-                        cancelButtonText = "No",
-                        onConfirmClick = { detailsScreenViewModel.writeReview() },
-                        onCancelClick = { detailsScreenViewModel.doNotAddWriteReview() },
-                        onDismiss = { detailsScreenViewModel.cancelShowWriteReviewAlert() }
-                    )
-                }
+//                if(uiAlertState.showWriteReviewAlert){
+//                    BasicAlert(
+//                        text = "Leave a tip or comment about this recipe?",
+//                        confirmButtonText = "Yes",
+//                        cancelButtonText = "No",
+//                        onConfirmClick = { detailsScreenViewModel.writeReview() },
+//                        onCancelClick = { detailsScreenViewModel.doNotAddWriteReview() },
+//                        onDismiss = { detailsScreenViewModel.cancelShowWriteReviewAlert() }
+//                    )
+//                }
             }
         }
     }

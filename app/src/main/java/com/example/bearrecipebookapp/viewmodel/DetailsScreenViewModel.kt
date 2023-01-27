@@ -111,6 +111,7 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
             currentState.copy(
                 showRatingAlert = false,
                 starCount = 0,
+                reviewText = ""
             )
         }
     }
@@ -119,12 +120,15 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
         /** write rating to database here */
 
+        /**write review to database here*/
+
         if (uiAlertState.value.starCount == 1){
             uiAlertState.update { currentState ->
                 currentState.copy(
                     showRatingAlert = false,
-                    showWriteReviewAlert = true,
+//                    showWriteReviewAlert = true,
                     starCount = 0,
+                    reviewText = ""
                 )
             }
         }
@@ -134,6 +138,7 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
                     showRatingAlert = false,
                     showFavoriteAlert = true,
                     starCount = 0,
+                    reviewText = ""
                 )
             }
         }
@@ -143,6 +148,14 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
     }
 
+    fun updateReviewText(text: String){
+        uiAlertState.update { it ->
+            it.copy(
+                reviewText = text
+            )
+        }
+    }
+
     fun addToFavorite(){
 
         /** add to favorites in DB */
@@ -150,7 +163,7 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         uiAlertState.update { currentState ->
             currentState.copy(
                 showFavoriteAlert = false,
-                showWriteReviewAlert = true,
+//                showWriteReviewAlert = true,
             )
         }
     }
@@ -159,7 +172,7 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         uiAlertState.update { currentState ->
             currentState.copy(
                 showFavoriteAlert = false,
-                showWriteReviewAlert = true,
+//                showWriteReviewAlert = true,
             )
         }
     }
@@ -172,28 +185,28 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         }
     }
 
-    fun writeReview() {
-        uiAlertState.update { currentState ->
-            currentState.copy(
-                showWriteReviewAlert = false,
-                showReviewTextInputAlert = true
-            )
-        }
-    }
-    fun doNotAddWriteReview() {
-        uiAlertState.update { currentState ->
-            currentState.copy(
-                showWriteReviewAlert = false,
-            )
-        }
-    }
-    fun cancelShowWriteReviewAlert() {
-        uiAlertState.update { currentState ->
-            currentState.copy(
-                showWriteReviewAlert = false
-            )
-        }
-    }
+//    fun writeReview() {
+//        uiAlertState.update { currentState ->
+//            currentState.copy(
+//                showWriteReviewAlert = false,
+//                showReviewTextInputAlert = true
+//            )
+//        }
+//    }
+//    fun doNotAddWriteReview() {
+//        uiAlertState.update { currentState ->
+//            currentState.copy(
+//                showWriteReviewAlert = false,
+//            )
+//        }
+//    }
+//    fun cancelShowWriteReviewAlert() {
+//        uiAlertState.update { currentState ->
+//            currentState.copy(
+//                showWriteReviewAlert = false
+//            )
+//        }
+//    }
 
 
     fun updateStarCount(count: Int){

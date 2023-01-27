@@ -8,8 +8,9 @@ data class UiAlertStateDetailsScreenDataModel(
     val showCompletedAlert: Boolean = false,
     val showRatingAlert: Boolean = false,
     val showFavoriteAlert: Boolean = false,
-    val showWriteReviewAlert: Boolean = false,
-    val showReviewTextInputAlert: Boolean = false,
+//    val showWriteReviewAlert: Boolean = false,
+//    val showReviewTextInputAlert: Boolean = false,
+    val reviewText: String = "",
     val recipe: RecipeWithIngredientsAndInstructions = RecipeWithIngredientsAndInstructions(
         RecipeEntity(), listOf(), listOf()),
 )
