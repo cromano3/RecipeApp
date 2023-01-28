@@ -186,6 +186,28 @@ fun BearRecipeApp(
                 }},)
             }
 
+            /**Review Screen*/
+            //          composable(route = "DetailsScreen/{recipeName}"){ it ->
+//            val recipeName = it.arguments?.getString("recipeName")
+//            recipeName?.let{NewDetailsScreen(recipeName = recipeName, onGoBackClick = {})}
+            composable(
+                route = "ReviewScreen/{recipeName}",
+                enterTransition = {
+                    fadeIn(animationSpec = tween(700))
+                },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(700))
+
+                },
+            ){
+                val recipeName = it.arguments?.getString("recipeName")
+                ReviewScreen(
+                    recipeName = recipeName ?: "",
+                    onCancelClick = { navController.popBackStack() },
+                    onConfirmClick = {},
+                )
+            }
+
             composable(route = "AddRecipeScreen"){ AddRecipeScreen() }
 
 //            composable(route = "RecipeScreen/{triggerTutorialAlert}",
@@ -440,7 +462,8 @@ fun BearRecipeApp(
                                     duration = SnackbarDuration.Short
                                 )
                             }
-                        }
+                        },
+                        navigateToReviewScreen = { navController.navigate("ReviewScreen/$it") }
                     )
 
             }

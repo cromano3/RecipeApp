@@ -118,35 +118,80 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
     fun confirmRating(){
 
-        /** write rating to database here */
 
-        /**write review to database here*/
+            if(uiAlertState.value.isThumbUpSelected){
 
-        if (uiAlertState.value.starCount == 1){
-            uiAlertState.update { currentState ->
-                currentState.copy(
-                    showRatingAlert = false,
-//                    showWriteReviewAlert = true,
-                    starCount = 0,
-                    reviewText = ""
-                )
+                /** write rating to database here */
+
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showFavoriteAlert = true,
+                        showRatingAlert = false,
+                        isThumbUpSelected = false,
+                        isThumbDownSelected = false
+                    )
+                }
+
             }
-        }
-        else if(uiAlertState.value.starCount > 1){
-            uiAlertState.update { currentState ->
-                currentState.copy(
-                    showRatingAlert = false,
-                    showFavoriteAlert = true,
-                    starCount = 0,
-                    reviewText = ""
-                )
+            else if (uiAlertState.value.isThumbDownSelected){
+
+                /** write rating to database here */
+
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showLeaveReviewAlert = true,
+                        showRatingAlert = false,
+                        isThumbUpSelected = false,
+                        isThumbDownSelected = false
+                    )
+                }
+
             }
-        }
-        else {
-            cancelRatingAlert()
-        }
+            else{
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showRatingAlert = false,
+                        isThumbUpSelected = false,
+                        isThumbDownSelected = false
+                    )
+                }
+            }
+
+
+
+
 
     }
+
+//    fun confirmRating(){
+//
+//        /** write rating to database here */
+//
+//        if (uiAlertState.value.starCount == 1){
+//            uiAlertState.update { currentState ->
+//                currentState.copy(
+//                    showRatingAlert = false,
+////                    showWriteReviewAlert = true,
+//                    starCount = 0,
+//                    reviewText = ""
+//                )
+//            }
+//        }
+//        else if(uiAlertState.value.starCount > 1){
+//            uiAlertState.update { currentState ->
+//                currentState.copy(
+//                    showRatingAlert = false,
+//                    showFavoriteAlert = true,
+//                    starCount = 0,
+//                    reviewText = ""
+//                )
+//            }
+//        }
+//        else {
+//            cancelRatingAlert()
+//        }
+//
+//    }
 
     fun updateReviewText(text: String){
         uiAlertState.update { it ->
@@ -163,7 +208,8 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         uiAlertState.update { currentState ->
             currentState.copy(
                 showFavoriteAlert = false,
-//                showWriteReviewAlert = true,
+                showLeaveReviewAlert = true,
+
             )
         }
     }
@@ -172,7 +218,8 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         uiAlertState.update { currentState ->
             currentState.copy(
                 showFavoriteAlert = false,
-//                showWriteReviewAlert = true,
+                showLeaveReviewAlert = true,
+
             )
         }
     }
@@ -185,28 +232,45 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         }
     }
 
+    fun thumbDownClicked(){
+        uiAlertState.update {
+            it.copy(
+                isThumbDownSelected = !it.isThumbDownSelected,
+                isThumbUpSelected = false
+            )
+        }
+    }
+
+    fun thumbUpClicked(){
+        uiAlertState.update {
+            it.copy(
+                isThumbDownSelected = false,
+                isThumbUpSelected = !it.isThumbUpSelected
+            )
+        }
+    }
+
 //    fun writeReview() {
 //        uiAlertState.update { currentState ->
 //            currentState.copy(
-//                showWriteReviewAlert = false,
-//                showReviewTextInputAlert = true
+//                showLeaveReviewAlert = false,
 //            )
 //        }
 //    }
 //    fun doNotAddWriteReview() {
 //        uiAlertState.update { currentState ->
 //            currentState.copy(
-//                showWriteReviewAlert = false,
+//                showLeaveReviewAlert = false,
 //            )
 //        }
 //    }
-//    fun cancelShowWriteReviewAlert() {
-//        uiAlertState.update { currentState ->
-//            currentState.copy(
-//                showWriteReviewAlert = false
-//            )
-//        }
-//    }
+    fun cancelShowWriteReviewAlert() {
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showLeaveReviewAlert = false
+            )
+        }
+    }
 
 
     fun updateStarCount(count: Int){

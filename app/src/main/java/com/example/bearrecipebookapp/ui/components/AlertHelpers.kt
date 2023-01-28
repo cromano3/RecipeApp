@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -8,7 +9,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Grade
+import androidx.compose.material.icons.filled.ThumbDown
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.StarOutline
+import androidx.compose.material.icons.outlined.ThumbDown
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +40,105 @@ fun BasicAlert(
         buttons = { AlertButtonsRow(confirmButtonText, cancelButtonText, onConfirmClick, onCancelClick) },
     )
 }
+
+@Composable
+fun ThumbsRatingAlert(
+    confirmButtonText: String,
+    cancelButtonText: String,
+    onConfirmClick: () -> Unit,
+    onCancelClick: () -> Unit,
+    onDismiss: () -> Unit,
+    onThumbDownClick: () -> Unit,
+    onThumbUpClick: () -> Unit,
+    recipeName: String,
+    isThumbDownSelected: Boolean,
+    isThumbUpSelected: Boolean,
+){
+
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { AlertTitle("Great job!") },
+        text =
+        {
+            Column{
+                AlertText(recipeName)
+                AlertThumbsRow(
+                    isThumbDownSelected = isThumbDownSelected,
+                    isThumbUpSelected = isThumbUpSelected,
+                    onThumbDownClick = onThumbDownClick,
+                    onThumbUpClick = onThumbUpClick
+                )
+            }
+        },
+        buttons = { AlertButtonsRow(confirmButtonText, cancelButtonText, onConfirmClick, onCancelClick) },
+    )
+
+}
+
+@Composable
+fun AlertThumbsRow(
+    isThumbDownSelected: Boolean,
+    isThumbUpSelected: Boolean,
+    onThumbDownClick: () -> Unit,
+    onThumbUpClick:() -> Unit,
+){
+    Row(Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.Center){
+        AlertThumbIcon(type = "Down", filled = isThumbDownSelected) { onThumbDownClick() }
+        AlertThumbIcon(type = "Up", filled = isThumbUpSelected) { onThumbUpClick() }
+
+    }
+}
+
+@Composable
+fun AlertThumbIcon(
+    type: String,
+    filled: Boolean,
+    onClick: () -> Unit,
+){
+
+    val icon = if(type == "Up"){
+        if(filled) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp
+    }
+    else{
+        if(filled) Icons.Filled.ThumbDown else Icons.Outlined.ThumbDown
+    }
+
+    Box() {
+        Surface(
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp)
+                .border(
+                    width = 2.dp,
+                    brush = (Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFFd8af84),
+                            Color(0xFFb15f33)
+                        ),
+                        tileMode = TileMode.Mirror
+                    )),
+                    shape = CircleShape
+                )
+                .size(56.dp)
+                .clickable { onClick() },
+            shape = CircleShape,
+            color = Color(0xFFd8af84)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    icon,
+                    tint = Color( 0xFF682300),
+                    modifier = Modifier.size(48.dp),
+                    // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                    contentDescription = null
+                )
+            }
+        }
+    }
+}
+
+
 
 @Composable
 fun StarRatingAlert(
@@ -75,6 +179,7 @@ fun AlertReviewBox(reviewText: String, onTextChange: (String) -> Unit){
         )
     }
 }
+
 
 @Composable
 fun AlertStarRating(

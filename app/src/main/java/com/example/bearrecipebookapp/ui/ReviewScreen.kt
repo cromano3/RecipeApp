@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,6 +20,7 @@ import com.example.bearrecipebookapp.viewmodel.ReviewScreenViewModel
 
 @Composable
 fun ReviewScreen(
+    recipeName: String,
     onCancelClick: () -> Unit,
     onConfirmClick: () -> Unit,
 ){
@@ -50,11 +50,6 @@ fun ReviewScreen(
                     Modifier.fillMaxWidth()
                 ){
 
-                    OutlinedTextField(value = "", onValueChange = {}, )
-                    TextField(
-                        value = uiState.reviewText,
-                        onValueChange = {reviewScreenViewModel.updateReviewText(it)}
-                    )
                     Row(
                         Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween)
@@ -63,6 +58,13 @@ fun ReviewScreen(
                         AlertButton(buttonText = "Confirm") {onConfirmClick()}
 
                     }
+
+
+                    OutlinedTextField(
+                        value = uiState.reviewText,
+                        onValueChange = {reviewScreenViewModel.updateReviewText(it)}
+                    )
+
                 }
             }
         }

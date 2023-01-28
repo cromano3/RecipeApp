@@ -30,7 +30,6 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -39,15 +38,9 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
-import com.example.bearrecipebookapp.data.entity.IngredientEntity
-import com.example.bearrecipebookapp.data.entity.InstructionEntity
-import com.example.bearrecipebookapp.data.entity.RecipeEntity
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
-import com.example.bearrecipebookapp.datamodel.RecipeWithInstructions
 import com.example.bearrecipebookapp.ui.components.BasicAlert
-import com.example.bearrecipebookapp.ui.components.StarRatingAlert
-import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
+import com.example.bearrecipebookapp.ui.components.ThumbsRatingAlert
 import com.example.bearrecipebookapp.viewmodel.DetailsScreenViewModel
 
 @OptIn(ExperimentalTextApi::class)
@@ -59,6 +52,7 @@ fun NewDetailsScreen(
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    navigateToReviewScreen: (String) -> Unit,
 
 ) {
 
@@ -609,9 +603,6 @@ fun NewDetailsScreen(
                                 Button(
                                     modifier = Modifier.wrapContentSize(),
                                     onClick = {
-                                        /**
-                                         * Add completed count +1 to Database
-                                         */
                                         onCompleteClick(detailsScreenData)
                                         detailsScreenViewModel.addCooked(detailsScreenData)
                                         detailsScreenViewModel.addExp(uiAlertState.recipe)
@@ -640,17 +631,30 @@ fun NewDetailsScreen(
                 }
                 
                 if(uiAlertState.showRatingAlert){
-                    StarRatingAlert(
-                        starCount = uiAlertState.starCount,
+                    ThumbsRatingAlert(
                         confirmButtonText = "Confirm",
                         cancelButtonText = "Cancel",
-                        onStarClick = { detailsScreenViewModel.updateStarCount(it) },
-                        onConfirmClick =  { detailsScreenViewModel.confirmRating() },
+                        onConfirmClick = { detailsScreenViewModel.confirmRating() },
                         onCancelClick = { detailsScreenViewModel.cancelRatingAlert() },
                         onDismiss = { detailsScreenViewModel.cancelRatingAlert() },
-                        reviewText = uiAlertState.reviewText,
-                        onTextChange = { detailsScreenViewModel.updateReviewText(it)}
+                        onThumbDownClick = { detailsScreenViewModel.thumbDownClicked() },
+                        onThumbUpClick = { detailsScreenViewModel.thumbUpClicked() },
+                        recipeName = detailsScreenData.recipeEntity.recipeName,
+                        isThumbDownSelected = uiAlertState.isThumbDownSelected,
+                        isThumbUpSelected = uiAlertState.isThumbUpSelected,
                     )
+
+//                    StarRatingAlert(
+//                        starCount = uiAlertState.starCount,
+//                        confirmButtonText = "Confirm",
+//                        cancelButtonText = "Cancel",
+//                        onStarClick = { detailsScreenViewModel.updateStarCount(it) },
+//                        onConfirmClick =  { detailsScreenViewModel.confirmRating() },
+//                        onCancelClick = { detailsScreenViewModel.cancelRatingAlert() },
+//                        onDismiss = { detailsScreenViewModel.cancelRatingAlert() },
+//                        reviewText = uiAlertState.reviewText,
+//                        onTextChange = { detailsScreenViewModel.updateReviewText(it) }
+//                    )
                 }
 
                 if(uiAlertState.showFavoriteAlert){
@@ -666,66 +670,69 @@ fun NewDetailsScreen(
 
 
                 }
-//                if(uiAlertState.showWriteReviewAlert){
-//                    BasicAlert(
-//                        text = "Leave a tip or comment about this recipe?",
-//                        confirmButtonText = "Yes",
-//                        cancelButtonText = "No",
-//                        onConfirmClick = { detailsScreenViewModel.writeReview() },
-//                        onCancelClick = { detailsScreenViewModel.doNotAddWriteReview() },
-//                        onDismiss = { detailsScreenViewModel.cancelShowWriteReviewAlert() }
-//                    )
-//                }
+                if(uiAlertState.showLeaveReviewAlert){
+                    BasicAlert(
+                        text = "Leave a tip or comment about this recipe?",
+                        confirmButtonText = "Yes",
+                        cancelButtonText = "No",
+                        onConfirmClick = {
+                            detailsScreenViewModel.cancelShowWriteReviewAlert()
+                            navigateToReviewScreen(detailsScreenData.recipeEntity.recipeName)
+                                         },
+                        onCancelClick = { detailsScreenViewModel.cancelShowWriteReviewAlert() },
+                        onDismiss = { detailsScreenViewModel.cancelShowWriteReviewAlert() }
+                    )
+                }
             }
         }
     }
 }
 
-@Preview
-@Composable
-fun MyPreview234(){
-    BearRecipeBookAppTheme {
-
-        val myRecipe = RecipeEntity(
-            recipeName = "Cauliflower Walnut Tacos",
-            onMenu = 0,
-            1,
-            rating = 98,
-            timeToMake = 90,
-            difficulty = 4
-        )
-
-        val ing1 = IngredientEntity(ingredientName = "Ingredient 1", quantityOwned = 0, quantityNeeded = 0)
-        val ing2 = IngredientEntity(ingredientName = "Ingredient 2", quantityOwned = 0, quantityNeeded = 0)
-        val ing3 = IngredientEntity(ingredientName = "Ingredient 3", quantityOwned = 0, quantityNeeded = 0)
-
-        val ins1 = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it.")
-        val ins2 = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!.")
-        val ins3 = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!!.")
-
-        var recList = listOf(
-            RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)),
-            RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)))
-
-        var recInsList = listOf(
-            RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
-            RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
-        )
-
-        val recipeAll = RecipeWithIngredientsAndInstructions(myRecipe,listOf(ing1, ing2,ing1, ing2, ing1, ing2, ing1 ,ing2), listOf(ins1, ins2))
-
-        NewDetailsScreen(
-            //recList,
-            // recInsList,
-            {},
-            // recList[0],
-            {},
-            {},
-            {},
-            {}
-            )
-    }
-}
+//@Preview
+//@Composable
+//fun MyPreview234(){
+//    BearRecipeBookAppTheme {
+//
+//        val myRecipe = RecipeEntity(
+//            recipeName = "Cauliflower Walnut Tacos",
+//            onMenu = 0,
+//            1,
+//            rating = 98,
+//            timeToMake = 90,
+//            difficulty = 4
+//        )
+//
+//        val ing1 = IngredientEntity(ingredientName = "Ingredient 1", quantityOwned = 0, quantityNeeded = 0)
+//        val ing2 = IngredientEntity(ingredientName = "Ingredient 2", quantityOwned = 0, quantityNeeded = 0)
+//        val ing3 = IngredientEntity(ingredientName = "Ingredient 3", quantityOwned = 0, quantityNeeded = 0)
+//
+//        val ins1 = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it.")
+//        val ins2 = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!.")
+//        val ins3 = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!!.")
+//
+//        var recList = listOf(
+//            RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)),
+//            RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)))
+//
+//        var recInsList = listOf(
+//            RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
+//            RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
+//        )
+//
+//        val recipeAll = RecipeWithIngredientsAndInstructions(myRecipe,listOf(ing1, ing2,ing1, ing2, ing1, ing2, ing1 ,ing2), listOf(ins1, ins2))
+//
+//        NewDetailsScreen(
+//            //recList,
+//            // recInsList,
+//            {},
+//            // recList[0],
+//            {},
+//            {},
+//            {},
+//            {}
+//            )
+//    }
+//}
 
 class DetailsScreenViewModelFactory(
     val application: Application,
