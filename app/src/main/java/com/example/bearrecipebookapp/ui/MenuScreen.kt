@@ -41,7 +41,9 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
+import com.example.bearrecipebookapp.ui.components.BasicAlert
 import com.example.bearrecipebookapp.ui.components.RecipeCard
+import com.example.bearrecipebookapp.ui.components.ThumbsRatingAlert
 import com.example.bearrecipebookapp.viewmodel.MenuScreenViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -49,6 +51,7 @@ import com.example.bearrecipebookapp.viewmodel.MenuScreenViewModel
 fun MenuScreen(
     onDetailsClick: () -> Unit,
     onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    onAddedToFavoriteFromAlertClick: (String) -> Unit,
     onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onAddRecipeClick: () -> Unit,
@@ -350,6 +353,7 @@ fun MenuScreen(
                                     modifier = Modifier.wrapContentSize(),
                                     onClick = {
                                         menuScreenViewModel.cancelCompletedAlert()
+                                        menuScreenViewModel.clearAlertRecipeTarget()
                                     },
                                     elevation = ButtonDefaults.elevation(6.dp),
                                     shape = RoundedCornerShape(25.dp),
@@ -369,14 +373,12 @@ fun MenuScreen(
                                 Button(
                                     modifier = Modifier.wrapContentSize(),
                                     onClick = {
-                                        /**
-                                         * Add completed count +1 to Database
-                                         */
                                         onCompleteClick(uiAlertState.recipe)
                                         menuScreenViewModel.addCooked(uiAlertState.recipe)
                                         menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
                                         menuScreenViewModel.addExp(uiAlertState.recipe)
                                         menuScreenViewModel.cancelCompletedAlert()
+                                        menuScreenViewModel.triggerRatingAlert()
                                     },
                                     elevation = ButtonDefaults.elevation(6.dp),
                                     shape = RoundedCornerShape(25.dp),
@@ -396,6 +398,56 @@ fun MenuScreen(
                         },
                     )
                 }
+
+                //Rating Alert
+                if(uiAlertState.showRatingAlert){
+                    ThumbsRatingAlert(
+                        confirmButtonText = "Confirm",
+                        cancelButtonText = "Cancel",
+                        onConfirmClick = { menuScreenViewModel.confirmRating(uiAlertState.recipe.recipeEntity) },
+                        onCancelClick = { menuScreenViewModel.cancelRatingAlert() },
+                        onDismiss = { menuScreenViewModel.cancelRatingAlert() },
+                        onThumbDownClick = { menuScreenViewModel.thumbDownClicked() },
+                        onThumbUpClick = { menuScreenViewModel.thumbUpClicked() },
+                        text = "Did you enjoy ${uiAlertState.recipe.recipeEntity.recipeName}?",
+                        isThumbDownSelected = uiAlertState.isThumbDownSelected,
+                        isThumbUpSelected = uiAlertState.isThumbUpSelected,
+                    )
+
+                }
+
+                //Favorite Alert
+                if(uiAlertState.showFavoriteAlert){
+                    BasicAlert(
+                        text = "Add ${uiAlertState.recipe.recipeEntity.recipeName} to your Favorites?",
+                        confirmButtonText = "Yes",
+                        cancelButtonText = "No",
+                        onConfirmClick =
+                        {
+                            menuScreenViewModel.addToFavorite(uiAlertState.recipe.recipeEntity.recipeName)
+                            onAddedToFavoriteFromAlertClick(uiAlertState.recipe.recipeEntity.recipeName)
+                        },
+                        onCancelClick = { menuScreenViewModel.doNotAddToFavorite() },
+                        onDismiss = { menuScreenViewModel.cancelFavoriteAlert() }
+                    )
+
+                }
+
+                //Comment Alert
+                if(uiAlertState.showLeaveReviewAlert){
+                    BasicAlert(
+                        text = "Would you like to share a tip about this recipe for other chefs?",
+                        confirmButtonText = "Yes",
+                        cancelButtonText = "No",
+                        onConfirmClick = {
+                            menuScreenViewModel.cancelShowWriteReviewAlert()
+                            navigateToCommentScreen(detailsScreenData.recipeEntity.recipeName)
+                        },
+                        onCancelClick = { menuScreenViewModel.cancelShowWriteReviewAlert() },
+                        onDismiss = { menuScreenViewModel.cancelShowWriteReviewAlert() }
+                    )
+                }
+
             }
         }
     }

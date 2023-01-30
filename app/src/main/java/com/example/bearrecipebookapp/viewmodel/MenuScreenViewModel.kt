@@ -48,6 +48,116 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         uiAlertState.update { currentState ->
             currentState.copy(
                 showCompletedAlert = false,
+            )
+        }
+    }
+
+    fun clearAlertRecipeTarget(){
+        uiAlertState.update {
+            it.copy(
+                recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
+            )
+        }
+    }
+
+    fun triggerRatingAlert(){
+        uiAlertState.update {
+            it.copy(
+                showCompletedAlert = false,
+                showRatingAlert = true
+
+            )
+        }
+    }
+
+    fun confirmRating(recipeEntity: RecipeEntity) {
+
+        if(uiAlertState.value.isThumbUpSelected && recipeEntity.isFavorite == 0){
+
+            /** write rating to database here */
+
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showFavoriteAlert = true,
+                    showRatingAlert = false,
+                    isThumbUpSelected = false,
+                    isThumbDownSelected = false
+                )
+            }
+
+        }
+        else if (uiAlertState.value.isThumbDownSelected || uiAlertState.value.isThumbUpSelected){
+
+            /** write rating to database here */
+
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showLeaveReviewAlert = true,
+                    showRatingAlert = false,
+                    isThumbUpSelected = false,
+                    isThumbDownSelected = false
+                )
+            }
+
+        }
+
+    }
+
+    fun thumbDownClicked(){
+        uiAlertState.update {
+            it.copy(
+                isThumbDownSelected = !it.isThumbDownSelected,
+                isThumbUpSelected = false
+            )
+        }
+    }
+
+    fun thumbUpClicked(){
+        uiAlertState.update {
+            it.copy(
+                isThumbDownSelected = false,
+                isThumbUpSelected = !it.isThumbUpSelected
+            )
+        }
+    }
+
+    fun addToFavorite(recipeName: String){
+
+        coroutineScope.launch {
+            repository.setAsFavorite(recipeName)
+        }
+
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showFavoriteAlert = false,
+                showLeaveReviewAlert = true,
+
+                )
+        }
+    }
+
+    fun doNotAddToFavorite(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showFavoriteAlert = false,
+                showLeaveReviewAlert = true,
+
+                )
+        }
+    }
+
+    fun cancelFavoriteAlert(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showFavoriteAlert = false,
+            )
+        }
+    }
+
+    fun cancelRatingAlert(){
+        uiAlertState.update {
+            it.copy(
+                showRatingAlert = false,
                 recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
             )
         }
@@ -58,6 +168,15 @@ class MenuScreenViewModel(application: Application): ViewModel() {
             currentState.copy(
                 showRemoveAlert = true,
                 recipe = recipe
+            )
+        }
+    }
+
+    fun cancelRemoveAlert(){
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showRemoveAlert = false,
+                recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
             )
         }
     }
@@ -78,13 +197,18 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         }
     }
 
+
     fun addTutorialAlert(){
         repository.addTutorialAlert()
     }
 
+
+
     fun addCooked(recipe: RecipeWithIngredientsAndInstructions){
         repository.addCooked(recipe.recipeEntity.recipeName)
     }
+
+
 
     fun addExp(recipe: RecipeWithIngredientsAndInstructions){
 
@@ -103,14 +227,6 @@ class MenuScreenViewModel(application: Application): ViewModel() {
 
     }
 
-    fun cancelRemoveAlert(){
-        uiAlertState.update { currentState ->
-            currentState.copy(
-                showRemoveAlert = false,
-                recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
-            )
-        }
-    }
 
 
     fun setDetailsScreenTarget(recipeName: String){

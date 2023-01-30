@@ -308,6 +308,11 @@ fun BearRecipeApp(
                                 message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
                                 duration = SnackbarDuration.Short)
                     }},
+                    onAddedToFavoriteFromAlertClick = {coroutineScope.launch{
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = "Added $it to Favorites.",
+                                duration = SnackbarDuration.Short)
+                    }},
                     onRemoveClick = {coroutineScope.launch{
                             scaffoldState.snackbarHostState.showSnackbar(
                                 message = "Removed " + it.recipeEntity.recipeName + " from the Menu.",
@@ -544,80 +549,92 @@ fun BearAppBottomBar(
     navController: NavHostController,
 )
 {
-    BottomNavigation(
-        backgroundColor = Color(0xFF682300),
-        contentColor = Color(0xFFd8af84)
-    ) {
 
-        val backStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = backStackEntry?.destination?.route
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+
+    if(currentRoute != "CommentScreen") {
+        BottomNavigation(
+            backgroundColor = Color(0xFF682300),
+            contentColor = Color(0xFFd8af84)
+        ) {
+
 //        val queue = navController.backQueue
 
-        val routes = listOf("RecipeScreen", "WeeklyMenuScreen", "ShoppingScreen")
+            val routes = listOf("RecipeScreen", "WeeklyMenuScreen", "ShoppingScreen")
 
-        var selected: Boolean
-        var alpha: Float
+            var selected: Boolean
+            var alpha: Float
 
 
-        routes.forEach{
-            if(it == currentRoute){
-                selected = true
-                alpha = 1f
-            }
-            else{
-                selected = false
-                alpha = 0.5f
-            }
-            BottomNavigationItem(
-                selected = selected
+            routes.forEach {
+                if (it == currentRoute) {
+                    selected = true
+                    alpha = 1f
+                } else {
+                    selected = false
+                    alpha = 0.5f
+                }
+                BottomNavigationItem(
+                    selected = selected
 //                (it == currentRoute)
-                ,
-                onClick = {
+                    ,
+                    onClick = {
 
-                    if(currentRoute == "SearchScreen" && it == "RecipeScreen"){
-                        navController.popBackStack()
-                    }
-                    if(currentRoute == "AddRecipeScreen" && it == "RecipeScreen"){
-                        navController.popBackStack()
-                    }
-                    if(currentRoute == "DetailsScreen"){
-                        navController.popBackStack()
-                    }
-                    if(currentRoute == "ProfileScreen"){
-                        navController.popBackStack()
-                    }
+                        if (currentRoute == "SearchScreen" && it == "RecipeScreen") {
+                            navController.popBackStack()
+                        }
+                        if (currentRoute == "AddRecipeScreen" && it == "RecipeScreen") {
+                            navController.popBackStack()
+                        }
+                        if (currentRoute == "DetailsScreen") {
+                            navController.popBackStack()
+                        }
+                        if (currentRoute == "ProfileScreen") {
+                            navController.popBackStack()
+                        }
 
-                      navController.navigate(it){
+                        navController.navigate(it) {
 
-                          popUpTo(navController.graph.findStartDestination().id) {
-                              saveState = true
-                          }
-                          launchSingleTop = true
-                          restoreState = true
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
 
-                      }
-                },
-                icon = {
-                    when(it){
-                        "RecipeScreen" -> Icon(Icons.Outlined.MenuBook, contentDescription = null)
-                        "WeeklyMenuScreen" -> Icon(Icons.Outlined.Restaurant, contentDescription = null)
-                        "ShoppingScreen" -> Icon(Icons.Outlined.ShoppingCart, contentDescription = null)
-                    }
-                },
-                modifier = Modifier
-                    .alpha(alpha)
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            listOf(
-                                Color(0xFFFFFFFF),
-                                Color(0xFFFFFFFF)
+                        }
+                    },
+                    icon = {
+                        when (it) {
+                            "RecipeScreen" -> Icon(
+                                Icons.Outlined.MenuBook,
+                                contentDescription = null
                             )
-                        ), alpha = 0.1f
-                    )
+                            "WeeklyMenuScreen" -> Icon(
+                                Icons.Outlined.Restaurant,
+                                contentDescription = null
+                            )
+                            "ShoppingScreen" -> Icon(
+                                Icons.Outlined.ShoppingCart,
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .alpha(alpha)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                listOf(
+                                    Color(0xFFFFFFFF),
+                                    Color(0xFFFFFFFF)
+                                )
+                            ), alpha = 0.1f
+                        )
 
-            )
+                )
+            }
+
         }
-
     }
 }
 
@@ -657,6 +674,7 @@ fun BearAppTopBar(
         var showSearchButton = false
         var showTitle = false
         var showSearchField = false
+        var showIcon = false
         var showIcon2 = false
         var icon = Icons.Outlined.Home
         var icon2 = Icons.Outlined.Home
@@ -691,6 +709,7 @@ fun BearAppTopBar(
                 showTitle = false
                 showSearchField = false
                 showShare = false
+                showIcon = false
                 showIcon2 = true
             }
             "WeeklyMenuScreen" -> {
@@ -705,6 +724,7 @@ fun BearAppTopBar(
                 showSearchField = false
                 showSearchButton = false
                 showShare = false
+                showIcon = true
                 showIcon2 = true
             }
             "ShoppingScreen" -> {
@@ -719,6 +739,7 @@ fun BearAppTopBar(
                 showSearchField = false
                 showSearchButton = false
                 showShare = false
+                showIcon = true
                 showIcon2 = true
             }
             "ProfileScreen" -> {
@@ -733,6 +754,7 @@ fun BearAppTopBar(
                 showSearchField = false
                 showSearchButton = false
                 showShare = false
+                showIcon = true
                 showIcon2 = true
             }
             "SearchScreen" -> {
@@ -747,6 +769,7 @@ fun BearAppTopBar(
                 showSearchField = true
                 showSearchButton = false
                 showShare = false
+                showIcon = true
                 showIcon2 = false
 
             }
@@ -762,6 +785,7 @@ fun BearAppTopBar(
                 showSearchField = false
                 showSearchButton = false
                 showShare = false
+                showIcon = true
                 showIcon2 = false
 
             }
@@ -771,12 +795,13 @@ fun BearAppTopBar(
                 title = "Leave a Tip/Comment"
                 icon = Icons.Outlined.ArrowBack
                 icon2 = Icons.Outlined.Person
-                clickEffectLeft = onBackClick
+                clickEffectLeft = {}
                 clickEffectRight = {}
                 showTitle = true
                 showSearchField = false
                 showSearchButton = false
                 showShare = false
+                showIcon = false
                 showIcon2 = false
 
             }
@@ -796,6 +821,8 @@ fun BearAppTopBar(
                 showSearchField = false
                 showSearchButton = false
                 showShare = true
+
+                showIcon = true
 
                 showIcon2 = true
 
@@ -874,7 +901,7 @@ fun BearAppTopBar(
                             )
                         }
                     }
-                    else {
+                    else if(showIcon){
                         IconButton(
                             onClick = {
 //                                if(currentScreen == "SearchScreen") topBarViewModel.updatePreview( TextFieldValue(""), "");
@@ -907,6 +934,10 @@ fun BearAppTopBar(
                                 tint = Color(0xFFd8af84)
                             )
                         }
+                    }
+                    else{
+                        Spacer(Modifier.width(48.dp))
+
                     }
 
                     Spacer(Modifier.weight(1f))
