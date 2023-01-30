@@ -52,6 +52,10 @@ interface MenuScreenDao {
     fun updateFavorite(name: String, isFavoriteStatus: Int)
 
     @Transaction
+    @Query("UPDATE recipe_table SET is_favorite = 1 WHERE recipe_name = :name")
+    fun setAsFavorite(name: String)
+
+    @Transaction
     @Query("UPDATE recipe_table SET cooked_count = cooked_count + 1 WHERE recipe_name = :name")
     fun addCooked(name: String)
 

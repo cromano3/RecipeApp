@@ -214,33 +214,10 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         }
     }
 
-//    fun writeReview() {
-//        uiAlertState.update { currentState ->
-//            currentState.copy(
-//                showLeaveReviewAlert = false,
-//            )
-//        }
-//    }
-//    fun doNotAddWriteReview() {
-//        uiAlertState.update { currentState ->
-//            currentState.copy(
-//                showLeaveReviewAlert = false,
-//            )
-//        }
-//    }
     fun cancelShowWriteReviewAlert() {
         uiAlertState.update { currentState ->
             currentState.copy(
                 showLeaveReviewAlert = false
-            )
-        }
-    }
-
-
-    fun updateStarCount(count: Int){
-        uiAlertState.update { currentState ->
-            currentState.copy(
-                starCount = count,
             )
         }
     }

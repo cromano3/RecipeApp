@@ -71,6 +71,10 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
         }
     }
 
+    fun setAsFavorite(recipeName: String){
+        menuScreenDao.setAsFavorite(recipeName)
+    }
+
 
     suspend fun updateQuantityNeeded(ingredientName: String, quantityNeeded: Int){
 //        coroutineScope.launch(Dispatchers.IO) {

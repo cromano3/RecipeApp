@@ -332,6 +332,7 @@ fun BearRecipeApp(
 
                         }
                     },
+                    onConfirmWriteReviewClick = { navController.navigate("CommentScreen") },
                     onAddRecipeClick = {
 
                         navController.navigate("RecipeScreen"){

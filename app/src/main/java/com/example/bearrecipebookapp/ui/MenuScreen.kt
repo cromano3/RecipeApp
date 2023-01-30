@@ -54,6 +54,7 @@ fun MenuScreen(
     onAddedToFavoriteFromAlertClick: (String) -> Unit,
     onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    onConfirmWriteReviewClick: (String) -> Unit,
     onAddRecipeClick: () -> Unit,
     onSystemBackClick: () -> Unit,
 ) {
@@ -441,7 +442,7 @@ fun MenuScreen(
                         cancelButtonText = "No",
                         onConfirmClick = {
                             menuScreenViewModel.cancelShowWriteReviewAlert()
-                            navigateToCommentScreen(detailsScreenData.recipeEntity.recipeName)
+                            onConfirmWriteReviewClick(uiAlertState.recipe.recipeEntity.recipeName)
                         },
                         onCancelClick = { menuScreenViewModel.cancelShowWriteReviewAlert() },
                         onDismiss = { menuScreenViewModel.cancelShowWriteReviewAlert() }

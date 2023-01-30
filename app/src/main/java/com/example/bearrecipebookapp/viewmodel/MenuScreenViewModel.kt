@@ -150,6 +150,16 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         uiAlertState.update { currentState ->
             currentState.copy(
                 showFavoriteAlert = false,
+                recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
+            )
+        }
+    }
+
+    fun cancelShowWriteReviewAlert() {
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showLeaveReviewAlert = false,
+                recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
             )
         }
     }
