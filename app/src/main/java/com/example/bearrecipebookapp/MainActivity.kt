@@ -8,8 +8,11 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -160,6 +163,7 @@ fun BearRecipeApp(
         AnimatedNavHost(
             navController = navController,
             startDestination = "RecipeScreen",
+//            exitTransition = {fadeOut(animationSpec = tween(700))},
         ){
             composable(
                 route = "ProfileScreen",
@@ -186,31 +190,29 @@ fun BearRecipeApp(
                 }},)
             }
 
-            /**Review Screen*/
-            //          composable(route = "DetailsScreen/{recipeName}"){ it ->
-//            val recipeName = it.arguments?.getString("recipeName")
-//            recipeName?.let{NewDetailsScreen(recipeName = recipeName, onGoBackClick = {})}
+            /**Comment Screen*/
             composable(
-                route = "ReviewScreen/{recipeName}",
+                route = "CommentScreen",
                 enterTransition = {
                     fadeIn(animationSpec = tween(700))
                 },
                 exitTransition = {
                     fadeOut(animationSpec = tween(700))
 
-                },
+                }
+                ,
             ){
-                val recipeName = it.arguments?.getString("recipeName")
-                ReviewScreen(
-                    recipeName = recipeName ?: "",
+                CommentScreen(
                     onCancelClick = { navController.popBackStack() },
-                    onConfirmClick = {},
+                    onConfirmClick = { navController.popBackStack() },
                 )
             }
 
             composable(route = "AddRecipeScreen"){ AddRecipeScreen() }
 
-//            composable(route = "RecipeScreen/{triggerTutorialAlert}",
+
+            /** Home Screen */
+
             composable(route = "RecipeScreen",
                 enterTransition = {
                     when (initialState.destination.route){
@@ -219,7 +221,8 @@ fun BearRecipeApp(
                         "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
                         "DetailsScreen" -> fadeIn(animationSpec = tween(700))
                         "ProfileScreen" -> fadeIn(animationSpec = tween(700))
-                        else -> null }
+                        else -> fadeIn(animationSpec = tween(700))
+                    }
                 },
                 exitTransition = {
                     when (targetState.destination.route) {
@@ -228,7 +231,9 @@ fun BearRecipeApp(
                         "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
                         "DetailsScreen" -> fadeOut(animationSpec = tween(700))
                         "ProfileScreen" -> fadeOut(animationSpec = tween(700))
-                        else -> null
+                        "CommentScreen" -> fadeOut(animationSpec = tween(700))
+                        "AddRecipeScreen" -> fadeOut(animationSpec = tween(700))
+                        else -> fadeOut(animationSpec = tween(700))
                     }
                 }
             ){
@@ -398,30 +403,28 @@ fun BearRecipeApp(
                 )
             }
 
-//          composable(route = "DetailsScreen/{recipeName}"){ it ->
-//            val recipeName = it.arguments?.getString("recipeName")
-//            recipeName?.let{NewDetailsScreen(recipeName = recipeName, onGoBackClick = {})}
             composable(
                 route = "DetailsScreen",
-                enterTransition = {
-                    when (initialState.destination.route){
-                        "RecipeScreen" -> fadeIn(animationSpec = tween(700))
-                        "WeeklyMenuScreen" -> fadeIn(animationSpec = tween(700))
-                        "SearchScreen" -> fadeIn(animationSpec = tween(700))
-                        "ShoppingScreen" -> fadeIn(animationSpec = tween(700))
-                        "ProfileScreen" -> fadeIn(animationSpec = tween(700))
-                        else -> null
-                    }
+                enterTransition = { fadeIn(animationSpec = tween(700))
+//                    when (initialState.destination.route){
+//                        "RecipeScreen" -> fadeIn(animationSpec = tween(700))
+//                        "WeeklyMenuScreen" -> fadeIn(animationSpec = tween(700))
+//                        "SearchScreen" -> fadeIn(animationSpec = tween(700))
+//                        "ShoppingScreen" -> fadeIn(animationSpec = tween(700))
+//                        "ProfileScreen" -> fadeIn(animationSpec = tween(700))
+//                        else -> null
+//                    }
                 },
                 exitTransition = {
-                    when (targetState.destination.route) {
-                        "RecipeScreen" -> fadeOut(animationSpec = tween(700))
-                        "WeeklyMenuScreen" -> fadeOut(animationSpec = tween(700))
-                        "SearchScreen" -> fadeOut(animationSpec = tween(700))
-                        "ShoppingScreen" -> fadeOut(animationSpec = tween(700))
-                        "ProfileScreen" -> fadeOut(animationSpec = tween(700))
-                        else -> null
-                    }
+                    fadeOut(animationSpec = tween(700));
+//                    when (targetState.destination.route) {
+//                        "RecipeScreen" -> fadeOut(animationSpec = tween(700))
+//                        "WeeklyMenuScreen" -> fadeOut(animationSpec = tween(700))
+//                        "SearchScreen" -> fadeOut(animationSpec = tween(700))
+//                        "ShoppingScreen" -> fadeOut(animationSpec = tween(700))
+//                        "ProfileScreen" -> fadeOut(animationSpec = tween(700))
+//                        else -> null
+//                    }
                 },) {
                     NewDetailsScreen(
                         onGoBackClick = { navController.popBackStack() },
@@ -463,10 +466,16 @@ fun BearRecipeApp(
                                 )
                             }
                         },
-                        navigateToReviewScreen = { navController.navigate("ReviewScreen/$it") }
+                        navigateToCommentScreen = { navController.navigate("CommentScreen") }
                     )
 
             }
+
+            composable(
+                route = "CommentScreen",
+                enterTransition = {fadeIn(animationSpec = tween(700))},
+                exitTransition = {fadeOut(animationSpec = tween(700))}
+            ){CommentScreen({}, {})}
 
             composable(
                 route = "SearchScreen",
@@ -749,6 +758,21 @@ fun BearAppTopBar(
                 showIcon2 = false
 
             }
+            "CommentScreen" -> {
+                show = true
+                textModifier = Modifier.wrapContentWidth()
+                title = "Leave a Tip/Comment"
+                icon = Icons.Outlined.ArrowBack
+                icon2 = Icons.Outlined.Person
+                clickEffectLeft = onBackClick
+                clickEffectRight = {}
+                showTitle = true
+                showSearchField = false
+                showSearchButton = false
+                showShare = false
+                showIcon2 = false
+
+            }
             "DetailsScreen" -> {
                 show = true
 
@@ -779,12 +803,12 @@ fun BearAppTopBar(
 
 
 
-        AnimatedVisibility(
-            visible = show,
-            enter = slideInVertically { -it },
-            exit = slideOutVertically { -it },
-        ) {
-//            if (show) {
+//        AnimatedVisibility(
+//            visible = show,
+//            enter = fadeIn(animationSpec = tween(700)) ,
+//            exit = fadeOut(animationSpec = tween(700)) ,
+//        ) {
+            if (show) {
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -975,7 +999,7 @@ fun BearAppTopBar(
                     val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
 
 
-                    if(currentScreen == "AddRecipeScreen"){
+                    if(currentScreen == "AddRecipeScreen" || currentScreen == "CommentScreen"){
                         Spacer(Modifier.width(48.dp))
                     }
 

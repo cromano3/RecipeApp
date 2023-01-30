@@ -24,6 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
+
 @Composable
 fun BasicAlert(
     text: String,
@@ -42,6 +44,28 @@ fun BasicAlert(
 }
 
 @Composable
+fun OneButtonAlert(
+    text: String,
+    confirmButtonText: String,
+    onConfirmClick: () -> Unit,
+    onDismiss: () -> Unit
+){
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        text = { AlertText(text = text)},
+        buttons =
+        {
+            Row(
+                Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                AlertButton(buttonText = confirmButtonText, onButtonClick = onConfirmClick)
+            }
+        }
+    )
+}
+
+@Composable
 fun ThumbsRatingAlert(
     confirmButtonText: String,
     cancelButtonText: String,
@@ -50,7 +74,7 @@ fun ThumbsRatingAlert(
     onDismiss: () -> Unit,
     onThumbDownClick: () -> Unit,
     onThumbUpClick: () -> Unit,
-    recipeName: String,
+    text: String,
     isThumbDownSelected: Boolean,
     isThumbUpSelected: Boolean,
 ){
@@ -62,7 +86,7 @@ fun ThumbsRatingAlert(
         text =
         {
             Column{
-                AlertText(recipeName)
+                AlertText(text)
                 AlertThumbsRow(
                     isThumbDownSelected = isThumbDownSelected,
                     isThumbUpSelected = isThumbUpSelected,
@@ -113,14 +137,14 @@ fun AlertThumbIcon(
                     width = 2.dp,
                     brush = (Brush.horizontalGradient(
                         colors = listOf(
-                            Color(0xFFd8af84),
-                            Color(0xFFb15f33)
+                            Color(0xFF682300),
+                            Color(0xFF682300)
                         ),
                         tileMode = TileMode.Mirror
                     )),
                     shape = CircleShape
                 )
-                .size(56.dp)
+                .size(74.dp)
                 .clickable { onClick() },
             shape = CircleShape,
             color = Color(0xFFd8af84)
@@ -254,18 +278,30 @@ fun AlertStar(
 
 @Composable
 fun AlertTitle(title: String){
-    Text(
-        text = title,
-        color = Color(0xFF682300))
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = title,
+            color = Color(0xFF682300))
+    }
+
 }
 
 @Composable
 fun AlertText(text: String){
-    Text(text = text,
-        color = Color(0xFF682300),
-        fontSize = 16.sp,
-        textAlign = TextAlign.Center
-    )
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ){
+        Text(text = text,
+            modifier = Modifier.padding(bottom = 16.dp),
+            color = Color(0xFF682300),
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 @Composable

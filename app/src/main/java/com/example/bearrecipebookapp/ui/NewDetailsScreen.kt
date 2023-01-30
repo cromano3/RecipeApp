@@ -52,7 +52,7 @@ fun NewDetailsScreen(
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
-    navigateToReviewScreen: (String) -> Unit,
+    navigateToCommentScreen: (String) -> Unit,
 
 ) {
 
@@ -639,7 +639,7 @@ fun NewDetailsScreen(
                         onDismiss = { detailsScreenViewModel.cancelRatingAlert() },
                         onThumbDownClick = { detailsScreenViewModel.thumbDownClicked() },
                         onThumbUpClick = { detailsScreenViewModel.thumbUpClicked() },
-                        recipeName = detailsScreenData.recipeEntity.recipeName,
+                        text = "Did you enjoy ${detailsScreenData.recipeEntity.recipeName}?",
                         isThumbDownSelected = uiAlertState.isThumbDownSelected,
                         isThumbUpSelected = uiAlertState.isThumbUpSelected,
                     )
@@ -659,7 +659,7 @@ fun NewDetailsScreen(
 
                 if(uiAlertState.showFavoriteAlert){
                     BasicAlert(
-                        text = "Add to your Favorites?",
+                        text = "Add ${detailsScreenData.recipeEntity.recipeName} to your Favorites?",
                         confirmButtonText = "Yes",
                         cancelButtonText = "No",
                         onConfirmClick = { detailsScreenViewModel.addToFavorite() },
@@ -672,12 +672,12 @@ fun NewDetailsScreen(
                 }
                 if(uiAlertState.showLeaveReviewAlert){
                     BasicAlert(
-                        text = "Leave a tip or comment about this recipe?",
+                        text = "Would you like to share a tip about this recipe for other chefs?",
                         confirmButtonText = "Yes",
                         cancelButtonText = "No",
                         onConfirmClick = {
                             detailsScreenViewModel.cancelShowWriteReviewAlert()
-                            navigateToReviewScreen(detailsScreenData.recipeEntity.recipeName)
+                            navigateToCommentScreen(detailsScreenData.recipeEntity.recipeName)
                                          },
                         onCancelClick = { detailsScreenViewModel.cancelShowWriteReviewAlert() },
                         onDismiss = { detailsScreenViewModel.cancelShowWriteReviewAlert() }
