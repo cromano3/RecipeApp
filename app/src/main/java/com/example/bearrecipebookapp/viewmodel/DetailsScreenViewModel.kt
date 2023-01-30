@@ -116,10 +116,10 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         }
     }
 
-    fun confirmRating(){
+    fun confirmRating(recipeEntity: RecipeEntity) {
 
 
-            if(uiAlertState.value.isThumbUpSelected){
+            if(uiAlertState.value.isThumbUpSelected && recipeEntity.isFavorite == 0){
 
                 /** write rating to database here */
 
@@ -133,7 +133,7 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
                 }
 
             }
-            else if (uiAlertState.value.isThumbDownSelected){
+            else if (uiAlertState.value.isThumbDownSelected || uiAlertState.value.isThumbUpSelected){
 
                 /** write rating to database here */
 
@@ -148,13 +148,13 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
             }
             else{
-                uiAlertState.update { currentState ->
-                    currentState.copy(
-                        showRatingAlert = false,
-                        isThumbUpSelected = false,
-                        isThumbDownSelected = false
-                    )
-                }
+//                uiAlertState.update { currentState ->
+//                    currentState.copy(
+//                        showRatingAlert = false,
+//                        isThumbUpSelected = false,
+//                        isThumbDownSelected = false
+//                    )
+//                }
             }
 
 
@@ -163,47 +163,11 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
     }
 
-//    fun confirmRating(){
-//
-//        /** write rating to database here */
-//
-//        if (uiAlertState.value.starCount == 1){
-//            uiAlertState.update { currentState ->
-//                currentState.copy(
-//                    showRatingAlert = false,
-////                    showWriteReviewAlert = true,
-//                    starCount = 0,
-//                    reviewText = ""
-//                )
-//            }
-//        }
-//        else if(uiAlertState.value.starCount > 1){
-//            uiAlertState.update { currentState ->
-//                currentState.copy(
-//                    showRatingAlert = false,
-//                    showFavoriteAlert = true,
-//                    starCount = 0,
-//                    reviewText = ""
-//                )
-//            }
-//        }
-//        else {
-//            cancelRatingAlert()
-//        }
-//
-//    }
+    fun addToFavorite(recipeName: String){
 
-    fun updateReviewText(text: String){
-        uiAlertState.update { it ->
-            it.copy(
-                reviewText = text
-            )
+        coroutineScope.launch {
+            repository.setAsFavorite(recipeName)
         }
-    }
-
-    fun addToFavorite(){
-
-        /** add to favorites in DB */
 
         uiAlertState.update { currentState ->
             currentState.copy(

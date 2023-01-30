@@ -466,6 +466,13 @@ fun BearRecipeApp(
                                 )
                             }
                         },
+                        showAddedToFavoritesSnackBarMessage = {
+                            coroutineScope.launch{
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    message = "Added $it to Favorites.",
+                                    duration = SnackbarDuration.Short)
+                            }
+                        },
                         navigateToCommentScreen = { navController.navigate("CommentScreen") }
                     )
 

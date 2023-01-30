@@ -61,6 +61,10 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
         detailsScreenDao.addExpToGive(expToGive)
     }
 
+    fun setAsFavorite(recipeName: String){
+        detailsScreenDao.setAsFavorite(recipeName)
+    }
+
     fun cleanShoppingFilters(){
         coroutineScope.launch(Dispatchers.IO) {
             detailsScreenDao.cleanShoppingFilters()

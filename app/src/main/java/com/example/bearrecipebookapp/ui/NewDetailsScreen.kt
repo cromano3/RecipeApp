@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -52,6 +52,7 @@ fun NewDetailsScreen(
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    showAddedToFavoritesSnackBarMessage: (recipeName: String) -> Unit,
     navigateToCommentScreen: (String) -> Unit,
 
 ) {
@@ -554,14 +555,37 @@ fun NewDetailsScreen(
                 //Completed Alert
                 if(uiAlertState.showCompletedAlert){
 
-                    val finishedText: String = if(detailsScreenData.recipeEntity.onMenu == 1){
-                        "Mark " +
-                                uiAlertState.recipe.recipeEntity.recipeName +
-                                " as completed and remove from the Menu? (This will also remove it from the Shopping List.)"
-                    } else
-                        "Great job! Add " +
-                                uiAlertState.recipe.recipeEntity.recipeName  +
-                                " to Cooked Recipes list?"
+                    val finishedText: AnnotatedString = if(detailsScreenData.recipeEntity.onMenu == 1) {
+                        buildAnnotatedString {
+                            append("Great job! Add ")
+                            append(uiAlertState.recipe.recipeEntity.recipeName)
+                            append(" to the ")
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Cooked Recipes")
+                            }
+                            append(" list?")
+                        }
+                    }
+                    else{
+                        buildAnnotatedString {
+                            append("Great job! Confirm that you have finished cooking ")
+                            append(uiAlertState.recipe.recipeEntity.recipeName)
+                            append(" and ")
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("remove it")
+                            }
+                            append(" from your ")
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Menu")
+                            }
+                            append(" and its ingredients from your ")
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Shopping List")
+                            }
+                            append("?")
+                        }
+                    }
+
 
                     AlertDialog(
                         onDismissRequest = {},
@@ -634,7 +658,7 @@ fun NewDetailsScreen(
                     ThumbsRatingAlert(
                         confirmButtonText = "Confirm",
                         cancelButtonText = "Cancel",
-                        onConfirmClick = { detailsScreenViewModel.confirmRating() },
+                        onConfirmClick = { detailsScreenViewModel.confirmRating(detailsScreenData.recipeEntity) },
                         onCancelClick = { detailsScreenViewModel.cancelRatingAlert() },
                         onDismiss = { detailsScreenViewModel.cancelRatingAlert() },
                         onThumbDownClick = { detailsScreenViewModel.thumbDownClicked() },
@@ -644,17 +668,6 @@ fun NewDetailsScreen(
                         isThumbUpSelected = uiAlertState.isThumbUpSelected,
                     )
 
-//                    StarRatingAlert(
-//                        starCount = uiAlertState.starCount,
-//                        confirmButtonText = "Confirm",
-//                        cancelButtonText = "Cancel",
-//                        onStarClick = { detailsScreenViewModel.updateStarCount(it) },
-//                        onConfirmClick =  { detailsScreenViewModel.confirmRating() },
-//                        onCancelClick = { detailsScreenViewModel.cancelRatingAlert() },
-//                        onDismiss = { detailsScreenViewModel.cancelRatingAlert() },
-//                        reviewText = uiAlertState.reviewText,
-//                        onTextChange = { detailsScreenViewModel.updateReviewText(it) }
-//                    )
                 }
 
                 if(uiAlertState.showFavoriteAlert){
@@ -662,7 +675,11 @@ fun NewDetailsScreen(
                         text = "Add ${detailsScreenData.recipeEntity.recipeName} to your Favorites?",
                         confirmButtonText = "Yes",
                         cancelButtonText = "No",
-                        onConfirmClick = { detailsScreenViewModel.addToFavorite() },
+                        onConfirmClick =
+                        {
+                            detailsScreenViewModel.addToFavorite(detailsScreenData.recipeEntity.recipeName)
+                            showAddedToFavoritesSnackBarMessage(detailsScreenData.recipeEntity.recipeName)
+                        },
                         onCancelClick = { detailsScreenViewModel.doNotAddToFavorite() },
                         onDismiss = { detailsScreenViewModel.cancelFavoriteAlert() }
                     )

@@ -50,6 +50,10 @@ interface DetailsScreenDao {
     fun addToMenu(recipeName: String)
 
     @Transaction
+    @Query("UPDATE recipe_table SET is_favorite = 1 WHERE recipe_name = :recipeName")
+    fun setAsFavorite(recipeName: String)
+
+    @Transaction
     @Query("UPDATE user_table SET exp_to_give = exp_to_give + :expToGive")
     fun addExpToGive(expToGive: Int)
 }
