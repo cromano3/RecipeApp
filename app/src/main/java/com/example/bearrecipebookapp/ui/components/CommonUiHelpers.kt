@@ -10,10 +10,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -49,15 +48,15 @@ fun RecipeCard(
     ){
 
     //temporary variable change to Parameter
-    val pantry = listOf("Garlic", "Onion", "Flour", "Yeast", "Garlic Powder", "Vegan Butter")
+//    val pantry = listOf("Garlic", "Onion", "Flour", "Yeast", "Garlic Powder", "Vegan Butter")
 
 
-    var expanded by remember { mutableStateOf(false) }
+//    var expanded by remember { mutableStateOf(false) }
 
 
-    var image = R.drawable.bagel
+//    var image = R.drawable.bagel
 
-    image = when(recipeWithIngredientsAndInstructions.recipeEntity.recipeName){
+    val image = when(recipeWithIngredientsAndInstructions.recipeEntity.recipeName){
         "Bagels" -> R.drawable.bagel2
         "Garlic Knots" -> R.drawable.garlic2
         "Cauliflower Walnut Tacos" -> R.drawable.cauliflower
@@ -106,9 +105,15 @@ fun RecipeCard(
                 .clickable(onClick = onDetailsClick)
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = listOf(Color(0xFFb15f33),Color(0xFF682300)),
-                        tileMode = TileMode.Mirror),
-                    shape = if(currentScreen == "FavoritesTab" ) RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp) else RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp),
+                        colors = listOf(Color(0xFFb15f33), Color(0xFF682300)),
+                        tileMode = TileMode.Mirror
+                    ),
+                    shape = if (currentScreen == "FavoritesTab") RoundedCornerShape(
+                        10.dp,
+                        10.dp,
+                        10.dp,
+                        10.dp
+                    ) else RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp),
                 ),
             shape = if(currentScreen == "FavoritesTab" ) RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp) else RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp),
             color = Color.Transparent,
@@ -119,13 +124,20 @@ fun RecipeCard(
                 //Left Side Column
                 if(currentScreen != "CookedTab"){
                     Column(
-                        Modifier.padding(start = 0.dp).width(60.dp).fillMaxHeight(),
+                        Modifier
+                            .padding(start = 0.dp)
+                            .width(60.dp)
+                            .fillMaxHeight(),
                         verticalArrangement = Arrangement.SpaceBetween,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
 
                         //Time
-                        Column(Modifier.wrapContentHeight().fillMaxWidth().padding(top = 4.dp),
+                        Column(
+                            Modifier
+                                .wrapContentHeight()
+                                .fillMaxWidth()
+                                .padding(top = 4.dp),
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ){
@@ -155,7 +167,10 @@ fun RecipeCard(
                         }
 
                         //Difficulty
-                        Column(Modifier.wrapContentHeight().fillMaxWidth(),
+                        Column(
+                            Modifier
+                                .wrapContentHeight()
+                                .fillMaxWidth(),
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ){
@@ -192,14 +207,20 @@ fun RecipeCard(
                         }
 
                         //Rating
-                        Column(Modifier.wrapContentHeight().fillMaxWidth().padding(bottom = 4.dp),
+                        Column(
+                            Modifier
+                                .wrapContentHeight()
+                                .fillMaxWidth()
+                                .padding(bottom = 4.dp),
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ){
                             Icon(
                                 Icons.Outlined.ThumbUp,
                                 contentDescription = null,
-                                modifier = Modifier.padding(top = 0.dp).size(20.dp),
+                                modifier = Modifier
+                                    .padding(top = 0.dp)
+                                    .size(20.dp),
                                 tint = Color(0xFF000000),
 
                             )
@@ -223,12 +244,17 @@ fun RecipeCard(
                     }
                 }
 
-                Spacer(Modifier.fillMaxHeight().border(1.dp, Color(0xFFd8af84)).width(1.dp))
+                Spacer(
+                    Modifier
+                        .fillMaxHeight()
+                        .border(1.dp, Color(0xFFd8af84))
+                        .width(1.dp))
 
                 AsyncImage(
                     model = image,
                     contentDescription = null,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
                         .height(176.dp)
 //                        .width(200.dp)
 //                        .fillMaxWidth()
@@ -237,12 +263,19 @@ fun RecipeCard(
                     contentScale = ContentScale.Crop,
                 )
 
-                Spacer(Modifier.fillMaxHeight().border(1.dp, Color(0xFFd8af84)).width(1.dp))
+                Spacer(
+                    Modifier
+                        .fillMaxHeight()
+                        .border(1.dp, Color(0xFFd8af84))
+                        .width(1.dp))
 
                 //Right Side Column
                 if(currentScreen != "CookedTab") {
                     Column(
-                        Modifier.padding(start = 0.dp).width(60.dp).fillMaxHeight(),
+                        Modifier
+                            .padding(start = 0.dp)
+                            .width(60.dp)
+                            .fillMaxHeight(),
                         verticalArrangement = Arrangement.SpaceAround,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
@@ -380,135 +413,75 @@ fun RecipeCard(
             }
         }
 
-        Spacer(Modifier.fillMaxWidth().border(1.dp, Color(0xFFd8af84)).height(1.dp))
+        Spacer(
+            Modifier
+                .fillMaxWidth()
+                .border(1.dp, Color(0xFFd8af84))
+                .height(1.dp))
 
         //Bottom Bar surface
         if(currentScreen != "FavoritesTab" && currentScreen != "CookedTab"){
 
-            Surface(
-                modifier =
-                    Modifier
-                    .padding(start = 8.dp , end = 8.dp)
-                    .height(40.dp)
-                    .fillMaxWidth()
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf( Color(0xFFb15f33), Color(0xFF682300) ),
-                            tileMode = TileMode.Mirror
-                        ),
-                        shape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp)
-                    ),
-                shape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp),
-
-                color = Color.Transparent,
-
-            ){
-                Row(
-                    Modifier.padding(start = 4.dp, end = 4.dp).fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-
-
-                    Surface(
-                        modifier = Modifier
-                            //.padding(start = 8.dp, top = 8.dp)
-                            .wrapContentSize()
-                            .alpha(0.55f)
-                            .border(
-                                width = 2.dp,
-                                brush = (Brush.horizontalGradient(
-                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                    tileMode = TileMode.Mirror)),
-                                shape = CircleShape
-                            )
-                            .clickable(
-    //                            enabled = false,
-                                //!selected
-                                onClick = onRemoveClick,
-                            ),// { selected = !selected },
-                        shape = RoundedCornerShape(25.dp),
-                        color = Color(0xFF682300),
-                        elevation = 4.dp,
-                        //color = Color(0xFF682300),//Color(0xFFd8af84),
-    //                    contentColor = Color(0xFFd8af84),
-                    ) {
-                        Row(
-                            //Modifier.fillMaxSize(),
-                            horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
-                        )
-                        {
-
-                            Text(
-                                text = "Remove",
-                                modifier = Modifier
-                                    // .weight(1f)
-    //                                .padding(start = 0.dp, end = 0.dp)
-                                    .align(Alignment.CenterVertically)
-                                    .alpha(0.55f),
-                                color = Color(0xFFd8af84),
-    //                            textDecoration = decoration,
-                                fontSize = 18.sp,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-
-
-                    Surface(
-                        modifier = Modifier
-                            //.padding(start = 8.dp, top = 8.dp)
-                            .wrapContentSize()
-    //                        .alpha(alphaLevel)
-                            .border(
-                                width = 2.dp,
-                                brush = (Brush.horizontalGradient(
-                                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                    tileMode = TileMode.Mirror)),
-                                shape = CircleShape
-                            )
-                            .clickable(
-    //                            enabled = false,
-                                //!selected
-                                onClick = onCompleteClick,
-                            ),// { selected = !selected },
-                        shape = RoundedCornerShape(25.dp),
-                        color = Color(0xFF682300),
-                        elevation = 4.dp,
-                        //color = Color(0xFF682300),//Color(0xFFd8af84),
-    //                    contentColor = Color(0xFF682300),
-                    ) {
-                        Row(
-                            //Modifier.fillMaxSize(),
-                            horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
-                        )
-                        {
-
-                            Text(
-                                text = "Finished Cooking!",
-                                modifier = Modifier
-                                    // .weight(1f)
-    //                                   .padding(start = 6.dp, end = 6.dp)
-                                    .align(Alignment.CenterVertically),
-    //                                .alpha(alphaLevel),
-                                color = Color(0xFFd8af84),
-    //                            textDecoration = decoration,
-                                fontSize = 18.sp,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
-            }
+            BottomBarSurface(onRemoveClick, onCompleteClick)
 
         }
     }
 }
 
+
+@Composable
+
+fun BottomBarSurface(
+    onRemoveClick: () -> Unit,
+    onCompleteClick: () -> Unit,
+){
+    Surface(
+        modifier =
+        Modifier
+            .padding(start = 8.dp, end = 8.dp)
+            .height(60.dp)
+            .fillMaxWidth()
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(Color(0xFFb15f33), Color(0xFF682300)),
+                    tileMode = TileMode.Mirror
+                ),
+                shape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp)
+            ),
+        shape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp),
+
+        color = Color.Transparent,
+
+        ){
+        Row(
+            Modifier
+                .padding(start = 4.dp, end = 4.dp)
+                .fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+            DetailsScreenButton(
+                onClick = onRemoveClick,
+                borderStartColor = Color(0xFFd8af84),
+                borderEndColor = Color(0xFFb15f33),
+                textColor = Color(0xFFd8af84),
+                backgroundColor = Color(0xFF682300),
+                buttonText = "Remove"
+            )
+
+            DetailsScreenButton(
+                onClick = onCompleteClick,
+                borderStartColor = Color(0xFFd8af84),
+                borderEndColor = Color(0xFFb15f33),
+                textColor = Color(0xFFd8af84),
+                backgroundColor = Color(0xFF682300),
+                buttonText = "Finished Cooking!"
+            )
+
+        }
+    }
+}
 
 
 //@Composable
@@ -579,10 +552,10 @@ fun RecipeCard(
 fun DefaultPreview2() {
     BearRecipeBookAppTheme {
 
-            var myRE: RecipeEntity = RecipeEntity(recipeName = "Cauliflower Walnut Tacos",
+            val myRE = RecipeEntity(recipeName = "Cauliflower Walnut Tacos",
                 onMenu = 0, isDetailsScreenTarget = 1, timeToMake = 60, rating = 98, difficulty = 3)
 
-            var myList: List<IngredientEntity> = listOf<IngredientEntity>(
+            val myList: List<IngredientEntity> = listOf<IngredientEntity>(
                 IngredientEntity(ingredientName = "Ing. Name", quantityOwned = 0, quantityNeeded = 1)
             )
 

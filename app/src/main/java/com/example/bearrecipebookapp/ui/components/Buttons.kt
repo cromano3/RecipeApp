@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,17 +53,19 @@ fun DetailsScreenButton(
         ) {
         Row(
             horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 12.dp)
+            modifier = Modifier.wrapContentSize().padding(start = 2.dp, end = 2.dp, top = 4.dp, bottom = 4.dp)
         )
         {
 
             Text(
                 text = buttonText,
                 modifier = Modifier
-                    .align(Alignment.CenterVertically),
+                    .align(Alignment.CenterVertically)
+                    .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
                 color = textColor,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
 
             )
         }
