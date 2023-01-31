@@ -422,7 +422,7 @@ fun BearRecipeApp(
 //                    }
                 },
                 exitTransition = {
-                    fadeOut(animationSpec = tween(700));
+                    fadeOut(animationSpec = tween(700))
 //                    when (targetState.destination.route) {
 //                        "RecipeScreen" -> fadeOut(animationSpec = tween(700))
 //                        "WeeklyMenuScreen" -> fadeOut(animationSpec = tween(700))
@@ -575,17 +575,20 @@ fun BearAppBottomBar(
 //                (it == currentRoute)
                     ,
                     onClick = {
-
                         if (currentRoute == "SearchScreen" && it == "RecipeScreen") {
                             navController.popBackStack()
                         }
-                        if (currentRoute == "AddRecipeScreen" && it == "RecipeScreen") {
+                        else if (currentRoute == "AddRecipeScreen" && it == "RecipeScreen") {
                             navController.popBackStack()
                         }
-                        if (currentRoute == "DetailsScreen") {
+                        else if (currentRoute == "DetailsScreen" && navController.previousBackStackEntry?.destination?.route == "ProfileScreen") {
+                            navController.popBackStack()
                             navController.popBackStack()
                         }
-                        if (currentRoute == "ProfileScreen") {
+                        else if(currentRoute == "DetailsScreen"){
+                            navController.popBackStack()
+                        }
+                        else if (currentRoute == "ProfileScreen") {
                             navController.popBackStack()
                         }
 
