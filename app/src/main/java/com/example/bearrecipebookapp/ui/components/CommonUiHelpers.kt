@@ -463,10 +463,10 @@ fun BottomBarSurface(
 
             DetailsScreenButton(
                 onClick = onRemoveClick,
-                borderStartColor = Color(0xFFd8af84),
-                borderEndColor = Color(0xFFb15f33),
-                textColor = Color(0xFFd8af84),
-                backgroundColor = Color(0xFF682300),
+                borderStartColor = Color(0xFFb15f33),
+                borderEndColor = Color(0xFF682300),
+                textColor = Color(0xFF682300),
+                backgroundColor = Color(0xFFd8af84),
                 buttonText = "Remove"
             )
 
