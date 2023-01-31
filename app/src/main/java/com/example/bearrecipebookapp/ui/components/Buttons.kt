@@ -2,10 +2,7 @@ package com.example.bearrecipebookapp.ui.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -16,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,7 +29,8 @@ fun DetailsScreenButton(
 
     Surface(
         modifier = Modifier
-            .wrapContentSize()
+            .wrapContentWidth()
+            .height(36.dp)
             .border(
                 width = 2.dp,
                 brush = (Brush.horizontalGradient(
@@ -53,7 +50,7 @@ fun DetailsScreenButton(
         ) {
         Row(
             horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.wrapContentSize().padding(start = 2.dp, end = 2.dp, top = 4.dp, bottom = 4.dp)
+            modifier = Modifier.wrapContentSize().padding(start = 10.dp, end = 10.dp, top = 2.dp, bottom = 2.dp)
         )
         {
 
@@ -61,11 +58,11 @@ fun DetailsScreenButton(
                 text = buttonText,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
+                    .padding(start = 0.dp, end = 0.dp, top = 0.dp, bottom = 0.dp),
                 color = textColor,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
+//                fontWeight = FontWeight.Bold
 
             )
         }
