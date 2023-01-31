@@ -485,12 +485,6 @@ fun BearRecipeApp(
             }
 
             composable(
-                route = "CommentScreen",
-                enterTransition = {fadeIn(animationSpec = tween(700))},
-                exitTransition = {fadeOut(animationSpec = tween(700))}
-            ){CommentScreen({}, {})}
-
-            composable(
                 route = "SearchScreen",
                 enterTransition = {
                     when (initialState.destination.route) {

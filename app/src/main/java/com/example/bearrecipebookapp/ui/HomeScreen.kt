@@ -46,6 +46,7 @@ import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.entity.FilterEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.AddRecipeCard
+import com.example.bearrecipebookapp.ui.components.BasicAlert
 import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.HomeScreenViewModel
 import kotlinx.coroutines.delay
@@ -452,69 +453,83 @@ fun HomeScreen(
 
                     }
                     if(uiAlertState.showAlert){
-                        AlertDialog(
-                            onDismissRequest = {},
-                            text = {
-                                Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
-                                        " from the Menu? (This will also remove it from the Shopping List.)",
-                                    color = Color(0xFF682300),
-                                    fontSize = 16.sp,
-                                    textAlign = TextAlign.Center
-                                )
-                            },
-                            buttons = {
-                                Row(
-                                    modifier = Modifier
-                                        .padding(all = 8.dp)
-                                        .fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceEvenly
-                                ) {
-
-                                    Button(
-                                        modifier = Modifier.wrapContentSize(),
-                                        onClick = {
-                                            homeScreenViewModel.cancelAlert()
-                                        },
-                                        elevation = ButtonDefaults.elevation(6.dp),
-                                        shape = RoundedCornerShape(25.dp),
-                                        border = BorderStroke(
-                                            width = 2.dp,
-                                            brush = (Brush.horizontalGradient(
-                                                startX = -10f,
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                                tileMode = TileMode.Mirror
-                                            )),
-                                        ),
-                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                    ) {
-                                        Text("Cancel")
-                                    }
-
-                                    Button(
-                                        modifier = Modifier.wrapContentSize(),
-                                        onClick = {
-                                            onMenuRemovedClick(uiAlertState.recipe)
-                                            homeScreenViewModel.toggleMenu(uiAlertState.recipe)
-                                            homeScreenViewModel.cancelAlert()
-                                        },
-                                        elevation = ButtonDefaults.elevation(6.dp),
-                                        shape = RoundedCornerShape(25.dp),
-                                        border = BorderStroke(
-                                            width = 2.dp,
-                                            brush = (Brush.horizontalGradient(
-                                                startX = -10f,
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                                tileMode = TileMode.Mirror
-                                            )),
-                                        ),
-                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                    ) {
-                                        Text("Yes")
-                                    }
-                                }
-                            },
-
+                        BasicAlert(
+                            text = "Are you sure you want to remove ${ uiAlertState.recipe.recipeEntity.recipeName } " +
+                                    "from the Menu? (This will also remove it from the Shopping List.)",
+                            confirmButtonText = "Yes",
+                            cancelButtonText = "Cancel",
+                            onConfirmClick = {
+                                onMenuRemovedClick(uiAlertState.recipe)
+                                homeScreenViewModel.toggleMenu(uiAlertState.recipe)
+                                homeScreenViewModel.cancelAlert()
+                                             },
+                            onCancelClick = { homeScreenViewModel.cancelAlert() },
+                            onDismiss = {}
                         )
+
+//                        AlertDialog(
+//                            onDismissRequest = {},
+//                            text = {
+//                                Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
+//                                        " from the Menu? (This will also remove it from the Shopping List.)",
+//                                    color = Color(0xFF682300),
+//                                    fontSize = 16.sp,
+//                                    textAlign = TextAlign.Center
+//                                )
+//                            },
+//                            buttons = {
+//                                Row(
+//                                    modifier = Modifier
+//                                        .padding(all = 8.dp)
+//                                        .fillMaxWidth(),
+//                                    horizontalArrangement = Arrangement.SpaceEvenly
+//                                ) {
+//
+//                                    Button(
+//                                        modifier = Modifier.wrapContentSize(),
+//                                        onClick = {
+//                                            homeScreenViewModel.cancelAlert()
+//                                        },
+//                                        elevation = ButtonDefaults.elevation(6.dp),
+//                                        shape = RoundedCornerShape(25.dp),
+//                                        border = BorderStroke(
+//                                            width = 2.dp,
+//                                            brush = (Brush.horizontalGradient(
+//                                                startX = -10f,
+//                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                                tileMode = TileMode.Mirror
+//                                            )),
+//                                        ),
+//                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+//                                    ) {
+//                                        Text("Cancel")
+//                                    }
+//
+//                                    Button(
+//                                        modifier = Modifier.wrapContentSize(),
+//                                        onClick = {
+//                                            onMenuRemovedClick(uiAlertState.recipe)
+//                                            homeScreenViewModel.toggleMenu(uiAlertState.recipe)
+//                                            homeScreenViewModel.cancelAlert()
+//                                        },
+//                                        elevation = ButtonDefaults.elevation(6.dp),
+//                                        shape = RoundedCornerShape(25.dp),
+//                                        border = BorderStroke(
+//                                            width = 2.dp,
+//                                            brush = (Brush.horizontalGradient(
+//                                                startX = -10f,
+//                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                                tileMode = TileMode.Mirror
+//                                            )),
+//                                        ),
+//                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+//                                    ) {
+//                                        Text("Yes")
+//                                    }
+//                                }
+//                            },
+//
+//                        )
                     }
                 }
             }

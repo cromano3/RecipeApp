@@ -8,7 +8,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,8 +15,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.runtime.Composable
@@ -32,9 +33,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
@@ -199,205 +198,250 @@ fun MenuScreen(
 
                 //Add Recipe Alert
                 if(uiAlertState.showAddRecipeAlert){
-                    AlertDialog(
-                        onDismissRequest = {
+                    BasicAlert(
+                        text = "Would you like to add a recipe to your Menu?",
+                        confirmButtonText = "Yes",
+                        cancelButtonText = "Cancel",
+                        onConfirmClick =
+                        {
                             menuScreenViewModel.cancelAddRecipeAlert()
+                            menuScreenViewModel.addTutorialAlert()
+                            onAddRecipeClick()
                         },
-                        text = {
-                            Text(text = "Would you like to add a recipe to your Menu?",
-                                color = Color(0xFF682300),
-                                fontSize = 16.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        },
-                        buttons = {
-                            Row(
-                                modifier = Modifier
-                                    .padding(all = 8.dp)
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
+                        onCancelClick = { menuScreenViewModel.cancelAddRecipeAlert() }) {
 
-                                Button(
-                                    modifier = Modifier.wrapContentSize(),
-                                    onClick = {
-                                        menuScreenViewModel.cancelAddRecipeAlert()
-                                    },
-                                    elevation = ButtonDefaults.elevation(6.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            startX = -10f,
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                    ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                ) {
-                                    Text("Cancel")
-                                }
-
-                                Button(
-                                    modifier = Modifier.wrapContentSize(),
-                                    onClick = {
-                                        menuScreenViewModel.cancelAddRecipeAlert()
-                                        menuScreenViewModel.addTutorialAlert()
-                                        onAddRecipeClick()
-                                    },
-                                    elevation = ButtonDefaults.elevation(6.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            startX = -10f,
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                    ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                ) {
-                                    Text("Yes")
-                                }
-                            }
-                        },
-                    )
+                    }
+//                    AlertDialog(
+//                        onDismissRequest = {
+//                            menuScreenViewModel.cancelAddRecipeAlert()
+//                        },
+//                        text = {
+//                            Text(text = "Would you like to add a recipe to your Menu?",
+//                                color = Color(0xFF682300),
+//                                fontSize = 16.sp,
+//                                textAlign = TextAlign.Center
+//                            )
+//                        },
+//                        buttons = {
+//                            Row(
+//                                modifier = Modifier
+//                                    .padding(all = 8.dp)
+//                                    .fillMaxWidth(),
+//                                horizontalArrangement = Arrangement.SpaceEvenly
+//                            ) {
+//
+//                                Button(
+//                                    modifier = Modifier.wrapContentSize(),
+//                                    onClick = {
+//                                        menuScreenViewModel.cancelAddRecipeAlert()
+//                                    },
+//                                    elevation = ButtonDefaults.elevation(6.dp),
+//                                    shape = RoundedCornerShape(25.dp),
+//                                    border = BorderStroke(
+//                                        width = 2.dp,
+//                                        brush = (Brush.horizontalGradient(
+//                                            startX = -10f,
+//                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                            tileMode = TileMode.Mirror
+//                                        )),
+//                                    ),
+//                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+//                                ) {
+//                                    Text("Cancel")
+//                                }
+//
+//                                Button(
+//                                    modifier = Modifier.wrapContentSize(),
+//                                    onClick = {
+//                                        menuScreenViewModel.cancelAddRecipeAlert()
+//                                        menuScreenViewModel.addTutorialAlert()
+//                                        onAddRecipeClick()
+//                                    },
+//                                    elevation = ButtonDefaults.elevation(6.dp),
+//                                    shape = RoundedCornerShape(25.dp),
+//                                    border = BorderStroke(
+//                                        width = 2.dp,
+//                                        brush = (Brush.horizontalGradient(
+//                                            startX = -10f,
+//                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                            tileMode = TileMode.Mirror
+//                                        )),
+//                                    ),
+//                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+//                                ) {
+//                                    Text("Yes")
+//                                }
+//                            }
+//                        },
+//                    )
                 }
 
                 //Remove Alert
                 if(uiAlertState.showRemoveAlert){
-                    AlertDialog(
-                        onDismissRequest = {},
-                        text = {
-                            Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
-                                    " from the Menu? (This will also remove it from the Shopping List.)",
-                                color = Color(0xFF682300),
-                                fontSize = 16.sp,
-                                textAlign = TextAlign.Center
-                            )
+                    BasicAlert(
+                        text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
+                                " from the Menu? (This will also remove it from the Shopping List.)",
+                        confirmButtonText = "Yes",
+                        cancelButtonText = "Cancel",
+                        onConfirmClick =
+                        {
+                            onRemoveClick(uiAlertState.recipe)
+                            menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
+                            menuScreenViewModel.cancelRemoveAlert()
                         },
-                        buttons = {
-                            Row(
-                                modifier = Modifier
-                                    .padding(all = 8.dp)
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
+                        onCancelClick = { menuScreenViewModel.cancelRemoveAlert() }) {
 
-                                Button(
-                                    modifier = Modifier.wrapContentSize(),
-                                    onClick = {
-                                        menuScreenViewModel.cancelRemoveAlert()
-                                    },
-                                    elevation = ButtonDefaults.elevation(6.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            startX = -10f,
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                    ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                ) {
-                                    Text("Cancel")
-                                }
-
-                                Button(
-                                    modifier = Modifier.wrapContentSize(),
-                                    onClick = {
-                                        onRemoveClick(uiAlertState.recipe)
-                                        menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
-                                        menuScreenViewModel.cancelRemoveAlert()
-                                    },
-                                    elevation = ButtonDefaults.elevation(6.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            startX = -10f,
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                    ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                ) {
-                                    Text("Yes")
-                                }
-                            }
-                        },
-                    )
+                    }
+//                    AlertDialog(
+//                        onDismissRequest = {},
+//                        text = {
+//                            Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
+//                                    " from the Menu? (This will also remove it from the Shopping List.)",
+//                                color = Color(0xFF682300),
+//                                fontSize = 16.sp,
+//                                textAlign = TextAlign.Center
+//                            )
+//                        },
+//                        buttons = {
+//                            Row(
+//                                modifier = Modifier
+//                                    .padding(all = 8.dp)
+//                                    .fillMaxWidth(),
+//                                horizontalArrangement = Arrangement.SpaceEvenly
+//                            ) {
+//
+//                                Button(
+//                                    modifier = Modifier.wrapContentSize(),
+//                                    onClick = {
+//                                        menuScreenViewModel.cancelRemoveAlert()
+//                                    },
+//                                    elevation = ButtonDefaults.elevation(6.dp),
+//                                    shape = RoundedCornerShape(25.dp),
+//                                    border = BorderStroke(
+//                                        width = 2.dp,
+//                                        brush = (Brush.horizontalGradient(
+//                                            startX = -10f,
+//                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                            tileMode = TileMode.Mirror
+//                                        )),
+//                                    ),
+//                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+//                                ) {
+//                                    Text("Cancel")
+//                                }
+//
+//                                Button(
+//                                    modifier = Modifier.wrapContentSize(),
+//                                    onClick = {
+//                                        onRemoveClick(uiAlertState.recipe)
+//                                        menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
+//                                        menuScreenViewModel.cancelRemoveAlert()
+//                                    },
+//                                    elevation = ButtonDefaults.elevation(6.dp),
+//                                    shape = RoundedCornerShape(25.dp),
+//                                    border = BorderStroke(
+//                                        width = 2.dp,
+//                                        brush = (Brush.horizontalGradient(
+//                                            startX = -10f,
+//                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                            tileMode = TileMode.Mirror
+//                                        )),
+//                                    ),
+//                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+//                                ) {
+//                                    Text("Yes")
+//                                }
+//                            }
+//                        },
+//                    )
                 }
 
                 //Completed Alert
                 if(uiAlertState.showCompletedAlert){
-                    AlertDialog(
-                        onDismissRequest = {},
-                        text = {
-                            Text(text = "Mark " + uiAlertState.recipe.recipeEntity.recipeName +
-                                    " as completed and remove from the Menu? (This will also remove it from the Shopping List.)",
-                                color = Color(0xFF682300),
-                                fontSize = 16.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        },
-                        buttons = {
-                            Row(
-                                modifier = Modifier
-                                    .padding(all = 8.dp)
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
+                    BasicAlert(
+                        text = "Mark " + uiAlertState.recipe.recipeEntity.recipeName +
+                                " as completed and remove from the Menu? (This will also remove it from the Shopping List.)",
+                        confirmButtonText = "Yes",
+                        cancelButtonText = "Cancel",
+                        onConfirmClick = {
+                            onCompleteClick(uiAlertState.recipe)
+                            menuScreenViewModel.addCooked(uiAlertState.recipe)
+                            menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
+                            menuScreenViewModel.addExp(uiAlertState.recipe)
+                            menuScreenViewModel.cancelCompletedAlert()
+                            menuScreenViewModel.triggerRatingAlert()
+                                         },
+                        onCancelClick = {
+                            menuScreenViewModel.cancelCompletedAlert()
+                            menuScreenViewModel.clearAlertRecipeTarget() }) {
 
-                                Button(
-                                    modifier = Modifier.wrapContentSize(),
-                                    onClick = {
-                                        menuScreenViewModel.cancelCompletedAlert()
-                                        menuScreenViewModel.clearAlertRecipeTarget()
-                                    },
-                                    elevation = ButtonDefaults.elevation(6.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            startX = -10f,
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                    ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                ) {
-                                    Text("Cancel")
-                                }
-
-                                Button(
-                                    modifier = Modifier.wrapContentSize(),
-                                    onClick = {
-                                        onCompleteClick(uiAlertState.recipe)
-                                        menuScreenViewModel.addCooked(uiAlertState.recipe)
-                                        menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
-                                        menuScreenViewModel.addExp(uiAlertState.recipe)
-                                        menuScreenViewModel.cancelCompletedAlert()
-                                        menuScreenViewModel.triggerRatingAlert()
-                                    },
-                                    elevation = ButtonDefaults.elevation(6.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            startX = -10f,
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                    ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                ) {
-                                    Text("Yes")
-                                }
-                            }
-                        },
-                    )
+                    }
+//                    AlertDialog(
+//                        onDismissRequest = {},
+//                        text = {
+//                            Text(text = "Mark " + uiAlertState.recipe.recipeEntity.recipeName +
+//                                    " as completed and remove from the Menu? (This will also remove it from the Shopping List.)",
+//                                color = Color(0xFF682300),
+//                                fontSize = 16.sp,
+//                                textAlign = TextAlign.Center
+//                            )
+//                        },
+//                        buttons = {
+//                            Row(
+//                                modifier = Modifier
+//                                    .padding(all = 8.dp)
+//                                    .fillMaxWidth(),
+//                                horizontalArrangement = Arrangement.SpaceEvenly
+//                            ) {
+//
+//                                Button(
+//                                    modifier = Modifier.wrapContentSize(),
+//                                    onClick = {
+//                                        menuScreenViewModel.cancelCompletedAlert()
+//                                        menuScreenViewModel.clearAlertRecipeTarget()
+//                                    },
+//                                    elevation = ButtonDefaults.elevation(6.dp),
+//                                    shape = RoundedCornerShape(25.dp),
+//                                    border = BorderStroke(
+//                                        width = 2.dp,
+//                                        brush = (Brush.horizontalGradient(
+//                                            startX = -10f,
+//                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                            tileMode = TileMode.Mirror
+//                                        )),
+//                                    ),
+//                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+//                                ) {
+//                                    Text("Cancel")
+//                                }
+//
+//                                Button(
+//                                    modifier = Modifier.wrapContentSize(),
+//                                    onClick = {
+//                                        onCompleteClick(uiAlertState.recipe)
+//                                        menuScreenViewModel.addCooked(uiAlertState.recipe)
+//                                        menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
+//                                        menuScreenViewModel.addExp(uiAlertState.recipe)
+//                                        menuScreenViewModel.cancelCompletedAlert()
+//                                        menuScreenViewModel.triggerRatingAlert()
+//                                    },
+//                                    elevation = ButtonDefaults.elevation(6.dp),
+//                                    shape = RoundedCornerShape(25.dp),
+//                                    border = BorderStroke(
+//                                        width = 2.dp,
+//                                        brush = (Brush.horizontalGradient(
+//                                            startX = -10f,
+//                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                            tileMode = TileMode.Mirror
+//                                        )),
+//                                    ),
+//                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+//                                ) {
+//                                    Text("Yes")
+//                                }
+//                            }
+//                        },
+//                    )
                 }
 
                 //Rating Alert

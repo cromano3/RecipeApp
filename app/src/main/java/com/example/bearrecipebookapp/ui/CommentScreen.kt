@@ -19,7 +19,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.bearrecipebookapp.ui.components.AlertButton
+import com.example.bearrecipebookapp.ui.components.CancelAlertButton
+import com.example.bearrecipebookapp.ui.components.ConfirmAlertButton
 import com.example.bearrecipebookapp.ui.components.OneButtonAlert
 import com.example.bearrecipebookapp.viewmodel.CommentScreenViewModel
 
@@ -71,10 +72,11 @@ fun CommentScreen(
                             .padding(start = 32.dp, end = 32.dp, top = 12.dp, bottom = 12.dp),
                         horizontalArrangement = Arrangement.SpaceBetween)
                     {
-                        AlertButton(buttonText = "Cancel") {
-                            onCancelClick()
-                        }
-                        AlertButton(buttonText = "Confirm") {
+                        CancelAlertButton(
+                            buttonText = "Cancel",
+                            onButtonClick = onCancelClick
+                        )
+                        ConfirmAlertButton(buttonText = "Confirm") {
                             if(uiState.reviewText.length > 1000)
                             {
                                 commentScreenViewModel.triggerTooLongAlert()

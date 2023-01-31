@@ -1,12 +1,8 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -20,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
@@ -39,7 +34,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
+import com.example.bearrecipebookapp.ui.components.AnnotatedStringAlert
 import com.example.bearrecipebookapp.ui.components.BasicAlert
+import com.example.bearrecipebookapp.ui.components.DetailsScreenButton
 import com.example.bearrecipebookapp.ui.components.ThumbsRatingAlert
 import com.example.bearrecipebookapp.viewmodel.DetailsScreenViewModel
 
@@ -163,151 +160,92 @@ fun NewDetailsScreen(
 
                         val selected: Boolean
                         val alphaLevel: Float
-                        val myText: String
-                        val myFinishedText: String
+                        val menuText: String
+                        val finishedText: String
+
+                        val removeTextColor = Color(0xFF682300)
+                        val removeBackgroundColor = Color(0xFFd8af84)
+                        val removeBorderStartColor = Color(0xFFb15f33)
+                        val removeBorderEndColor = Color(0xFF682300)
+
+                        val textColor = Color(0xFFd8af84)
+                        val backgroundColor = Color(0xFF682300)
+                        val borderStartColor = Color(0xFFd8af84)
+                        val borderEndColor = Color(0xFFb15f33)
 
                         if (detailsScreenData.recipeEntity.onMenu == 1) {
                             selected = true
-                            alphaLevel = 0.55f
-                            myText = "Remove from Menu"
-                            myFinishedText = "Finished Cooking!"
+//                            alphaLevel = 1f
+                            menuText = "Remove from Menu"
+                            finishedText = "Finished Cooking!"
                         } else {
                             selected = false
-                            alphaLevel = 1f
-                            myText = "Add to Menu"
-                            myFinishedText = "I Made This!"
+//                            alphaLevel = 1f
+                            menuText = "Add to Menu"
+                            finishedText = "I Made This!"
                         }
 
-                        val alphaAnim: Float by animateFloatAsState(
-                            targetValue = alphaLevel,
-                            animationSpec = tween(
-                                durationMillis = 150,
-                                delayMillis = 0,
-                                easing = LinearEasing,
-                            )
-                        )
+//                        val alphaAnim: Float by animateFloatAsState(
+//                            targetValue = alphaLevel,
+//                            animationSpec = tween(
+//                                durationMillis = 150,
+//                                delayMillis = 0,
+//                                easing = LinearEasing,
+//                            )
+//                        )
 
+
+                        //Buttons Row beneath image
                         Row(
                             Modifier
                                 .fillMaxWidth()
                                 .wrapContentHeight()
                                 .padding(bottom = 16.dp),
                             horizontalArrangement = Arrangement.SpaceEvenly) {
-                            //Add/Remove from Menu button
-                            Surface(
-                                modifier = Modifier
-                                    //.padding(start = 8.dp, top = 8.dp)
-                                    .wrapContentSize()
-//                                    .alpha(alphaAnim)
-                                    .border(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                        shape = CircleShape
-                                    )
-                                    .clickable(
-//                                    enabled = false,
-                                        //!selected
-                                        onClick = {
-                                            if (selected) {
-                                                detailsScreenViewModel.triggerRemoveAlert(
-                                                    detailsScreenData
-                                                )
-                                            } else {
-                                                detailsScreenViewModel.addToMenu(detailsScreenData)
-                                                onMenuAddClick(detailsScreenData)
-                                            }
-                                        },
-                                    ),// { selected = !selected },
-                                shape = RoundedCornerShape(25.dp),
-                                color = Color(0xFF682300),
-                                elevation = 4.dp,
-                                //color = Color(0xFF682300),//Color(0xFFd8af84),
 
-                            ) {
-
-                                Row(
-                                    //Modifier.fillMaxSize(),
-                                    horizontalArrangement = Arrangement.Start,
-                                    modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 12.dp)
-                                )
+                            //Add or Remove Menu button
+                            DetailsScreenButton(
+                                onClick =
                                 {
+                                    if (selected) {
+                                        detailsScreenViewModel.triggerRemoveAlert(detailsScreenData)
+                                    } else {
+                                        detailsScreenViewModel.addToMenu(detailsScreenData)
+                                        onMenuAddClick(detailsScreenData)
+                                    }
+                                },
+                                borderStartColor = if(selected) removeBorderStartColor else borderStartColor,
+                                borderEndColor = if(selected) removeBorderEndColor else borderEndColor,
+                                textColor = if(selected) removeTextColor else textColor,
+                                backgroundColor = if(selected) removeBackgroundColor else backgroundColor,
+                                buttonText = menuText
+                            )
 
-                                    Text(
-                                        text = myText,
-                                        modifier = Modifier
-                                            // .weight(1f)
-//                                .padding(start = 0.dp, end = 0.dp)
-                                            .align(Alignment.CenterVertically)
-                                            .alpha(alphaAnim),
-                                        color = Color(0xFFd8af84),
-//                            textDecoration = decoration,
-                                        fontSize = 18.sp,
-                                        textAlign = TextAlign.Center,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
-
-                            //
-                            Surface(
-                                modifier = Modifier
-                                    //.padding(start = 8.dp, top = 8.dp)
-                                    .wrapContentSize()
-                                    .border(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                        shape = CircleShape
-                                    )
-                                    .clickable(
-//                                    enabled = false,
-                                        //!selected
-                                        onClick = {
-                                            if (selected) {
-                                                detailsScreenViewModel.triggerCompletedAlert(
-                                                    detailsScreenData
-                                                )
-                                            } else {
-                                                detailsScreenViewModel.triggerCompletedAlert(
-                                                    detailsScreenData
-                                                )
-                                            }
-                                        },
-                                    ),
-                                shape = RoundedCornerShape(25.dp),
-                                color = Color(0xFF682300),
-                                elevation = 4.dp,
-                            ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.Start,
-                                    modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 12.dp)
-                                )
+                            //Finished cooking button
+                            DetailsScreenButton(
+                                onClick =
                                 {
+                                    if (selected) { detailsScreenViewModel.triggerCompletedAlert(detailsScreenData) }
+                                    else { detailsScreenViewModel.triggerCompletedAlert(detailsScreenData) }
 
-                                    Text(
-                                        text = myFinishedText,
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically),
-                                        color = Color(0xFFd8af84),
-                                        fontSize = 18.sp,
-                                        textAlign = TextAlign.Center,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
+                                },
+                                borderStartColor = borderStartColor,
+                                borderEndColor = borderEndColor,
+                                textColor = textColor,
+                                backgroundColor = backgroundColor,
+                                buttonText = finishedText
+                            )
+
                         }
+
+
                         //Info box
                         Surface(
                             modifier = Modifier
                                 .padding(bottom = 16.dp)
                                 .wrapContentSize(),
                             shape = RoundedCornerShape(10.dp),
-                            color = Color(0xFFf8ea9a),
+                            color = Color(0xFF682300),
                             //color = Color(0xFF682300),//Color(0xFFd8af84),
                             contentColor = Color(0xFFd8af84),
                             elevation = 6.dp
@@ -321,7 +259,7 @@ fun NewDetailsScreen(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
                                         Icons.Outlined.Timer,
-                                        tint = Color(0xFF000000),
+                                        tint = Color(0xFFd8af84),
                                         contentDescription = null
                                     )
                                     Text(
@@ -335,7 +273,7 @@ fun NewDetailsScreen(
                                             )
                                             .background(color = Color.Transparent),
                                         // .weight(1f),
-                                        color = Color(0xFF682300),
+                                        color = Color(0xFFd8af84),
                                         fontSize = 18.sp,
                                         textAlign = TextAlign.Center,
                                         fontWeight = FontWeight.Bold
@@ -349,7 +287,7 @@ fun NewDetailsScreen(
                                 ) {
                                     Icon(
                                         Icons.Outlined.AutoAwesome,
-                                        tint = Color(0xFF000000),
+                                        tint = Color(0xFFd8af84),
                                         contentDescription = null
                                     )
                                     Text(
@@ -363,7 +301,7 @@ fun NewDetailsScreen(
                                             )
                                             .background(color = Color.Transparent),
                                         // .weight(1f),
-                                        color = Color(0xFF682300),
+                                        color = Color(0xFFd8af84),
                                         fontSize = 18.sp,
                                         textAlign = TextAlign.Center,
                                         fontWeight = FontWeight.Bold
@@ -372,7 +310,7 @@ fun NewDetailsScreen(
                                     for (x in 0 until detailsScreenData.recipeEntity.difficulty) {
                                         Icon(
                                             Icons.Outlined.Star,
-                                            tint = Color(0xFF000000),
+                                            tint = Color(0xFFd8af84),
                                             contentDescription = null
                                         )
                                     }
@@ -381,7 +319,7 @@ fun NewDetailsScreen(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
                                         Icons.Outlined.ThumbUp,
-                                        tint = Color(0xFF000000),
+                                        tint = Color(0xFFd8af84),
                                         contentDescription = null
                                     )
                                     Text(
@@ -395,7 +333,7 @@ fun NewDetailsScreen(
                                             )
                                             .background(color = Color.Transparent),
                                         // .weight(1f),
-                                        color = Color(0xFF682300),
+                                        color = Color(0xFFd8af84),
                                         fontSize = 18.sp,
                                         textAlign = TextAlign.Center,
                                         fontWeight = FontWeight.Bold
@@ -555,7 +493,7 @@ fun NewDetailsScreen(
                 //Completed Alert
                 if(uiAlertState.showCompletedAlert){
 
-                    val finishedText: AnnotatedString = if(detailsScreenData.recipeEntity.onMenu == 1) {
+                    val finishedText: AnnotatedString = if(detailsScreenData.recipeEntity.onMenu == 0) {
                         buildAnnotatedString {
                             append("Great job! Add ")
                             append(uiAlertState.recipe.recipeEntity.recipeName)
@@ -586,72 +524,24 @@ fun NewDetailsScreen(
                         }
                     }
 
-
-                    AlertDialog(
-                        onDismissRequest = {},
-                        text = {
-                            Text(text = finishedText,
-                                color = Color(0xFF682300),
-                                fontSize = 16.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        },
-                        buttons = {
-                            Row(
-                                modifier = Modifier
-                                    .padding(all = 8.dp)
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-
-                                Button(
-                                    modifier = Modifier.wrapContentSize(),
-                                    onClick = {
-                                        detailsScreenViewModel.cancelCompletedAlert()
-                                    },
-                                    elevation = ButtonDefaults.elevation(6.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            startX = -10f,
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                    ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                ) {
-                                    Text("Cancel")
-                                }
-
-                                Button(
-                                    modifier = Modifier.wrapContentSize(),
-                                    onClick = {
-                                        onCompleteClick(detailsScreenData)
-                                        detailsScreenViewModel.addCooked(detailsScreenData)
-                                        detailsScreenViewModel.addExp(uiAlertState.recipe)
-                                        if(detailsScreenData.recipeEntity.onMenu == 1) {
-                                            detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
-                                        }
-                                        detailsScreenViewModel.triggerRatingAlert()
-                                    },
-                                    elevation = ButtonDefaults.elevation(6.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            startX = -10f,
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                    ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                ) {
-                                    Text("Yes")
-                                }
+                    AnnotatedStringAlert(
+                        text = finishedText,
+                        confirmButtonText = "Yes",
+                        cancelButtonText = "Cancel",
+                        onConfirmClick =
+                        {
+                            onCompleteClick(detailsScreenData)
+                            detailsScreenViewModel.addCooked(detailsScreenData)
+                            detailsScreenViewModel.addExp(uiAlertState.recipe)
+                            if(detailsScreenData.recipeEntity.onMenu == 1) {
+                                detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
                             }
-                        },
+                            detailsScreenViewModel.triggerRatingAlert()
+                         },
+                        onCancelClick = { detailsScreenViewModel.cancelCompletedAlert() },
+                        onDismiss = {}
                     )
+
                 }
                 
                 if(uiAlertState.showRatingAlert){

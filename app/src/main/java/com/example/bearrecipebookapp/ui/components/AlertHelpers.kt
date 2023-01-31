@@ -8,10 +8,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.ThumbDown
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material.icons.outlined.ThumbDown
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.runtime.Composable
@@ -20,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,13 +33,29 @@ fun BasicAlert(
     onConfirmClick: () -> Unit,
     onCancelClick: () -> Unit,
     onDismiss: () -> Unit,
-
 ){
     AlertDialog(
         onDismissRequest = onDismiss,
         text = { AlertText(text) },
         buttons = { AlertButtonsRow(confirmButtonText, cancelButtonText, onConfirmClick, onCancelClick) },
     )
+}
+
+@Composable
+fun AnnotatedStringAlert(
+    text: AnnotatedString,
+    confirmButtonText: String,
+    cancelButtonText: String,
+    onConfirmClick: () -> Unit,
+    onCancelClick: () -> Unit,
+    onDismiss: () -> Unit,
+){
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        text = { AnnotatedStringText(text) },
+        buttons = { AlertButtonsRow(confirmButtonText, cancelButtonText, onConfirmClick, onCancelClick) },
+    )
+
 }
 
 @Composable
@@ -59,10 +74,125 @@ fun OneButtonAlert(
                 Modifier.fillMaxWidth().padding(bottom = 8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                AlertButton(buttonText = confirmButtonText, onButtonClick = onConfirmClick)
+                ConfirmAlertButton(buttonText = confirmButtonText, onButtonClick = onConfirmClick)
             }
         }
     )
+}
+
+@Composable
+fun AlertTitle(title: String){
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = title,
+            color = Color(0xFF682300))
+    }
+
+}
+
+@Composable
+fun AlertText(text: String){
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ){
+        Text(text = text,
+            modifier = Modifier.padding(bottom = 16.dp),
+            color = Color(0xFF682300),
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun AnnotatedStringText(text: AnnotatedString){
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ){
+        Text(text = text,
+            modifier = Modifier.padding(bottom = 16.dp),
+            color = Color(0xFF682300),
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun AlertButtonsRow(
+    confirmButtonText: String,
+    cancelButtonText: String,
+    onConfirmClick: () -> Unit,
+    onCancelClick: () -> Unit,
+){
+    Row(
+        modifier = Modifier
+            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        CancelAlertButton(
+            buttonText = cancelButtonText,
+            onButtonClick = onCancelClick,
+        )
+        ConfirmAlertButton(
+            buttonText = confirmButtonText,
+            onButtonClick = onConfirmClick,
+        )
+    }
+}
+
+@Composable
+fun CancelAlertButton(
+    buttonText: String,
+    onButtonClick: () -> Unit,
+) {
+    Button(
+        modifier = Modifier.wrapContentSize(),
+        onClick =  onButtonClick,
+        elevation = ButtonDefaults.elevation(6.dp),
+        shape = RoundedCornerShape(25.dp),
+        border = BorderStroke(
+            width = 2.dp,
+            brush = (Brush.horizontalGradient(
+                startX = -10f,
+                colors = listOf(Color(0xFFb15f33), Color(0xFF682300)),
+                tileMode = TileMode.Mirror
+            )),
+        ),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+    ) {
+        Text(buttonText)
+    }
+}
+
+@Composable
+fun ConfirmAlertButton(
+    buttonText: String,
+    onButtonClick: () -> Unit,
+) {
+    Button(
+        modifier = Modifier.wrapContentSize(),
+        onClick =  onButtonClick,
+        elevation = ButtonDefaults.elevation(6.dp),
+        shape = RoundedCornerShape(25.dp),
+        border = BorderStroke(
+            width = 2.dp,
+            brush = (Brush.horizontalGradient(
+                startX = -30f,
+                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                tileMode = TileMode.Mirror
+            )),
+        ),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF682300), contentColor = Color(0xFFd8af84))
+    ) {
+        Text(buttonText)
+    }
 }
 
 @Composable
@@ -82,7 +212,7 @@ fun ThumbsRatingAlert(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { AlertTitle("Great job!") },
+//        title = { AlertTitle("Great job!") },
         text =
         {
             Column{
@@ -164,34 +294,34 @@ fun AlertThumbIcon(
 
 
 
-@Composable
-fun StarRatingAlert(
-    starCount: Int,
-    confirmButtonText: String,
-    cancelButtonText: String,
-    onConfirmClick: () -> Unit,
-    onCancelClick: () -> Unit,
-    onDismiss: () -> Unit,
-    onStarClick: (Int) -> Unit,
-    reviewText: String,
-    onTextChange: (String) -> Unit
-){
-//    var starCount by remember { mutableStateOf(0) }
-
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        text =
-        {
-            Column{
-//                AlertStarRating(starCount = starCount, onStarClick = { onStarClick(it) })
-                AlertReviewBox(reviewText) { onTextChange(it) }
-            }
-        },
-        buttons = { AlertButtonsRow(confirmButtonText, cancelButtonText, onConfirmClick, onCancelClick) },
-    )
-
-}
+//@Composable
+//fun StarRatingAlert(
+//    starCount: Int,
+//    confirmButtonText: String,
+//    cancelButtonText: String,
+//    onConfirmClick: () -> Unit,
+//    onCancelClick: () -> Unit,
+//    onDismiss: () -> Unit,
+//    onStarClick: (Int) -> Unit,
+//    reviewText: String,
+//    onTextChange: (String) -> Unit
+//){
+////    var starCount by remember { mutableStateOf(0) }
+//
+//
+//    AlertDialog(
+//        onDismissRequest = onDismiss,
+//        text =
+//        {
+//            Column{
+////                AlertStarRating(starCount = starCount, onStarClick = { onStarClick(it) })
+//                AlertReviewBox(reviewText) { onTextChange(it) }
+//            }
+//        },
+//        buttons = { AlertButtonsRow(confirmButtonText, cancelButtonText, onConfirmClick, onCancelClick) },
+//    )
+//
+//}
 
 @Composable
 fun AlertReviewBox(reviewText: String, onTextChange: (String) -> Unit){
@@ -205,25 +335,25 @@ fun AlertReviewBox(reviewText: String, onTextChange: (String) -> Unit){
 }
 
 
-@Composable
-fun AlertStarRating(
-    starCount: Int,
-    onStarClick: (Int) -> Unit,
-){
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ){
-        for(x in 1..5){
-            AlertStar(filled = starCount >= x) { onStarClick(x) }
-        }
-//        AlertStar(starCount > 0) { onStarClick(starUpdater(1)) }
-//        AlertStar(starCount > 1) { onStarClick(starUpdater(2)) }
-//        AlertStar(starCount > 2) { onStarClick(starUpdater(3)) }
-    }
-}
+//@Composable
+//fun AlertStarRating(
+//    starCount: Int,
+//    onStarClick: (Int) -> Unit,
+//){
+//    Row(
+//        Modifier
+//            .fillMaxWidth()
+//            .padding(start = 8.dp, end = 8.dp),
+//        horizontalArrangement = Arrangement.SpaceEvenly
+//    ){
+//        for(x in 1..5){
+//            AlertStar(filled = starCount >= x) { onStarClick(x) }
+//        }
+////        AlertStar(starCount > 0) { onStarClick(starUpdater(1)) }
+////        AlertStar(starCount > 1) { onStarClick(starUpdater(2)) }
+////        AlertStar(starCount > 2) { onStarClick(starUpdater(3)) }
+//    }
+//}
 
 
 
@@ -238,116 +368,41 @@ fun AlertStarRating(
 //    }
 //}
 
-@Composable
-fun AlertStar(
-    filled: Boolean,
-    onClick: () -> Unit
-) {
-    Box() {
-        Surface(
-            modifier = Modifier
-                .padding(start = 8.dp, end = 8.dp)
-//                .border(
-//                    width = 2.dp,
-//                    brush = (Brush.horizontalGradient(
-//                        colors = listOf(
-//                            Color(0xFFd8af84),
-//                            Color(0xFFb15f33)
-//                        ),
-//                        tileMode = TileMode.Mirror
-//                    )),
-//                    shape = CircleShape
+//@Composable
+//fun AlertStar(
+//    filled: Boolean,
+//    onClick: () -> Unit
+//) {
+//    Box() {
+//        Surface(
+//            modifier = Modifier
+//                .padding(start = 8.dp, end = 8.dp)
+////                .border(
+////                    width = 2.dp,
+////                    brush = (Brush.horizontalGradient(
+////                        colors = listOf(
+////                            Color(0xFFd8af84),
+////                            Color(0xFFb15f33)
+////                        ),
+////                        tileMode = TileMode.Mirror
+////                    )),
+////                    shape = CircleShape
+////                )
+//                .size(36.dp)
+//                .clickable { onClick() },
+//            shape = CircleShape,
+//            color = Color(0xFFd8af84)
+//        ) {
+//            Box(contentAlignment = Alignment.Center) {
+//                Icon(
+//                    if (filled) Icons.Filled.Grade else Icons.Outlined.StarOutline,
+//                    tint = Color( 0xFF682300),
+//                    modifier = Modifier.size(36.dp),
+//                    // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+//                    contentDescription = null
 //                )
-                .size(36.dp)
-                .clickable { onClick() },
-            shape = CircleShape,
-            color = Color(0xFFd8af84)
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    if (filled) Icons.Filled.Grade else Icons.Outlined.StarOutline,
-                    tint = Color( 0xFF682300),
-                    modifier = Modifier.size(36.dp),
-                    // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                    contentDescription = null
-                )
-            }
-        }
-    }
-}
+//            }
+//        }
+//    }
+//}
 
-@Composable
-fun AlertTitle(title: String){
-    Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = title,
-            color = Color(0xFF682300))
-    }
-
-}
-
-@Composable
-fun AlertText(text: String){
-    Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ){
-        Text(text = text,
-            modifier = Modifier.padding(bottom = 16.dp),
-            color = Color(0xFF682300),
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-fun AlertButtonsRow(
-    confirmButtonText: String,
-    cancelButtonText: String,
-    onConfirmClick: () -> Unit,
-    onCancelClick: () -> Unit,
-){
-    Row(
-        modifier = Modifier
-            .padding(all = 8.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        AlertButton(
-            buttonText = cancelButtonText,
-            onButtonClick = onCancelClick,
-            )
-        AlertButton(
-            buttonText = confirmButtonText,
-            onButtonClick = onConfirmClick,
-        )
-    }
-}
-
-@Composable
-fun AlertButton(
-    buttonText: String,
-    onButtonClick: () -> Unit,
-) {
-    Button(
-        modifier = Modifier.wrapContentSize(),
-        onClick =  onButtonClick,
-        elevation = ButtonDefaults.elevation(6.dp),
-        shape = RoundedCornerShape(25.dp),
-        border = BorderStroke(
-            width = 2.dp,
-            brush = (Brush.horizontalGradient(
-                startX = -10f,
-                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                tileMode = TileMode.Mirror
-            )),
-        ),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-    ) {
-        Text(buttonText)
-    }
-}
