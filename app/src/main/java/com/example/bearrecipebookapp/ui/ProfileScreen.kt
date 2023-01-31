@@ -132,13 +132,14 @@ fun ProfileScreen(
         val mySize = Size(animatedFirstValue.value * barWidth, barHeight-10f)
 
         if(startAnimation){
-//            println("help")
+            println("start animation")
             startAnimation = false
             profileScreenViewModel.animationSetup()
         }
 
         if(uiState.doAnimation){
             coroutineScope.launch {
+                println("do animation")
                 profileScreenViewModel.stopDoAnimation()
 //                delay(1000)
 //                println("before")

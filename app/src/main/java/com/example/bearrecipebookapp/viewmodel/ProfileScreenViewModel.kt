@@ -165,15 +165,19 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
             drawStars()
 
-            val totalAnimations = getAnimationTotal(xp, xpToGive)
+            if(uiState.value.level != 10) {
+                val totalAnimations = getAnimationTotal(xp, xpToGive)
 
-            uiState.update { currentState ->
-                currentState.copy(
-                    totalAnimationsToPlay = totalAnimations,
-                    doAnimation = true,
-                )
+                uiState.update { currentState ->
+                    currentState.copy(
+                        totalAnimationsToPlay = totalAnimations,
+                        doAnimation = true,
+                    )
+                }
             }
+
         }
+
     }
 
     private suspend fun drawStars(){
