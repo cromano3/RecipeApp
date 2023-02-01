@@ -9,6 +9,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.CancelAlertButton
 import com.example.bearrecipebookapp.ui.components.ConfirmAlertButton
 import com.example.bearrecipebookapp.ui.components.OneButtonAlert
@@ -43,6 +45,8 @@ fun CommentScreen(
 
 
         val uiState by commentScreenViewModel.uiState.collectAsState()
+
+        val commentScreenData by commentScreenViewModel.commentScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
 
         var text by remember { mutableStateOf("") }
         var ingredients by remember { mutableStateOf("") }
@@ -76,7 +80,7 @@ fun CommentScreen(
                             buttonText = "Cancel",
                             onButtonClick =
                             {
-                                commentScreenViewModel.cancelReview(recipeEntity = )
+                                commentScreenViewModel.cancelReview(recipeName = commentScreenData.recipeEntity.recipeName )
                                 onCancelClick()
                             }
                         )
@@ -86,7 +90,7 @@ fun CommentScreen(
                                 commentScreenViewModel.triggerTooLongAlert()
                             }
                             else{
-                                commentScreenViewModel.confirmReview(recipeEntity = , uiState.reviewText)
+                                commentScreenViewModel.confirmReview(recipeName = commentScreenData.recipeEntity.recipeName, uiState.reviewText)
                                 onConfirmClick()
                             }
                         }

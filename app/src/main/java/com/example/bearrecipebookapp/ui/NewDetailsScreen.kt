@@ -52,7 +52,7 @@ fun NewDetailsScreen(
     onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     showAddedToFavoritesSnackBarMessage: (recipeName: String) -> Unit,
-    navigateToCommentScreen: (String) -> Unit,
+    navigateToCommentScreen: () -> Unit,
 
 ) {
 
@@ -590,7 +590,7 @@ fun NewDetailsScreen(
                         {
                             /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
                             detailsScreenViewModel.confirmShowWriteReviewAlert(detailsScreenData.recipeEntity)
-                            navigateToCommentScreen(detailsScreenData.recipeEntity.recipeName)
+                            navigateToCommentScreen()
                         },
                         onCancelClick = { detailsScreenViewModel.doNotWriteReview(detailsScreenData.recipeEntity) },
                         onDismiss = { detailsScreenViewModel.cancelShowWriteReviewAlert() }

@@ -1,11 +1,12 @@
 package com.example.bearrecipebookapp.viewmodel
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
-import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.data.repository.CommentScreenRepository
 import com.example.bearrecipebookapp.datamodel.CommentScreenDataModel
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,14 +17,19 @@ class CommentScreenViewModel(application: Application): ViewModel() {
 
     private val repository: CommentScreenRepository
 
-    val uiState = MutableStateFlow(CommentScreenDataModel())
-
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    val uiState = MutableStateFlow(CommentScreenDataModel())
+    var commentScreenData: LiveData<RecipeWithIngredientsAndInstructions>
+
+
 
     init{
         val appDb = RecipeAppDatabase.getInstance(application)
         val commentScreenDao = appDb.CommentScreenDao()
         repository = CommentScreenRepository(commentScreenDao)
+
+        commentScreenData = repository.commentScreenData
 
     }
 
@@ -33,18 +39,18 @@ class CommentScreenViewModel(application: Application): ViewModel() {
         }
     }
 
-    fun cancelReview(recipeEntity: RecipeEntity){
+    fun cancelReview(recipeName: String){
 
         coroutineScope.launch(Dispatchers.IO){
-            repository.setReviewAsWritten(recipeEntity.recipeName)
+            repository.setReviewAsWritten(recipeName)
         }
 
     }
 
-    fun confirmReview(recipeEntity: RecipeEntity, reviewText: String){
+    fun confirmReview(recipeName: String, reviewText: String){
 
         coroutineScope.launch(Dispatchers.IO){
-            repository.setReview(recipeEntity.recipeName, reviewText)
+            repository.setReview(recipeName, reviewText)
         }
 
     }

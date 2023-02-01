@@ -46,6 +46,10 @@ interface DetailsScreenDao {
     fun setReviewAsWritten(name: String)
 
     @Transaction
+    @Query("UPDATE recipe_table SET is_review_screen_target = 1 WHERE recipe_name = :name")
+    fun setReviewTarget(name: String)
+
+    @Transaction
     @Query("UPDATE ingredient_table SET quantity_owned = :quantityOwned WHERE ingredient_name = :name")
     fun setIngredientQuantityOwned(name: String, quantityOwned: Int)
 
