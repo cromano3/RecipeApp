@@ -50,6 +50,10 @@ interface DetailsScreenDao {
     fun setReviewTarget(name: String)
 
     @Transaction
+    @Query("UPDATE recipe_table SET is_review_screen_target = 0")
+    fun cleanReviewTarget()
+
+    @Transaction
     @Query("UPDATE ingredient_table SET quantity_owned = :quantityOwned WHERE ingredient_name = :name")
     fun setIngredientQuantityOwned(name: String, quantityOwned: Int)
 

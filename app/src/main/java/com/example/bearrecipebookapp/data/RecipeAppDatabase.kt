@@ -49,10 +49,10 @@ public abstract class RecipeAppDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                RecipeAppDatabase::class.java, "app_database41.db"
+                RecipeAppDatabase::class.java, "app_database42.db"
             )
               //  .allowMainThreadQueries()
-                .createFromAsset("database/app_database41.db")
+                .createFromAsset("database/app_database42.db")
                 .build()
                 // prepopulate the database after onCreate was called
 //                .addCallback(object : Callback() {

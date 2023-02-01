@@ -84,6 +84,7 @@ fun CommentScreen(
                                 onCancelClick()
                             }
                         )
+                        Text(commentScreenData.recipeEntity.recipeName)
 
                         ConfirmAlertButton(buttonText = "Confirm") {
                             if(uiState.reviewText.length > 1000) {

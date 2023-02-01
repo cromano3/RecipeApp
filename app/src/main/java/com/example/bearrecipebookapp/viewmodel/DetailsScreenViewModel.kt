@@ -124,6 +124,13 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
                 )
             }
         }
+        else{
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showCompletedAlert = false,
+                )
+            }
+        }
 
 
     }
@@ -279,6 +286,7 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
         coroutineScope.launch(Dispatchers.IO) {
 
+            repository.cleanReviewTarget()
             repository.setReviewTarget(recipeEntity.recipeName)
 
             uiAlertState.update { currentState ->

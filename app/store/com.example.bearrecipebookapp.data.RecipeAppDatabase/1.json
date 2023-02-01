@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5932ac38d5b054a91a4650bf47197af0",
+    "identityHash": "e8f212a389d90cecf3971caa0b96427b",
     "entities": [
       {
         "tableName": "recipe_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `global_rating` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `is_search_result` INTEGER NOT NULL, `cooked_count` INTEGER NOT NULL, `is_rated` INTEGER NOT NULL, `local_user_rating` INTEGER NOT NULL, `is_rating_synced` INTEGER NOT NULL, `is_reviewed` INTEGER NOT NULL, `review` TEXT NOT NULL, `is_review_synced` INTEGER NOT NULL, PRIMARY KEY(`recipe_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `global_rating` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `is_search_result` INTEGER NOT NULL, `cooked_count` INTEGER NOT NULL, `is_rated` INTEGER NOT NULL, `local_user_rating` INTEGER NOT NULL, `is_rating_synced` INTEGER NOT NULL, `is_reviewed` INTEGER NOT NULL, `review` TEXT NOT NULL, `is_review_synced` INTEGER NOT NULL, `is_review_screen_target` INTEGER NOT NULL, PRIMARY KEY(`recipe_name`))",
         "fields": [
           {
             "fieldPath": "recipeName",
@@ -107,6 +107,12 @@
           {
             "fieldPath": "isReviewSynced",
             "columnName": "is_review_synced",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isReviewScreenTarget",
+            "columnName": "is_review_screen_target",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -402,7 +408,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5932ac38d5b054a91a4650bf47197af0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e8f212a389d90cecf3971caa0b96427b')"
     ]
   }
 }
