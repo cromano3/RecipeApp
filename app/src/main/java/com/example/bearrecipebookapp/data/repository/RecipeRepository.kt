@@ -47,7 +47,7 @@ class RecipeRepository (private val recipeDao: RecipeDao) {
 
 
     //see dao for more details about why this didn't work and potential future solutions.
-    //****************************//
+
    // var detailsWithInstructions: RecipeWithInstructions = recipeDao.getInstructions("Bagels")
 //
 //    fun getInstructions(recipeName:String){

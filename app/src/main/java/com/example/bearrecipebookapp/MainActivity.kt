@@ -190,7 +190,7 @@ fun BearRecipeApp(
                 }},)
             }
 
-            /**Comment Screen*/
+            /*Comment Screen*/
             composable(
                 route = "CommentScreen",
                 enterTransition = {
@@ -211,7 +211,7 @@ fun BearRecipeApp(
             composable(route = "AddRecipeScreen"){ AddRecipeScreen() }
 
 
-            /** Home Screen */
+            /* Home Screen */
 
             composable(route = "RecipeScreen",
                 enterTransition = {
@@ -527,7 +527,7 @@ fun BearRecipeApp(
             }
 
 
-            /** How to pass a string along with the Nav controller to its destination.
+            /* How to pass a string along with the Nav controller to its destination.
              * This was ultimately not used as the variable is now written to the database.
              */
 //            composable(route = "DetailsScreen/{recipeName}"){ it ->

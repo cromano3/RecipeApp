@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d5e5a3ae70d4e7dcfd8111f66a46cac2",
+    "identityHash": "5932ac38d5b054a91a4650bf47197af0",
     "entities": [
       {
         "tableName": "recipe_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `review_score` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `is_search_result` INTEGER NOT NULL, `cooked_count` INTEGER NOT NULL, PRIMARY KEY(`recipe_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `global_rating` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `is_search_result` INTEGER NOT NULL, `cooked_count` INTEGER NOT NULL, `is_rated` INTEGER NOT NULL, `local_user_rating` INTEGER NOT NULL, `is_rating_synced` INTEGER NOT NULL, `is_reviewed` INTEGER NOT NULL, `review` TEXT NOT NULL, `is_review_synced` INTEGER NOT NULL, PRIMARY KEY(`recipe_name`))",
         "fields": [
           {
             "fieldPath": "recipeName",
@@ -39,8 +39,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "rating",
-            "columnName": "review_score",
+            "fieldPath": "globalRating",
+            "columnName": "global_rating",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -71,6 +71,42 @@
           {
             "fieldPath": "cookedCount",
             "columnName": "cooked_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isRated",
+            "columnName": "is_rated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userRating",
+            "columnName": "local_user_rating",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isRatingSynced",
+            "columnName": "is_rating_synced",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isReviewed",
+            "columnName": "is_reviewed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reviewText",
+            "columnName": "review",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isReviewSynced",
+            "columnName": "is_review_synced",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -366,7 +402,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd5e5a3ae70d4e7dcfd8111f66a46cac2')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5932ac38d5b054a91a4650bf47197af0')"
     ]
   }
 }

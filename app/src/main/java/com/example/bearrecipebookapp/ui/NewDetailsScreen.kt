@@ -79,7 +79,7 @@ fun NewDetailsScreen(
 //        BackHandler { onGoBackClick() }
 
 
-        /**
+        /*
          * Get the image based on the recipe Name
          */
         val image: Int = when (detailsScreenData.recipeEntity.recipeName) {
@@ -99,7 +99,7 @@ fun NewDetailsScreen(
 
 
 
-        /**
+        /*
         format the "Time to make" from raw Int minutes to "X hr./hrs. Y mins."
         **/
         val formattedTime: String
@@ -363,7 +363,7 @@ fun NewDetailsScreen(
                                         contentDescription = null
                                     )
                                     Text(
-                                        text = "Rating: ${detailsScreenData.recipeEntity.rating}" + "%",
+                                        text = "Rating: ${detailsScreenData.recipeEntity.globalRating}" + "%",
                                         modifier = Modifier
                                             .padding(
                                                 start = 8.dp,
@@ -540,7 +540,7 @@ fun NewDetailsScreen(
                             if(detailsScreenData.recipeEntity.onMenu == 1) {
                                 detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
                             }
-                            detailsScreenViewModel.triggerRatingAlert()
+                            detailsScreenViewModel.confirmCompletedAlert(detailsScreenData.recipeEntity)
                          },
                         onCancelClick = { detailsScreenViewModel.cancelCompletedAlert() },
                         onDismiss = {}
@@ -571,10 +571,10 @@ fun NewDetailsScreen(
                         cancelButtonText = "No",
                         onConfirmClick =
                         {
-                            detailsScreenViewModel.addToFavorite(detailsScreenData.recipeEntity.recipeName)
+                            detailsScreenViewModel.addToFavorite(detailsScreenData.recipeEntity)
                             showAddedToFavoritesSnackBarMessage(detailsScreenData.recipeEntity.recipeName)
                         },
-                        onCancelClick = { detailsScreenViewModel.doNotAddToFavorite() },
+                        onCancelClick = { detailsScreenViewModel.doNotAddToFavorite(detailsScreenData.recipeEntity) },
                         onDismiss = { detailsScreenViewModel.cancelFavoriteAlert() }
                     )
                         
@@ -586,14 +586,17 @@ fun NewDetailsScreen(
                         text = "Would you like to share a tip about this recipe for other chefs?",
                         confirmButtonText = "Yes",
                         cancelButtonText = "No",
-                        onConfirmClick = {
-                            detailsScreenViewModel.cancelShowWriteReviewAlert()
+                        onConfirmClick =
+                        {
+                            /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
+                            detailsScreenViewModel.confirmShowWriteReviewAlert(detailsScreenData.recipeEntity)
                             navigateToCommentScreen(detailsScreenData.recipeEntity.recipeName)
-                                         },
-                        onCancelClick = { detailsScreenViewModel.cancelShowWriteReviewAlert() },
+                        },
+                        onCancelClick = { detailsScreenViewModel.doNotWriteReview(detailsScreenData.recipeEntity) },
                         onDismiss = { detailsScreenViewModel.cancelShowWriteReviewAlert() }
                     )
                 }
+
             }
         }
     }

@@ -22,8 +22,8 @@ class RecipeEntity(
     @ColumnInfo(name = "difficulty")
     val difficulty: Int = 0,
 
-    @ColumnInfo(name = "review_score")
-    val rating: Int = 0,
+    @ColumnInfo(name = "global_rating")
+    val globalRating: Int = 0,
 
     @ColumnInfo(name = "is_shown")
     var isShown: Int = 1,
@@ -39,6 +39,28 @@ class RecipeEntity(
 
     @ColumnInfo(name = "cooked_count")
     var cookedCount: Int = 0,
+
+    @ColumnInfo(name = "is_rated")
+    var isRated: Int = 0,
+
+    @ColumnInfo(name = "local_user_rating")
+    var userRating: Int = 0,
+
+    @ColumnInfo(name = "is_rating_synced")
+    var isRatingSynced: Int = 0,
+
+    @ColumnInfo(name = "is_reviewed")
+    var isReviewed: Int = 0,
+
+    @ColumnInfo(name = "review")
+    var reviewText: String = "",
+
+    @ColumnInfo(name = "is_review_synced")
+    var isReviewSynced: Int = 0,
+
+    @ColumnInfo(name = "is_review_screen_target")
+    var isReviewScreenTarget: Int = 0,
+
 
 //
 //    @ColumnInfo(name = "ingredients")

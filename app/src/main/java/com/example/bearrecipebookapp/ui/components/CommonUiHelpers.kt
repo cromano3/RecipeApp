@@ -71,9 +71,9 @@ fun RecipeCard(
         else -> R.drawable.bagel
     }
 
-    /**
+    /*
     format the "Time to make" from raw Int minutes to "X hr./hrs. Y mins."
-     **/
+     */
     val formattedTime: String
     val remainder: Int
     val quotient: Int
@@ -225,7 +225,7 @@ fun RecipeCard(
 
                             )
                             Text(
-                                text = "${recipeWithIngredientsAndInstructions.recipeEntity.rating}" + "%",
+                                text = "${recipeWithIngredientsAndInstructions.recipeEntity.globalRating}" + "%",
                                 modifier = Modifier
                                     .padding(
                                         start = 0.dp,
@@ -509,7 +509,7 @@ fun BottomBarSurface(
 
 
 
-//**Currently unused (Checkbox add/remove menu button)
+//*Currently unused (Checkbox add/remove menu button)
 //@Composable
 //private fun AddToMenuButton(
 //    selected: Boolean,
@@ -553,7 +553,7 @@ fun DefaultPreview2() {
     BearRecipeBookAppTheme {
 
             val myRE = RecipeEntity(recipeName = "Cauliflower Walnut Tacos",
-                onMenu = 0, isDetailsScreenTarget = 1, timeToMake = 60, rating = 98, difficulty = 3)
+                onMenu = 0, isDetailsScreenTarget = 1, timeToMake = 60, globalRating = 98, difficulty = 3)
 
             val myList: List<IngredientEntity> = listOf<IngredientEntity>(
                 IngredientEntity(ingredientName = "Ing. Name", quantityOwned = 0, quantityNeeded = 1)

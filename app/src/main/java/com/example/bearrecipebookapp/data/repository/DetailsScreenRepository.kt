@@ -57,6 +57,14 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
         }
     }
 
+    fun setLocalRating(recipeName: String, rating: Boolean){
+        detailsScreenDao.setLocalRating(recipeName, if(rating) 1 else 0)
+    }
+
+    fun setReviewAsWritten(recipeName: String){
+        detailsScreenDao.setReviewAsWritten(recipeName)
+    }
+
     suspend fun addExpToGive(expToGive: Int){
         detailsScreenDao.addExpToGive(expToGive)
     }

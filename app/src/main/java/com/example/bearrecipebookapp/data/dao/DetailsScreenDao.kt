@@ -38,6 +38,14 @@ interface DetailsScreenDao {
     fun updateFavorite(name: String, isFavoriteStatus: Int)
 
     @Transaction
+    @Query("UPDATE recipe_table SET local_user_rating = :rating, is_rated = 1 WHERE recipe_name = :name")
+    fun setLocalRating(name: String, rating: Int)
+
+    @Transaction
+    @Query("UPDATE recipe_table SET is_reviewed = 1 WHERE recipe_name = :name")
+    fun setReviewAsWritten(name: String)
+
+    @Transaction
     @Query("UPDATE ingredient_table SET quantity_owned = :quantityOwned WHERE ingredient_name = :name")
     fun setIngredientQuantityOwned(name: String, quantityOwned: Int)
 

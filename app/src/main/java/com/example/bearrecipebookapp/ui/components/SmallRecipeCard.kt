@@ -357,7 +357,7 @@ fun SnackCardPreview() {
     BearRecipeBookAppTheme {
 
         val myRE =
-            RecipeEntity(recipeName = "", onMenu = 0,1, timeToMake = 60, rating = 98)
+            RecipeEntity(recipeName = "", onMenu = 0,1, timeToMake = 60, globalRating = 98)
         val myList: List<IngredientEntity> = listOf(
             IngredientEntity(ingredientName = "Ing. Name", quantityOwned = 0, quantityNeeded = 1)
         )

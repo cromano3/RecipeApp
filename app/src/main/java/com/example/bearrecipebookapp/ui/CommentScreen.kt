@@ -74,22 +74,22 @@ fun CommentScreen(
                     {
                         CancelAlertButton(
                             buttonText = "Cancel",
-                            onButtonClick = onCancelClick
-                        )
-                        ConfirmAlertButton(buttonText = "Confirm") {
-                            if(uiState.reviewText.length > 1000)
+                            onButtonClick =
                             {
+                                commentScreenViewModel.cancelReview(recipeEntity = )
+                                onCancelClick()
+                            }
+                        )
+
+                        ConfirmAlertButton(buttonText = "Confirm") {
+                            if(uiState.reviewText.length > 1000) {
                                 commentScreenViewModel.triggerTooLongAlert()
                             }
                             else{
-
-                                /** write review to DB then navigate*/
-
+                                commentScreenViewModel.confirmReview(recipeEntity = , uiState.reviewText)
                                 onConfirmClick()
                             }
-
                         }
-
                     }
 
                     OutlinedTextField(

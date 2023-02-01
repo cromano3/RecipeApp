@@ -877,9 +877,9 @@ fun CustomShoppingListItem(
         //color = Color(0xFF682300),//Color(0xFFd8af84),
         contentColor = Color(0xFFd8af84),
     ){
-        /**
-            if selected then show X
-         */
+
+        /*if selected then show X */
+
         if (selected){
             Box{
                 IconButton(
