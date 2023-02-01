@@ -27,6 +27,22 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
         }
     }
 
+    fun setReviewAsWritten(recipeName: String){
+        menuScreenDao.setReviewAsWritten(recipeName)
+    }
+
+    fun setLocalRating(recipeName: String, rating: Boolean){
+        menuScreenDao.setLocalRating(recipeName, if(rating) 1 else 0)
+    }
+
+    suspend fun setReviewTarget(recipeName: String){
+        menuScreenDao.setReviewTarget(recipeName)
+    }
+
+    suspend fun cleanReviewTarget(){
+        menuScreenDao.cleanReviewTarget()
+    }
+
 
     fun addTutorialAlert(){
         coroutineScope.launch(Dispatchers.IO) {

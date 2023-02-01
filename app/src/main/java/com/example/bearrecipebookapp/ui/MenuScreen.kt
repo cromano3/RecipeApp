@@ -58,7 +58,7 @@ fun MenuScreen(
     onAddedToFavoriteFromAlertClick: (String) -> Unit,
     onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
-    onConfirmWriteReviewClick: (String) -> Unit,
+    onConfirmWriteReviewClick: () -> Unit,
     onAddRecipeClick: () -> Unit,
     onSystemBackClick: () -> Unit,
 ) {
@@ -278,8 +278,7 @@ fun MenuScreen(
                             menuScreenViewModel.addCooked(uiAlertState.recipe)
                             menuScreenViewModel.removeFromMenu(uiAlertState.recipe)
                             menuScreenViewModel.addExp(uiAlertState.recipe)
-                            menuScreenViewModel.cancelCompletedAlert()
-                            menuScreenViewModel.triggerRatingAlert()
+                            menuScreenViewModel.confirmCompletedAlert(uiAlertState.recipe.recipeEntity)
                                          },
                         onCancelClick = {
                             menuScreenViewModel.cancelCompletedAlert()
@@ -314,10 +313,10 @@ fun MenuScreen(
                         cancelButtonText = "No",
                         onConfirmClick =
                         {
-                            menuScreenViewModel.addToFavorite(uiAlertState.recipe.recipeEntity.recipeName)
+                            menuScreenViewModel.addToFavorite(uiAlertState.recipe.recipeEntity)
                             onAddedToFavoriteFromAlertClick(uiAlertState.recipe.recipeEntity.recipeName)
                         },
-                        onCancelClick = { menuScreenViewModel.doNotAddToFavorite() },
+                        onCancelClick = { menuScreenViewModel.doNotAddToFavorite(uiAlertState.recipe.recipeEntity) },
                         onDismiss = { menuScreenViewModel.cancelFavoriteAlert() }
                     )
 
@@ -329,11 +328,13 @@ fun MenuScreen(
                         text = "Would you like to share a tip about this recipe for other chefs?",
                         confirmButtonText = "Yes",
                         cancelButtonText = "No",
-                        onConfirmClick = {
-                            menuScreenViewModel.cancelShowWriteReviewAlert()
-                            onConfirmWriteReviewClick(uiAlertState.recipe.recipeEntity.recipeName)
+                        onConfirmClick =
+                        {
+                            /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
+                            menuScreenViewModel.confirmShowWriteReviewAlert(uiAlertState.recipe.recipeEntity)
+                            onConfirmWriteReviewClick()
                         },
-                        onCancelClick = { menuScreenViewModel.cancelShowWriteReviewAlert() },
+                        onCancelClick = { menuScreenViewModel.doNotWriteReview(uiAlertState.recipe.recipeEntity) },
                         onDismiss = { menuScreenViewModel.cancelShowWriteReviewAlert() }
                     )
                 }

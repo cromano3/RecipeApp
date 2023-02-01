@@ -52,6 +52,44 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         }
     }
 
+    fun confirmCompletedAlert(recipeEntity: RecipeEntity){
+
+
+        if(recipeEntity.isRated == 0) {
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showCompletedAlert = false,
+                    showRatingAlert = true,
+                )
+            }
+        }
+        else if(recipeEntity.userRating == 1 && recipeEntity.isFavorite == 0){
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showCompletedAlert = false,
+                    showFavoriteAlert = true,
+                )
+            }
+        }
+        else if(recipeEntity.isReviewed == 0){
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showCompletedAlert = false,
+                    showLeaveReviewAlert = true,
+                )
+            }
+        }
+        else{
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showCompletedAlert = false,
+                )
+            }
+        }
+
+
+    }
+
     fun clearAlertRecipeTarget(){
         uiAlertState.update {
             it.copy(
@@ -72,34 +110,74 @@ class MenuScreenViewModel(application: Application): ViewModel() {
 
     fun confirmRating(recipeEntity: RecipeEntity) {
 
-        if(uiAlertState.value.isThumbUpSelected && recipeEntity.isFavorite == 0){
 
-            /** write rating to database here */
+        //show favorite alert
+        if(uiAlertState.value.isThumbUpSelected && recipeEntity.isFavorite == 0) {
 
+            //write rating to DB
+            coroutineScope.launch(Dispatchers.IO) {
+                repository.setLocalRating(recipeEntity.recipeName, true)
+
+
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showFavoriteAlert = true,
+                        showRatingAlert = false,
+                        isThumbUpSelected = false,
+                        isThumbDownSelected = false
+                    )
+                }
+
+            }
+
+        }
+        //show write review alert
+        else if (
+            uiAlertState.value.isThumbDownSelected && recipeEntity.isReviewed == 0
+            || uiAlertState.value.isThumbUpSelected && recipeEntity.isReviewed == 0){
+
+
+            //write rating to DB
+            coroutineScope.launch(Dispatchers.IO) {
+                repository.setLocalRating(recipeEntity.recipeName, true)
+
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showLeaveReviewAlert = true,
+                        showRatingAlert = false,
+                        isThumbUpSelected = false,
+                        isThumbDownSelected = false
+                    )
+                }
+
+            }
+
+        }
+
+        //finish alerts
+        else if(uiAlertState.value.isThumbUpSelected || uiAlertState.value.isThumbDownSelected){
             uiAlertState.update { currentState ->
                 currentState.copy(
-                    showFavoriteAlert = true,
+                    showLeaveReviewAlert = false,
                     showRatingAlert = false,
                     isThumbUpSelected = false,
                     isThumbDownSelected = false
                 )
             }
-
         }
-        else if (uiAlertState.value.isThumbDownSelected || uiAlertState.value.isThumbUpSelected){
-
-            /** write rating to database here */
-
-            uiAlertState.update { currentState ->
-                currentState.copy(
-                    showLeaveReviewAlert = true,
-                    showRatingAlert = false,
-                    isThumbUpSelected = false,
-                    isThumbDownSelected = false
-                )
-            }
-
+        else{
+//                uiAlertState.update { currentState ->
+//                    currentState.copy(
+//                        showRatingAlert = false,
+//                        isThumbUpSelected = false,
+//                        isThumbDownSelected = false
+//                    )
+//                }
         }
+
+
+
+
 
     }
 
@@ -121,28 +199,39 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         }
     }
 
-    fun addToFavorite(recipeName: String){
+    fun addToFavorite(recipeEntity: RecipeEntity){
 
-        coroutineScope.launch {
-            repository.setAsFavorite(recipeName)
-        }
+        coroutineScope.launch (Dispatchers.IO) {
 
-        uiAlertState.update { currentState ->
-            currentState.copy(
-                showFavoriteAlert = false,
-                showLeaveReviewAlert = true,
+            repository.setAsFavorite(recipeEntity.recipeName)
 
-                )
+            if(recipeEntity.isReviewed == 0) {
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showFavoriteAlert = false,
+                        showLeaveReviewAlert = true,
+                    )
+                }
+            }
+            else{
+                cancelFavoriteAlert()
+            }
+
         }
     }
 
-    fun doNotAddToFavorite(){
-        uiAlertState.update { currentState ->
-            currentState.copy(
-                showFavoriteAlert = false,
-                showLeaveReviewAlert = true,
+    fun doNotAddToFavorite(recipeEntity: RecipeEntity){
 
+        if(recipeEntity.isReviewed == 0) {
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showFavoriteAlert = false,
+                    showLeaveReviewAlert = true,
                 )
+            }
+        }
+        else{
+            cancelFavoriteAlert()
         }
     }
 
@@ -150,15 +239,6 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         uiAlertState.update { currentState ->
             currentState.copy(
                 showFavoriteAlert = false,
-                recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
-            )
-        }
-    }
-
-    fun cancelShowWriteReviewAlert() {
-        uiAlertState.update { currentState ->
-            currentState.copy(
-                showLeaveReviewAlert = false,
                 recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
             )
         }
@@ -207,11 +287,51 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         }
     }
 
+    fun confirmShowWriteReviewAlert(recipeEntity: RecipeEntity) {
+
+        /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
+
+        coroutineScope.launch(Dispatchers.IO) {
+
+            repository.cleanReviewTarget()
+            repository.setReviewTarget(recipeEntity.recipeName)
+
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showLeaveReviewAlert = false
+                )
+            }
+        }
+
+    }
+
+    fun doNotWriteReview(recipeEntity: RecipeEntity) {
+
+        coroutineScope.launch(Dispatchers.IO) {
+
+            repository.setReviewAsWritten(recipeEntity.recipeName)
+
+            uiAlertState.update { currentState ->
+                currentState.copy(
+                    showLeaveReviewAlert = false
+                )
+            }
+        }
+
+    }
+
+    fun cancelShowWriteReviewAlert() {
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showLeaveReviewAlert = false
+            )
+        }
+    }
+
 
     fun addTutorialAlert(){
         repository.addTutorialAlert()
     }
-
 
 
     fun addCooked(recipe: RecipeWithIngredientsAndInstructions){

@@ -30,7 +30,21 @@ interface MenuScreenDao {
     @Query("UPDATE user_table SET show_tutorial = 'true' ")
     fun addTutorialAlert()
 
+    @Transaction
+    @Query("UPDATE recipe_table SET local_user_rating = :rating, is_rated = 1 WHERE recipe_name = :name")
+    fun setLocalRating(name: String, rating: Int)
 
+    @Transaction
+    @Query("UPDATE recipe_table SET is_reviewed = 1 WHERE recipe_name = :name")
+    fun setReviewAsWritten(name: String)
+
+    @Transaction
+    @Query("UPDATE recipe_table SET is_review_screen_target = 1 WHERE recipe_name = :name")
+    fun setReviewTarget(name: String)
+
+    @Transaction
+    @Query("UPDATE recipe_table SET is_review_screen_target = 0")
+    fun cleanReviewTarget()
 
     @Transaction
     @Query("UPDATE ingredient_table SET quantity_needed = :quantityNeeded WHERE ingredient_name = :name")
