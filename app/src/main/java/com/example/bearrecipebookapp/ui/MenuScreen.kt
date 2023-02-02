@@ -214,9 +214,8 @@ fun MenuScreen(
                             menuScreenViewModel.addTutorialAlert()
                             onAddRecipeClick()
                         },
-                        onCancelClick = { menuScreenViewModel.cancelAddRecipeAlert() }) {
-
-                    }
+                        onCancelClick = { menuScreenViewModel.cancelAddRecipeAlert() },
+                        onDismiss = { menuScreenViewModel.cancelAddRecipeAlert() })
 
                 }
 

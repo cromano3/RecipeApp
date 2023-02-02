@@ -51,6 +51,8 @@ import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.ui.components.CancelAlertButton
+import com.example.bearrecipebookapp.ui.components.ConfirmAlertButton
 import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.ShoppingListScreenViewModel
 import kotlinx.coroutines.delay
@@ -222,7 +224,10 @@ fun ShoppingListScreen(
                         }
                     }
 
-                    item{ Spacer(Modifier.size(20.dp).fillMaxWidth()) }
+                    item{ Spacer(
+                        Modifier
+                            .size(20.dp)
+                            .fillMaxWidth()) }
 
 //                    selectedIngredients.forEach {
 //                        ShoppingListItemWithButton(
@@ -371,7 +376,7 @@ fun ShoppingListScreen(
                                             tileMode = TileMode.Mirror
                                         )),
                                     ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF682300), contentColor = Color(0xFFd8af84))
                                 ) {
                                     Text("Add Recipe")
                                 }
@@ -392,7 +397,7 @@ fun ShoppingListScreen(
                                             tileMode = TileMode.Mirror
                                         )),
                                     ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF682300), contentColor = Color(0xFFd8af84))
                                 ) {
                                     Text("Add Custom Item")
                                 }
@@ -436,41 +441,48 @@ fun ShoppingListScreen(
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
 
-                                Button(
-                                    modifier = Modifier.wrapContentSize(),
-                                    onClick = { shoppingListScreenViewModel.cancelAddCustomItemAlert() },
-                                    elevation = ButtonDefaults.elevation(6.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            startX = -10f,
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                    ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                ) {
-                                    Text("Cancel")
+                                CancelAlertButton(buttonText = "Cancel") {
+                                    shoppingListScreenViewModel.cancelAddCustomItemAlert()
+                                }
+                                ConfirmAlertButton(buttonText = "Confirm") {
+                                    shoppingListScreenViewModel.addCustomItem()
                                 }
 
-                                Button(
-                                    modifier = Modifier.wrapContentSize(),
-                                    onClick = { shoppingListScreenViewModel.addCustomItem() },
-                                    elevation = ButtonDefaults.elevation(6.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            startX = -10f,
-                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                    ),
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                ) {
-                                    Text("Add To List")
-                                }
+//                                Button(
+//                                    modifier = Modifier.wrapContentSize(),
+//                                    onClick = { shoppingListScreenViewModel.cancelAddCustomItemAlert() },
+//                                    elevation = ButtonDefaults.elevation(6.dp),
+//                                    shape = RoundedCornerShape(25.dp),
+//                                    border = BorderStroke(
+//                                        width = 2.dp,
+//                                        brush = (Brush.horizontalGradient(
+//                                            startX = -10f,
+//                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                            tileMode = TileMode.Mirror
+//                                        )),
+//                                    ),
+//                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+//                                ) {
+//                                    Text("Cancel")
+//                                }
+//
+//                                Button(
+//                                    modifier = Modifier.wrapContentSize(),
+//                                    onClick = { shoppingListScreenViewModel.addCustomItem() },
+//                                    elevation = ButtonDefaults.elevation(6.dp),
+//                                    shape = RoundedCornerShape(25.dp),
+//                                    border = BorderStroke(
+//                                        width = 2.dp,
+//                                        brush = (Brush.horizontalGradient(
+//                                            startX = -10f,
+//                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+//                                            tileMode = TileMode.Mirror
+//                                        )),
+//                                    ),
+//                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+//                                ) {
+//                                    Text("Add To List")
+//                                }
                             }
                         }
                     )
@@ -541,14 +553,15 @@ fun RecipeIconWithButton(
                     width = 2.dp,
                     brush = (Brush.horizontalGradient(
                         startX = -10f,
-                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                        colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
                         tileMode = TileMode.Mirror
                     )),
                     shape = RoundedCornerShape(15.dp)
                 )
                 .clickable(
                     enabled = !isWorking && isClickable && !filterWasClicked,
-                    onClick = onFilterClick),
+                    onClick = onFilterClick
+                ),
             shape = RoundedCornerShape(15.dp),
             elevation = 6.dp,
 
@@ -868,7 +881,7 @@ fun CustomShoppingListItem(
 //                shape = RoundedCornerShape((14.dp))
 //            )
             .clickable(
-                enabled = (!isWorking  && !isFiltered),
+                enabled = (!isWorking && !isFiltered),
                 onClick = if (selected) onClickItemDeselected else onClickItemSelected,
             ),
         shape = RoundedCornerShape(25.dp),

@@ -11,10 +11,15 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +30,7 @@ import com.example.bearrecipebookapp.ui.components.CancelAlertButton
 import com.example.bearrecipebookapp.ui.components.ConfirmAlertButton
 import com.example.bearrecipebookapp.ui.components.OneButtonAlert
 import com.example.bearrecipebookapp.viewmodel.CommentScreenViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun CommentScreen(
@@ -52,12 +58,13 @@ fun CommentScreen(
         var ingredients by remember { mutableStateOf("") }
 
         val focusManager = LocalFocusManager.current
-
-//        val density = LocalDensity.current
-//        val configuration = LocalConfiguration.current
-//        val screenHeightPx = with(density) { configuration.screenHeightDp.dp.roundToPx() }
+        val focusRequester = remember { FocusRequester() }
 
 
+        LaunchedEffect(Unit) {
+            delay(200)
+            focusRequester.requestFocus()
+        }
 
 
         Surface(Modifier.fillMaxSize()
@@ -73,18 +80,33 @@ fun CommentScreen(
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .padding(start = 32.dp, end = 32.dp, top = 12.dp, bottom = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween)
+                            .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 12.dp),
+                        horizontalArrangement = Arrangement.Center)
                     {
                         CancelAlertButton(
                             buttonText = "Cancel",
-                            onButtonClick =
-                            {
+                            onButtonClick = {
                                 commentScreenViewModel.cancelReview(recipeName = commentScreenData.recipeEntity.recipeName )
                                 onCancelClick()
                             }
                         )
-                        Text(commentScreenData.recipeEntity.recipeName)
+
+                        Spacer(
+                            Modifier
+                                .size(1.dp)
+                                .weight(1f))
+
+                        Text(
+                            text = commentScreenData.recipeEntity.recipeName,
+                            modifier = Modifier.width(150.dp),
+                            color = Color(0xFF682300),
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center)
+
+                        Spacer(
+                            Modifier
+                                .size(1.dp)
+                                .weight(1f))
 
                         ConfirmAlertButton(buttonText = "Confirm") {
                             if(uiState.reviewText.length > 1000) {
@@ -103,7 +125,8 @@ fun CommentScreen(
                         modifier = Modifier
                             .height(366.dp)
                             .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp),
+                            .padding(start = 16.dp, end = 16.dp)
+                            .focusRequester(focusRequester),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(
                             onDone = { }
@@ -142,5 +165,13 @@ class CommentScreenViewModelFactory(
         return CommentScreenViewModel(
             application,
         ) as T
+    }
+}
+
+@Preview
+@Composable
+fun comprev(){
+    CommentScreen(onCancelClick = { /*TODO*/ }) {
+
     }
 }

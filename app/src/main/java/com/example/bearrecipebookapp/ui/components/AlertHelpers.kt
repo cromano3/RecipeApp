@@ -185,7 +185,7 @@ fun ConfirmAlertButton(
             width = 2.dp,
             brush = (Brush.horizontalGradient(
                 startX = -30f,
-                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
                 tileMode = TileMode.Mirror
             )),
         ),

@@ -31,8 +31,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -321,9 +320,9 @@ fun HomeScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        "You can click the ",
+                                        "You can tap: ",
                                         color = Color(0xFF682300),
-                                        fontSize = 16.sp,
+                                        fontSize = 18.sp,
                                     )
 
                                     FloatingActionButton(
@@ -344,86 +343,103 @@ fun HomeScreen(
                                                 shape = CircleShape
                                             )
                                             .size(36.dp)
-                                            //the background of the square for this button, it stays a square even tho
-                                            //we have shape = circle shape.  If this is not changed you see a solid
-                                            //square for the "background" of this button.
                                             .background(color = Color.Transparent),
                                         shape = CircleShape,
-                                        //this is the background color of the button after the "Shaping" is applied.
-                                        //it is different then the background attribute above.
                                         backgroundColor = Color(0xFF682300)
                                     ) {
                                         Icon(
                                             Icons.Outlined.Restaurant,
                                             tint = Color(0xFFd8af84),
                                             modifier = Modifier.size(20.dp),
-                                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
                                             contentDescription = null
                                         )
                                     }
-
                                     Text(
-                                        " to add a recipe to your Menu and its ingredients to your" +
-                                                " Shopping List, or you can click on any of the recipe cards to see " +
-                                                "all the detailed information about the recipe and then click on the ",
+                                        buildAnnotatedString {
+                                            append("to ")
+                                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
+                                                append("add a Recipe")
+                                            }
+                                            append(" to your ")
+                                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
+                                                append("Menu")
+                                            }
+                                            append(" and its ")
+                                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
+                                                append("ingredients")
+                                            }
+                                            append(" to your ")
+                                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
+                                                append("Shopping List.")
+                                            }
+                                        },
                                         color = Color(0xFF682300),
-                                        fontSize = 16.sp,
+                                        fontSize = 18.sp,
                                         textAlign = TextAlign.Center
                                     )
 
-                                    Surface(
-                                        modifier = Modifier
-                                            .padding(top = 8.dp, bottom = 8.dp)
-                                            .wrapContentSize()
-                                            .border(
-                                                width = 2.dp,
-                                                brush = (Brush.horizontalGradient(
-                                                    colors = listOf(
-                                                        Color(0xFFd8af84),
-                                                        Color(0xFFb15f33)
-                                                    ),
-                                                    tileMode = TileMode.Mirror
-                                                )),
-                                                shape = CircleShape
-                                            ),
-                                        shape = RoundedCornerShape(25.dp),
-                                        color = Color(0xFF682300),
-                                        elevation = 4.dp,
-                                    ) {
-                                        Row(
-                                            horizontalArrangement = Arrangement.Start,
-                                            modifier = Modifier.padding(
-                                                start = 12.dp,
-                                                end = 12.dp,
-                                                top = 12.dp,
-                                                bottom = 12.dp
-                                            )
-                                        )
-                                        {
-                                            Text(
-                                                text = "Add to Menu",
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterVertically)
-                                                    .alpha(1f),
-                                                color = Color(0xFFd8af84),
-                                                fontSize = 18.sp,
-                                                textAlign = TextAlign.Center,
-                                                fontWeight = FontWeight.Bold
-                                            )
-                                        }
-                                    }
+//                                    Text(
+//                                        " to add a recipe to your Menu and its ingredients to your" +
+//                                                " Shopping List, or you can click on any of the recipe cards to see " +
+//                                                "all the detailed information about the recipe and then click on the ",
+//                                        color = Color(0xFF682300),
+//                                        fontSize = 16.sp,
+//                                        textAlign = TextAlign.Center
+//                                    )
 
-                                    Text(
-                                        " button.",
-                                        color = Color(0xFF682300),
-                                        fontSize = 16.sp,
-                                    )
+//                                    Surface(
+//                                        modifier = Modifier
+//                                            .padding(top = 8.dp, bottom = 8.dp)
+//                                            .wrapContentSize()
+//                                            .border(
+//                                                width = 2.dp,
+//                                                brush = (Brush.horizontalGradient(
+//                                                    colors = listOf(
+//                                                        Color(0xFFd8af84),
+//                                                        Color(0xFFb15f33)
+//                                                    ),
+//                                                    tileMode = TileMode.Mirror
+//                                                )),
+//                                                shape = CircleShape
+//                                            ),
+//                                        shape = RoundedCornerShape(25.dp),
+//                                        color = Color(0xFF682300),
+//                                        elevation = 4.dp,
+//                                    ) {
+//                                        Row(
+//                                            horizontalArrangement = Arrangement.Start,
+//                                            modifier = Modifier.padding(
+//                                                start = 12.dp,
+//                                                end = 12.dp,
+//                                                top = 12.dp,
+//                                                bottom = 12.dp
+//                                            )
+//                                        )
+//                                        {
+//                                            Text(
+//                                                text = "Add to Menu",
+//                                                modifier = Modifier
+//                                                    .align(Alignment.CenterVertically)
+//                                                    .alpha(1f),
+//                                                color = Color(0xFFd8af84),
+//                                                fontSize = 18.sp,
+//                                                textAlign = TextAlign.Center,
+//                                                fontWeight = FontWeight.Bold
+//                                            )
+//                                        }
+//                                    }
+//
+//                                    Text(
+//                                        " button.",
+//                                        color = Color(0xFF682300),
+//                                        fontSize = 16.sp,
+//                                    )
                                 }
                             },
                             buttons = {
                                 Row(
                                     modifier = Modifier
-                                        .padding(all = 8.dp)
+                                        .padding(bottom = 8.dp)
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceEvenly
                                 ) {
@@ -442,7 +458,7 @@ fun HomeScreen(
                                                 tileMode = TileMode.Mirror
                                             )),
                                         ),
-                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF682300), contentColor = Color(0xFFd8af84))
                                     ) {
                                         Text("Got it!")
                                     }
