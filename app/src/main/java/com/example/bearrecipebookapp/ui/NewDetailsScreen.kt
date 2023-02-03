@@ -36,10 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
-import com.example.bearrecipebookapp.ui.components.AnnotatedStringAlert
-import com.example.bearrecipebookapp.ui.components.BasicAlert
-import com.example.bearrecipebookapp.ui.components.DetailsScreenButton
-import com.example.bearrecipebookapp.ui.components.ThumbsRatingAlert
+import com.example.bearrecipebookapp.ui.components.*
 import com.example.bearrecipebookapp.viewmodel.DetailsScreenViewModel
 
 @OptIn(ExperimentalTextApi::class)
@@ -142,10 +139,11 @@ fun NewDetailsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Spacer(Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, Color(0xFFd8af84))
-                        .height(1.dp))
+                    Spacer(
+                        Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, Color(0xFFd8af84))
+                            .height(1.dp))
 
                     AsyncImage(
                         model = image,
@@ -157,7 +155,8 @@ fun NewDetailsScreen(
                         contentScale = ContentScale.Crop,
                     )
 
-                    Spacer(Modifier
+                    Spacer(
+                        Modifier
                             .fillMaxWidth()
                             .border(1.dp, Color(0xFFd8af84))
                             .height(1.dp))
@@ -454,6 +453,14 @@ fun NewDetailsScreen(
                         }
 
                     }
+
+//                    for(x in 0 until detailsScreenData.reviewsList.size){
+//                        ReviewWidget(detailsScreenData.reviewsList[x].reviewText)
+//                    }
+
+                    ReviewWidget()
+                    ReviewWidget()
+
                     Spacer(
                         Modifier
                             .size(64.dp)

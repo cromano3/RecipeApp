@@ -30,26 +30,31 @@ fun ReviewWidget(){
     Surface(
         Modifier
             .fillMaxWidth()
-            .height(400.dp)
-            .padding(12.dp)
+            .height(280.dp)
+            .padding(16.dp)
             .border(
                 width = 2.dp,
                 brush = (Brush.horizontalGradient(
                     colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33),),
                     tileMode = TileMode.Mirror
                 )),
-                shape = RoundedCornerShape(12)
+                shape = RoundedCornerShape(0)
             ),
-        shape = RoundedCornerShape(12),
+        shape = RoundedCornerShape(0),
         color = Color(0xFF682300)
 //        Color(0xFFb15f33)
         ,
     ){
         Column{
-            Row(Modifier.padding(12.dp).height(80.dp)){
+            Row(
+                Modifier
+                    .padding(12.dp)
+                    .height(65.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ){
                 Surface(
                     Modifier
-                        .size(80.dp)
+                        .size(65.dp)
 //                        .padding(12.dp)
                         .border(
                             width = 2.dp,
@@ -73,7 +78,10 @@ fun ReviewWidget(){
                     }
                 }
                 //Chef title and name
-                Column(Modifier.padding(start = 12.dp)){
+                Column(
+                    Modifier
+                        .padding(start = 12.dp)
+                        .fillMaxHeight()){
                     Text(
                         "Chris",
                         color = Color(0xFFd8af84),
@@ -88,38 +96,6 @@ fun ReviewWidget(){
 
                 }
 
-                Spacer(
-                    Modifier
-                        .size(1.dp)
-                        .weight(1f))
-
-                Row(
-                    Modifier
-                        .wrapContentWidth()
-                        .fillMaxHeight()
-                        .padding(18.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                )
-                {
-                    Text(
-                        "24",
-                        color = Color(0xFFd8af84),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(Modifier.width(6.dp))
-
-                    Surface(
-                        Modifier.clickable {  },
-                        color = Color.Transparent) {
-                        Icon(
-                            if(false) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
-                            contentDescription = null,
-                            tint = Color(0xFFd8af84))
-                    }
-                }
             }
             Spacer(
                 Modifier
@@ -137,8 +113,51 @@ fun ReviewWidget(){
                         shape = RectangleShape
                     ),
             )
+
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(12.dp)
+            ) {
+                Text(
+                    text = "limit this to 160 and everything else is ...More with more clickable",
+                    color = Color(0xFFd8af84),
+                )
+
+            }
         }
 
+        Box(Modifier.fillMaxSize().padding(0.dp)){
+
+                Surface(
+                    Modifier
+                        .padding(16.dp)
+                        .align(Alignment.BottomStart)
+                        .clickable { },
+                    color = Color.Transparent
+                ) {
+                    Row(Modifier.wrapContentSize(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            if (false) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color(0xFFd8af84)
+                        )
+
+                        Spacer(Modifier.width(6.dp))
+
+                        Text(
+                            "24",
+                            color = Color(0xFFd8af84),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                }
+            }
+        }
     }
 }
 
