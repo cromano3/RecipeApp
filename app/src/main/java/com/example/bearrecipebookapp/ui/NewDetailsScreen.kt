@@ -38,6 +38,10 @@ import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.*
 import com.example.bearrecipebookapp.viewmodel.DetailsScreenViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
@@ -69,6 +73,8 @@ fun NewDetailsScreen(
         val detailsScreenData by detailsScreenViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
 
         val uiAlertState by detailsScreenViewModel.uiAlertState.collectAsState()
+
+        val coroutineScope = CoroutineScope(Dispatchers.Main)
 
 
 //    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
@@ -596,8 +602,18 @@ fun NewDetailsScreen(
                         onConfirmClick =
                         {
                             /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
-                            detailsScreenViewModel.confirmShowWriteReviewAlert(detailsScreenData.recipeEntity)
-                            navigateToCommentScreen()
+
+                            coroutineScope.launch(Dispatchers.Main){
+                                println("1")
+                                withContext(Dispatchers.IO) {
+                                    detailsScreenViewModel.confirmShowWriteReviewAlert(
+                                        detailsScreenData.recipeEntity
+                                    )
+                                }
+                                println("8")
+                                navigateToCommentScreen()
+                            }
+
                         },
                         onCancelClick = { detailsScreenViewModel.doNotWriteReview(detailsScreenData.recipeEntity) },
                         onDismiss = { detailsScreenViewModel.cancelShowWriteReviewAlert() }

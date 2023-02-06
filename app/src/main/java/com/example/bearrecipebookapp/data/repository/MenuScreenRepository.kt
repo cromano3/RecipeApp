@@ -21,10 +21,10 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
         menuScreenDao.addExpToGive(expToGive)
     }
 
-    fun setDetailsScreenTarget(recipeName: String){
-        coroutineScope.launch(Dispatchers.IO) {
+    suspend fun setDetailsScreenTarget(recipeName: String){
+//        coroutineScope.launch(Dispatchers.IO) {
             menuScreenDao.setDetailsScreenTarget(recipeName)
-        }
+//        }
     }
 
     fun setReviewAsWritten(recipeName: String){

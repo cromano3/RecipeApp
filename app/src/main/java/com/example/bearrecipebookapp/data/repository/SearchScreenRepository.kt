@@ -81,9 +81,9 @@ class SearchScreenRepository(private val searchScreenDao: SearchScreenDao) {
         }
     }
 
-    fun setDetailsScreenTarget(recipeName: String){
-        coroutineScope.launch(Dispatchers.IO) {
+    suspend fun setDetailsScreenTarget(recipeName: String){
+//        coroutineScope.launch(Dispatchers.IO) {
             searchScreenDao.setDetailsScreenTarget(recipeName)
-        }
+//        }
     }
 }

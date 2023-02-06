@@ -506,7 +506,7 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
         }
     }
 
-    fun setDetailsScreenTarget(recipeName: String){
+    suspend fun setDetailsScreenTarget(recipeName: String){
         repository.setDetailsScreenTarget(recipeName)
     }
 

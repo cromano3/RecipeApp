@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -81,7 +82,8 @@ fun CommentScreen(
                         Modifier
                             .fillMaxWidth()
                             .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 12.dp),
-                        horizontalArrangement = Arrangement.Center)
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically)
                     {
                         CancelAlertButton(
                             buttonText = "Cancel",

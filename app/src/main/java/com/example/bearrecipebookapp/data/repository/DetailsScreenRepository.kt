@@ -66,11 +66,15 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
     }
 
     suspend fun setReviewTarget(recipeName: String){
+        println("5")
         detailsScreenDao.setReviewTarget(recipeName)
+        println("6")
     }
 
     suspend fun cleanReviewTarget(){
+        println("3")
         detailsScreenDao.cleanReviewTarget()
+        println("4")
     }
 
     suspend fun addExpToGive(expToGive: Int){

@@ -55,8 +55,10 @@ import com.example.bearrecipebookapp.ui.components.CancelAlertButton
 import com.example.bearrecipebookapp.ui.components.ConfirmAlertButton
 import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.ShoppingListScreenViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -256,9 +258,16 @@ fun ShoppingListScreen(
                             isWorking = uiState.isWorking,
                             isClickable = shoppingListScreenData.size != 1,
                             onFilterClick = {shoppingListScreenViewModel.filterBy(it); filterWasClicked = !filterWasClicked},
-                            onDetailsClick = {
-                                shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
-                                onDetailsClick() }
+                            onDetailsClick =
+                            {
+                                /** main to IO coroutine */
+                                coroutineScope.launch(Dispatchers.Main) {
+                                    withContext(Dispatchers.IO) {
+                                        shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
+                                    }
+                                    onDetailsClick()
+                                }
+                            }
                         )
 
 

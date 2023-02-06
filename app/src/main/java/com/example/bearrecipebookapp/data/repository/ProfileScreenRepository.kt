@@ -31,10 +31,10 @@ class ProfileScreenRepository(private val profileScreenDao: ProfileScreenDao) {
         }
     }
 
-    fun setDetailsScreenTarget(recipeName: String){
-        coroutineScope.launch(Dispatchers.IO) {
+    suspend fun setDetailsScreenTarget(recipeName: String){
+//        coroutineScope.launch(Dispatchers.IO) {
             profileScreenDao.setDetailsScreenTarget(recipeName)
-        }
+//        }
     }
 
     suspend fun addToExp(expChange: Int){

@@ -49,6 +49,10 @@ import com.example.bearrecipebookapp.ui.components.BasicAlert
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.ui.components.ThumbsRatingAlert
 import com.example.bearrecipebookapp.viewmodel.MenuScreenViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -78,6 +82,8 @@ fun MenuScreen(
         val menuScreenData by menuScreenViewModel.menuScreenData.observeAsState(listOf())
 
         val uiAlertState by menuScreenViewModel.uiAlertState.collectAsState()
+
+        val coroutineScope = CoroutineScope(Dispatchers.Main)
 
 //        val coroutineScope = rememberCoroutineScope()
 
@@ -119,10 +125,15 @@ fun MenuScreen(
                             onRemoveClick = { menuScreenViewModel.triggerRemoveAlert(it) },
                             onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(it) },
                             onDetailsClick = {
-//                                coroutineScope.launch(Dispatchers.IO) {
-                                    menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
+
+                                /** main to IO coroutine */
+                                coroutineScope.launch(Dispatchers.Main) {
+                                    withContext(Dispatchers.IO){
+                                        menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
+                                    }
                                     onDetailsClick()
-//                                }
+                                }
+
 
                             }
                         )
@@ -330,8 +341,14 @@ fun MenuScreen(
                         onConfirmClick =
                         {
                             /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
-                            menuScreenViewModel.confirmShowWriteReviewAlert(uiAlertState.recipe.recipeEntity)
-                            onConfirmWriteReviewClick()
+
+                            coroutineScope.launch(Dispatchers.Main) {
+                                println("1")
+                                withContext(Dispatchers.IO) {
+                                    menuScreenViewModel.confirmShowWriteReviewAlert(uiAlertState.recipe.recipeEntity)
+                                }
+                                onConfirmWriteReviewClick()
+                            }
                         },
                         onCancelClick = { menuScreenViewModel.doNotWriteReview(uiAlertState.recipe.recipeEntity) },
                         onDismiss = { menuScreenViewModel.cancelShowWriteReviewAlert() }

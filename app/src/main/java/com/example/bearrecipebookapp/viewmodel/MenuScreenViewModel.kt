@@ -287,11 +287,11 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         }
     }
 
-    fun confirmShowWriteReviewAlert(recipeEntity: RecipeEntity) {
+    suspend fun confirmShowWriteReviewAlert(recipeEntity: RecipeEntity) {
 
         /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
 
-        coroutineScope.launch(Dispatchers.IO) {
+//        coroutineScope.launch(Dispatchers.IO) {
 
             repository.cleanReviewTarget()
             repository.setReviewTarget(recipeEntity.recipeName)
@@ -301,7 +301,7 @@ class MenuScreenViewModel(application: Application): ViewModel() {
                     showLeaveReviewAlert = false
                 )
             }
-        }
+//        }
 
     }
 
@@ -359,7 +359,7 @@ class MenuScreenViewModel(application: Application): ViewModel() {
 
 
 
-    fun setDetailsScreenTarget(recipeName: String){
+    suspend fun setDetailsScreenTarget(recipeName: String){
         repository.setDetailsScreenTarget(recipeName)
     }
 

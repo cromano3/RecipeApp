@@ -36,6 +36,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.SearchScreenViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -63,6 +67,8 @@ fun SearchScreen(
         val myPreviewList: List<String> = previewList?.split(",") ?: listOf("")
 
         val showResults by searchScreenViewModel.showResults.observeAsState()
+
+        val coroutineScope = CoroutineScope(Dispatchers.Main)
 
 //        val focusRequester = remember { FocusRequester() }
         val focusManager = LocalFocusManager.current
@@ -249,10 +255,18 @@ fun SearchScreen(
                                             searchScreenViewModel.triggerAlert(results[index])
                                         }
                                     },
-                                    onDetailsClick = {
-                                        searchScreenViewModel.setDetailsScreenTarget(results[index].recipeEntity.recipeName)
-                                        onDetailsClick()
-                                        focusManager.clearFocus()},
+                                    onDetailsClick =
+                                    {
+                                        /** main to IO coroutine */
+                                        coroutineScope.launch(Dispatchers.Main) {
+                                            withContext(Dispatchers.IO) {
+                                                searchScreenViewModel.setDetailsScreenTarget(results[index].recipeEntity.recipeName)
+                                            }
+                                            onDetailsClick()
+                                            focusManager.clearFocus()
+                                        }
+
+                                    },
                                 )
 
 

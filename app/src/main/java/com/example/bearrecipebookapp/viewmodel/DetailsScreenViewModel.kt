@@ -280,21 +280,25 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         }
     }
 
-    fun confirmShowWriteReviewAlert(recipeEntity: RecipeEntity) {
+    suspend fun confirmShowWriteReviewAlert(recipeEntity: RecipeEntity) {
 
         /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
 
-        coroutineScope.launch(Dispatchers.IO) {
+//        coroutineScope.launch(Dispatchers.IO) {
+            println("2")
 
             repository.cleanReviewTarget()
+            println("4a")
             repository.setReviewTarget(recipeEntity.recipeName)
+            println("6a")
 
             uiAlertState.update { currentState ->
                 currentState.copy(
                     showLeaveReviewAlert = false
                 )
             }
-        }
+            println("7")
+//        }
 
     }
 

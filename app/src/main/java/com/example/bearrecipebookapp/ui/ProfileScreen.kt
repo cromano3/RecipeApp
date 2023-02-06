@@ -860,11 +860,18 @@ fun ProfileScreen(
                                 onRemoveClick = {},
                                 onCompleteClick = {},
                                 onDetailsClick = {
-//                                coroutineScope.launch(Dispatchers.IO) {
+
                                     profileScreenViewModel.cancelAnimationStack()
-                                    profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
-                                    onDetailsClick()
-//                                }
+
+                                    /** main to IO coroutine */
+                                    coroutineScope.launch(Dispatchers.Main) {
+                                        withContext(Dispatchers.IO) {
+                                            profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
+
+                                        }
+                                        onDetailsClick()
+                                    }
+
                                 }
                             )
 
@@ -906,8 +913,14 @@ fun ProfileScreen(
                                 recipeWithIngredients = cookedData[index],
                                 onDetailsClick = {
                                     profileScreenViewModel.cancelAnimationStack()
-                                    profileScreenViewModel.setDetailsScreenTarget(cookedData[index].recipeEntity.recipeName)
-                                    onDetailsClick()
+
+                                    /** main to IO coroutine */
+                                    coroutineScope.launch(Dispatchers.Main) {
+                                        withContext(Dispatchers.IO) {
+                                            profileScreenViewModel.setDetailsScreenTarget(cookedData[index].recipeEntity.recipeName)
+                                        }
+                                        onDetailsClick()
+                                    }
                                 }
                             )
                         }

@@ -227,9 +227,9 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
         }
     }
 
-    fun setDetailsScreenTarget(recipeName: String){
-        coroutineScope.launch(Dispatchers.IO) {
+    suspend fun setDetailsScreenTarget(recipeName: String){
+//        coroutineScope.launch(Dispatchers.IO) {
             homeScreenDao.setDetailsScreenTarget(recipeName)
-        }
+//        }
     }
 }
