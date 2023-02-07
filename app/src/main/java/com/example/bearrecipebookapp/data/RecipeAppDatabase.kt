@@ -35,6 +35,7 @@ public abstract class RecipeAppDatabase : RoomDatabase() {
     abstract fun TopBarDao(): TopBarDao
     abstract fun ProfileScreenDao(): ProfileScreenDao
     abstract fun CommentScreenDao(): CommentScreenDao
+    abstract fun AppDao(): AppDao
 
     companion object {
 

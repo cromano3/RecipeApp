@@ -42,8 +42,7 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
+import com.example.bearrecipebookapp.datamodel.*
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.viewmodel.ProfileScreenViewModel
@@ -54,6 +53,11 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ProfileScreen(
+    uiState: ProfileScreenDataModel,
+    uiAlertState: UiAlertStateProfileScreenDataModel,
+    uiStarsState: ProfileScreenStarsDataModel,
+    favoritesData: List<RecipeWithIngredientsAndInstructions>,
+    cookedData: List<RecipeWithIngredients>,
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onDetailsClick: () -> Unit,
 ) {
@@ -68,12 +72,12 @@ fun ProfileScreen(
         )
 
 
-        val uiState by profileScreenViewModel.uiState.collectAsState()
-        val uiAlertState by profileScreenViewModel.uiAlertState.collectAsState()
-        val uiStarsState by profileScreenViewModel.uiStarsState.collectAsState()
-
-        val favoritesData by profileScreenViewModel.favoritesData.observeAsState(listOf())
-        val cookedData by profileScreenViewModel.cookedData.observeAsState(listOf())
+//        val uiState by profileScreenViewModel.uiState.collectAsState()
+//        val uiAlertState by profileScreenViewModel.uiAlertState.collectAsState()
+//        val uiStarsState by profileScreenViewModel.uiStarsState.collectAsState()
+//
+//        val favoritesData by profileScreenViewModel.favoritesData.observeAsState(listOf())
+//        val cookedData by profileScreenViewModel.cookedData.observeAsState(listOf())
 
         val expToGive by profileScreenViewModel.expToGive.observeAsState()
 
@@ -86,6 +90,17 @@ fun ProfileScreen(
 
         val animatedFirstValue = remember {Animatable(0f) }
 
+
+
+//        val animatedFirstValue =
+//            remember{
+//                lazy{
+//                    coroutineScope.launch(Dispatchers.Main){
+//                        val result = async(Dispatchers.IO) { Animatable(profileScreenViewModel.getStart()) }
+//                        result.await()
+//                    }
+//                }
+//            }
 
 //        val animatedFirstValue =
 //            remember{

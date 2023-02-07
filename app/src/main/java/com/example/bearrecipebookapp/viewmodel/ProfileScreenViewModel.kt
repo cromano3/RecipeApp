@@ -45,6 +45,9 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
     }
 
+
+
+
     fun stopDoAnimation(){
         uiState.update {
             it.copy(

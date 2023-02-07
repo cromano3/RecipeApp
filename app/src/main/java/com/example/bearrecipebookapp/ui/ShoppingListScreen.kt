@@ -1,5 +1,6 @@
 package com.example.bearrecipebookapp.ui
 
+import android.annotation.SuppressLint
 import android.app.Application
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.LinearEasing
@@ -22,7 +23,6 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckBoxOutlineBlank
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -32,11 +32,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
@@ -44,49 +44,67 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.datamodel.ShoppingScreenUiState
+import com.example.bearrecipebookapp.datamodel.UiAlertStateShoppingScreenDataModel
 import com.example.bearrecipebookapp.ui.components.CancelAlertButton
 import com.example.bearrecipebookapp.ui.components.ConfirmAlertButton
 import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.ShoppingListScreenViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ShoppingListScreen(
-    onDetailsClick: () -> Unit,
+    shoppingListScreenData: List<RecipeWithIngredients>,
+    customIngredients: List<ShoppingListCustomItemsEntity>,
+    selectedIngredients: List<IngredientEntity>,
+    uiState: ShoppingScreenUiState,
+    uiAlertState: UiAlertStateShoppingScreenDataModel,
+    triggerAddCustomItemAlert: () -> Unit,
+    filterBy: (RecipeWithIngredients) -> Unit,
+    triggerAddRecipeOrCustomItemAlert: () -> Unit,
+    cancelAddRecipeOrCustomItemAlert: () -> Unit,
+    addTutorialAlert: () -> Unit,
+    cancelAddCustomItemAlert: () -> Unit,
+    addCustomItem: () -> Unit,
+//    setDetailsScreenTarget: (RecipeWithIngredients) -> Unit,
+    updateInputText: (TextFieldValue) -> Unit,
+    customItemSelected: (ShoppingListCustomItemsEntity) -> Unit,
+    customItemDeselected: (ShoppingListCustomItemsEntity) -> Unit,
+    deleteCustomItem: (ShoppingListCustomItemsEntity) -> Unit,
+    ingredientSelected: (IngredientEntity) -> Unit,
+    ingredientDeselected: (IngredientEntity) -> Unit,
+    onDetailsClick: (String) -> Unit,
     onSystemBackClick: () -> Unit,
     onAddRecipeClick: () -> Unit,
 ) {
-    val owner = LocalViewModelStoreOwner.current
+//    val owner = LocalViewModelStoreOwner.current
 
-    owner?.let { viewModelStoreOwner ->
-        val shoppingListScreenViewModel: ShoppingListScreenViewModel = viewModel(
-            viewModelStoreOwner,
-            "ShoppingListScreenViewModel",
-            ShoppingListScreenViewModelFactory(
-                LocalContext.current.applicationContext
-                        as Application,
-            )
-        )
+//    owner?.let { viewModelStoreOwner ->
+//        val shoppingListScreenViewModel: ShoppingListScreenViewModel = viewModel(
+//            viewModelStoreOwner,
+//            "ShoppingListScreenViewModel",
+//            ShoppingListScreenViewModelFactory(
+//                LocalContext.current.applicationContext
+//                        as Application,
+//            )
+//        )
 
-        val shoppingListScreenData by shoppingListScreenViewModel.shoppingListScreenData.observeAsState(listOf())
-        val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
-        val customIngredients by shoppingListScreenViewModel.customIngredients.observeAsState(listOf())
+//        val shoppingListScreenData by shoppingListScreenViewModel.shoppingListScreenData.observeAsState(listOf())
+//        val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
+//        val customIngredients by shoppingListScreenViewModel.customIngredients.observeAsState(listOf())
 
         var filterWasClicked by remember { mutableStateOf(false) }
 
-        val uiState by shoppingListScreenViewModel.shoppingScreenUiState.collectAsState()
-        val uiAlertState by shoppingListScreenViewModel.uiAlertState.collectAsState()
+//        val uiState by shoppingListScreenViewModel.shoppingScreenUiState.collectAsState()
+//        val uiAlertState by shoppingListScreenViewModel.uiAlertState.collectAsState()
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -97,6 +115,10 @@ fun ShoppingListScreen(
 
         BackHandler {
             onSystemBackClick()
+        }
+
+        LaunchedEffect(Unit){
+            println("PLZ NO PLZ")
         }
 
         if(filterWasClicked) {
@@ -145,8 +167,14 @@ fun ShoppingListScreen(
                             modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
                             ingredientEntity = it,
                             isWorking = uiState.isWorking,
-                            onClickIngredientSelected = { shoppingListScreenViewModel.ingredientSelected(it) },
-                            onClickIngredientDeselected = { shoppingListScreenViewModel.ingredientDeselected(it) },
+                            onClickIngredientSelected = {
+                                ingredientSelected(it)
+//                                shoppingListScreenViewModel.ingredientSelected(it)
+                                                        },
+                            onClickIngredientDeselected = {
+                                ingredientDeselected(it)
+//                                shoppingListScreenViewModel.ingredientDeselected(it)
+                                                          },
                         )
                     }
 
@@ -201,9 +229,18 @@ fun ShoppingListScreen(
                                 shoppingListCustomItemEntity = it,
                                 isWorking = uiState.isWorking,
                                 isFiltered = uiState.isFiltered,
-                                onClickItemSelected = { shoppingListScreenViewModel.customItemSelected(it) },
-                                onClickItemDeselected = { shoppingListScreenViewModel.customItemDeselected(it) },
-                                onClickDeleteCustomItem = { shoppingListScreenViewModel.deleteCustomItem(it) }
+                                onClickItemSelected = {
+                                    customItemSelected(it)
+//                                    shoppingListScreenViewModel.customItemSelected(it)
+                                                      },
+                                onClickItemDeselected = {
+                                    customItemDeselected(it)
+//                                    shoppingListScreenViewModel.customItemDeselected(it)
+                                                        },
+                                onClickDeleteCustomItem = {
+                                    deleteCustomItem(it)
+//                                    shoppingListScreenViewModel.deleteCustomItem(it)
+                                }
                             )
                         }
                     }
@@ -221,7 +258,10 @@ fun ShoppingListScreen(
                             AddCustomItemButton(
                                 modifier = Modifier,
                                 isWorking = uiState.isWorking,
-                                onClickAddItem = { shoppingListScreenViewModel.triggerAddCustomItemAlert() }
+                                onClickAddItem = {
+                                    triggerAddCustomItemAlert()
+//                                    shoppingListScreenViewModel.triggerAddCustomItemAlert()
+                                }
                             )
                         }
                     }
@@ -257,16 +297,23 @@ fun ShoppingListScreen(
                             filterWasClicked = filterWasClicked,
                             isWorking = uiState.isWorking,
                             isClickable = shoppingListScreenData.size != 1,
-                            onFilterClick = {shoppingListScreenViewModel.filterBy(it); filterWasClicked = !filterWasClicked},
+                            onFilterClick = {
+
+//                                shoppingListScreenViewModel.filterBy(it);
+                                filterBy(it)
+                                filterWasClicked = !filterWasClicked
+                                            },
                             onDetailsClick =
                             {
-                                /** main to IO coroutine */
-                                coroutineScope.launch(Dispatchers.Main) {
-                                    withContext(Dispatchers.IO) {
-                                        shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
-                                    }
-                                    onDetailsClick()
-                                }
+//                                /** main to IO coroutine */
+//                                coroutineScope.launch(Dispatchers.Main) {
+//                                    withContext(Dispatchers.IO) {
+//                                        shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
+//                                    }
+//                                    onDetailsClick()
+//                                }
+//                                setDetailsScreenTarget(it)
+                                onDetailsClick(it.recipeEntity.recipeName)
                             }
                         )
 
@@ -298,7 +345,10 @@ fun ShoppingListScreen(
                 }
                 Box(Modifier.fillMaxSize(), contentAlignment =  Alignment.BottomEnd) {
                     FloatingActionButton(
-                        onClick = { shoppingListScreenViewModel.triggerAddRecipeOrCustomItemAlert() },
+                        onClick = {
+//                            shoppingListScreenViewModel.triggerAddRecipeOrCustomItemAlert()
+                            triggerAddRecipeOrCustomItemAlert()
+                                  },
                         elevation = FloatingActionButtonDefaults.elevation(8.dp),
                         modifier = Modifier
                             .padding(bottom = 70.dp, end = 24.dp)
@@ -340,7 +390,10 @@ fun ShoppingListScreen(
                 //add recipe or custom item
                 if(uiAlertState.showAddRecipeOrCustomItemAlert){
                     AlertDialog(
-                        onDismissRequest = {shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()},
+                        onDismissRequest = {
+//                            shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
+                            cancelAddRecipeOrCustomItemAlert()
+                                           },
                         text = {
                             Text(
                                 text =
@@ -371,8 +424,10 @@ fun ShoppingListScreen(
                                 Button(
                                     modifier = Modifier.fillMaxWidth(),
                                     onClick = {
-                                        shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
-                                        shoppingListScreenViewModel.addTutorialAlert()
+//                                        shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
+//                                        shoppingListScreenViewModel.addTutorialAlert()
+                                        cancelAddRecipeOrCustomItemAlert()
+                                        addTutorialAlert()
                                         onAddRecipeClick()
                                               },
                                     elevation = ButtonDefaults.elevation(6.dp),
@@ -393,8 +448,10 @@ fun ShoppingListScreen(
                                 Button(
                                     modifier = Modifier.fillMaxWidth(),
                                     onClick = {
-                                        shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
-                                        shoppingListScreenViewModel.triggerAddCustomItemAlert()
+//                                        shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()
+//                                        shoppingListScreenViewModel.triggerAddCustomItemAlert()
+                                        cancelAddRecipeOrCustomItemAlert()
+                                        triggerAddCustomItemAlert()
                                     },
                                     elevation = ButtonDefaults.elevation(6.dp),
                                     shape = RoundedCornerShape(25.dp),
@@ -423,7 +480,8 @@ fun ShoppingListScreen(
 
                     AlertDialog(
                         onDismissRequest = {
-                            shoppingListScreenViewModel.cancelAddCustomItemAlert()
+//                            shoppingListScreenViewModel.cancelAddCustomItemAlert()
+                            cancelAddCustomItemAlert()
                         },
                         title = {
                             Text(text = "Enter item: ", color = Color(0xFF682300))
@@ -432,7 +490,10 @@ fun ShoppingListScreen(
                             Column {
                                 TextField(
                                     value = uiAlertState.inputText,
-                                    onValueChange = { shoppingListScreenViewModel.updateInputText(it) },
+                                    onValueChange = {
+//                                        shoppingListScreenViewModel.updateInputText(it)
+                                        updateInputText(it)
+                                                    },
                                     modifier = Modifier.focusRequester(focusRequester),
                                     singleLine = true,
                                 )
@@ -451,10 +512,12 @@ fun ShoppingListScreen(
                             ) {
 
                                 CancelAlertButton(buttonText = "Cancel") {
-                                    shoppingListScreenViewModel.cancelAddCustomItemAlert()
+//                                    shoppingListScreenViewModel.cancelAddCustomItemAlert()
+                                    cancelAddCustomItemAlert()
                                 }
                                 ConfirmAlertButton(buttonText = "Confirm") {
-                                    shoppingListScreenViewModel.addCustomItem()
+//                                    shoppingListScreenViewModel.addCustomItem()
+                                    addCustomItem()
                                 }
 
 //                                Button(
@@ -499,7 +562,7 @@ fun ShoppingListScreen(
             }
         }
 
-    }
+//    }
 }
 
 
