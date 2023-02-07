@@ -43,16 +43,15 @@ class ProfileScreenRepository(private val profileScreenDao: ProfileScreenDao) {
 //        }
     }
 
-    suspend fun removeFromExpToGive(expChange: Int){
-//        coroutineScope.launch(Dispatchers.IO) {
-            profileScreenDao.removeFromExpToGive(expChange)
-//        }
-    }
 
     suspend fun clearExpToGive(){
 //        coroutineScope.launch(Dispatchers.IO) {
             profileScreenDao.clearExpToGive()
 //        }
+    }
+
+    suspend fun updateExp(expChange: Int){
+        profileScreenDao.updateExp(expChange)
     }
 
 }

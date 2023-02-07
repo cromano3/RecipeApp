@@ -87,43 +87,6 @@ fun ProfileScreen(
         val animatedFirstValue = remember {Animatable(0f) }
 
 
-//        val animatedFirstValue =
-//            remember{
-//                lazy{
-//                    coroutineScope.launch{
-//                        val result = async { Animatable(profileScreenViewModel.getStart()) }
-//                        result.await()
-//                    }
-//
-//                    Animatable(0f)
-//                }
-//            }
-
-//        val animatedFirstValue1 by lazy {
-//            runBlocking {
-//                val value = database.getAnimatedFirstValue()
-//                Animatable(value)
-//            }
-//        }
-
-//        val myVariable by lazy {
-//            val deferred = GlobalScope.async {
-//                // code to retrieve value from database
-//            }
-//            deferred.await()
-//        }
-
-//        fun main() = runBlocking {
-//            val deferred = async {
-//                // Do some long-running task here
-//                delay(1000)
-//                "Task complete"
-//            }
-//            println("Before await")
-//            val result = deferred.await()
-//            println("After await: $result")
-//        }
-
 
 
         val barWidth = 600f

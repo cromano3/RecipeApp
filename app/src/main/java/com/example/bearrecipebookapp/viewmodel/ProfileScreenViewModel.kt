@@ -156,8 +156,10 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
             println("here")
 
-            repository.clearExpToGive()
-            repository.addToExp(uiState.value.xpToGive)
+//            repository.clearExpToGive()
+//            repository.addToExp(uiState.value.xpToGive)
+
+            repository.updateExp(uiState.value.xpToGive)
 
             levelHelper(xp)
 

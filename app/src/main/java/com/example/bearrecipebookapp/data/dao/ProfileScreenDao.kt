@@ -42,16 +42,22 @@ interface ProfileScreenDao {
     @Query("UPDATE details_screen_target_table SET target_name = :recipeName")
     fun setDetailsScreenTarget(recipeName: String)
 
+
+
+//    @Transaction
+//    @Query("UPDATE user_table SET exp_to_give = exp_to_give - :expChange")
+//    fun removeFromExpToGive(expChange: Int)
+
     @Transaction
     @Query("UPDATE user_table SET exp_total = exp_total + :expChange")
     fun addToExp(expChange: Int)
 
     @Transaction
-    @Query("UPDATE user_table SET exp_to_give = exp_to_give - :expChange")
-    fun removeFromExpToGive(expChange: Int)
-
-    @Transaction
     @Query("UPDATE user_table SET exp_to_give = 0")
     fun clearExpToGive()
+
+    @Transaction
+    @Query("UPDATE user_table SET exp_to_give = 0, exp_total = exp_total + :expChange")
+    fun updateExp(expChange: Int)
 
 }

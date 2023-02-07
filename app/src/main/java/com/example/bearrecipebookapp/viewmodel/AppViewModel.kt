@@ -17,28 +17,13 @@ class AppViewModel (application: Application): ViewModel() {
 
     val appUiState = MutableStateFlow(AppUiState())
 
-//    var shoppingListScreenData: LiveData<List<RecipeWithIngredients>>
-//    var selectedIngredients: LiveData<List<IngredientEntity>>
-//    var customIngredients: LiveData<List<ShoppingListCustomItemsEntity>>
-//
-//
-//    val shoppingScreenUiState = MutableStateFlow(ShoppingScreenUiState())
-//    val uiAlertState = MutableStateFlow(UiAlertStateShoppingScreenDataModel())
 
     init {
         val appDb = RecipeAppDatabase.getInstance(application)
         val appDao = appDb.AppDao()
         repository = AppRepository(appDao)
-
-//        shoppingListScreenData = repository.shoppingListScreenData
-//        selectedIngredients = repository.selectedIngredients
-//        customIngredients = repository.customIngredients
-
-//        coroutineScope.launch(Dispatchers.IO) {
-//            async(Dispatchers.IO) { repository.cleanIngredients() }
-//            async(Dispatchers.IO) { repository.cleanFilters() }
-//        }
     }
+
 
     suspend fun setupDetailsScreen(recipeName: String){
         val result = repository.getRecipeWithIngredientsAndInstructions(recipeName)
