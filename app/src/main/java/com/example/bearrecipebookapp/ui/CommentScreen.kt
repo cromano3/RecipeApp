@@ -9,7 +9,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -35,6 +34,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun CommentScreen(
+    commentScreenData: RecipeWithIngredientsAndInstructions,
     onCancelClick: () -> Unit,
     onConfirmClick: () -> Unit
 ) {
@@ -53,10 +53,10 @@ fun CommentScreen(
 
         val uiState by commentScreenViewModel.uiState.collectAsState()
 
-        val commentScreenData by commentScreenViewModel.commentScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
+//        val commentScreenData by commentScreenViewModel.commentScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
 
-        var text by remember { mutableStateOf("") }
-        var ingredients by remember { mutableStateOf("") }
+//        var text by remember { mutableStateOf("") }
+//        var ingredients by remember { mutableStateOf("") }
 
         val focusManager = LocalFocusManager.current
         val focusRequester = remember { FocusRequester() }
@@ -173,7 +173,7 @@ class CommentScreenViewModelFactory(
 @Preview
 @Composable
 fun comprev(){
-    CommentScreen(onCancelClick = { /*TODO*/ }) {
-
-    }
+    CommentScreen(
+        RecipeWithIngredientsAndInstructions(),
+        onCancelClick = { /*TODO*/ }) {}
 }

@@ -47,6 +47,15 @@ class AppViewModel (application: Application): ViewModel() {
             it.copy(detailsScreenTarget = result)
         }
 
+    }
+
+    suspend fun setupReviewScreen(recipeName: String){
+        val result = repository.getRecipeWithIngredientsAndInstructions(recipeName)
+
+        appUiState.update {
+            it.copy(reviewScreenTarget = result)
+        }
 
     }
+
 }

@@ -216,25 +216,29 @@ fun BearRecipeApp(
                 }},)
             }
 
-            /*Comment Screen*/
+
+
+
+            /**Comment Screen*/
+
             composable(
                 route = "CommentScreen",
-                enterTransition = {
-                    fadeIn(animationSpec = tween(700))
-                },
-                exitTransition = {
-                    fadeOut(animationSpec = tween(700))
-
-                }
-                ,
+                enterTransition = { fadeIn(animationSpec = tween(700)) },
+                exitTransition = { fadeOut(animationSpec = tween(700)) },
             ){
                 CommentScreen(
+                    commentScreenData = appUiState.reviewScreenTarget,
                     onCancelClick = { navController.popBackStack() },
                     onConfirmClick = { navController.popBackStack() },
                 )
             }
 
+
+
+            /** Add Recipe Screen */
+
             composable(route = "AddRecipeScreen"){ AddRecipeScreen() }
+
 
 
             /** Home Screen */
@@ -364,7 +368,11 @@ fun BearRecipeApp(
 
                         }
                     },
-                    onConfirmWriteReviewClick = { navController.navigate("CommentScreen") },
+                    onConfirmWriteReviewClick = {
+                        coroutineScope.launch(Dispatchers.Main) {
+                            withContext(Dispatchers.IO){appViewModel.setupReviewScreen(it)}
+                            navController.navigate("CommentScreen") }
+                        },
                     onAddRecipeClick = {
 
                         navController.navigate("RecipeScreen"){
@@ -503,7 +511,11 @@ fun BearRecipeApp(
                                     duration = SnackbarDuration.Short)
                             }
                         },
-                        navigateToCommentScreen = { navController.navigate("CommentScreen") }
+                        navigateToCommentScreen = {
+                            coroutineScope.launch(Dispatchers.Main) {
+                                withContext(Dispatchers.IO){appViewModel.setupReviewScreen(it)}
+                                navController.navigate("CommentScreen") }
+                        },
                     )
 
             }

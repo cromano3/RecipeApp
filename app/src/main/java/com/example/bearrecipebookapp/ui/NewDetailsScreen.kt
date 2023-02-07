@@ -39,8 +39,6 @@ import com.example.bearrecipebookapp.ui.components.*
 import com.example.bearrecipebookapp.viewmodel.DetailsScreenViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
@@ -53,7 +51,7 @@ fun NewDetailsScreen(
     onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     showAddedToFavoritesSnackBarMessage: (recipeName: String) -> Unit,
-    navigateToCommentScreen: () -> Unit,
+    navigateToCommentScreen: (String) -> Unit,
 
 ) {
 
@@ -601,18 +599,20 @@ fun NewDetailsScreen(
                         cancelButtonText = "No",
                         onConfirmClick =
                         {
-                            /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
 
-                            coroutineScope.launch(Dispatchers.Main){
-                                println("1")
-                                withContext(Dispatchers.IO) {
-                                    detailsScreenViewModel.confirmShowWriteReviewAlert(
-                                        recipeData.recipeEntity
-                                    )
-                                }
-                                println("8")
-                                navigateToCommentScreen()
-                            }
+                            detailsScreenViewModel.confirmShowWriteReviewAlert()
+                            navigateToCommentScreen(recipeData.recipeEntity.recipeName)
+
+//                            /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
+//
+//                            coroutineScope.launch(Dispatchers.Main){
+//                                withContext(Dispatchers.IO) {
+//                                    detailsScreenViewModel.confirmShowWriteReviewAlert(
+//                                        recipeData.recipeEntity
+//                                    )
+//                                }
+//                                navigateToCommentScreen()
+//                            }
 
                         },
                         onCancelClick = { detailsScreenViewModel.doNotWriteReview(recipeData.recipeEntity) },

@@ -280,27 +280,32 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         }
     }
 
-    suspend fun confirmShowWriteReviewAlert(recipeEntity: RecipeEntity) {
+    fun confirmShowWriteReviewAlert() {
 
-        /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showLeaveReviewAlert = false
+            )
+        }
 
-//        coroutineScope.launch(Dispatchers.IO) {
-            println("2")
-
-            repository.cleanReviewTarget()
-            println("4a")
-            repository.setReviewTarget(recipeEntity.recipeName)
-            println("6a")
-
-            uiAlertState.update { currentState ->
-                currentState.copy(
-                    showLeaveReviewAlert = false
-                )
-            }
-            println("7")
-//        }
 
     }
+
+//    suspend fun confirmShowWriteReviewAlert(recipeEntity: RecipeEntity) {
+//
+//        /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
+//
+//            repository.cleanReviewTarget()
+//            repository.setReviewTarget(recipeEntity.recipeName)
+//
+//            uiAlertState.update { currentState ->
+//                currentState.copy(
+//                    showLeaveReviewAlert = false
+//                )
+//            }
+//
+//
+//    }
 
     fun doNotWriteReview(recipeEntity: RecipeEntity) {
 
