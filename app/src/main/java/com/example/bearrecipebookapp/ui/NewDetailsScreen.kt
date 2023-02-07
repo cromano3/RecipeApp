@@ -15,7 +15,6 @@ import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -47,6 +46,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun NewDetailsScreen(
     //recipeName: String,
+    recipeData: RecipeWithIngredientsAndInstructions,
     onGoBackClick: () -> Unit,
     onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
@@ -70,7 +70,7 @@ fun NewDetailsScreen(
             )
         )
 
-        val detailsScreenData by detailsScreenViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
+//        val detailsScreenData by detailsScreenViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
 
         val uiAlertState by detailsScreenViewModel.uiAlertState.collectAsState()
 
@@ -85,7 +85,7 @@ fun NewDetailsScreen(
         /*
          * Get the image based on the recipe Name
          */
-        val image: Int = when (detailsScreenData.recipeEntity.recipeName) {
+        val image: Int = when (recipeData.recipeEntity.recipeName) {
             "Bagels" -> R.drawable.bagel2
             "Garlic Knots" -> R.drawable.garlic2
             "Cauliflower Walnut Tacos" -> R.drawable.cauliflower
@@ -109,11 +109,11 @@ fun NewDetailsScreen(
         val remainder: Int
         val quotient: Int
 
-        if (detailsScreenData.recipeEntity.timeToMake <= 60) {
-            formattedTime = detailsScreenData.recipeEntity.timeToMake.toString() + " mins."
+        if (recipeData.recipeEntity.timeToMake <= 60) {
+            formattedTime = recipeData.recipeEntity.timeToMake.toString() + " mins."
         } else {
-            quotient = detailsScreenData.recipeEntity.timeToMake / 60
-            remainder = detailsScreenData.recipeEntity.timeToMake % 60
+            quotient = recipeData.recipeEntity.timeToMake / 60
+            remainder = recipeData.recipeEntity.timeToMake % 60
             if (remainder == 0) {
                 formattedTime = "$quotient hrs."
             } else {
@@ -211,7 +211,7 @@ fun NewDetailsScreen(
                             val borderStartColor = Color(0xFFd8af84)
                             val borderEndColor = Color(0xFFb15f33)
 
-                            if (detailsScreenData.recipeEntity.onMenu == 1) {
+                            if (recipeData.recipeEntity.onMenu == 1) {
                                 selected = true
 //                            alphaLevel = 1f
                                 menuText = "Remove from Menu"
@@ -244,11 +244,11 @@ fun NewDetailsScreen(
                                     {
                                         if (selected) {
                                             detailsScreenViewModel.triggerRemoveAlert(
-                                                detailsScreenData
+                                                recipeData
                                             )
                                         } else {
-                                            detailsScreenViewModel.addToMenu(detailsScreenData)
-                                            onMenuAddClick(detailsScreenData)
+                                            detailsScreenViewModel.addToMenu(recipeData)
+                                            onMenuAddClick(recipeData)
                                         }
                                     },
                                     borderStartColor = if (selected) removeBorderStartColor else borderStartColor,
@@ -264,11 +264,11 @@ fun NewDetailsScreen(
                                     {
                                         if (selected) {
                                             detailsScreenViewModel.triggerCompletedAlert(
-                                                detailsScreenData
+                                                recipeData
                                             )
                                         } else {
                                             detailsScreenViewModel.triggerCompletedAlert(
-                                                detailsScreenData
+                                                recipeData
                                             )
                                         }
 
@@ -352,7 +352,7 @@ fun NewDetailsScreen(
                                         fontWeight = FontWeight.Bold
 
                                     )
-                                    for (x in 0 until detailsScreenData.recipeEntity.difficulty) {
+                                    for (x in 0 until recipeData.recipeEntity.difficulty) {
                                         Icon(
                                             Icons.Outlined.Star,
                                             tint = Color(0xFFd8af84),
@@ -368,7 +368,7 @@ fun NewDetailsScreen(
                                         contentDescription = null
                                     )
                                     Text(
-                                        text = "Rating: ${detailsScreenData.recipeEntity.globalRating}" + "%",
+                                        text = "Rating: ${recipeData.recipeEntity.globalRating}" + "%",
                                         modifier = Modifier
                                             .padding(
                                                 start = 8.dp,
@@ -420,10 +420,10 @@ fun NewDetailsScreen(
                                 )
 
 
-                                for (x in 0 until detailsScreenData.ingredientsList.size) {
+                                for (x in 0 until recipeData.ingredientsList.size) {
                                     Text(
                                         //modifier = Modifier.padding(start = 8.dp, end = 8.dp),
-                                        text = "- " + detailsScreenData.ingredientsList[x].ingredientName,
+                                        text = "- " + recipeData.ingredientsList[x].ingredientName,
                                         color = Color(0xFFd8af84),
                                         fontSize = 18.sp
 
@@ -437,7 +437,7 @@ fun NewDetailsScreen(
                     }
 
                     //Instructions List
-                    for (x in 0 until detailsScreenData.instructionsList.size) {
+                    for (x in 0 until recipeData.instructionsList.size) {
                         Surface(
                             modifier = Modifier
                                 .wrapContentHeight()
@@ -453,15 +453,15 @@ fun NewDetailsScreen(
                             Text(
                                 modifier = Modifier.padding(8.dp),
                                 color = Color(0xFFd8af84),
-                                text = detailsScreenData.instructionsList[x].instruction,
+                                text = recipeData.instructionsList[x].instruction,
                                 textAlign = TextAlign.Center
                             )
                         }
 
                     }
 
-//                    for(x in 0 until detailsScreenData.reviewsList.size){
-//                        ReviewWidget(detailsScreenData.reviewsList[x].reviewText)
+//                    for(x in 0 until recipeData.reviewsList.size){
+//                        ReviewWidget(recipeData.reviewsList[x].reviewText)
 //                    }
 
                     ReviewWidget()
@@ -498,7 +498,7 @@ fun NewDetailsScreen(
                         cancelButtonText = "Cancel",
                         onConfirmClick =
                         {
-                            onMenuRemoveClick(detailsScreenData)
+                            onMenuRemoveClick(recipeData)
                             detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
                             detailsScreenViewModel.cancelRemoveAlert()
                         },
@@ -510,7 +510,7 @@ fun NewDetailsScreen(
                 //Completed Alert
                 if(uiAlertState.showCompletedAlert){
 
-                    val finishedText: AnnotatedString = if(detailsScreenData.recipeEntity.onMenu == 0) {
+                    val finishedText: AnnotatedString = if(recipeData.recipeEntity.onMenu == 0) {
                         buildAnnotatedString {
                             append("Great job! Add ")
                             append(uiAlertState.recipe.recipeEntity.recipeName)
@@ -547,13 +547,13 @@ fun NewDetailsScreen(
                         cancelButtonText = "Cancel",
                         onConfirmClick =
                         {
-                            onCompleteClick(detailsScreenData)
-                            detailsScreenViewModel.addCooked(detailsScreenData)
+                            onCompleteClick(recipeData)
+                            detailsScreenViewModel.addCooked(recipeData)
                             detailsScreenViewModel.addExp(uiAlertState.recipe)
-                            if(detailsScreenData.recipeEntity.onMenu == 1) {
+                            if(recipeData.recipeEntity.onMenu == 1) {
                                 detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
                             }
-                            detailsScreenViewModel.confirmCompletedAlert(detailsScreenData.recipeEntity)
+                            detailsScreenViewModel.confirmCompletedAlert(recipeData.recipeEntity)
                          },
                         onCancelClick = { detailsScreenViewModel.cancelCompletedAlert() },
                         onDismiss = {}
@@ -565,12 +565,12 @@ fun NewDetailsScreen(
                     ThumbsRatingAlert(
                         confirmButtonText = "Confirm",
                         cancelButtonText = "Cancel",
-                        onConfirmClick = { detailsScreenViewModel.confirmRating(detailsScreenData.recipeEntity) },
+                        onConfirmClick = { detailsScreenViewModel.confirmRating(recipeData.recipeEntity) },
                         onCancelClick = { detailsScreenViewModel.cancelRatingAlert() },
                         onDismiss = { detailsScreenViewModel.cancelRatingAlert() },
                         onThumbDownClick = { detailsScreenViewModel.thumbDownClicked() },
                         onThumbUpClick = { detailsScreenViewModel.thumbUpClicked() },
-                        text = "Did you enjoy ${detailsScreenData.recipeEntity.recipeName}?",
+                        text = "Did you enjoy ${recipeData.recipeEntity.recipeName}?",
                         isThumbDownSelected = uiAlertState.isThumbDownSelected,
                         isThumbUpSelected = uiAlertState.isThumbUpSelected,
                     )
@@ -579,15 +579,15 @@ fun NewDetailsScreen(
 
                 if(uiAlertState.showFavoriteAlert){
                     BasicAlert(
-                        text = "Add ${detailsScreenData.recipeEntity.recipeName} to your Favorites?",
+                        text = "Add ${recipeData.recipeEntity.recipeName} to your Favorites?",
                         confirmButtonText = "Yes",
                         cancelButtonText = "No",
                         onConfirmClick =
                         {
-                            detailsScreenViewModel.addToFavorite(detailsScreenData.recipeEntity)
-                            showAddedToFavoritesSnackBarMessage(detailsScreenData.recipeEntity.recipeName)
+                            detailsScreenViewModel.addToFavorite(recipeData.recipeEntity)
+                            showAddedToFavoritesSnackBarMessage(recipeData.recipeEntity.recipeName)
                         },
-                        onCancelClick = { detailsScreenViewModel.doNotAddToFavorite(detailsScreenData.recipeEntity) },
+                        onCancelClick = { detailsScreenViewModel.doNotAddToFavorite(recipeData.recipeEntity) },
                         onDismiss = { detailsScreenViewModel.cancelFavoriteAlert() }
                     )
                         
@@ -607,7 +607,7 @@ fun NewDetailsScreen(
                                 println("1")
                                 withContext(Dispatchers.IO) {
                                     detailsScreenViewModel.confirmShowWriteReviewAlert(
-                                        detailsScreenData.recipeEntity
+                                        recipeData.recipeEntity
                                     )
                                 }
                                 println("8")
@@ -615,7 +615,7 @@ fun NewDetailsScreen(
                             }
 
                         },
-                        onCancelClick = { detailsScreenViewModel.doNotWriteReview(detailsScreenData.recipeEntity) },
+                        onCancelClick = { detailsScreenViewModel.doNotWriteReview(recipeData.recipeEntity) },
                         onDismiss = { detailsScreenViewModel.cancelShowWriteReviewAlert() }
                     )
                 }

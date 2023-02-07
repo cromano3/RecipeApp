@@ -48,10 +48,8 @@ import com.example.bearrecipebookapp.ui.components.AddRecipeCard
 import com.example.bearrecipebookapp.ui.components.BasicAlert
 import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.HomeScreenViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
@@ -60,7 +58,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun HomeScreen(
 //    triggerTutorialAlert: String,
-    onDetailsClick: () -> Unit,
+    onDetailsClick: (String) -> Unit,
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
     onMenuClick: (RecipeWithIngredients) -> Unit,
     onMenuRemovedClick: (RecipeWithIngredients) -> Unit,
@@ -228,13 +226,15 @@ fun HomeScreen(
 //
                                         onDetailsClick = {
 
-                                            /** main to IO coroutine */
-                                            coroutineScope.launch(Dispatchers.Main) {
-                                                withContext(Dispatchers.IO){
-                                                    homeScreenViewModel.setDetailsScreenTarget(shownRecipeList[index].recipeEntity.recipeName)
-                                                }
-                                                onDetailsClick()
-                                            }
+                                            onDetailsClick(shownRecipeList[index].recipeEntity.recipeName)
+
+//                                            /** main to IO coroutine */
+//                                            coroutineScope.launch(Dispatchers.Main) {
+//                                                withContext(Dispatchers.IO){
+//                                                    homeScreenViewModel.setDetailsScreenTarget(shownRecipeList[index].recipeEntity.recipeName)
+//                                                }
+//                                                onDetailsClick()
+//                                            }
 
                                         }
                                     )

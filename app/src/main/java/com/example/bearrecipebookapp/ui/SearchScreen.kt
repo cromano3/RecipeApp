@@ -38,14 +38,12 @@ import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.SearchScreenViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchScreen(
     onGoBackClick: () -> Unit,
-    onDetailsClick: () -> Unit,
+    onDetailsClick: (String) -> Unit,
     onFavoriteClick: (RecipeEntity) -> Unit,
     onMenuClick: (RecipeEntity) -> Unit,
 ){
@@ -257,14 +255,18 @@ fun SearchScreen(
                                     },
                                     onDetailsClick =
                                     {
-                                        /** main to IO coroutine */
-                                        coroutineScope.launch(Dispatchers.Main) {
-                                            withContext(Dispatchers.IO) {
-                                                searchScreenViewModel.setDetailsScreenTarget(results[index].recipeEntity.recipeName)
-                                            }
-                                            onDetailsClick()
-                                            focusManager.clearFocus()
-                                        }
+
+                                        focusManager.clearFocus()
+                                        onDetailsClick(results[index].recipeEntity.recipeName)
+
+//                                        /** main to IO coroutine */
+//                                        coroutineScope.launch(Dispatchers.Main) {
+//                                            withContext(Dispatchers.IO) {
+//                                                searchScreenViewModel.setDetailsScreenTarget(results[index].recipeEntity.recipeName)
+//                                            }
+//                                            onDetailsClick()
+//                                            focusManager.clearFocus()
+//                                        }
 
                                     },
                                 )

@@ -57,7 +57,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MenuScreen(
-    onDetailsClick: () -> Unit,
+    onDetailsClick: (String) -> Unit,
     onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onAddedToFavoriteFromAlertClick: (String) -> Unit,
     onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
@@ -126,13 +126,15 @@ fun MenuScreen(
                             onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(it) },
                             onDetailsClick = {
 
-                                /** main to IO coroutine */
-                                coroutineScope.launch(Dispatchers.Main) {
-                                    withContext(Dispatchers.IO){
-                                        menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
-                                    }
-                                    onDetailsClick()
-                                }
+                                onDetailsClick(it.recipeEntity.recipeName)
+
+//                                /** main to IO coroutine */
+//                                coroutineScope.launch(Dispatchers.Main) {
+//                                    withContext(Dispatchers.IO){
+//                                        menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
+//                                    }
+//                                    onDetailsClick()
+//                                }
 
 
                             }

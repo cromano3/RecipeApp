@@ -287,23 +287,33 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         }
     }
 
-    suspend fun confirmShowWriteReviewAlert(recipeEntity: RecipeEntity) {
+    fun confirmShowWriteReviewAlert() {
 
-        /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
-
-//        coroutineScope.launch(Dispatchers.IO) {
-
-            repository.cleanReviewTarget()
-            repository.setReviewTarget(recipeEntity.recipeName)
-
-            uiAlertState.update { currentState ->
-                currentState.copy(
-                    showLeaveReviewAlert = false
-                )
-            }
-//        }
+        uiAlertState.update { currentState ->
+            currentState.copy(
+                showLeaveReviewAlert = false
+            )
+        }
 
     }
+
+//    suspend fun confirmShowWriteReviewAlert(recipeEntity: RecipeEntity) {
+//
+//        /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
+//
+////        coroutineScope.launch(Dispatchers.IO) {
+//
+//            repository.cleanReviewTarget()
+//            repository.setReviewTarget(recipeEntity.recipeName)
+//
+//            uiAlertState.update { currentState ->
+//                currentState.copy(
+//                    showLeaveReviewAlert = false
+//                )
+//            }
+////        }
+//
+//    }
 
     fun doNotWriteReview(recipeEntity: RecipeEntity) {
 

@@ -62,11 +62,14 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructi
 import com.example.bearrecipebookapp.ui.*
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.ui.theme.Cabin
+import com.example.bearrecipebookapp.viewmodel.AppViewModel
 import com.example.bearrecipebookapp.viewmodel.TopBarViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MainActivity : ComponentActivity() {
@@ -93,6 +96,20 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BearRecipeApp(
 ){
+    val owner = LocalViewModelStoreOwner.current
+
+    owner?.let { viewModelStoreOwner ->
+        val appViewModel: AppViewModel = viewModel(
+            viewModelStoreOwner,
+            "AppViewModel",
+            AppViewModelFactory(
+                LocalContext.current.applicationContext
+                        as Application,
+            )
+        )
+
+
+    val appUiState by appViewModel.appUiState.collectAsState()
 
     val navController: NavHostController = rememberAnimatedNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -109,6 +126,7 @@ fun BearRecipeApp(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { BearAppTopBar(
+            detailsScreenData = appUiState.detailsScreenTarget,
             currentScreen = currentScreen,
             navController = navController,
             onHomeClick = {
@@ -165,6 +183,9 @@ fun BearRecipeApp(
             startDestination = "RecipeScreen",
 //            exitTransition = {fadeOut(animationSpec = tween(700))},
         ){
+
+            /** Profile Screen */
+
             composable(
                 route = "ProfileScreen",
                 enterTransition = {
@@ -176,7 +197,12 @@ fun BearRecipeApp(
                 },
             ){
                 ProfileScreen(
-                    onDetailsClick = { navController.navigate("DetailsScreen") },
+                    onDetailsClick = {
+                        coroutineScope.launch(Dispatchers.Main) {
+                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
+                            navController.navigate("DetailsScreen")
+                        }
+                                     },
 //                    { navController.navigate("DetailsScreen"){ popUpTo("ProfileScreen"){ inclusive = true } } },
                     onRemoveClick = {coroutineScope.launch{
                     if(it.recipeEntity.isFavorite == 1)
@@ -211,7 +237,7 @@ fun BearRecipeApp(
             composable(route = "AddRecipeScreen"){ AddRecipeScreen() }
 
 
-            /* Home Screen */
+            /** Home Screen */
 
             composable(route = "RecipeScreen",
                 enterTransition = {
@@ -238,15 +264,14 @@ fun BearRecipeApp(
                 }
             ){
 
-//                val triggerTutorialAlert = it.arguments?.getString("triggerTutorialAlert")
-
                 //Recipe Book Main Screen
                 HomeScreen(
-//                    triggerTutorialAlert = triggerTutorialAlert ?: "false",
                     onDetailsClick = {
-                        navController.navigate("DetailsScreen",
-//                            navOptions { popUpTo("DetailsScreen") { inclusive = true } }
-                        ) },
+                        coroutineScope.launch(Dispatchers.Main) {
+                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
+                            navController.navigate("DetailsScreen")
+                        }
+                         },
                     onFavoriteClick = {coroutineScope.launch{
                         if(it.recipeEntity.isFavorite == 1)
                             scaffoldState.snackbarHostState.showSnackbar(
@@ -273,6 +298,8 @@ fun BearRecipeApp(
                 )
             }
 
+            /** Weekly Menu Screen */
+
             composable(route = "WeeklyMenuScreen",
                 enterTransition = {
                     when (initialState.destination.route){
@@ -297,7 +324,12 @@ fun BearRecipeApp(
             ){
                 //Weekly menu screen
                 MenuScreen(
-                    onDetailsClick = { navController.navigate("DetailsScreen")},
+                    onDetailsClick = {
+                        coroutineScope.launch(Dispatchers.Main) {
+                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
+                            navController.navigate("DetailsScreen")
+                        }
+                                     },
                     onFavoriteClick = {coroutineScope.launch{
                         if(it.recipeEntity.isFavorite == 1)
                             scaffoldState.snackbarHostState.showSnackbar(
@@ -356,6 +388,8 @@ fun BearRecipeApp(
                 )
             }
 
+            /** Shopping List Screen */
+
             composable(
                 route = "ShoppingScreen",
                 enterTransition = {
@@ -379,7 +413,12 @@ fun BearRecipeApp(
                     }
                 },){
                 ShoppingListScreen(
-                    onDetailsClick = { navController.navigate("DetailsScreen") },
+                    onDetailsClick = {
+                        coroutineScope.launch(Dispatchers.Main) {
+                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
+                            navController.navigate("DetailsScreen")
+                        }
+                                     },
                     onSystemBackClick = {
                         navController.navigate("RecipeScreen"){
                             popUpTo(navController.graph.findStartDestination().id)
@@ -409,30 +448,15 @@ fun BearRecipeApp(
                 )
             }
 
+            /** Details Screen */
+
             composable(
                 route = "DetailsScreen",
-                enterTransition = { fadeIn(animationSpec = tween(700))
-//                    when (initialState.destination.route){
-//                        "RecipeScreen" -> fadeIn(animationSpec = tween(700))
-//                        "WeeklyMenuScreen" -> fadeIn(animationSpec = tween(700))
-//                        "SearchScreen" -> fadeIn(animationSpec = tween(700))
-//                        "ShoppingScreen" -> fadeIn(animationSpec = tween(700))
-//                        "ProfileScreen" -> fadeIn(animationSpec = tween(700))
-//                        else -> null
-//                    }
-                },
-                exitTransition = {
-                    fadeOut(animationSpec = tween(700))
-//                    when (targetState.destination.route) {
-//                        "RecipeScreen" -> fadeOut(animationSpec = tween(700))
-//                        "WeeklyMenuScreen" -> fadeOut(animationSpec = tween(700))
-//                        "SearchScreen" -> fadeOut(animationSpec = tween(700))
-//                        "ShoppingScreen" -> fadeOut(animationSpec = tween(700))
-//                        "ProfileScreen" -> fadeOut(animationSpec = tween(700))
-//                        else -> null
-//                    }
-                },) {
+                enterTransition = { fadeIn(animationSpec = tween(700)) },
+                exitTransition = { fadeOut(animationSpec = tween(700)) },
+            ) {
                     NewDetailsScreen(
+                        recipeData = appUiState.detailsScreenTarget,
                         onGoBackClick = { navController.popBackStack() },
                         onMenuAddClick = {
                             coroutineScope.launch {
@@ -484,6 +508,8 @@ fun BearRecipeApp(
 
             }
 
+            /** Search Screen */
+
             composable(
                 route = "SearchScreen",
                 enterTransition = {
@@ -501,7 +527,12 @@ fun BearRecipeApp(
             ){
                 SearchScreen(
                     onGoBackClick = { navController.popBackStack() },
-                    onDetailsClick = { navController.navigate("DetailsScreen") },
+                    onDetailsClick = {
+                        coroutineScope.launch(Dispatchers.Main) {
+                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
+                            navController.navigate("DetailsScreen")
+                        }
+                                     },
                     onFavoriteClick = {coroutineScope.launch{
                         if(it.isFavorite == 1)
                             scaffoldState.snackbarHostState.showSnackbar(
@@ -536,6 +567,7 @@ fun BearRecipeApp(
 
         }
     }
+}
 }
 
 
@@ -639,6 +671,7 @@ fun BearAppBottomBar(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BearAppTopBar(
+    detailsScreenData: RecipeWithIngredientsAndInstructions,
     currentScreen: String,
     navController: NavHostController,
     onHomeClick: () -> Unit,
@@ -660,7 +693,7 @@ fun BearAppTopBar(
             )
         )
 
-        val detailsScreenData by topBarViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
+//        val detailsScreenData by topBarViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
         val uiState by topBarViewModel.uiState.collectAsState()
 
 //        val textFieldValue by topBarViewModel.textFieldValue.observeAsState()
@@ -1213,6 +1246,16 @@ class TopBarViewModelFactory(
     }
 }
 
+class AppViewModelFactory(
+    val application: Application,
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+
+        return AppViewModel(
+            application,
+        ) as T
+    }
+}
 //
 //@Preview(showBackground = true, showSystemUi = true)
 //@Composable

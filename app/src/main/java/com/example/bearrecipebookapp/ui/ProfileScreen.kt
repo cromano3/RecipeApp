@@ -55,7 +55,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun ProfileScreen(
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
-    onDetailsClick: () -> Unit,
+    onDetailsClick: (String) -> Unit,
 ) {
 
     val owner = LocalViewModelStoreOwner.current
@@ -862,15 +862,16 @@ fun ProfileScreen(
                                 onDetailsClick = {
 
                                     profileScreenViewModel.cancelAnimationStack()
+                                    onDetailsClick(it.recipeEntity.recipeName)
 
-                                    /** main to IO coroutine */
-                                    coroutineScope.launch(Dispatchers.Main) {
-                                        withContext(Dispatchers.IO) {
-                                            profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
-
-                                        }
-                                        onDetailsClick()
-                                    }
+//                                    /** main to IO coroutine */
+//                                    coroutineScope.launch(Dispatchers.Main) {
+//                                        withContext(Dispatchers.IO) {
+//                                            profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
+//
+//                                        }
+//                                        onDetailsClick()
+//                                    }
 
                                 }
                             )
@@ -913,14 +914,15 @@ fun ProfileScreen(
                                 recipeWithIngredients = cookedData[index],
                                 onDetailsClick = {
                                     profileScreenViewModel.cancelAnimationStack()
+                                    onDetailsClick(cookedData[index].recipeEntity.recipeName)
 
-                                    /** main to IO coroutine */
-                                    coroutineScope.launch(Dispatchers.Main) {
-                                        withContext(Dispatchers.IO) {
-                                            profileScreenViewModel.setDetailsScreenTarget(cookedData[index].recipeEntity.recipeName)
-                                        }
-                                        onDetailsClick()
-                                    }
+//                                    /** main to IO coroutine */
+//                                    coroutineScope.launch(Dispatchers.Main) {
+//                                        withContext(Dispatchers.IO) {
+//                                            profileScreenViewModel.setDetailsScreenTarget(cookedData[index].recipeEntity.recipeName)
+//                                        }
+//                                        onDetailsClick()
+//                                    }
                                 }
                             )
                         }
