@@ -11,8 +11,10 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.ThumbUp
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,10 +29,19 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ReviewWidget(){
+
+    var expanded by remember { mutableStateOf(false) }
+//    val modifier = if(expanded) Modifier.wrapContentHeight() else Modifier.height(280.dp)
+
+    val modifier =Modifier.wrapContentHeight()
+
+    val reviewText = "This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This "
+    val expandable = reviewText.length > 160
+    val surfaceShape = if(expandable) RoundedCornerShape(10.dp, 10.dp, 25.dp, 25.dp) else RoundedCornerShape(10.dp)
+
     Surface(
-        Modifier
+        modifier
             .fillMaxWidth()
-            .height(280.dp)
             .padding(16.dp)
             .border(
                 width = 2.dp,
@@ -38,9 +49,9 @@ fun ReviewWidget(){
                     colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33),),
                     tileMode = TileMode.Mirror
                 )),
-                shape = RoundedCornerShape(0)
+                shape = surfaceShape
             ),
-        shape = RoundedCornerShape(0),
+        shape = surfaceShape,
         color = Color(0xFF682300)
 //        Color(0xFFb15f33)
         ,
@@ -81,7 +92,8 @@ fun ReviewWidget(){
                 Column(
                     Modifier
                         .padding(start = 12.dp)
-                        .fillMaxHeight()){
+                        .fillMaxHeight()
+                ){
                     Text(
                         "Chris",
                         color = Color(0xFFd8af84),
@@ -92,8 +104,42 @@ fun ReviewWidget(){
                         color = Color(0xFFd8af84),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Normal)
+                }
 
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(0.dp)){
 
+                    Surface(
+                        Modifier
+                            .padding(16.dp)
+                            .align(Alignment.CenterEnd)
+                            .wrapContentSize()
+                            .clickable { },
+                        color = Color.Transparent
+                    ) {
+                        Row(Modifier.wrapContentSize(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                if (false) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
+                                contentDescription = null,
+                                modifier = Modifier.size(30.dp),
+                                tint = Color(0xFFd8af84)
+                            )
+
+                            Spacer(Modifier.width(6.dp))
+
+                            Text(
+                                "24",
+                                color = Color(0xFFd8af84),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
                 }
 
             }
@@ -116,48 +162,61 @@ fun ReviewWidget(){
 
             Column(
                 Modifier
-                    .fillMaxSize()
+                    .wrapContentSize()
                     .padding(12.dp)
+                    .clickable { expanded = !expanded }
             ) {
                 Text(
-                    text = "limit this to 160 and everything else is ...More with more clickable",
+                    text = if(!expandable || (expandable && expanded)) reviewText else reviewText.substring(0, 160) + "...",
                     color = Color(0xFFd8af84),
                 )
-
             }
-        }
 
-        Box(Modifier.fillMaxSize().padding(0.dp)){
-
+            @Suppress("KotlinConstantConditions")
+            if(expandable) {
+                Spacer(
+                    Modifier
+                        .height(2.dp)
+                        .fillMaxWidth()
+                        .border(
+                            width = 2.dp,
+                            brush = (Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFFd8af84),
+                                    Color(0xFFb15f33)
+                                ),
+                                tileMode = TileMode.Mirror
+                            )),
+                            shape = RectangleShape
+                        ),
+                )
                 Surface(
                     Modifier
-                        .padding(16.dp)
-                        .align(Alignment.BottomStart)
-                        .clickable { },
-                    color = Color.Transparent
-                ) {
-                    Row(Modifier.wrapContentSize(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                        .fillMaxWidth()
+                        .height(20.dp)
+                        .clickable { expanded = !expanded }
+                ){
+                    Box(
+                        Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ){
                         Icon(
-                            if (false) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
+                            if(!expanded) Icons.Outlined.ExpandMore else Icons.Outlined.ExpandLess,
                             contentDescription = null,
-                            modifier = Modifier.size(30.dp),
-                            tint = Color(0xFFd8af84)
+                            Modifier.size(32.dp),
+                            tint = Color(0xFF682300)
                         )
+                    }
 
-                        Spacer(Modifier.width(6.dp))
-
-                        Text(
-                            "24",
-                            color = Color(0xFFd8af84),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
                 }
             }
+
+
+            
         }
+
+
     }
 }
 
