@@ -15,16 +15,16 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
     var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions> = detailsScreenDao.getData()
 
 
-    fun removeFromMenu(recipeName: String){
-        coroutineScope.launch(Dispatchers.IO) {
+    suspend fun removeFromMenu(recipeName: String){
+
             detailsScreenDao.removeFromMenu(recipeName)
-        }
+
     }
 
-    fun addToMenu(recipeName: String){
-        coroutineScope.launch(Dispatchers.IO) {
-            detailsScreenDao.addToMenu(recipeName)
-        }
+    suspend fun addToMenu(recipeName: String){
+
+        detailsScreenDao.addToMenu(recipeName)
+
     }
 
     fun updateMenu(recipeName: String, onMenuStatus: Int) {
@@ -39,16 +39,16 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
         }
     }
 
-    fun updateQuantityNeeded(ingredientName: String, quantityNeeded: Int){
-        coroutineScope.launch(Dispatchers.IO) {
+    suspend fun updateQuantityNeeded(ingredientName: String, quantityNeeded: Int){
+
             detailsScreenDao.updateQuantityNeeded(ingredientName, quantityNeeded)
-        }
+
     }
 
-    fun setIngredientQuantityOwned(ingredientEntity: IngredientEntity, quantityOwned: Int){
-        coroutineScope.launch(Dispatchers.IO) {
+    suspend fun setIngredientQuantityOwned(ingredientEntity: IngredientEntity, quantityOwned: Int){
+
             detailsScreenDao.setIngredientQuantityOwned(ingredientEntity.ingredientName, quantityOwned)
-        }
+
     }
 
     fun addCooked(recipe: RecipeWithIngredientsAndInstructions){

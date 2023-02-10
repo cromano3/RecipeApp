@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "135954228549",
+    "project_id": "bearrecipebookapp",
+    "storage_bucket": "bearrecipebookapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135954228549:android:cd79104c6ee67b38178a2c",
+        "android_client_info": {
+          "package_name": "com.example.bearrecipebookapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135954228549-67h0vua6e19o9erkhbkclh0e3fdrun59.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsK-OyiZ8TAvStoYC6rNfw80uBKKorVJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "135954228549-67h0vua6e19o9erkhbkclh0e3fdrun59.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

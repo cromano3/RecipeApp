@@ -60,6 +60,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.*
+import com.example.bearrecipebookapp.ui.components.favoriteSnackBar
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.AppViewModel
@@ -83,8 +84,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ){
                         BearRecipeApp()
-
-
                 }
             }
         }
@@ -107,7 +106,6 @@ fun BearRecipeApp(
                         as Application,
             )
         )
-
 
     val appUiState by appViewModel.appUiState.collectAsState()
 
@@ -146,16 +144,10 @@ fun BearRecipeApp(
             onProfileClick = { navController.navigate("ProfileScreen") },
             onSearchClick = { navController.navigate("SearchScreen") },
             onFavoriteClick =
-            {coroutineScope.launch{
-                if(it.recipeEntity.isFavorite == 1)
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
-                        duration = SnackbarDuration.Short)
-                else if(it.recipeEntity.isFavorite == 0)
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
-                        duration = SnackbarDuration.Short)
-            }},
+            {
+                favoriteSnackBar(it.recipeEntity, scaffoldState, coroutineScope)
+                appViewModel.toggleDetailsScreenUiFavorite()
+            },
         ) },
         bottomBar = { BearAppBottomBar(navController = navController) },
 
@@ -173,54 +165,34 @@ fun BearRecipeApp(
                     )
                 }
             }
-//                modifier = Modifier.align(Alignment.BottomCenter),
-//                hostState = snackbarHostState,
+
 
         }
     ){
         AnimatedNavHost(
             navController = navController,
             startDestination = "RecipeScreen",
-//            exitTransition = {fadeOut(animationSpec = tween(700))},
         ){
 
             /** Profile Screen */
-
             composable(
                 route = "ProfileScreen",
-                enterTransition = {
-                    fadeIn(animationSpec = tween(700))
-                },
-                exitTransition = {
-                    fadeOut(animationSpec = tween(700))
-
-                },
+                enterTransition = { fadeIn(animationSpec = tween(700)) },
+                exitTransition = { fadeOut(animationSpec = tween(700)) },
             ){
                 ProfileScreen(
-                    onDetailsClick = {
+                    onDetailsClick =
+                    {
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
                             navController.navigate("DetailsScreen")
                         }
-                                     },
+                    },
 //                    { navController.navigate("DetailsScreen"){ popUpTo("ProfileScreen"){ inclusive = true } } },
-                    onRemoveClick = {coroutineScope.launch{
-                    if(it.recipeEntity.isFavorite == 1)
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
-                            duration = SnackbarDuration.Short)
-                    else if(it.recipeEntity.isFavorite == 0)
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
-                            duration = SnackbarDuration.Short)
-                }},)
+                    onRemoveClick = { favoriteSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },)
             }
 
-
-
-
             /**Comment Screen*/
-
             composable(
                 route = "CommentScreen",
                 enterTransition = { fadeIn(animationSpec = tween(700)) },
@@ -233,24 +205,16 @@ fun BearRecipeApp(
                 )
             }
 
-
-
             /** Add Recipe Screen */
-
             composable(route = "AddRecipeScreen"){ AddRecipeScreen() }
 
-
-
             /** Home Screen */
-
             composable(route = "RecipeScreen",
                 enterTransition = {
                     when (initialState.destination.route){
                         "WeeklyMenuScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
                         "ShoppingScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
                         "SearchScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Up, animationSpec = tween(700))
-                        "DetailsScreen" -> fadeIn(animationSpec = tween(700))
-                        "ProfileScreen" -> fadeIn(animationSpec = tween(700))
                         else -> fadeIn(animationSpec = tween(700))
                     }
                 },
@@ -259,10 +223,6 @@ fun BearRecipeApp(
                         "WeeklyMenuScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
                         "ShoppingScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
                         "SearchScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Down, animationSpec = tween(700))
-                        "DetailsScreen" -> fadeOut(animationSpec = tween(700))
-                        "ProfileScreen" -> fadeOut(animationSpec = tween(700))
-                        "CommentScreen" -> fadeOut(animationSpec = tween(700))
-                        "AddRecipeScreen" -> fadeOut(animationSpec = tween(700))
                         else -> fadeOut(animationSpec = tween(700))
                     }
                 }
@@ -473,6 +433,7 @@ fun BearRecipeApp(
                                     duration = SnackbarDuration.Short
                                 )
                             }
+                            appViewModel.updateDetailsScreenUiOnMenuStatus()
                         },
                         onMenuRemoveClick = {
                             coroutineScope.launch {
@@ -481,20 +442,7 @@ fun BearRecipeApp(
                                     duration = SnackbarDuration.Short
                                 )
                             }
-                        },
-                        onFavoriteClick = {
-                            coroutineScope.launch {
-                                if (it.recipeEntity.isFavorite == 1)
-                                    scaffoldState.snackbarHostState.showSnackbar(
-                                        message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
-                                        duration = SnackbarDuration.Short
-                                    )
-                                else if (it.recipeEntity.isFavorite == 0)
-                                    scaffoldState.snackbarHostState.showSnackbar(
-                                        message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
-                                        duration = SnackbarDuration.Short
-                                    )
-                            }
+                            appViewModel.updateDetailsScreenUiOnMenuStatus()
                         },
                         onCompleteClick = {
                             coroutineScope.launch {
@@ -869,6 +817,7 @@ fun BearAppTopBar(
 
                 showIcon2 = true
 
+                println(detailsScreenData.recipeEntity.isFavorite)
                 icon2 = if (detailsScreenData.recipeEntity.isFavorite == 0) {
                     Icons.Outlined.FavoriteBorder
 

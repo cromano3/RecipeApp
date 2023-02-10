@@ -39,11 +39,17 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         repository.cleanIngredients()
         repository.cleanShoppingFilters()
 
-        for(x in 0 until recipe.ingredientsList.size){
-            repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded - 1)
-            repository.setIngredientQuantityOwned(recipe.ingredientsList[x], 0)
+        coroutineScope.launch(Dispatchers.IO) {
+
+            repository.removeFromMenu(recipe.recipeEntity.recipeName)
+
+            for(x in 0 until recipe.ingredientsList.size){
+                repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded - 1)
+                repository.setIngredientQuantityOwned(recipe.ingredientsList[x], 0)
+            }
+
         }
-        repository.removeFromMenu(recipe.recipeEntity.recipeName)
+
     }
 
     fun addToMenu(recipe: RecipeWithIngredientsAndInstructions){
@@ -51,10 +57,15 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
         repository.cleanIngredients()
         repository.cleanShoppingFilters()
 
-        for(x in 0 until recipe.ingredientsList.size){
-            repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded + 1)
+        coroutineScope.launch(Dispatchers.IO) {
+
+            repository.addToMenu(recipe.recipeEntity.recipeName)
+
+            for(x in 0 until recipe.ingredientsList.size){
+                repository.updateQuantityNeeded(recipe.ingredientsList[x].ingredientName, recipe.ingredientsList[x].quantityNeeded + 1)
+            }
         }
-        repository.addToMenu(recipe.recipeEntity.recipeName)
+
     }
 
     fun addCooked(recipe: RecipeWithIngredientsAndInstructions){

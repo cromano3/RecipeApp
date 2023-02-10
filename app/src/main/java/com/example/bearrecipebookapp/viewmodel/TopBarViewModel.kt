@@ -59,7 +59,7 @@ class TopBarViewModel(application: Application, ): ViewModel() {
         }
     }
 
-    fun toggleFavorite(recipe: RecipeWithIngredientsAndInstructions){
+    fun  toggleFavorite(recipe: RecipeWithIngredientsAndInstructions){
         if(recipe.recipeEntity.isFavorite == 0){
             repository.updateFavorite(recipe.recipeEntity.recipeName, 1)
         }

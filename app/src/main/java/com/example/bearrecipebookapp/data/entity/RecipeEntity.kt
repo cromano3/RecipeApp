@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "recipe_table")
-class RecipeEntity(
+data class RecipeEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "recipe_name")
     val recipeName: String = "",
@@ -32,7 +32,7 @@ class RecipeEntity(
     var isShoppingFilter: Int = 0,
 
     @ColumnInfo(name = "is_favorite")
-    var isFavorite: Int = 0,
+    val isFavorite: Int = 0,
 
     @ColumnInfo(name = "is_search_result")
     var isSearchResult: Int = 0,

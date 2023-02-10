@@ -48,7 +48,7 @@ fun NewDetailsScreen(
     onGoBackClick: () -> Unit,
     onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
-    onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+//    onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     showAddedToFavoritesSnackBarMessage: (recipeName: String) -> Unit,
     navigateToCommentScreen: (String) -> Unit,
@@ -241,9 +241,7 @@ fun NewDetailsScreen(
                                     onClick =
                                     {
                                         if (selected) {
-                                            detailsScreenViewModel.triggerRemoveAlert(
-                                                recipeData
-                                            )
+                                            detailsScreenViewModel.triggerRemoveAlert(recipeData)
                                         } else {
                                             detailsScreenViewModel.addToMenu(recipeData)
                                             onMenuAddClick(recipeData)
@@ -496,9 +494,9 @@ fun NewDetailsScreen(
                         cancelButtonText = "Cancel",
                         onConfirmClick =
                         {
-                            onMenuRemoveClick(recipeData)
                             detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
                             detailsScreenViewModel.cancelRemoveAlert()
+                            onMenuRemoveClick(recipeData)
                         },
                         onCancelClick = { detailsScreenViewModel.cancelRemoveAlert() },
                         onDismiss = {}
