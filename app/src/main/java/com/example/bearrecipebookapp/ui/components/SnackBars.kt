@@ -6,24 +6,55 @@ import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-fun addMenuSnackBar(){
+fun addMenuSnackBar(recipe: RecipeEntity, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope){
+    coroutineScope.launch {
+        scaffoldState.snackbarHostState.showSnackbar(
+            message = "Added " + recipe.recipeName + " to the Menu.",
+            duration = SnackbarDuration.Short
+        )
+    }
+}
+
+fun removeMenuSnackBar(recipe: RecipeEntity, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope){
+    coroutineScope.launch {
+        scaffoldState.snackbarHostState.showSnackbar(
+            message = "Removed " + recipe.recipeName + " from the Menu.",
+            duration = SnackbarDuration.Short
+        )
+    }
 
 }
 
-fun removeMenuSnackBar(){
+fun menuSnackBar(recipe: RecipeEntity, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope){
+    coroutineScope.launch{
+        if(recipe.onMenu == 1)
+            scaffoldState.snackbarHostState.showSnackbar(
+                message = "Removed " + recipe.recipeName + " from Menu.",
+                duration = SnackbarDuration.Short)
+        else if(recipe.onMenu == 0)
+            scaffoldState.snackbarHostState.showSnackbar(
+                message = "Added " + recipe.recipeName + " to Menu.",
+                duration = SnackbarDuration.Short)
+    }
 
 }
 
-fun menuSnackBar(){
+fun addFavoriteSnackBar(recipe: RecipeEntity, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope){
+    coroutineScope.launch{
+        scaffoldState.snackbarHostState.showSnackbar(
+            message = "Added ${recipe.recipeName} to Favorites.",
+            duration = SnackbarDuration.Short)
+    }
 
 }
 
-fun addFavoriteSnackBar(){
+fun removeFavoriteSnackBar(recipe: RecipeEntity, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope){
+    coroutineScope.launch{
+        scaffoldState.snackbarHostState.showSnackbar(
+            message = "Removed " + recipe.recipeName + " from the Menu.",
+            duration = SnackbarDuration.Short)
 
-}
-
-fun removeFavoriteSnackBar(){
-
+    }
 }
 
 fun favoriteSnackBar(recipe: RecipeEntity, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope){
@@ -36,5 +67,13 @@ fun favoriteSnackBar(recipe: RecipeEntity, scaffoldState: ScaffoldState, corouti
             scaffoldState.snackbarHostState.showSnackbar(
                 message = "Added " + recipe.recipeName + " to Favorites.",
                 duration = SnackbarDuration.Short)
+    }
+}
+
+fun completedCookingSnackBar(recipe: RecipeEntity, scaffoldState: ScaffoldState, coroutineScope: CoroutineScope){
+    coroutineScope.launch{
+        scaffoldState.snackbarHostState.showSnackbar(
+            message = "Completed cooking " + recipe.recipeName + "!!",
+            duration = SnackbarDuration.Short)
     }
 }

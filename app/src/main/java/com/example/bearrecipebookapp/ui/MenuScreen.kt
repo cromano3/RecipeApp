@@ -43,6 +43,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.AnnotatedStringAlert
 import com.example.bearrecipebookapp.ui.components.BasicAlert
@@ -57,7 +58,7 @@ import kotlinx.coroutines.Dispatchers
 fun MenuScreen(
     onDetailsClick: (String) -> Unit,
     onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
-    onAddedToFavoriteFromAlertClick: (String) -> Unit,
+    onAddedToFavoriteFromAlertClick: (RecipeEntity) -> Unit,
     onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onConfirmWriteReviewClick: (String) -> Unit,
@@ -324,7 +325,7 @@ fun MenuScreen(
                         onConfirmClick =
                         {
                             menuScreenViewModel.addToFavorite(uiAlertState.recipe.recipeEntity)
-                            onAddedToFavoriteFromAlertClick(uiAlertState.recipe.recipeEntity.recipeName)
+                            onAddedToFavoriteFromAlertClick(uiAlertState.recipe.recipeEntity)
                         },
                         onCancelClick = { menuScreenViewModel.doNotAddToFavorite(uiAlertState.recipe.recipeEntity) },
                         onDismiss = { menuScreenViewModel.cancelFavoriteAlert() }

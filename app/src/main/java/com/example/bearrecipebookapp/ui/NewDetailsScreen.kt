@@ -34,6 +34,7 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.*
 import com.example.bearrecipebookapp.viewmodel.DetailsScreenViewModel
@@ -45,17 +46,17 @@ import kotlinx.coroutines.Dispatchers
 fun NewDetailsScreen(
     //recipeName: String,
     recipeData: RecipeWithIngredientsAndInstructions,
-    onGoBackClick: () -> Unit,
+//    onGoBackClick: () -> Unit,
     onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
 //    onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
 //    onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onIMadeThisClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onFinishedCookingClick: (RecipeWithIngredientsAndInstructions) -> Unit,
-    showAddedToFavoritesSnackBarMessage: (recipeName: String) -> Unit,
+    showAddedToFavoritesSnackBarMessage: (RecipeEntity) -> Unit,
     navigateToCommentScreen: (String) -> Unit,
 
-) {
+    ) {
 
     val owner = LocalViewModelStoreOwner.current
 
@@ -582,7 +583,7 @@ fun NewDetailsScreen(
                         onConfirmClick =
                         {
                             detailsScreenViewModel.addToFavorite(recipeData.recipeEntity)
-                            showAddedToFavoritesSnackBarMessage(recipeData.recipeEntity.recipeName)
+                            showAddedToFavoritesSnackBarMessage(recipeData.recipeEntity)
                         },
                         onCancelClick = { detailsScreenViewModel.doNotAddToFavorite(recipeData.recipeEntity) },
                         onDismiss = { detailsScreenViewModel.cancelFavoriteAlert() }

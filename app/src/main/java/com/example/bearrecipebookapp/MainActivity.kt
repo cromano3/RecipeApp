@@ -60,7 +60,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.*
-import com.example.bearrecipebookapp.ui.components.favoriteSnackBar
+import com.example.bearrecipebookapp.ui.components.*
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
 import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.AppViewModel
@@ -235,54 +235,28 @@ fun BearRecipeApp(
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
                             navController.navigate("DetailsScreen")
                         }
-                         },
-                    onFavoriteClick = {coroutineScope.launch{
-                        if(it.recipeEntity.isFavorite == 1)
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
-                                duration = SnackbarDuration.Short)
-                        else if(it.recipeEntity.isFavorite == 0)
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
-                                duration = SnackbarDuration.Short)
-                    }},
-                    onMenuClick = {coroutineScope.launch {
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            message = "Added " + it.recipeEntity.recipeName + " to the Menu.",
-                            duration = SnackbarDuration.Short
-                        )
-                    }},
-                    onMenuRemovedClick = {coroutineScope.launch {
-                        scaffoldState.snackbarHostState.showSnackbar(
-                            message = "Removed " + it.recipeEntity.recipeName + " from the Menu.",
-                            duration = SnackbarDuration.Short
-                        )
-                    }},
+                    },
+                    onFavoriteClick = { favoriteSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },
+                    onMenuClick = { addMenuSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },
+                    onMenuRemovedClick = { removeMenuSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },
                     onCreateRecipeClick = {navController.navigate("AddRecipeScreen")}
                 )
             }
 
             /** Weekly Menu Screen */
-
             composable(route = "WeeklyMenuScreen",
                 enterTransition = {
                     when (initialState.destination.route){
                         "RecipeScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
                         "ShoppingScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
-                        "SearchScreen" -> fadeIn(animationSpec = tween(700))
-                        "DetailsScreen" -> fadeIn(animationSpec = tween(700))
-                        "ProfileScreen" -> fadeIn(animationSpec = tween(700))
-                        else -> null
+                        else -> fadeIn(animationSpec = tween(700))
                     }
                 },
                 exitTransition = {
                     when (targetState.destination.route) {
                         "RecipeScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
                         "ShoppingScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
-                        "SearchScreen" -> fadeOut(animationSpec = tween(700))
-                        "DetailsScreen" -> fadeOut(animationSpec = tween(700))
-                        "ProfileScreen" -> fadeOut(animationSpec = tween(700))
-                        else -> null
+                        else -> fadeOut(animationSpec = tween(700))
                     }
                 },
             ){
@@ -293,39 +267,15 @@ fun BearRecipeApp(
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
                             navController.navigate("DetailsScreen")
                         }
-                                     },
-                    onFavoriteClick = {coroutineScope.launch{
-                        if(it.recipeEntity.isFavorite == 1)
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Removed " + it.recipeEntity.recipeName + " from Favorites.",
-                                duration = SnackbarDuration.Short)
-                        else if(it.recipeEntity.isFavorite == 0)
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Added " + it.recipeEntity.recipeName + " to Favorites.",
-                                duration = SnackbarDuration.Short)
-                    }},
-                    onAddedToFavoriteFromAlertClick = {coroutineScope.launch{
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Added $it to Favorites.",
-                                duration = SnackbarDuration.Short)
-                    }},
-                    onRemoveClick = {coroutineScope.launch{
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Removed " + it.recipeEntity.recipeName + " from the Menu.",
-                                duration = SnackbarDuration.Short)
-
-                    }},
-                    onCompleteClick = {coroutineScope.launch{
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Completed cooking " + it.recipeEntity.recipeName + "!!",
-                                duration = SnackbarDuration.Short)
-                    }},
+                     },
+                    onFavoriteClick = { favoriteSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },
+                    onAddedToFavoriteFromAlertClick = { addFavoriteSnackBar(it, scaffoldState, coroutineScope) },
+                    onRemoveClick = { removeFavoriteSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },
+                    onCompleteClick = { completedCookingSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },
                     onSystemBackClick = {
                         navController.navigate("RecipeScreen"){
-
                             popUpTo(navController.graph.findStartDestination().id)
                             restoreState = true
-
                         }
                     },
                     onConfirmWriteReviewClick = {
@@ -334,15 +284,12 @@ fun BearRecipeApp(
                             navController.navigate("CommentScreen") }
                         },
                     onAddRecipeClick = {
-
                         navController.navigate("RecipeScreen"){
-
                             popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
                             }
                             launchSingleTop = true
                             restoreState = true
-
                         }
 
                         val backStackEntry = navController.currentBackStackEntry
@@ -357,36 +304,30 @@ fun BearRecipeApp(
             }
 
             /** Shopping List Screen */
-
             composable(
                 route = "ShoppingScreen",
                 enterTransition = {
                     when (initialState.destination.route){
                         "RecipeScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
                         "WeeklyMenuScreen" -> slideIntoContainer(AnimatedContentScope.SlideDirection.Left, animationSpec = tween(700))
-                        "SearchScreen" -> fadeIn(animationSpec = tween(700))
-                        "DetailsScreen" -> fadeIn(animationSpec = tween(700))
-                        "ProfileScreen" -> fadeIn(animationSpec = tween(700))
-                        else -> null
+                        else -> fadeIn(animationSpec = tween(700))
                     }
                 },
                 exitTransition = {
                     when (targetState.destination.route) {
                         "RecipeScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
                         "WeeklyMenuScreen" -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(700))
-                        "SearchScreen" -> fadeOut(animationSpec = tween(700))
-                        "DetailsScreen" -> fadeOut(animationSpec = tween(700))
-                        "ProfileScreen" -> fadeOut(animationSpec = tween(700))
-                        else -> null
+                        else -> fadeOut(animationSpec = tween(700))
                     }
-                },){
+                }
+            ){
                 ShoppingListScreen(
                     onDetailsClick = {
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
                             navController.navigate("DetailsScreen")
                         }
-                                     },
+                     },
                     onSystemBackClick = {
                         navController.navigate("RecipeScreen"){
                             popUpTo(navController.graph.findStartDestination().id)
@@ -394,7 +335,6 @@ fun BearRecipeApp(
                         }
                     },
                     onAddRecipeClick = {
-
                         navController.navigate("RecipeScreen"){
 
                             popUpTo(navController.graph.findStartDestination().id) {
@@ -411,13 +351,11 @@ fun BearRecipeApp(
                         if(currentRoute == "SearchScreen") {
                             navController.popBackStack()
                         }
-
                     }
                 )
             }
 
             /** Details Screen */
-
             composable(
                 route = "DetailsScreen",
                 enterTransition = { fadeIn(animationSpec = tween(700)) },
@@ -425,66 +363,30 @@ fun BearRecipeApp(
             ) {
                     NewDetailsScreen(
                         recipeData = appUiState.detailsScreenTarget,
-                        onGoBackClick = { navController.popBackStack() },
+//                        onGoBackClick = { navController.popBackStack() },
                         onMenuAddClick = {
                             appViewModel.updateDetailsScreenUiOnMenuStatus()
-
-                            coroutineScope.launch {
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    message = "Added " + it.recipeEntity.recipeName + " to the Menu.",
-                                    duration = SnackbarDuration.Short
-                                )
-                            }
-
+                            addMenuSnackBar(it.recipeEntity, scaffoldState, coroutineScope)
                         },
                         onMenuRemoveClick = {
                             appViewModel.updateDetailsScreenUiOnMenuStatus()
-
-                            coroutineScope.launch {
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    message = "Removed " + it.recipeEntity.recipeName + " from the Menu.",
-                                    duration = SnackbarDuration.Short
-                                )
-                            }
-
+                            removeMenuSnackBar(it.recipeEntity, scaffoldState, coroutineScope)
                         },
                         onFinishedCookingClick = {
                             appViewModel.updateDetailsScreenUiOnMenuStatus()
-
-                            coroutineScope.launch {
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    message = "Completed cooking " + it.recipeEntity.recipeName + "!!",
-                                    duration = SnackbarDuration.Short
-                                )
-                            }
+                            completedCookingSnackBar(it.recipeEntity, scaffoldState, coroutineScope)
                         },
-                        onIMadeThisClick = {
-                            coroutineScope.launch {
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    message = "Completed cooking " + it.recipeEntity.recipeName + "!!",
-                                    duration = SnackbarDuration.Short
-                                )
-                            }
-                        },
-
-                        showAddedToFavoritesSnackBarMessage = {
-                            coroutineScope.launch{
-                                scaffoldState.snackbarHostState.showSnackbar(
-                                    message = "Added $it to Favorites.",
-                                    duration = SnackbarDuration.Short)
-                            }
-                        },
+                        onIMadeThisClick = { completedCookingSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },
+                        showAddedToFavoritesSnackBarMessage = { addFavoriteSnackBar(it, scaffoldState, coroutineScope) },
                         navigateToCommentScreen = {
                             coroutineScope.launch(Dispatchers.Main) {
                                 withContext(Dispatchers.IO){appViewModel.setupReviewScreen(it)}
                                 navController.navigate("CommentScreen") }
                         },
                     )
-
             }
 
             /** Search Screen */
-
             composable(
                 route = "SearchScreen",
                 enterTransition = {
@@ -508,39 +410,13 @@ fun BearRecipeApp(
                             navController.navigate("DetailsScreen")
                         }
                                      },
-                    onFavoriteClick = {coroutineScope.launch{
-                        if(it.isFavorite == 1)
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Removed " + it.recipeName + " from Favorites.",
-                                duration = SnackbarDuration.Short)
-                        else if(it.isFavorite == 0)
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Added " + it.recipeName + " to Favorites.",
-                                duration = SnackbarDuration.Short)
-                    }},
-                    onMenuClick = {coroutineScope.launch{
-                        if(it.onMenu == 1)
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Removed " + it.recipeName + " from Menu.",
-                                duration = SnackbarDuration.Short)
-                        else if(it.onMenu == 0)
-                            scaffoldState.snackbarHostState.showSnackbar(
-                                message = "Added " + it.recipeName + " to Menu.",
-                                duration = SnackbarDuration.Short)
-                    }},
+                    onFavoriteClick = { favoriteSnackBar(it, scaffoldState, coroutineScope) },
+                    onMenuClick = { menuSnackBar(it, scaffoldState, coroutineScope) },
                 )
-
             }
 
-
-            /* How to pass a string along with the Nav controller to its destination.
-             * This was ultimately not used as the variable is now written to the database.
-             */
-//            composable(route = "DetailsScreen/{recipeName}"){ it ->
-//                val recipeName = it.arguments?.getString("recipeName")
-//                recipeName?.let{NewDetailsScreen(recipeName = recipeName, onGoBackClick = {})}
-
         }
+
     }
 }
 }
@@ -1147,59 +1023,7 @@ fun BearAppTopBar(
                                 )
                             )
                         }
-//                        TextField(
-//                            value =  uiState.currentInput,
-//                            onValueChange =
-//                            {
-//                                topBarViewModel.updatePreview( it, it.text)
-//                            },
-//                            modifier = Modifier
-//                                .focusRequester(focusRequester)
-//                                .height(56.dp)
-//                                .padding(top = 4.dp, bottom = 4.dp)
-//                                .border(
-//                                    width = 2.dp,
-//                                    brush = (Brush.horizontalGradient(
-//                                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-//                                        tileMode = TileMode.Mirror
-//                                    )),
-//                                    shape = RoundedCornerShape(25.dp)
-//                                ),
-//                            shape = RoundedCornerShape(25.dp),
-//                            textStyle = TextStyle.Default.copy(color = Color(0xFF000000), fontSize = 14.sp),
-//                            leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
-//                            trailingIcon =
-//                            {
-//                                if(uiState.currentInput.text.isNotEmpty()){
-//                                    Surface(
-//                                        color = Color.Transparent,
-//                                        modifier = Modifier.clickable {  topBarViewModel.updatePreview( TextFieldValue(""), "") }
-//                                    )
-//                                    {
-//                                        Icon(
-//                                            Icons.Outlined.Close,
-//                                            contentDescription = null,
-//                                            tint = Color(0xFF000000)
-//                                        )
-//                                    }
-//                                }
-//                            },
-//                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-//                            keyboardActions = KeyboardActions(
-//                                onSearch = {
-//                                    topBarViewModel.liveSearchForClick()
-////                                searchScreenViewModel.searchFor(text)
-//                                    focusManager.clearFocus()
-//                                }),
-//                            singleLine = true,
-//                            colors = TextFieldDefaults.textFieldColors(
-//                                disabledTextColor = Color.Transparent,
-//                                backgroundColor = Color(0xFFd8af84),
-//                                focusedIndicatorColor = Color.Transparent,
-//                                unfocusedIndicatorColor = Color.Transparent,
-//                                disabledIndicatorColor = Color.Transparent
-//                            )
-//                        )
+
                         Spacer(Modifier.weight(1f))
                     }
                     Spacer(Modifier.size(8.dp))
