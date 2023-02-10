@@ -33,16 +33,14 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
+import com.example.bearrecipebookapp.data.annotatedstrings.confirmCompletedCookingAnoString
+import com.example.bearrecipebookapp.data.annotatedstrings.confirmRemoveMenuAnoString
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.AnnotatedStringAlert
@@ -234,19 +232,7 @@ fun MenuScreen(
                 //Remove Alert
                 if(uiAlertState.showRemoveAlert){
                     AnnotatedStringAlert(
-                        text = buildAnnotatedString {
-                            append("Are you sure you want to remove ")
-                            append(uiAlertState.recipe.recipeEntity.recipeName)
-                            append(" from the ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Menu")
-                            }
-                            append("? (This will also remove its ingredients from the ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
-                                append("Shopping List")
-                            }
-                            append(".")
-                        },
+                        text = confirmRemoveMenuAnoString(uiAlertState.recipe.recipeEntity.recipeName),
                         confirmButtonText = "Yes",
                         cancelButtonText = "Cancel",
                         onConfirmClick =
@@ -265,23 +251,7 @@ fun MenuScreen(
                 if(uiAlertState.showCompletedAlert){
 
                     AnnotatedStringAlert(
-                        text = buildAnnotatedString {
-                            append("Great job! Confirm that you have finished cooking ")
-                            append(uiAlertState.recipe.recipeEntity.recipeName)
-                            append(" and ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("remove it")
-                            }
-                            append(" from your ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Menu")
-                            }
-                            append(" and its ingredients from your ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Shopping List")
-                            }
-                            append("?")
-                        },
+                        text = confirmCompletedCookingAnoString(uiAlertState.recipe.recipeEntity.recipeName),
                         confirmButtonText = "Yes",
                         cancelButtonText = "Cancel",
                         onConfirmClick = {

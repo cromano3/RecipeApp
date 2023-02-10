@@ -22,7 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.*
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -34,6 +35,9 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
+import com.example.bearrecipebookapp.data.annotatedstrings.confirmCompletedCookingAnoString
+import com.example.bearrecipebookapp.data.annotatedstrings.confirmIMadeThisAnoString
+import com.example.bearrecipebookapp.data.annotatedstrings.confirmRemoveMenuAnoString
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.*
@@ -473,21 +477,8 @@ fun NewDetailsScreen(
 
                 //Remove Alert
                 if(uiAlertState.showRemoveAlert){
-
                     AnnotatedStringAlert(
-                        text = buildAnnotatedString {
-                            append("Are you sure you want to remove ")
-                            append(uiAlertState.recipe.recipeEntity.recipeName)
-                            append(" from the ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Menu")
-                            }
-                            append("? (This will also remove its ingredients from the ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
-                                append("Shopping List")
-                            }
-                            append(".")
-                        },
+                        text = confirmRemoveMenuAnoString(uiAlertState.recipe.recipeEntity.recipeName),
                         confirmButtonText = "Yes",
                         cancelButtonText = "Cancel",
                         onConfirmClick =
@@ -503,36 +494,11 @@ fun NewDetailsScreen(
 
                 //Completed Alert
                 if(uiAlertState.showCompletedAlert){
-
                     val finishedText: AnnotatedString = if(recipeData.recipeEntity.onMenu == 0) {
-                        buildAnnotatedString {
-                            append("Great job! Add ")
-                            append(uiAlertState.recipe.recipeEntity.recipeName)
-                            append(" to the ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Cooked Recipes")
-                            }
-                            append(" list?")
-                        }
+                        confirmIMadeThisAnoString(uiAlertState.recipe.recipeEntity.recipeName)
                     }
                     else{
-                        buildAnnotatedString {
-                            append("Great job! Confirm that you have finished cooking ")
-                            append(uiAlertState.recipe.recipeEntity.recipeName)
-                            append(" and ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("remove it")
-                            }
-                            append(" from your ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Menu")
-                            }
-                            append(" and its ingredients from your ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append("Shopping List")
-                            }
-                            append("?")
-                        }
+                        confirmCompletedCookingAnoString(uiAlertState.recipe.recipeEntity.recipeName)
                     }
 
                     AnnotatedStringAlert(

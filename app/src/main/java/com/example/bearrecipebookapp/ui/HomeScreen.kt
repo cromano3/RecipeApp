@@ -31,8 +31,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.*
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,6 +42,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
+import com.example.bearrecipebookapp.data.annotatedstrings.tutorialTextAnoString
 import com.example.bearrecipebookapp.data.entity.FilterEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.AddRecipeCard
@@ -363,86 +364,11 @@ fun HomeScreen(
                                             contentDescription = null
                                         )
                                     }
-                                    Text(
-                                        buildAnnotatedString {
-                                            append("to ")
-                                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
-                                                append("add a Recipe")
-                                            }
-                                            append(" to your ")
-                                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
-                                                append("Menu")
-                                            }
-                                            append(" and its ")
-                                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
-                                                append("ingredients")
-                                            }
-                                            append(" to your ")
-                                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
-                                                append("Shopping List.")
-                                            }
-                                        },
+                                    Text( tutorialTextAnoString(),
                                         color = Color(0xFF682300),
                                         fontSize = 18.sp,
                                         textAlign = TextAlign.Center
                                     )
-
-//                                    Text(
-//                                        " to add a recipe to your Menu and its ingredients to your" +
-//                                                " Shopping List, or you can click on any of the recipe cards to see " +
-//                                                "all the detailed information about the recipe and then click on the ",
-//                                        color = Color(0xFF682300),
-//                                        fontSize = 16.sp,
-//                                        textAlign = TextAlign.Center
-//                                    )
-
-//                                    Surface(
-//                                        modifier = Modifier
-//                                            .padding(top = 8.dp, bottom = 8.dp)
-//                                            .wrapContentSize()
-//                                            .border(
-//                                                width = 2.dp,
-//                                                brush = (Brush.horizontalGradient(
-//                                                    colors = listOf(
-//                                                        Color(0xFFd8af84),
-//                                                        Color(0xFFb15f33)
-//                                                    ),
-//                                                    tileMode = TileMode.Mirror
-//                                                )),
-//                                                shape = CircleShape
-//                                            ),
-//                                        shape = RoundedCornerShape(25.dp),
-//                                        color = Color(0xFF682300),
-//                                        elevation = 4.dp,
-//                                    ) {
-//                                        Row(
-//                                            horizontalArrangement = Arrangement.Start,
-//                                            modifier = Modifier.padding(
-//                                                start = 12.dp,
-//                                                end = 12.dp,
-//                                                top = 12.dp,
-//                                                bottom = 12.dp
-//                                            )
-//                                        )
-//                                        {
-//                                            Text(
-//                                                text = "Add to Menu",
-//                                                modifier = Modifier
-//                                                    .align(Alignment.CenterVertically)
-//                                                    .alpha(1f),
-//                                                color = Color(0xFFd8af84),
-//                                                fontSize = 18.sp,
-//                                                textAlign = TextAlign.Center,
-//                                                fontWeight = FontWeight.Bold
-//                                            )
-//                                        }
-//                                    }
-//
-//                                    Text(
-//                                        " button.",
-//                                        color = Color(0xFF682300),
-//                                        fontSize = 16.sp,
-//                                    )
                                 }
                             },
                             buttons = {

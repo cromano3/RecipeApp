@@ -34,12 +34,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -48,6 +45,7 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
+import com.example.bearrecipebookapp.data.annotatedstrings.addRecipeOrCustomItemAnoString
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
@@ -343,19 +341,7 @@ fun ShoppingListScreen(
                         onDismissRequest = {shoppingListScreenViewModel.cancelAddRecipeOrCustomItemAlert()},
                         text = {
                             Text(
-                                text =
-                                buildAnnotatedString
-                                {
-                                    append("Add a ")
-                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
-                                        append("Recipe")
-                                    }
-                                    append(" or a ")
-                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)){
-                                        append("Custom Item")
-                                    }
-                                    append(" to the shopping list?")
-                                },
+                                text = addRecipeOrCustomItemAnoString(),
                                 color = Color(0xFF682300),
                                 fontSize = 16.sp,
                                 textAlign = TextAlign.Center
