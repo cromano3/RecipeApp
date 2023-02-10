@@ -55,7 +55,7 @@ class AppViewModel (application: Application): ViewModel() {
 
     fun updateDetailsScreenUiOnMenuStatus(){
 
-        val newRecipe = appUiState.value.detailsScreenTarget.recipeEntity.copy(isFavorite = if(appUiState.value.detailsScreenTarget.recipeEntity.onMenu == 1) 0 else 1)
+        val newRecipe = appUiState.value.detailsScreenTarget.recipeEntity.copy(onMenu = if(appUiState.value.detailsScreenTarget.recipeEntity.onMenu == 1) 0 else 1)
 
         appUiState.update {
             it.copy(detailsScreenTarget = RecipeWithIngredientsAndInstructions(

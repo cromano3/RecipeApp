@@ -427,24 +427,30 @@ fun BearRecipeApp(
                         recipeData = appUiState.detailsScreenTarget,
                         onGoBackClick = { navController.popBackStack() },
                         onMenuAddClick = {
+                            appViewModel.updateDetailsScreenUiOnMenuStatus()
+
                             coroutineScope.launch {
                                 scaffoldState.snackbarHostState.showSnackbar(
                                     message = "Added " + it.recipeEntity.recipeName + " to the Menu.",
                                     duration = SnackbarDuration.Short
                                 )
                             }
-                            appViewModel.updateDetailsScreenUiOnMenuStatus()
+
                         },
                         onMenuRemoveClick = {
+                            appViewModel.updateDetailsScreenUiOnMenuStatus()
+
                             coroutineScope.launch {
                                 scaffoldState.snackbarHostState.showSnackbar(
                                     message = "Removed " + it.recipeEntity.recipeName + " from the Menu.",
                                     duration = SnackbarDuration.Short
                                 )
                             }
-                            appViewModel.updateDetailsScreenUiOnMenuStatus()
+
                         },
-                        onCompleteClick = {
+                        onFinishedCookingClick = {
+                            appViewModel.updateDetailsScreenUiOnMenuStatus()
+
                             coroutineScope.launch {
                                 scaffoldState.snackbarHostState.showSnackbar(
                                     message = "Completed cooking " + it.recipeEntity.recipeName + "!!",
@@ -452,6 +458,15 @@ fun BearRecipeApp(
                                 )
                             }
                         },
+                        onIMadeThisClick = {
+                            coroutineScope.launch {
+                                scaffoldState.snackbarHostState.showSnackbar(
+                                    message = "Completed cooking " + it.recipeEntity.recipeName + "!!",
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        },
+
                         showAddedToFavoritesSnackBarMessage = {
                             coroutineScope.launch{
                                 scaffoldState.snackbarHostState.showSnackbar(

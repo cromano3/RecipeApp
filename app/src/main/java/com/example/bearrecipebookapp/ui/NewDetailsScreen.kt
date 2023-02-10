@@ -49,7 +49,9 @@ fun NewDetailsScreen(
     onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
 //    onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
-    onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+//    onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    onIMadeThisClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    onFinishedCookingClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     showAddedToFavoritesSnackBarMessage: (recipeName: String) -> Unit,
     navigateToCommentScreen: (String) -> Unit,
 
@@ -259,15 +261,10 @@ fun NewDetailsScreen(
                                     onClick =
                                     {
                                         if (selected) {
-                                            detailsScreenViewModel.triggerCompletedAlert(
-                                                recipeData
-                                            )
+                                            detailsScreenViewModel.triggerCompletedAlert(recipeData)
                                         } else {
-                                            detailsScreenViewModel.triggerCompletedAlert(
-                                                recipeData
-                                            )
+                                            detailsScreenViewModel.triggerCompletedAlert(recipeData)
                                         }
-
                                     },
                                     borderStartColor = borderStartColor,
                                     borderEndColor = borderEndColor,
@@ -543,14 +540,18 @@ fun NewDetailsScreen(
                         cancelButtonText = "Cancel",
                         onConfirmClick =
                         {
-                            onCompleteClick(recipeData)
                             detailsScreenViewModel.addCooked(recipeData)
                             detailsScreenViewModel.addExp(uiAlertState.recipe)
                             if(recipeData.recipeEntity.onMenu == 1) {
                                 detailsScreenViewModel.removeFromMenu(uiAlertState.recipe)
+                                onFinishedCookingClick(recipeData)
+                            }
+                            else {
+                                onIMadeThisClick(recipeData)
                             }
                             detailsScreenViewModel.confirmCompletedAlert(recipeData.recipeEntity)
                          },
+
                         onCancelClick = { detailsScreenViewModel.cancelCompletedAlert() },
                         onDismiss = {}
                     )

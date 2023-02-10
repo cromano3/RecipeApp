@@ -11,7 +11,7 @@ data class RecipeEntity(
     val recipeName: String = "",
 
     @ColumnInfo(name = "on_menu")
-    var onMenu: Int = 0,
+    val onMenu: Int = 0,
 
     @ColumnInfo(name = "is_details_screen_target")
     val isDetailsScreenTarget: Int = 0,
