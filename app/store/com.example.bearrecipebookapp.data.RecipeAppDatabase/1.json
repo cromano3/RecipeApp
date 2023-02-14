@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e8f212a389d90cecf3971caa0b96427b",
+    "identityHash": "2fee4dedbc1785e436c188cee8184d4b",
     "entities": [
       {
         "tableName": "recipe_table",
@@ -342,7 +342,7 @@
       },
       {
         "tableName": "user_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `exp_to_give` INTEGER NOT NULL, `exp_total` INTEGER NOT NULL, `show_tutorial` TEXT NOT NULL, PRIMARY KEY(`user_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `exp_to_give` INTEGER NOT NULL, `exp_total` INTEGER NOT NULL, `show_tutorial` TEXT NOT NULL, `is_online` INTEGER NOT NULL, PRIMARY KEY(`user_id`))",
         "fields": [
           {
             "fieldPath": "userID",
@@ -366,6 +366,12 @@
             "fieldPath": "showTutorial",
             "columnName": "show_tutorial",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isOnlineUser",
+            "columnName": "is_online",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -408,7 +414,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e8f212a389d90cecf3971caa0b96427b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2fee4dedbc1785e436c188cee8184d4b')"
     ]
   }
 }

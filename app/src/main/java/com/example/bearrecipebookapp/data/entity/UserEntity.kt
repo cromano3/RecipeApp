@@ -20,4 +20,7 @@ class UserEntity(
     @ColumnInfo(name = "show_tutorial")
     var showTutorial: String = "false",
 
+    @ColumnInfo(name = "is_online")
+    var isOnlineUser: Int = 0,
+
 )
