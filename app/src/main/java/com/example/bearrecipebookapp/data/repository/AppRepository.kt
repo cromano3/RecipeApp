@@ -15,6 +15,11 @@ class AppRepository(private val appDao: AppDao) {
         return appDao.getRecipeWithIngredientsAndInstructions(recipeName)
     }
 
+    suspend fun isNewUser(): Int{
+        return appDao.isNewUser()
+//        return appDao.isNewUser() == -2
+    }
+
 //    fun setReviewAsWritten(recipeName: String){
 //        coroutineScope.launch(Dispatchers.IO){
 //            commentScreenDao.setReviewAsWritten(recipeName)

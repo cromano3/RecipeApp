@@ -12,4 +12,8 @@ interface AppDao {
     @Query("SELECT * FROM recipe_table WHERE recipe_name = :recipeName")
     fun getRecipeWithIngredientsAndInstructions(recipeName: String): RecipeWithIngredientsAndInstructions
 
+    @Transaction
+    @Query("SELECT is_online FROM user_table")
+    fun isNewUser(): Int
+
 }

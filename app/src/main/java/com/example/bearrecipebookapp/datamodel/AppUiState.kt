@@ -1,7 +1,13 @@
 package com.example.bearrecipebookapp.datamodel
 
+import com.google.android.gms.auth.api.identity.BeginSignInResult
+
 data class AppUiState(
     val detailsScreenTarget: RecipeWithIngredientsAndInstructions = RecipeWithIngredientsAndInstructions(),
-    val reviewScreenTarget: RecipeWithIngredientsAndInstructions = RecipeWithIngredientsAndInstructions()
+    val reviewScreenTarget: RecipeWithIngredientsAndInstructions = RecipeWithIngredientsAndInstructions(),
+    val showSignIn: Boolean = false,
+    val googleSignInState: String = "",
+    val googleSignInResult: BeginSignInResult? = null,
+    val firebaseSignInResult: String = "",
 
 )

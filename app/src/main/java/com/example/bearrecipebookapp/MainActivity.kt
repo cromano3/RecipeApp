@@ -7,7 +7,11 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResult.resultCodeToString
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -58,6 +62,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.bearrecipebookapp.data.repository.FirebaseRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.*
 import com.example.bearrecipebookapp.ui.components.*
@@ -68,6 +73,12 @@ import com.example.bearrecipebookapp.viewmodel.TopBarViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.android.gms.auth.api.identity.BeginSignInResult
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -120,6 +131,41 @@ fun BearRecipeApp(
     val context = LocalContext.current
 
     (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        println("result code is ${resultCodeToString(result.resultCode)}")
+//        if (result.resultCode == Activity.RESULT_OK) {
+            println("result ok")
+            try {
+                println("big try")
+                val credentials = appViewModel.oneTapClient.getSignInCredentialFromIntent(result.data)
+                val googleIdToken = credentials.googleIdToken
+                val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
+                appViewModel.firebaseSignInWithGoogle(googleCredentials)
+            } catch (it: ApiException) {
+                println("big fail with error $it")
+            }
+//        }
+    }
+
+    fun tryFirebaseSignIn(signInResult: BeginSignInResult) {
+        println("try firebase sign in")
+        val intent = IntentSenderRequest.Builder(signInResult.pendingIntent.intentSender).build()
+        launcher.launch(intent)
+    }
+
+
+    if(appUiState.googleSignInState == "Success"){
+        println("before LE")
+
+        LaunchedEffect(Unit){
+            println("launched")
+            appUiState.googleSignInResult?.let { tryFirebaseSignIn(it) }
+        }
+
+    }
+
+
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -1053,6 +1099,7 @@ class AppViewModelFactory(
 
         return AppViewModel(
             application,
+            FirebaseRepository(application, Firebase.firestore, Firebase.auth),
         ) as T
     }
 }

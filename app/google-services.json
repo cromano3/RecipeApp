@@ -14,7 +14,23 @@
       },
       "oauth_client": [
         {
-          "client_id": "135954228549-67h0vua6e19o9erkhbkclh0e3fdrun59.apps.googleusercontent.com",
+          "client_id": "135954228549-eng79jiknsvseb2osm2uvekrh8jj0c9p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bearrecipebookapp",
+            "certificate_hash": "4f9fefb0f4ac8fb05875760011bf41d261a4f21f"
+          }
+        },
+        {
+          "client_id": "135954228549-olr3lptrcqu9h7jibf6lain0c6mm5mu9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bearrecipebookapp",
+            "certificate_hash": "47a357ad3262d19d8936ae2cdf20f2dc9a066647"
+          }
+        },
+        {
+          "client_id": "135954228549-fin8hnctgqhnrdcpgrpvgbioeeg98t6n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
