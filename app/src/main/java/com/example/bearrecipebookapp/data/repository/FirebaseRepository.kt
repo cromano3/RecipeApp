@@ -2,6 +2,7 @@ package com.example.bearrecipebookapp.data.repository
 
 import android.app.Application
 import com.example.bearrecipebookapp.datamodel.FirebaseResult
+import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -23,10 +24,6 @@ class FirebaseRepository(
         .setGoogleIdTokenRequestOptions(
             BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                 .setSupported(true)
-                //release client ID
-//                  135954228549-olr3lptrcqu9h7jibf6lain0c6mm5mu9.apps.googleusercontent.com
-                //debug client ID
-//                  135954228549-eng79jiknsvseb2osm2uvekrh8jj0c9p.apps.googleusercontent.com
                 .setServerClientId("135954228549-fin8hnctgqhnrdcpgrpvgbioeeg98t6n.apps.googleusercontent.com")
                 // Only show accounts previously used to sign in.
                 .setFilterByAuthorizedAccounts(true)
@@ -39,10 +36,6 @@ class FirebaseRepository(
         .setGoogleIdTokenRequestOptions(
             BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                 .setSupported(true)
-                //release client ID
-//                  135954228549-olr3lptrcqu9h7jibf6lain0c6mm5mu9.apps.googleusercontent.com
-                //debug client ID
-//                  135954228549-eng79jiknsvseb2osm2uvekrh8jj0c9p.apps.googleusercontent.com
                 .setServerClientId("135954228549-fin8hnctgqhnrdcpgrpvgbioeeg98t6n.apps.googleusercontent.com")
                 // Only show accounts previously used to sign in.
                 .setFilterByAuthorizedAccounts(false)
@@ -51,12 +44,27 @@ class FirebaseRepository(
         .build()
 
 
+    //Write comment to Firestore
+    suspend fun uploadComment(review: RecipeNameAndReview, authorId: String){
+        val newComment = hashMapOf(
+            "recipeName" to review.recipeName,
+            "reviewText" to review.reviewText,
+            "authorUid" to authorId,
+            "likes" to 0)
+        db.collection("reviews").add(newComment).await()
+    }
+
+
+
+    //get UID
+    fun getUid(): String{
+        return auth.currentUser?.uid ?: ""
+    }
+
+    ////Sign in stuff below////
+
     suspend fun googleOneTapSignInOrUp(): FirebaseResult {
-
-
-
         println("before try")
-
         return try {
             println("try in")
             val signInResult = oneTapClient.beginSignIn(signInRequest).await()

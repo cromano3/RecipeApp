@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AppViewModel(application: Application, private val firebaseRepository: FirebaseRepository): ViewModel() {
 
@@ -46,15 +47,24 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
          */
 
 
-        coroutineScope.launch(Dispatchers.IO) {
-            val isNew = repository.isNewUser()
-            println(isNew)
+        viewModelScope.launch {
 
-            if(repository.isNewUser() == -2){
+            println("1")
+            val isNew = withContext(Dispatchers.IO) { repository.isNewUser() }
+            println("4")
+            println(isNew)
+            appUiState.update {
+                it.copy(
+                    userIsOnlineStatus = isNew
+                )
+            }
+
+            if (appUiState.value.userIsOnlineStatus == -2) {
                 println("in new")
                 googleOneTapSignInOrUp()
 
             }
+        }
 
 
 
@@ -84,11 +94,11 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
             //check connectivity again
 
-        }
+
     }
 
-    private fun googleOneTapSignInOrUp(){
-        viewModelScope.launch {
+    private suspend fun googleOneTapSignInOrUp(){
+//        viewModelScope.launch {
             val result = firebaseRepository.googleOneTapSignInOrUp()
             if(result.result == "Success"){
                 appUiState.update {
@@ -99,7 +109,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 }
             }
 
-        }
+//        }
 
     }
 
@@ -111,6 +121,67 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             it.copy(
                 firebaseSignInResult = firebaseSignInWithGoogleResponse
             )
+        }
+
+        if(firebaseSignInWithGoogleResponse == "Success" && appUiState.value.userIsOnlineStatus == -2){
+            //set uid in local DB
+            setNewUserId()
+        }
+        else if(firebaseSignInWithGoogleResponse == "Success"){
+            dataSync()
+        }
+
+
+    }
+
+    private suspend fun getUserIdFromRoom(): String{
+        return repository.getUserId
+
+    }
+
+    private suspend fun setNewUserId(){
+
+        val uid = firebaseRepository.getUid()
+        if (uid == ""){
+            println("failed to retrieve UID of new user")
+        }
+        else{
+            withContext(Dispatchers.IO) { repository.setUid(uid) }
+            appUiState.update {
+                it.copy(
+                    userId = uid
+                )
+            }
+        }
+
+    }
+
+
+    private fun dataSync(){
+        viewModelScope.launch {
+
+            val uid = withContext(Dispatchers.IO) { getUserIdFromRoom() }
+
+            //get local user comments from Room DB
+            val unsyncedUserComments = withContext(Dispatchers.IO) { repository.getUnsyncedUserComments() }
+            //if there are new comments
+            if(unsyncedUserComments.isNotEmpty()) {
+
+                //for each comment upload and then mark as synced in local DB
+                for (comment in unsyncedUserComments) {
+                    //upload comments
+                    firebaseRepository.uploadComment(comment)
+                    //mark as synced in local DB
+                    withContext(Dispatchers.IO) { repository.markCommentAsSynced(comment) }
+
+
+                }
+
+
+            }
+
+
+
         }
 
 
