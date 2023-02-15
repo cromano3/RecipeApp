@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.data.repository
 
 import com.example.bearrecipebookapp.data.dao.AppDao
+import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import kotlinx.coroutines.CoroutineScope
@@ -12,15 +13,43 @@ class AppRepository(private val appDao: AppDao) {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
 
-    suspend fun getUnsyncedUserComments(): List<RecipeNameAndReview> {
+
+    fun getRecipeWithIngredientsAndInstructions(recipeName: String): RecipeWithIngredientsAndInstructions{
+        return appDao.getRecipeWithIngredientsAndInstructions(recipeName)
+    }
+
+
+
+    fun getUnsyncedUserComments(): List<RecipeNameAndReview> {
         return appDao.getUnsyncedUserComments()
     }
 
-
-
-    suspend fun getRecipeWithIngredientsAndInstructions(recipeName: String): RecipeWithIngredientsAndInstructions{
-        return appDao.getRecipeWithIngredientsAndInstructions(recipeName)
+    fun markCommentAsSynced(comment: RecipeNameAndReview) {
+        appDao.markCommentAsSynced(comment.recipeName)
     }
+
+
+    fun getUnsyncedUserRatings(): List<RecipeNameAndRating> {
+        return appDao.getUnsyncedUserRatings()
+    }
+
+    fun markRatingAsSynced(rating: RecipeNameAndRating){
+        appDao.markRatingAsSynced(rating.recipeName)
+    }
+
+
+
+    fun getUnsyncedUserLikes(): List<String>{
+        return appDao.getUnsyncedUserLikes()
+    }
+
+    fun markLikeAsSynced(likeId: String){
+        appDao.markLikeAsSynced(likeId)
+    }
+
+
+
+
 
     suspend fun isNewUser(): Int{
         println("2")
@@ -34,7 +63,10 @@ class AppRepository(private val appDao: AppDao) {
 
     fun setUid(uid: String){
         appDao.setUid(uid)
+    }
 
+    fun getUserId(): String{
+        return appDao.getUserId()
     }
 
 //    fun setReviewAsWritten(recipeName: String){

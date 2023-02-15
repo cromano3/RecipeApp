@@ -2,6 +2,7 @@ package com.example.bearrecipebookapp.data.repository
 
 import android.app.Application
 import com.example.bearrecipebookapp.datamodel.FirebaseResult
+import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
@@ -52,6 +53,75 @@ class FirebaseRepository(
             "authorUid" to authorId,
             "likes" to 0)
         db.collection("reviews").add(newComment).await()
+    }
+
+    //Write rating to Firestore
+    suspend fun updateRating(rating: RecipeNameAndRating, uid: String): String {
+
+        val recipesCollection = db.collection("recipes").document(rating.recipeName)
+        var result = ""
+
+        db.runTransaction { transaction ->
+
+            val snapshot = transaction.get(recipesCollection)
+
+            var recipeRating: Double? = snapshot.getDouble("rating")
+
+            if(recipeRating == null){
+                result = "Null Rating"
+            }
+            else{
+                recipeRating += rating.rating
+                if(recipeRating > 99.0){
+                    recipeRating = 99.0
+                }
+            }
+
+            transaction.update(recipesCollection, "rating", recipeRating)
+
+
+        }.addOnSuccessListener {
+            result = "Success"
+        }.addOnFailureListener { e ->
+            result = "Failed with $e"
+        }.await()
+
+        println("update rating result: $result")
+        return result
+
+
+    }
+
+    suspend fun updateLike(likeId: String): String {
+
+        val reviewsCollection = db.collection("reviews").document(likeId)
+        var result = ""
+
+        db.runTransaction { transaction ->
+
+            val snapshot = transaction.get(reviewsCollection)
+
+            var commentLikes: Double? = snapshot.getDouble("likes")
+
+            if(commentLikes == null){
+                result = "Null Likes"
+            }
+            else{
+                commentLikes += 1
+            }
+
+            transaction.update(reviewsCollection, "likes", commentLikes)
+
+
+        }.addOnSuccessListener {
+            result = "Success"
+        }.addOnFailureListener { e ->
+            result = "Failed with $e"
+        }.await()
+
+        println("update rating result: $result")
+        return result
+
     }
 
 

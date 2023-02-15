@@ -134,9 +134,8 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
     }
 
-    private suspend fun getUserIdFromRoom(): String{
-        return repository.getUserId
-
+    private fun getUserIdFromRoom(): String{
+        return repository.getUserId()
     }
 
     private suspend fun setNewUserId(){
@@ -161,24 +160,52 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         viewModelScope.launch {
 
             val uid = withContext(Dispatchers.IO) { getUserIdFromRoom() }
+            appUiState.update { it.copy(userId = uid) }
 
-            //get local user comments from Room DB
+
+            ////Comments////
+
             val unsyncedUserComments = withContext(Dispatchers.IO) { repository.getUnsyncedUserComments() }
-            //if there are new comments
-            if(unsyncedUserComments.isNotEmpty()) {
 
-                //for each comment upload and then mark as synced in local DB
+            //upload comments and mark as synced
+            if(unsyncedUserComments.isNotEmpty()) {
                 for (comment in unsyncedUserComments) {
                     //upload comments
-                    firebaseRepository.uploadComment(comment)
+                    firebaseRepository.uploadComment(comment, uid)
                     //mark as synced in local DB
                     withContext(Dispatchers.IO) { repository.markCommentAsSynced(comment) }
-
-
                 }
-
-
             }
+
+            ////Ratings////
+
+            val unsyncedUserRatings = withContext(Dispatchers.IO) { repository.getUnsyncedUserRatings() }
+
+            //upload ratings and mark as synced
+            if(unsyncedUserRatings.isNotEmpty()) {
+                for (rating in unsyncedUserRatings) {
+                    val successStatus = firebaseRepository.updateRating(rating, uid)
+                    if(successStatus == "Success") {
+                        withContext(Dispatchers.IO) { repository.markRatingAsSynced(rating) }
+                    }
+                }
+            }
+
+
+            ////Likes////
+
+            val unsyncedUserLikes = withContext(Dispatchers.IO) { repository.getUnsyncedUserLikes() }
+
+            if(unsyncedUserLikes.isNotEmpty()){
+                for(likeId in unsyncedUserLikes){
+                    val successStatus = firebaseRepository.updateLike(likeId)
+                    if(successStatus == "Success") {
+                        withContext(Dispatchers.IO) { repository.markLikeAsSynced(likeId) }
+                    }
+                }
+            }
+
+
 
 
 
