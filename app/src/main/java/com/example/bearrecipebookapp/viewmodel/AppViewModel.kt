@@ -219,8 +219,8 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             //add comments and update likes in local db
             if(commentsFromFirestore.isNotEmpty()){
                 for(comment in commentsFromFirestore){
-                    repository.updateLikes(comment)
-                    repository.addComment(comment)
+//                    repository.updateLikes(comment)
+                    withContext(Dispatchers.IO) { repository.addComment(comment) }
 
                 }
             }
@@ -232,6 +232,11 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             val recipeRatingsFromFirestore = firebaseRepository.getRecipeRatings()
 
             //update ratings in local db
+            if(recipeRatingsFromFirestore.isNotEmpty()){
+                for(recipe in recipeRatingsFromFirestore){
+                    withContext(Dispatchers.IO) { repository.updateRecipeRating(recipe) }
+                }
+            }
 
 
 

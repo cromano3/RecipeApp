@@ -59,8 +59,15 @@ interface AppDao {
     fun updateLikes(likes: Int, commentId: String)
 
     @Transaction
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addComment(comment: CommentsEntity)
+
+
+
+
+    @Transaction
+    @Query("UPDATE recipe_table SET global_rating = :rating WHERE recipe_name = :recipeName")
+    fun updateRecipeRating(recipeName: String, rating: Int)
 
 
 

@@ -8,6 +8,7 @@ import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 class AppRepository(private val appDao: AppDao) {
 
@@ -51,12 +52,19 @@ class AppRepository(private val appDao: AppDao) {
 
 
 
-    fun updateLikes(comment: CommentsEntity){
-        appDao.updateLikes(comment.likes, comment.commentID)
+    suspend fun updateLikes(comment: CommentsEntity){
+        withContext(Dispatchers.IO) { appDao.updateLikes(comment.likes, comment.commentID) }
     }
 
     fun addComment(comment: CommentsEntity){
-        appDao.addComment(comment)
+       appDao.addComment(comment)
+    }
+
+
+
+
+    fun updateRecipeRating(rating: RecipeNameAndRating){
+        appDao.updateRecipeRating(rating.recipeName, rating.rating)
     }
 
 

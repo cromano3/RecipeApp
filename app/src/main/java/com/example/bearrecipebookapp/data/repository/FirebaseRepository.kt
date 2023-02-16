@@ -131,6 +131,7 @@ class FirebaseRepository(
 
     ////Download Stuff////
 
+    //get comments
     suspend fun getComments(): MutableList<CommentsEntity>{
 
         val reviewsCollection = db.collection("reviews")
@@ -152,6 +153,28 @@ class FirebaseRepository(
             }
         }
         return resultCommentsList
+
+    }
+
+    //get recipe ratings
+    suspend fun getRecipeRatings(): MutableList<RecipeNameAndRating>{
+
+        val recipesCollection = db.collection("recipes")
+        val querySnapshot = recipesCollection.get().await()
+
+        val resultRecipeList: MutableList<RecipeNameAndRating> = mutableListOf()
+
+        if (querySnapshot != null) {
+            for (document in querySnapshot.documents) {
+                val recipeName = document.getString("recipeName")
+                val rating = document.getDouble("rating")?.toInt()
+
+                val comment = RecipeNameAndRating(recipeName ?: "", rating ?: 99)
+                resultRecipeList.add(comment)
+
+            }
+        }
+        return resultRecipeList
 
     }
 
