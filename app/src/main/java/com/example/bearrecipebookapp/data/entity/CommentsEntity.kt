@@ -9,13 +9,13 @@ class CommentsEntity(
 
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "comment_id")
-    var commentID: Int = 0,
+    var commentID: String = "",
 
     @ColumnInfo(name = "recipe_name")
     val recipeName: String = "",
 
     @ColumnInfo(name = "author_id")
-    var authorID: Int = 0,
+    var authorID: String = "",
 
     @ColumnInfo(name = "comment_text")
     var commentText: String = "",

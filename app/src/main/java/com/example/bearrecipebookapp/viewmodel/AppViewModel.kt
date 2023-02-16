@@ -206,6 +206,34 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             }
 
 
+            ////Do Download Sync////
+
+            //get comments from remote
+            /**this needs to be: "get comments that are timestamped (at least 2-5 mins.) after my last sync completion timestamp
+             * this way we dont get all the comments that the local db already has over and over again each time we sync data.
+             * the local DB needs to store a timestamp (of the same timezone as the firestore) when the data sync is completed to use
+             * to compare this value.
+             */
+            val commentsFromFirestore = firebaseRepository.getComments()
+
+            //add comments and update likes in local db
+            if(commentsFromFirestore.isNotEmpty()){
+                for(comment in commentsFromFirestore){
+                    repository.updateLikes(comment)
+                    repository.addComment(comment)
+
+                }
+            }
+
+
+
+            //get ratings from remote
+            /**needs similar timing functionality as above*/
+            val recipeRatingsFromFirestore = firebaseRepository.getRecipeRatings()
+
+            //update ratings in local db
+
+
 
 
 

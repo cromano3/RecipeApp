@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.data.repository
 
 import com.example.bearrecipebookapp.data.dao.AppDao
+import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
@@ -45,6 +46,17 @@ class AppRepository(private val appDao: AppDao) {
 
     fun markLikeAsSynced(likeId: String){
         appDao.markLikeAsSynced(likeId)
+    }
+
+
+
+
+    fun updateLikes(comment: CommentsEntity){
+        appDao.updateLikes(comment.likes, comment.commentID)
+    }
+
+    fun addComment(comment: CommentsEntity){
+        appDao.addComment(comment)
     }
 
 

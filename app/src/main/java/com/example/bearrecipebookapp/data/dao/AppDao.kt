@@ -1,8 +1,7 @@
 package com.example.bearrecipebookapp.data.dao
 
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
+import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
@@ -43,7 +42,6 @@ interface AppDao {
 
 
 
-
     @Transaction
     @Query("SELECT recipe_name, local_user_rating FROM recipe_table WHERE is_rating_synced = 0 AND is_rated = 1")
     fun getUnsyncedUserRatings(): List<RecipeNameAndRating>
@@ -51,6 +49,20 @@ interface AppDao {
     @Transaction
     @Query("UPDATE recipe_table SET is_rating_synced = 1 WHERE recipe_name = :recipeName")
     fun markRatingAsSynced(recipeName: String)
+
+
+
+
+
+    @Transaction
+    @Query("UPDATE comments_table SET likes = :likes WHERE comment_id = :commentId")
+    fun updateLikes(likes: Int, commentId: String)
+
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun addComment(comment: CommentsEntity)
+
+
 
 
 

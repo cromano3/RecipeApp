@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.data.repository
 
 import android.app.Application
+import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.FirebaseResult
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
@@ -58,12 +59,12 @@ class FirebaseRepository(
     //Write rating to Firestore
     suspend fun updateRating(rating: RecipeNameAndRating, uid: String): String {
 
-        val recipesCollection = db.collection("recipes").document(rating.recipeName)
+        val currentRecipeDocument = db.collection("recipes").document(rating.recipeName)
         var result = ""
 
         db.runTransaction { transaction ->
 
-            val snapshot = transaction.get(recipesCollection)
+            val snapshot = transaction.get(currentRecipeDocument)
 
             var recipeRating: Double? = snapshot.getDouble("rating")
 
@@ -77,7 +78,7 @@ class FirebaseRepository(
                 }
             }
 
-            transaction.update(recipesCollection, "rating", recipeRating)
+            transaction.update(currentRecipeDocument, "rating", recipeRating)
 
 
         }.addOnSuccessListener {
@@ -92,14 +93,15 @@ class FirebaseRepository(
 
     }
 
+    //upload local user likes to firestore
     suspend fun updateLike(likeId: String): String {
 
-        val reviewsCollection = db.collection("reviews").document(likeId)
+        val currentReviewDocument = db.collection("reviews").document(likeId)
         var result = ""
 
         db.runTransaction { transaction ->
 
-            val snapshot = transaction.get(reviewsCollection)
+            val snapshot = transaction.get(currentReviewDocument)
 
             var commentLikes: Double? = snapshot.getDouble("likes")
 
@@ -110,7 +112,7 @@ class FirebaseRepository(
                 commentLikes += 1
             }
 
-            transaction.update(reviewsCollection, "likes", commentLikes)
+            transaction.update(currentReviewDocument, "likes", commentLikes)
 
 
         }.addOnSuccessListener {
@@ -126,10 +128,41 @@ class FirebaseRepository(
 
 
 
+
+    ////Download Stuff////
+
+    suspend fun getComments(): MutableList<CommentsEntity>{
+
+        val reviewsCollection = db.collection("reviews")
+        val querySnapshot = reviewsCollection.get().await()
+
+        val resultCommentsList: MutableList<CommentsEntity> = mutableListOf()
+
+        if (querySnapshot != null) {
+            for (document in querySnapshot.documents) {
+                val commentId = document.id
+                val recipeName = document.getString("recipeName")
+                val reviewText = document.getString("reviewText")
+                val authorUid = document.getString("authorUid")
+                val likes = document.getDouble("likes")?.toInt()
+
+                val comment = CommentsEntity(commentId, recipeName ?: "", reviewText ?: "", authorUid ?: "", likes ?: 0)
+                resultCommentsList.add(comment)
+
+            }
+        }
+        return resultCommentsList
+
+    }
+
+
     //get UID
     fun getUid(): String{
         return auth.currentUser?.uid ?: ""
     }
+
+
+
 
     ////Sign in stuff below////
 
