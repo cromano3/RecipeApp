@@ -410,6 +410,7 @@ fun BearRecipeApp(
                     NewDetailsScreen(
                         recipeData = appUiState.detailsScreenTarget,
                         reviewsData = appUiState.detailsScreenReviewsData,
+                        localUserReview = appUiState.detailsScreenLocalUserReview,
 //                        onGoBackClick = { navController.popBackStack() },
                         onMenuAddClick = {
                             appViewModel.updateDetailsScreenUiOnMenuStatus()

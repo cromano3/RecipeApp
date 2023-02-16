@@ -219,6 +219,11 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             //add comments and update likes in local db
             if(commentsFromFirestore.isNotEmpty()){
                 for(comment in commentsFromFirestore){
+                    val authorData = firebaseRepository.getAuthorData(comment)
+                    withContext(Dispatchers.IO) {repository.addAuthor(authorData, comment.authorID)}
+
+                }
+                for(comment in commentsFromFirestore){
 //                    repository.updateLikes(comment)
                     withContext(Dispatchers.IO) { repository.addComment(comment) }
 
@@ -251,10 +256,12 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     fun setupDetailsScreen(recipeName: String){
         val recipeData = repository.getRecipeWithIngredientsAndInstructions(recipeName)
         val reviewsData = repository.getReviewsData(recipeName)
+        val localUserReview = repository.getLocalUserReviewData(recipeName)
         appUiState.update {
             it.copy(
                 detailsScreenTarget = recipeData,
-                detailsScreenReviewsData = reviewsData
+                detailsScreenReviewsData = reviewsData,
+                detailsScreenLocalUserReview = localUserReview,
             )
         }
     }

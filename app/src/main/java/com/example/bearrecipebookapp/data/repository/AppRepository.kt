@@ -1,11 +1,9 @@
 package com.example.bearrecipebookapp.data.repository
 
 import com.example.bearrecipebookapp.data.dao.AppDao
+import com.example.bearrecipebookapp.data.entity.CommentAuthorEntity
 import com.example.bearrecipebookapp.data.entity.CommentsEntity
-import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
-import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
-import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
+import com.example.bearrecipebookapp.datamodel.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -26,6 +24,11 @@ class AppRepository(private val appDao: AppDao) {
     fun getReviewsData(recipeName: String): List<ReviewWithAuthorDataModel> {
         return appDao.getReviewsData(recipeName)
 
+    }
+
+
+    fun getLocalUserReviewData(recipeName: String): String{
+        return appDao.getLocalUserReviewData(recipeName)
     }
 
 
@@ -66,6 +69,16 @@ class AppRepository(private val appDao: AppDao) {
 
     fun addComment(comment: CommentsEntity){
        appDao.addComment(comment)
+    }
+
+
+
+    fun addAuthor(authorData: AuthorData, id: String) {
+        appDao.addAuthor(CommentAuthorEntity(
+            authorID = id,
+            authorName = authorData.userName,
+            authorKarma = 0,
+            authorImageURL = authorData.userPhotoURL))
     }
 
 

@@ -11,11 +11,14 @@ class CommentAuthorEntity (
     @ColumnInfo(name = "author_id")
     var authorID: String = "",
 
-    @ColumnInfo(name = "author_title")
-    var authorTitle: String = "",
+    @ColumnInfo(name = "author_name")
+    var authorName: String = "",
 
     @ColumnInfo(name = "author_karma")
     var authorKarma: Int = 0,
+
+    @ColumnInfo(name ="author_image_url")
+    var authorImageURL: String = "",
 
 
 )

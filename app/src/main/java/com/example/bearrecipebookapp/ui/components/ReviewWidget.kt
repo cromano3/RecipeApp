@@ -21,9 +21,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 
 @Composable
@@ -90,6 +93,9 @@ fun ReviewWidget(
                             color = Color(0xFF682300),
                             fontSize = 36.sp
                             )
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current).data(authorImageUrl).crossfade(true),
+                            contentDescription = null)
                     }
                 }
                 //Chef title and name
@@ -99,7 +105,7 @@ fun ReviewWidget(
                         .fillMaxHeight()
                 ){
                     Text(
-                        "Chris",
+                        authorName,
                         color = Color(0xFFd8af84),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold)
@@ -137,7 +143,7 @@ fun ReviewWidget(
                             Spacer(Modifier.width(6.dp))
 
                             Text(
-                                "24",
+                                likes.toString(),
                                 color = Color(0xFFd8af84),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
@@ -176,7 +182,6 @@ fun ReviewWidget(
                 )
             }
 
-            @Suppress("KotlinConstantConditions")
             if(expandable) {
                 Spacer(
                     Modifier

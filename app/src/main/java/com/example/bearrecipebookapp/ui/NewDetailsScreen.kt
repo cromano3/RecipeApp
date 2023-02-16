@@ -1,13 +1,13 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
-import androidx.compose.animation.core.TweenSpec
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
@@ -59,6 +59,7 @@ fun NewDetailsScreen(
     //recipeName: String,
     recipeData: RecipeWithIngredientsAndInstructions,
     reviewsData: List<ReviewWithAuthorDataModel>,
+    localUserReview: String,
 //    onGoBackClick: () -> Unit,
     onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
@@ -486,7 +487,7 @@ fun NewDetailsScreen(
 //                        ReviewWidget(recipeData.reviewsList[x].reviewText)
 //                    }
 
-                    if (localUserRating.isNotEmpty() || reviewsData.isNotEmpty()) {
+                    if (localUserReview.isNotEmpty() || reviewsData.isNotEmpty()) {
                         item {
                             Text(
                                 text = "Comments and Tips",
@@ -522,13 +523,13 @@ fun NewDetailsScreen(
 
                     }
                 }
-                    if(localUserRating.isNotEmpty()){
+                    if(localUserReview.isNotEmpty()){
                         item{
                             ReviewWidget(
-                                authorName = ,
-                                authorImageUrl = ,
-                                reviewText = ,
-                                likes = ,
+                                authorName = "need to fix",
+                                authorImageUrl = "need to fix",
+                                reviewText = localUserReview,
+                                likes = 10,
                                 onLikeClick = {},
 
                             )
@@ -539,20 +540,24 @@ fun NewDetailsScreen(
                         items(reviewsData, key = { it.commentsEntity.commentID })
                         {
                             ReviewWidget(
-                                authorName = it.authorEntity.,
-                                authorImageUrl = ,
-                                reviewText = ,
-                                likes = ,
+                                authorName = it.authorEntity.authorName,
+                                authorImageUrl = it.authorEntity.authorImageURL,
+                                reviewText = it.commentsEntity.commentText,
+                                likes = it.commentsEntity.likes,
                                 onLikeClick = {},
 
                                 )
                         }
                     }
 
-                    Spacer(
-                        Modifier
-                            .size(64.dp)
-                            .fillMaxWidth())
+                    item {
+                        Spacer(
+                            Modifier
+                                .size(64.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+
                 }
             }
 

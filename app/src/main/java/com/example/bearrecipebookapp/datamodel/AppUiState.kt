@@ -12,5 +12,6 @@ data class AppUiState(
     val googleSignInResult: BeginSignInResult? = null,
     val firebaseSignInResult: String = "",
     val detailsScreenReviewsData: List<ReviewWithAuthorDataModel> = listOf(),
+    val detailsScreenLocalUserReview: String = "",
 
     )

@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.data.dao
 
 import androidx.room.*
+import com.example.bearrecipebookapp.data.entity.CommentAuthorEntity
 import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
@@ -21,7 +22,7 @@ interface AppDao {
 
 
     @Transaction
-    @Query("SELECT recipe_name, review FROM recipe_table WHERE is_review_synced = 0 AND is_reviewed = 1")
+    @Query("SELECT recipe_name AS recipeName, review AS reviewText FROM recipe_table WHERE is_review_synced = 0 AND is_reviewed = 1")
     fun getUnsyncedUserComments(): List<RecipeNameAndReview>
 
     @Transaction
@@ -65,6 +66,13 @@ interface AppDao {
 
 
 
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addAuthor(author: CommentAuthorEntity)
+
+
+
+
 
     @Transaction
     @Query("UPDATE recipe_table SET global_rating = :rating WHERE recipe_name = :recipeName")
@@ -77,6 +85,14 @@ interface AppDao {
     @Transaction
     @Query("SELECT * FROM comments_table WHERE recipe_name = :recipeName")
     fun getReviewsData(recipeName: String): List<ReviewWithAuthorDataModel>
+
+
+
+
+
+    @Transaction
+    @Query("SELECT review FROM recipe_table WHERE is_review_synced = 0 AND is_reviewed = 1")
+    fun getLocalUserReviewData(recipeName: String): String
 
 
 

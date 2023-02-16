@@ -2,6 +2,7 @@ package com.example.bearrecipebookapp.data.repository
 
 import android.app.Application
 import com.example.bearrecipebookapp.data.entity.CommentsEntity
+import com.example.bearrecipebookapp.datamodel.AuthorData
 import com.example.bearrecipebookapp.datamodel.FirebaseResult
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
@@ -157,7 +158,7 @@ class FirebaseRepository(
     }
 
     //get recipe ratings
-    suspend fun getRecipeRatings(): MutableList<RecipeNameAndRating>{
+    suspend fun getRecipeRatings(): MutableList<RecipeNameAndRating> {
 
         val recipesCollection = db.collection("recipes")
         val querySnapshot = recipesCollection.get().await()
@@ -176,6 +177,23 @@ class FirebaseRepository(
         }
         return resultRecipeList
 
+    }
+
+    suspend fun getAuthorData(comment: CommentsEntity): AuthorData {
+        val authorDoc = db.collection("users").document(comment.authorID).get().await()
+
+        var authorData: AuthorData = AuthorData("","")
+
+        if(authorDoc != null){
+
+            val userName = authorDoc.getString("display_name")
+            val userPhotoURL = authorDoc.getString("user_photo")
+
+            authorData = AuthorData(userName ?: "", userPhotoURL ?: "")
+
+        }
+
+        return authorData
     }
 
 
