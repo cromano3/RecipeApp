@@ -5,6 +5,7 @@ import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
+import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 
 @Dao
 interface AppDao {
@@ -69,6 +70,13 @@ interface AppDao {
     @Query("UPDATE recipe_table SET global_rating = :rating WHERE recipe_name = :recipeName")
     fun updateRecipeRating(recipeName: String, rating: Int)
 
+
+
+
+
+    @Transaction
+    @Query("SELECT * FROM comments_table WHERE recipe_name = :recipeName")
+    fun getReviewsData(recipeName: String): List<ReviewWithAuthorDataModel>
 
 
 

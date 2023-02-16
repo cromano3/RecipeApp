@@ -22,20 +22,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun ReviewWidget(){
-
+fun ReviewWidget(
+    authorName: String,
+    authorImageUrl: String,
+    reviewText: String,
+    likes: Int,
+    onLikeClick: () -> Unit,
+){
     var expanded by remember { mutableStateOf(false) }
 //    val modifier = if(expanded) Modifier.wrapContentHeight() else Modifier.height(280.dp)
 
     val modifier =Modifier.wrapContentHeight()
 
-    val reviewText = "This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This "
+//    val reviewText = "This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This "
     val expandable = reviewText.length > 160
     val surfaceShape = if(expandable) RoundedCornerShape(10.dp, 10.dp, 25.dp, 25.dp) else RoundedCornerShape(10.dp)
 
@@ -220,8 +224,8 @@ fun ReviewWidget(){
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun revwidprev(){
-    ReviewWidget()
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun revwidprev(){
+//    ReviewWidget()
+//}

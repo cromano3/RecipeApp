@@ -248,10 +248,14 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     }
 
 
-    suspend fun setupDetailsScreen(recipeName: String){
-        val result = repository.getRecipeWithIngredientsAndInstructions(recipeName)
+    fun setupDetailsScreen(recipeName: String){
+        val recipeData = repository.getRecipeWithIngredientsAndInstructions(recipeName)
+        val reviewsData = repository.getReviewsData(recipeName)
         appUiState.update {
-            it.copy(detailsScreenTarget = result)
+            it.copy(
+                detailsScreenTarget = recipeData,
+                detailsScreenReviewsData = reviewsData
+            )
         }
     }
 

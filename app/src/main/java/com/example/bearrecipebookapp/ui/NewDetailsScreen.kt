@@ -1,8 +1,13 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
@@ -19,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -40,7 +46,9 @@ import com.example.bearrecipebookapp.data.annotatedstrings.confirmIMadeThisAnoSt
 import com.example.bearrecipebookapp.data.annotatedstrings.confirmRemoveMenuAnoString
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
+import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 import com.example.bearrecipebookapp.ui.components.*
+import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.DetailsScreenViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +58,7 @@ import kotlinx.coroutines.Dispatchers
 fun NewDetailsScreen(
     //recipeName: String,
     recipeData: RecipeWithIngredientsAndInstructions,
+    reviewsData: List<ReviewWithAuthorDataModel>,
 //    onGoBackClick: () -> Unit,
     onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
@@ -142,46 +151,54 @@ fun NewDetailsScreen(
 //            BackHandler { onGoBackClick() }
             Column() {
 
-                Column(
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState, enabled = true),
+                        .fillMaxSize(),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Spacer(
-                        Modifier
-                            .fillMaxWidth()
-                            .border(1.dp, Color(0xFFd8af84))
-                            .height(1.dp))
+                    item{
+                        Spacer(
+                            Modifier
+                                .fillMaxWidth()
+                                .border(1.dp, Color(0xFFd8af84))
+                                .height(1.dp)
+                        )
+                    }
 
-                    AsyncImage(
-                        model = image,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp)
-                            .padding(bottom = 0.dp),
-                        contentScale = ContentScale.Crop,
-                    )
+                    item{
+                        AsyncImage(
+                            model = image,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(300.dp)
+                                .padding(bottom = 0.dp),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
 
-                    Spacer(
-                        Modifier
-                            .fillMaxWidth()
-                            .border(1.dp, Color(0xFFd8af84))
-                            .height(1.dp))
+                    item{
+                        Spacer(
+                            Modifier
+                                .fillMaxWidth()
+                                .border(1.dp, Color(0xFFd8af84))
+                                .height(1.dp)
+                        )
+                    }
 
 
-                    Column(
-                        modifier = Modifier
-                            // .weight(1f)
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+//                    Column(
+//                        modifier = Modifier
+//                            // .weight(1f)
+//                            .fillMaxSize(),
+//                        verticalArrangement = Arrangement.Center,
+//                        horizontalAlignment = Alignment.CenterHorizontally
+//                    ) {
 
-                        //Buttons Row beneath image
+                    //Buttons Row beneath image
+                    item{
                         Surface(
                             modifier =
                             Modifier
@@ -280,9 +297,10 @@ fun NewDetailsScreen(
 
                             }
                         }
+                    }
 
-
-                        //Info box
+                    //Info box
+                    item{
                         Surface(
                             modifier = Modifier
                                 .padding(bottom = 16.dp)
@@ -387,55 +405,60 @@ fun NewDetailsScreen(
 
 
                         }
+                    }
 
                         //Ingredients List //
-                        Surface(
-                            modifier = Modifier
-                                .wrapContentHeight()
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                            //    .weight(1f),
-                            shape = RoundedCornerShape(10.dp),
-                            color = Color(0xFF682300),
+                        item {
+                            Surface(
+                                modifier = Modifier
+                                    .wrapContentHeight()
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                                //    .weight(1f),
+                                shape = RoundedCornerShape(10.dp),
+                                color = Color(0xFF682300),
 
-                            ) {
-                            Column(
-                                Modifier.padding(
-                                    top = 8.dp,
-                                    bottom = 8.dp,
-                                    start = 16.dp,
-                                    end = 16.dp
-                                )
-                            ) {
-                                Text(
-                                    modifier = Modifier
-                                        .padding(bottom = 8.dp)
-                                        .align(Alignment.CenterHorizontally),
-                                    text = "Ingredients List:",
-                                    textDecoration = TextDecoration.Underline,
-                                    color = Color(0xFFd8af84),
-                                    fontSize = 18.sp
-                                )
-
-
-                                for (x in 0 until recipeData.ingredientsList.size) {
+                                ) {
+                                Column(
+                                    Modifier.padding(
+                                        top = 8.dp,
+                                        bottom = 8.dp,
+                                        start = 16.dp,
+                                        end = 16.dp
+                                    )
+                                ) {
                                     Text(
-                                        //modifier = Modifier.padding(start = 8.dp, end = 8.dp),
-                                        text = "- " + recipeData.ingredientsList[x].ingredientName,
+                                        modifier = Modifier
+                                            .padding(bottom = 8.dp)
+                                            .align(Alignment.CenterHorizontally),
+                                        text = "Ingredients List:",
+                                        textDecoration = TextDecoration.Underline,
                                         color = Color(0xFFd8af84),
                                         fontSize = 18.sp
-
                                     )
+
+
+                                    for (x in 0 until recipeData.ingredientsList.size) {
+                                        Text(
+                                            //modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+                                            text = "- " + recipeData.ingredientsList[x].ingredientName,
+                                            color = Color(0xFFd8af84),
+                                            fontSize = 18.sp
+
+                                        )
+                                    }
                                 }
                             }
                         }
 
 
 
-                    }
 
                     //Instructions List
-                    for (x in 0 until recipeData.instructionsList.size) {
+
+                    //for (x in 0 until recipeData.instructionsList.size) {
+                    items(recipeData.instructionsList, key = { it.instruction })
+                    {
                         Surface(
                             modifier = Modifier
                                 .wrapContentHeight()
@@ -451,19 +474,80 @@ fun NewDetailsScreen(
                             Text(
                                 modifier = Modifier.padding(8.dp),
                                 color = Color(0xFFd8af84),
-                                text = recipeData.instructionsList[x].instruction,
+                                text = it.instruction,
                                 textAlign = TextAlign.Center
                             )
                         }
-
                     }
+
+//                    }
 
 //                    for(x in 0 until recipeData.reviewsList.size){
 //                        ReviewWidget(recipeData.reviewsList[x].reviewText)
 //                    }
 
-                    ReviewWidget()
-                    ReviewWidget()
+                    if (localUserRating.isNotEmpty() || reviewsData.isNotEmpty()) {
+                        item {
+                            Text(
+                                text = "Comments and Tips",
+                                modifier = Modifier.padding(
+                                    top = 8.dp,
+                                    start = 8.dp,
+                                    bottom = 2.dp
+                                ),
+                                fontSize = 18.sp,
+                                fontFamily = Cabin,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF682300)
+                            )
+                        }
+
+                    item {
+                        Spacer(
+                            Modifier
+                                .height(2.dp)
+                                .fillMaxWidth()
+                                .border(
+                                    width = 2.dp,
+                                    brush = (Brush.horizontalGradient(
+                                        colors = listOf(
+                                            Color(0xFFd8af84),
+                                            Color(0xFFb15f33)
+                                        ),
+                                        tileMode = TileMode.Mirror
+                                    )),
+                                    shape = RectangleShape
+                                ),
+                        )
+
+                    }
+                }
+                    if(localUserRating.isNotEmpty()){
+                        item{
+                            ReviewWidget(
+                                authorName = ,
+                                authorImageUrl = ,
+                                reviewText = ,
+                                likes = ,
+                                onLikeClick = {},
+
+                            )
+                        }
+                    }
+
+                    if(reviewsData.isNotEmpty()) {
+                        items(reviewsData, key = { it.commentsEntity.commentID })
+                        {
+                            ReviewWidget(
+                                authorName = it.authorEntity.,
+                                authorImageUrl = ,
+                                reviewText = ,
+                                likes = ,
+                                onLikeClick = {},
+
+                                )
+                        }
+                    }
 
                     Spacer(
                         Modifier

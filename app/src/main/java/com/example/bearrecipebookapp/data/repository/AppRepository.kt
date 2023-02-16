@@ -5,6 +5,7 @@ import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
+import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -18,6 +19,13 @@ class AppRepository(private val appDao: AppDao) {
 
     fun getRecipeWithIngredientsAndInstructions(recipeName: String): RecipeWithIngredientsAndInstructions{
         return appDao.getRecipeWithIngredientsAndInstructions(recipeName)
+    }
+
+
+
+    fun getReviewsData(recipeName: String): List<ReviewWithAuthorDataModel> {
+        return appDao.getReviewsData(recipeName)
+
     }
 
 
