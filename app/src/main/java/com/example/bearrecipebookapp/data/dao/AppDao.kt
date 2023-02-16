@@ -45,7 +45,7 @@ interface AppDao {
 
 
     @Transaction
-    @Query("SELECT recipe_name, local_user_rating FROM recipe_table WHERE is_rating_synced = 0 AND is_rated = 1")
+    @Query("SELECT recipe_name AS recipeName, local_user_rating AS rating FROM recipe_table WHERE is_rating_synced = 0 AND is_rated = 1")
     fun getUnsyncedUserRatings(): List<RecipeNameAndRating>
 
     @Transaction
@@ -91,7 +91,7 @@ interface AppDao {
 
 
     @Transaction
-    @Query("SELECT review FROM recipe_table WHERE is_review_synced = 0 AND is_reviewed = 1")
+    @Query("SELECT review FROM recipe_table WHERE is_review_synced = 0 AND is_reviewed = 1 AND recipe_name = :recipeName")
     fun getLocalUserReviewData(recipeName: String): String
 
 

@@ -19,6 +19,8 @@ import com.example.bearrecipebookapp.data.entity.*
                         SearchEntity::class,
                         UserEntity::class,
                         ShoppingListCustomItemsEntity::class,
+                        CommentAuthorEntity::class,
+                        CommentsEntity::class,
 
                      ],
     version = 1,
@@ -50,10 +52,10 @@ public abstract class RecipeAppDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                RecipeAppDatabase::class.java, "app_database48.db"
+                RecipeAppDatabase::class.java, "app_database49.db"
             )
               //  .allowMainThreadQueries()
-                .createFromAsset("database/app_database48.db")
+                .createFromAsset("database/app_database49.db")
                 .build()
                 // prepopulate the database after onCreate was called
 //                .addCallback(object : Callback() {
