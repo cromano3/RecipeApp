@@ -50,19 +50,32 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         viewModelScope.launch {
 
             println("1")
-            val isNew = withContext(Dispatchers.IO) { repository.isNewUser() }
+            val onlineUserType = withContext(Dispatchers.IO) { repository.onlineUserType() }
             println("4")
-            println(isNew)
+            println(onlineUserType)
             appUiState.update {
                 it.copy(
-                    userIsOnlineStatus = isNew
+                    userIsOnlineStatus = onlineUserType
                 )
             }
 
             if (appUiState.value.userIsOnlineStatus == -2) {
-                println("in new")
+                println("in new to this device")
                 googleOneTapSignInOrUp()
 
+            }
+            else if(appUiState.value.userIsOnlineStatus == 1){
+
+                val isAuthed = firebaseRepository.currentUser()
+
+                if(isAuthed != null){
+                    println("before sync and is authed")
+                    dataSync()
+                }
+                else{
+                    println("before sign IN and is NOT authed")
+                    googleOneTapSignIn()
+                }
             }
         }
 
@@ -98,20 +111,31 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     }
 
     private suspend fun googleOneTapSignInOrUp(){
-//        viewModelScope.launch {
-            val result = firebaseRepository.googleOneTapSignInOrUp()
-            if(result.result == "Success"){
-                appUiState.update {
-                    it.copy(
-                        googleSignInState = "Success",
-                        googleSignInResult = result.signInResult
-                    )
-                }
+        val result = firebaseRepository.googleOneTapSignInOrUp()
+        if(result.result == "Success"){
+            appUiState.update {
+                it.copy(
+                    googleSignInState = "Success",
+                    googleSignInResult = result.signInResult
+                )
             }
-
-//        }
-
+        }
     }
+
+    private suspend fun googleOneTapSignIn(){
+        val result = firebaseRepository.googleOneTapSignIn()
+        if(result.result == "Success"){
+            appUiState.update {
+                it.copy(
+                    googleSignInState = "Success",
+                    googleSignInResult = result.signInResult
+                )
+            }
+        }
+    }
+
+
+
 
     fun firebaseSignInWithGoogle(googleCredential: AuthCredential) = viewModelScope.launch {
         println("in view firebase try")
@@ -123,12 +147,21 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             )
         }
 
+        //user is new and needs to wait timeout for data sync
+        /**SET timeout start point here*/
         if(firebaseSignInWithGoogleResponse == "NewUserSuccess" && appUiState.value.userIsOnlineStatus == -2){
             //set user info in local DB (name and image for now)
             /**a similar function to this will eventually be used to sync user karma, but not in this exact location/call spot.*/
-            setupNewUser()
+            setupUser()
         }
-        else if(firebaseSignInWithGoogleResponse == "ReturningUserSuccess"){
+        //user is new to THIS DEVICE but not our project, they need to wait for timeout for data sync as well
+        /**SET timeout start point here*/
+        else if(firebaseSignInWithGoogleResponse == "ReturningUserSuccess" && appUiState.value.userIsOnlineStatus == -2){
+            println("data sync from sign IN")
+            setupUser()
+        //user was successfully logged in and is not new to this device they also need to wait for timeout
+            /**check for time out here, if passed do sync*/
+        }else if(firebaseSignInWithGoogleResponse == "NewUserSuccess" || firebaseSignInWithGoogleResponse == "ReturningUserSuccess"){
             dataSync()
         }
 
@@ -139,7 +172,15 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         return repository.getUserId()
     }
 
-    private suspend fun setupNewUser(){
+    private suspend fun setupUser(){
+
+
+        withContext(Dispatchers.IO) { repository.setOnlineUserType(1) }
+        appUiState.update {
+            it.copy(
+                userIsOnlineStatus = 1
+            )
+        }
 
         val uid = firebaseRepository.getUid()
 
@@ -191,17 +232,26 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
     private fun dataSync(){
         viewModelScope.launch {
+            println("data sync coroutine start")
 
-            val uid = withContext(Dispatchers.IO) { getUserIdFromRoom() }
-            appUiState.update { it.copy(userId = uid) }
+            setupUser()
 
+
+//            val uid = withContext(Dispatchers.IO) { getUserIdFromRoom() }
+//            appUiState.update { it.copy(userId = uid) }
+//
+//            println("uid is $uid")
+
+            val uid = firebaseRepository.getUid()
 
             ////Comments////
 
             val unsyncedUserComments = withContext(Dispatchers.IO) { repository.getUnsyncedUserComments() }
 
+            println("before comments upload")
             //upload comments and mark as synced
             if(unsyncedUserComments.isNotEmpty()) {
+                print("comments not empty")
                 for (comment in unsyncedUserComments) {
                     //upload comments
                     firebaseRepository.uploadComment(comment, uid)
@@ -214,11 +264,14 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
             val unsyncedUserRatings = withContext(Dispatchers.IO) { repository.getUnsyncedUserRatings() }
 
+            println("before ratings upload")
             //upload ratings and mark as synced
             if(unsyncedUserRatings.isNotEmpty()) {
+                println("ratings not empty")
                 for (rating in unsyncedUserRatings) {
                     val successStatus = firebaseRepository.updateRating(rating, uid)
                     if(successStatus == "Success") {
+                        println("rating successfully updated")
                         withContext(Dispatchers.IO) { repository.markRatingAsSynced(rating) }
                     }
                 }
@@ -229,7 +282,9 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
             val unsyncedUserLikes = withContext(Dispatchers.IO) { repository.getUnsyncedUserLikes() }
 
+            println("before new likes upload")
             if(unsyncedUserLikes.isNotEmpty()){
+                println("new likes not empty")
                 for(likeId in unsyncedUserLikes){
                     val successStatus = firebaseRepository.updateLike(likeId)
                     if(successStatus == "Success") {
@@ -249,14 +304,18 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
              */
             val commentsFromFirestore = firebaseRepository.getComments()
 
+            println("before comments DOWNLOAD")
             //add comments and update likes in local db
             if(commentsFromFirestore.isNotEmpty()){
+                println("new comments not empty")
                 for(comment in commentsFromFirestore){
+                    println("do comment sync (authors)")
                     val authorData = firebaseRepository.getAuthorData(comment)
                     withContext(Dispatchers.IO) {repository.addAuthor(authorData, comment.authorID)}
 
                 }
                 for(comment in commentsFromFirestore){
+                    println("do comment sync (comments)")
 //                    repository.updateLikes(comment)
                     withContext(Dispatchers.IO) { repository.addComment(comment) }
 
@@ -264,24 +323,23 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             }
 
 
-
             //get ratings from remote
             /**needs similar timing functionality as above*/
             val recipeRatingsFromFirestore = firebaseRepository.getRecipeRatings()
 
+            println("before download ratings")
             //update ratings in local db
             if(recipeRatingsFromFirestore.isNotEmpty()){
+                println("new ratings not empty")
                 for(recipe in recipeRatingsFromFirestore){
+                    println("do ratings update")
                     withContext(Dispatchers.IO) { repository.updateRecipeRating(recipe) }
                 }
             }
 
 
 
-
-
         }
-
 
     }
 
@@ -289,7 +347,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     fun setupDetailsScreen(recipeName: String){
         val recipeData = repository.getRecipeWithIngredientsAndInstructions(recipeName)
         val reviewsData = repository.getReviewsData(recipeName)
-        val localUserReview = repository.getLocalUserReviewData(recipeName) ?: "none"
+        val localUserReview = repository.getLocalUserReviewData(recipeName) ?: ""
         appUiState.update {
             it.copy(
                 detailsScreenTarget = recipeData,
@@ -300,7 +358,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     }
 
     fun updateDetailsScreenWithJustWrittenReview(){
-        val localUserReview = repository.getLocalUserReviewData(appUiState.value.detailsScreenTarget.recipeEntity.recipeName) ?: "none"
+        val localUserReview = repository.getLocalUserReviewData(appUiState.value.detailsScreenTarget.recipeEntity.recipeName) ?: ""
         appUiState.update {
             it.copy(
                 detailsScreenLocalUserReview = localUserReview,

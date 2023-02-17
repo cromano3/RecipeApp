@@ -6,7 +6,6 @@ import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 class AppRepository(private val appDao: AppDao) {
@@ -38,6 +37,7 @@ class AppRepository(private val appDao: AppDao) {
     }
 
     fun markCommentAsSynced(comment: RecipeNameAndReview) {
+        println("mark synced")
         appDao.markCommentAsSynced(comment.recipeName)
     }
 
@@ -58,6 +58,12 @@ class AppRepository(private val appDao: AppDao) {
 
     fun markLikeAsSynced(likeId: String){
         appDao.markLikeAsSynced(likeId)
+    }
+
+
+
+    fun setOnlineUserType(type: Int){
+        appDao.setOnlineUserType(type)
     }
 
 
@@ -92,10 +98,9 @@ class AppRepository(private val appDao: AppDao) {
 
 
 
-    suspend fun isNewUser(): Int{
+    fun onlineUserType(): Int{
         println("2")
-        val x = appDao.isNewUser()
-        delay(2000)
+        val x = appDao.onlineUserType()
         println("3")
 
         return x

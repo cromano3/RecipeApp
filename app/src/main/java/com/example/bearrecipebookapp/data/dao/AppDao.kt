@@ -17,7 +17,7 @@ interface AppDao {
 
     @Transaction
     @Query("SELECT is_online_user_type FROM user_table")
-    fun isNewUser(): Int
+    fun onlineUserType(): Int
 
 
 
@@ -51,6 +51,14 @@ interface AppDao {
     @Transaction
     @Query("UPDATE recipe_table SET is_rating_synced = 1 WHERE recipe_name = :recipeName")
     fun markRatingAsSynced(recipeName: String)
+
+
+
+
+    @Transaction
+    @Query("UPDATE user_table SET is_online_user_type = :type")
+    fun setOnlineUserType(type: Int)
+
 
 
 

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0ac1547f271f597a9ccdb0c4f7c46d19",
+    "identityHash": "6ad4c9edeb5d59e3c1c664ae174657ee",
     "entities": [
       {
         "tableName": "recipe_table",
@@ -342,7 +342,7 @@
       },
       {
         "tableName": "user_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_pk` INTEGER NOT NULL, `firestore_uid` TEXT NOT NULL, `exp_to_give` INTEGER NOT NULL, `exp_total` INTEGER NOT NULL, `show_tutorial` TEXT NOT NULL, `is_online_user_type` INTEGER NOT NULL, PRIMARY KEY(`user_pk`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_pk` INTEGER NOT NULL, `firestore_uid` TEXT NOT NULL, `exp_to_give` INTEGER NOT NULL, `exp_total` INTEGER NOT NULL, `show_tutorial` TEXT NOT NULL, `is_online_user_type` INTEGER NOT NULL, `user_image_url` TEXT NOT NULL, `user_nickname` TEXT NOT NULL, PRIMARY KEY(`user_pk`))",
         "fields": [
           {
             "fieldPath": "userID",
@@ -378,6 +378,18 @@
             "fieldPath": "isOnlineUser",
             "columnName": "is_online_user_type",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userImageUrl",
+            "columnName": "user_image_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userNickname",
+            "columnName": "user_nickname",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -514,7 +526,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0ac1547f271f597a9ccdb0c4f7c46d19')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6ad4c9edeb5d59e3c1c664ae174657ee')"
     ]
   }
 }

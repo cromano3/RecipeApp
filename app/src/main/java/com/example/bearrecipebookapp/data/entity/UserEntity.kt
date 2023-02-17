@@ -27,9 +27,9 @@ class UserEntity(
     var isOnlineUser: Int = 0,
 
     @ColumnInfo(name = "user_image_url")
-    var userImageUrl: Int = 0,
+    var userImageUrl: String = "",
 
     @ColumnInfo(name = "user_nickname")
-    var userNickname: Int = 0,
+    var userNickname: String = "",
 
 )

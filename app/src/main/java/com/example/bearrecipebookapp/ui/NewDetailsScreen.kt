@@ -60,6 +60,8 @@ fun NewDetailsScreen(
     recipeData: RecipeWithIngredientsAndInstructions,
     reviewsData: List<ReviewWithAuthorDataModel>,
     localUserReview: String,
+    localUserNickName: String,
+    localUserImageIRL: String,
 //    onGoBackClick: () -> Unit,
     onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
@@ -526,8 +528,8 @@ fun NewDetailsScreen(
                     if(localUserReview.isNotEmpty()){
                         item{
                             ReviewWidget(
-                                authorName = "need to fix",
-                                authorImageUrl = "need to fix",
+                                authorName = localUserNickName,
+                                authorImageUrl = localUserImageIRL,
                                 reviewText = localUserReview,
                                 likes = 10,
                                 onLikeClick = {},

@@ -49,6 +49,7 @@ class FirebaseRepository(
 
     //Write comment to Firestore
     suspend fun uploadComment(review: RecipeNameAndReview, authorId: String){
+        println("try upload comment")
         val newComment = hashMapOf(
             "recipeName" to review.recipeName,
             "reviewText" to review.reviewText,
@@ -148,7 +149,16 @@ class FirebaseRepository(
                 val authorUid = document.getString("authorUid")
                 val likes = document.getDouble("likes")?.toInt()
 
-                val comment = CommentsEntity(commentId, recipeName ?: "", reviewText ?: "", authorUid ?: "", likes ?: 0)
+                val comment = CommentsEntity(
+                 commentID = commentId,
+                 recipeName  = recipeName ?: "",
+                 authorID = authorUid ?: "",
+                 commentText = reviewText ?: "",
+                 likes = likes ?: 0,
+                 likedByMe = 0,
+                 myLikeWasSynced = 0,
+                )
+
                 resultCommentsList.add(comment)
 
             }
@@ -202,6 +212,10 @@ class FirebaseRepository(
         return auth.currentUser?.uid ?: ""
     }
 
+    fun currentUser(): FirebaseUser? {
+        return auth.currentUser
+    }
+
     suspend fun getUserData(uid: String): AuthorData{
         val userDoc = db.collection("users").document(uid).get().await()
         var userData: AuthorData = AuthorData("", "")
@@ -236,9 +250,22 @@ class FirebaseRepository(
                 val signUpResult = oneTapClient.beginSignIn(signUpRequest).await()
                 FirebaseResult("Success", signUpResult, null)
             } catch (e: Exception) {
-                println("error")
+                println("error $e ???")
                 FirebaseResult("Failed", null, e)
             }
+        }
+    }
+
+    suspend fun googleOneTapSignIn(): FirebaseResult {
+        println("before sign IN try")
+        return try {
+            println("try sign IN")
+            val signInResult = oneTapClient.beginSignIn(signInRequest).await()
+            FirebaseResult("Success", signInResult, null)
+        } catch (e: Exception) {
+            println("failed sign IN error: $e")
+            FirebaseResult("Failed", null, e)
+
         }
 
     }
