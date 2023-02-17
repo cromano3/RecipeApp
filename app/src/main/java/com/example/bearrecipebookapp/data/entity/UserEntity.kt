@@ -8,8 +8,11 @@ import androidx.room.PrimaryKey
 class UserEntity(
 
     @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = "user_id")
+    @ColumnInfo(name = "user_pk")
     var userID: Int = 0,
+
+    @ColumnInfo(name = "firestore_uid")
+    var firestoreUid: String = "",
 
     @ColumnInfo(name = "exp_to_give")
     val expToGive: Int = 0,
@@ -20,7 +23,13 @@ class UserEntity(
     @ColumnInfo(name = "show_tutorial")
     var showTutorial: String = "false",
 
-    @ColumnInfo(name = "is_online")
+    @ColumnInfo(name = "is_online_user_type")
     var isOnlineUser: Int = 0,
+
+    @ColumnInfo(name = "user_image_url")
+    var userImageUrl: Int = 0,
+
+    @ColumnInfo(name = "user_nickname")
+    var userNickname: Int = 0,
 
 )

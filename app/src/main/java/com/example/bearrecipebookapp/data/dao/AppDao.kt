@@ -16,7 +16,7 @@ interface AppDao {
     fun getRecipeWithIngredientsAndInstructions(recipeName: String): RecipeWithIngredientsAndInstructions
 
     @Transaction
-    @Query("SELECT is_online FROM user_table")
+    @Query("SELECT is_online_user_type FROM user_table")
     fun isNewUser(): Int
 
 
@@ -92,19 +92,29 @@ interface AppDao {
 
     @Transaction
     @Query("SELECT review FROM recipe_table WHERE is_review_synced = 0 AND is_reviewed = 1 AND recipe_name = :recipeName")
-    fun getLocalUserReviewData(recipeName: String): String
+    fun getLocalUserReviewData(recipeName: String): String?
 
 
 
 
 
     @Transaction
-    @Query("UPDATE user_table SET user_id = :uid")
+    @Query("UPDATE user_table SET firestore_uid = :uid")
     fun setUid(uid: String)
 
     @Transaction
-    @Query("SELECT user_id FROM user_table")
+    @Query("SELECT firestore_uid FROM user_table")
     fun getUserId(): String
+
+
+
+    @Transaction
+    @Query("UPDATE user_table SET user_image_url = :url")
+    fun setUserImageURL(url: String)
+
+    @Transaction
+    @Query("UPDATE user_table SET user_nickname = :name")
+    fun setUserNickname(name: String)
 
 
 }

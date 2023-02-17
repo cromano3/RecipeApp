@@ -17,6 +17,7 @@ import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -25,7 +26,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
 
 
@@ -85,18 +88,32 @@ fun ReviewWidget(
                     shape = CircleShape,
                     color = Color(0xFFd8af84)
                 ){
-                    Box(
-                        Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center){
-                        Text(
-                            text = "C",
-                            color = Color(0xFF682300),
-                            fontSize = 36.sp
-                            )
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current).data(authorImageUrl).crossfade(true),
-                            contentDescription = null)
-                    }
+
+                        SubcomposeAsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current).data(authorImageUrl).crossfade(true).build(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .fillMaxSize()
+                        ){
+                            val state = painter.state
+                            if(state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error){
+                                Box(
+                                    Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center) {
+                                    Text(
+                                        text = "T",
+                                        color = Color(0xFF682300),
+                                        fontSize = 36.sp
+                                    )
+                                }
+                            }
+                            else{
+                                SubcomposeAsyncImageContent()
+                            }
+
+                        }
+
                 }
                 //Chef title and name
                 Column(

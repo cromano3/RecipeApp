@@ -202,6 +202,23 @@ class FirebaseRepository(
         return auth.currentUser?.uid ?: ""
     }
 
+    suspend fun getUserData(uid: String): AuthorData{
+        val userDoc = db.collection("users").document(uid).get().await()
+        var userData: AuthorData = AuthorData("", "")
+
+        if(userDoc != null){
+            val userName = userDoc.getString("display_name")
+            val userPhotoURL = userDoc.getString("user_photo")
+
+            userData = AuthorData(userName ?: "", userPhotoURL ?: "")
+        }
+
+        return userData
+
+
+
+    }
+
 
 
 
@@ -236,9 +253,11 @@ class FirebaseRepository(
             if (isNewUser) {
                 println("in is new")
                 addUserToFirestore()
+                "NewUserSuccess"
+            }else{
+                println("succeed!!!!")
+                "ReturningUserSuccess"
             }
-            println("succeed!!!!")
-            "Success"
         } catch (e: Exception) {
             println("failed but SO CLOSE")
             "Failed: $e"

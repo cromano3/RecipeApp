@@ -123,11 +123,12 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             )
         }
 
-        if(firebaseSignInWithGoogleResponse == "Success" && appUiState.value.userIsOnlineStatus == -2){
-            //set uid in local DB
-            setNewUserId()
+        if(firebaseSignInWithGoogleResponse == "NewUserSuccess" && appUiState.value.userIsOnlineStatus == -2){
+            //set user info in local DB (name and image for now)
+            /**a similar function to this will eventually be used to sync user karma, but not in this exact location/call spot.*/
+            setupNewUser()
         }
-        else if(firebaseSignInWithGoogleResponse == "Success"){
+        else if(firebaseSignInWithGoogleResponse == "ReturningUserSuccess"){
             dataSync()
         }
 
@@ -138,9 +139,10 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         return repository.getUserId()
     }
 
-    private suspend fun setNewUserId(){
+    private suspend fun setupNewUser(){
 
         val uid = firebaseRepository.getUid()
+
         if (uid == ""){
             println("failed to retrieve UID of new user")
         }
@@ -151,7 +153,38 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                     userId = uid
                 )
             }
+
+            val userData = firebaseRepository.getUserData(uid)
+
+            //try set user image URL
+            if(userData.userPhotoURL == ""){
+                println("failed to retrieve user image URL")
+            }
+            else{
+                withContext(Dispatchers.IO) { repository.setUserImageURL(userData.userPhotoURL) }
+                appUiState.update {
+                    it.copy(
+                        userImageURL = userData.userPhotoURL
+                    )
+                }
+            }
+
+            //try set user nickname
+            if(userData.userPhotoURL == ""){
+                println("failed to retrieve user nickname")
+            }
+            else{
+                withContext(Dispatchers.IO) { repository.setUserNickname(userData.userName) }
+                appUiState.update {
+                    it.copy(
+                        userNickname = userData.userName
+                    )
+                }
+            }
+
         }
+
+
 
     }
 
@@ -256,11 +289,20 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     fun setupDetailsScreen(recipeName: String){
         val recipeData = repository.getRecipeWithIngredientsAndInstructions(recipeName)
         val reviewsData = repository.getReviewsData(recipeName)
-        val localUserReview = repository.getLocalUserReviewData(recipeName)
+        val localUserReview = repository.getLocalUserReviewData(recipeName) ?: "none"
         appUiState.update {
             it.copy(
                 detailsScreenTarget = recipeData,
                 detailsScreenReviewsData = reviewsData,
+                detailsScreenLocalUserReview = localUserReview,
+            )
+        }
+    }
+
+    fun updateDetailsScreenWithJustWrittenReview(){
+        val localUserReview = repository.getLocalUserReviewData(appUiState.value.detailsScreenTarget.recipeEntity.recipeName) ?: "none"
+        appUiState.update {
+            it.copy(
                 detailsScreenLocalUserReview = localUserReview,
             )
         }

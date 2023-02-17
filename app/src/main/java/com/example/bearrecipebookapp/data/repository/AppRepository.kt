@@ -27,7 +27,7 @@ class AppRepository(private val appDao: AppDao) {
     }
 
 
-    fun getLocalUserReviewData(recipeName: String): String{
+    fun getLocalUserReviewData(recipeName: String): String? {
         return appDao.getLocalUserReviewData(recipeName)
     }
 
@@ -108,6 +108,14 @@ class AppRepository(private val appDao: AppDao) {
 
     fun getUserId(): String{
         return appDao.getUserId()
+    }
+
+    fun setUserImageURL(url: String){
+        appDao.setUserImageURL(url)
+    }
+
+    fun setUserNickname(name: String){
+        appDao.setUserNickname(name)
     }
 
 //    fun setReviewAsWritten(recipeName: String){

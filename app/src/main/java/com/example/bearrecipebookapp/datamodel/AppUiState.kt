@@ -7,6 +7,8 @@ data class AppUiState(
     val reviewScreenTarget: RecipeWithIngredientsAndInstructions = RecipeWithIngredientsAndInstructions(),
     val userIsOnlineStatus: Int = 0,
     val userId: String = "",
+    val userImageURL: String = "",
+    val userNickname: String = "",
     val showSignIn: Boolean = false,
     val googleSignInState: String = "",
     val googleSignInResult: BeginSignInResult? = null,
