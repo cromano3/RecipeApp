@@ -59,9 +59,9 @@ fun NewDetailsScreen(
     //recipeName: String,
     recipeData: RecipeWithIngredientsAndInstructions,
     reviewsData: List<ReviewWithAuthorDataModel>,
-    localUserReview: String,
-    localUserNickName: String,
-    localUserImageIRL: String,
+//    localUserReview: String,
+//    localUserNickName: String,
+//    localUserImageIRL: String,
 //    onGoBackClick: () -> Unit,
     onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
@@ -489,7 +489,7 @@ fun NewDetailsScreen(
 //                        ReviewWidget(recipeData.reviewsList[x].reviewText)
 //                    }
 
-                    if (localUserReview.isNotEmpty() || reviewsData.isNotEmpty()) {
+                    if (reviewsData.isNotEmpty()) {
                         item {
                             Text(
                                 text = "Comments and Tips",
@@ -525,18 +525,18 @@ fun NewDetailsScreen(
 
                     }
                 }
-                    if(localUserReview.isNotEmpty()){
-                        item{
-                            ReviewWidget(
-                                authorName = localUserNickName,
-                                authorImageUrl = localUserImageIRL,
-                                reviewText = localUserReview,
-                                likes = 10,
-                                onLikeClick = {},
-
-                            )
-                        }
-                    }
+//                    if(localUserReview.isNotEmpty()){
+//                        item{
+//                            ReviewWidget(
+//                                authorName = localUserNickName,
+//                                authorImageUrl = localUserImageIRL,
+//                                reviewText = localUserReview,
+//                                likes = 10,
+//                                onLikeClick = {},
+//
+//                            )
+//                        }
+//                    }
 
                     if(reviewsData.isNotEmpty()) {
                         items(reviewsData, key = { it.commentsEntity.commentID })

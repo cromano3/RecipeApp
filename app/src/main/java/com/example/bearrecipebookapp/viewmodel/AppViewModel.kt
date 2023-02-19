@@ -195,33 +195,33 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 )
             }
 
-            val userData = firebaseRepository.getUserData(uid)
+//            val userData = firebaseRepository.getUserData(uid)
 
             //try set user image URL
-            if(userData.userPhotoURL == ""){
-                println("failed to retrieve user image URL")
-            }
-            else{
-                withContext(Dispatchers.IO) { repository.setUserImageURL(userData.userPhotoURL) }
-                appUiState.update {
-                    it.copy(
-                        userImageURL = userData.userPhotoURL
-                    )
-                }
-            }
-
-            //try set user nickname
-            if(userData.userPhotoURL == ""){
-                println("failed to retrieve user nickname")
-            }
-            else{
-                withContext(Dispatchers.IO) { repository.setUserNickname(userData.userName) }
-                appUiState.update {
-                    it.copy(
-                        userNickname = userData.userName
-                    )
-                }
-            }
+//            if(userData.userPhotoURL == ""){
+//                println("failed to retrieve user image URL")
+//            }
+//            else{
+//                withContext(Dispatchers.IO) { repository.setUserImageURL(userData.userPhotoURL) }
+//                appUiState.update {
+//                    it.copy(
+//                        userImageURL = userData.userPhotoURL
+//                    )
+//                }
+//            }
+//
+//            //try set user nickname
+//            if(userData.userPhotoURL == ""){
+//                println("failed to retrieve user nickname")
+//            }
+//            else{
+//                withContext(Dispatchers.IO) { repository.setUserNickname(userData.userName) }
+//                appUiState.update {
+//                    it.copy(
+//                        userNickname = userData.userName
+//                    )
+//                }
+//            }
 
         }
 

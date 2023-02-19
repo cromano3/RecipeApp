@@ -107,6 +107,13 @@ fun ShoppingListScreen(
 //            filterWasClicked = false
         }
 
+        if(uiAlertState.newCustomItemAddedSuccessfully){
+            coroutineScope.launch {
+                shoppingListScreenViewModel.resetNewCustomItemAddedSuccessfully()
+                listState.animateScrollToItem(selectedIngredients.size + customIngredients.size)
+            }
+        }
+
 
         Surface(
             modifier = Modifier

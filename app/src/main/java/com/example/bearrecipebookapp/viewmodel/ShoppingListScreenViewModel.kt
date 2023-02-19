@@ -122,10 +122,20 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
                 it.copy(
                     showAddCustomItemAlert = false,
                     inputText = TextFieldValue(""),
+                    newCustomItemAddedSuccessfully = true,
                 )
             }
 
         }
+    }
+
+    fun resetNewCustomItemAddedSuccessfully(){
+        uiAlertState.update {
+            it.copy(
+                newCustomItemAddedSuccessfully = false
+            )
+        }
+
     }
 
 

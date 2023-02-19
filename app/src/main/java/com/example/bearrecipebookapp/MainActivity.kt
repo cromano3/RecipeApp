@@ -420,9 +420,9 @@ fun BearRecipeApp(
                     NewDetailsScreen(
                         recipeData = appUiState.detailsScreenTarget,
                         reviewsData = appUiState.detailsScreenReviewsData,
-                        localUserReview = appUiState.detailsScreenLocalUserReview,
-                        localUserNickName = appUiState.userNickname,
-                        localUserImageIRL = appUiState.userImageURL,
+//                        localUserReview = appUiState.detailsScreenLocalUserReview,
+//                        localUserNickName = appUiState.userNickname,
+//                        localUserImageIRL = appUiState.userImageURL,
 //                        onGoBackClick = { navController.popBackStack() },
                         onMenuAddClick = {
                             appViewModel.updateDetailsScreenUiOnMenuStatus()
