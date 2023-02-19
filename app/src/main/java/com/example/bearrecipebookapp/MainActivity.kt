@@ -286,6 +286,8 @@ fun BearRecipeApp(
 
                 //Recipe Book Main Screen
                 HomeScreen(
+                    showLoadingAlert = appUiState.showLoadingAlert,
+                    showSignInAlert = appUiState.showSignInAlert,
                     onDetailsClick = {
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}

@@ -99,12 +99,8 @@ class AppRepository(private val appDao: AppDao) {
 
 
     fun onlineUserType(): Int{
-        println("2")
         val x = appDao.onlineUserType()
-        println("3")
-
         return x
-//        return appDao.isNewUser() == -2
     }
 
     fun setUid(uid: String){

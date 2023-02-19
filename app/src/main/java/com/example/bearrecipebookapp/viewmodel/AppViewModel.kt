@@ -34,9 +34,71 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         val appDao = appDb.AppDao()
         repository = AppRepository(appDao)
 
-        signIn(application)
+//        signIn(application)
+
+        userSetup()
 
 
+    }
+
+    private fun userSetup(){
+        viewModelScope.launch {
+
+            appUiState.update {
+                it.copy(
+                    showLoadingAlert = true
+                )
+            }
+
+            val currentFirestoreUserNotNull = checkAuth()
+            val localOnlineUserType =  repository.onlineUserType()
+
+            if(localOnlineUserType == 0){
+                //they are offline user do nothing
+
+            }
+            else if(localOnlineUserType == -2 || localOnlineUserType == -1){
+                //user should be asked if they want to sign in/up for online stuff
+                appUiState.update {
+                    it.copy(
+                        showLoadingAlert = false,
+                        showSignInAlert = true
+                    )
+                }
+
+                //if no set to =+ 1
+
+                //if yes try google sign in/up
+
+                    //if successful set to 1
+
+                    //if failed set to 0 and error log, NEED ANON USERS FOR THIS ERROR LOG
+            }
+            else if(localOnlineUserType == 1){
+
+                //they are already signed in
+                if(currentFirestoreUserNotNull){
+                    //back up upload sync should then try to upload any of their stuff that wasn't uploaded
+
+                }else{
+                    //try google sign in/up
+
+                    //if success then back up upload sync should then try to upload any of their stuff that wasn't uploaded
+
+                }
+
+
+
+
+            }
+        }
+
+
+
+    }
+
+    private fun checkAuth(): Boolean{
+        return firebaseRepository.currentUser() != null
     }
 
     private fun signIn(application: Application){
@@ -49,10 +111,11 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
         viewModelScope.launch {
 
-            println("1")
+
             val onlineUserType = withContext(Dispatchers.IO) { repository.onlineUserType() }
-            println("4")
-            println(onlineUserType)
+
+            println("User type: $onlineUserType")
+
             appUiState.update {
                 it.copy(
                     userIsOnlineStatus = onlineUserType

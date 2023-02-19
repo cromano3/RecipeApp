@@ -34,7 +34,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -45,9 +44,7 @@ import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.annotatedstrings.tutorialTextAnoString
 import com.example.bearrecipebookapp.data.entity.FilterEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
-import com.example.bearrecipebookapp.ui.components.AddRecipeCard
-import com.example.bearrecipebookapp.ui.components.BasicAlert
-import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
+import com.example.bearrecipebookapp.ui.components.*
 import com.example.bearrecipebookapp.viewmodel.HomeScreenViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -59,12 +56,16 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
 //    triggerTutorialAlert: String,
+    showLoadingAlert: Boolean,
+    showSignInAlert: Boolean,
     onDetailsClick: (String) -> Unit,
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
     onMenuClick: (RecipeWithIngredients) -> Unit,
     onMenuRemovedClick: (RecipeWithIngredients) -> Unit,
     onCreateRecipeClick: () -> Unit,
-) {
+    confirmSignInWithGoogle: () -> Unit,
+    dismissSignInWithGoogle: () -> Unit,
+ ) {
 
     val owner = LocalViewModelStoreOwner.current
 
@@ -305,21 +306,29 @@ fun HomeScreen(
 
                 }
                 Box(Modifier.fillMaxSize()){
-//                SnackbarHost(
-//                    modifier = Modifier.align(Alignment.BottomCenter),
-//                    hostState = snackbarHostState,
-//                    snackbar = {
-//                        Snackbar(
-//                            backgroundColor = Color(0xFF000000),
-//                            contentColor = Color(0xFFFFFFFF))
-//                        {
-//                            Text(
-//                                text = it.message,
-//                                color = Color(0xFFFFFFFF)
-//                            )
-//                        }
-//                    }
-//                )
+
+                    if(showLoadingAlert){
+                        AlertDialog(
+                            onDismissRequest = {},
+                            text = { CircularProgressIndicator(color = Color(0xFF682300)) },
+                            buttons = {},
+                        )
+                    }
+                    if(showSignInAlert){
+                        AlertDialog(
+                            onDismissRequest = { dismissSignInWithGoogle() },
+                            text = {
+                                
+                            },
+                            buttons = {
+                                Column(){
+                                    ConfirmAlertButton(buttonText = "Sign in with Google") { confirmSignInWithGoogle() }
+                                    CancelAlertButton(buttonText = "Not now") { dismissSignInWithGoogle() }
+                                }
+                            }
+                        )
+
+                    }
                     if(showTutorial.toBoolean()){
                         AlertDialog(
                             onDismissRequest = {
@@ -418,69 +427,7 @@ fun HomeScreen(
                             onDismiss = {}
                         )
 
-//                        AlertDialog(
-//                            onDismissRequest = {},
-//                            text = {
-//                                Text(text = "Are you sure you want to remove " + uiAlertState.recipe.recipeEntity.recipeName +
-//                                        " from the Menu? (This will also remove it from the Shopping List.)",
-//                                    color = Color(0xFF682300),
-//                                    fontSize = 16.sp,
-//                                    textAlign = TextAlign.Center
-//                                )
-//                            },
-//                            buttons = {
-//                                Row(
-//                                    modifier = Modifier
-//                                        .padding(all = 8.dp)
-//                                        .fillMaxWidth(),
-//                                    horizontalArrangement = Arrangement.SpaceEvenly
-//                                ) {
-//
-//                                    Button(
-//                                        modifier = Modifier.wrapContentSize(),
-//                                        onClick = {
-//                                            homeScreenViewModel.cancelAlert()
-//                                        },
-//                                        elevation = ButtonDefaults.elevation(6.dp),
-//                                        shape = RoundedCornerShape(25.dp),
-//                                        border = BorderStroke(
-//                                            width = 2.dp,
-//                                            brush = (Brush.horizontalGradient(
-//                                                startX = -10f,
-//                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-//                                                tileMode = TileMode.Mirror
-//                                            )),
-//                                        ),
-//                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-//                                    ) {
-//                                        Text("Cancel")
-//                                    }
-//
-//                                    Button(
-//                                        modifier = Modifier.wrapContentSize(),
-//                                        onClick = {
-//                                            onMenuRemovedClick(uiAlertState.recipe)
-//                                            homeScreenViewModel.toggleMenu(uiAlertState.recipe)
-//                                            homeScreenViewModel.cancelAlert()
-//                                        },
-//                                        elevation = ButtonDefaults.elevation(6.dp),
-//                                        shape = RoundedCornerShape(25.dp),
-//                                        border = BorderStroke(
-//                                            width = 2.dp,
-//                                            brush = (Brush.horizontalGradient(
-//                                                startX = -10f,
-//                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-//                                                tileMode = TileMode.Mirror
-//                                            )),
-//                                        ),
-//                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-//                                    ) {
-//                                        Text("Yes")
-//                                    }
-//                                }
-//                            },
-//
-//                        )
+
                     }
                 }
             }
@@ -621,13 +568,13 @@ fun FiltersButton(
     }
 }
 
-@Composable
-@Preview
-fun MyPreview420() {
-    HomeScreen( onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {}, onMenuRemovedClick = {}, onCreateRecipeClick = {} )
-
-
-}
+//@Composable
+//@Preview
+//fun MyPreview420() {
+//    HomeScreen( onDetailsClick = {}, onFavoriteClick = {}, onMenuClick = {}, onMenuRemovedClick = {}, onCreateRecipeClick = {} )
+//
+//
+//}
 
 class HomeScreenViewModelFactory(
     val application: Application,
@@ -639,42 +586,3 @@ class HomeScreenViewModelFactory(
         ) as T
     }
 }
-
-//AnimatedVisibility(
-//                            visible = shown,
-//                            enter = fadeIn(
-//                                TweenSpec(600, 50, FastOutLinearInEasing)
-//                            ),
-//                            exit = fadeOut(
-//                                animationSpec = TweenSpec(600, 50, FastOutLinearInEasing)
-//                            )
-//                        ){
-
-//                            var currentState = homeScreenData[index].recipeEntity.isShown
-//                            val transition = updateTransition(currentState, label = "")
-//
-//                            val height by transition.animateInt(label = "") {it
-//                                when(it){
-//                                    1 -> 270
-//                                    0 -> 0
-//                                    else -> 0
-//                                }
-//                            }
-//
-//                            val width by transition.animateInt(label = "") {it
-//                                when(it){
-//                                    1 -> 170
-//                                    0 -> 0
-//                                    else -> 0
-//                                }
-//                            }
-
-//                            val width: Int by animateIntAsState(
-//                                targetValue = if (homeScreenData[index].recipeEntity.isShown == 1) 170 else 0,
-//                                animationSpec = tween(durationMillis = 500, delayMillis = 100)
-//                            )
-//
-//                            val height: Int by animateIntAsState(
-//                                targetValue = if (homeScreenData[index].recipeEntity.isShown == 1) 270 else 0,
-//                                animationSpec = tween(durationMillis = 500, delayMillis = 100)
-//                            )
