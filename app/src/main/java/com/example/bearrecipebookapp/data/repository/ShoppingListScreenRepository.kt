@@ -35,6 +35,10 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
         }
     }
 
+    fun getCustomItems(): List<ShoppingListCustomItemsEntity>{
+        return shoppingListScreenDao.getCustomItems()
+    }
+
     fun addCustomItem(item: ShoppingListCustomItemsEntity){
         coroutineScope.launch(Dispatchers.IO) {
             shoppingListScreenDao.addCustomItem(item)
@@ -90,6 +94,12 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
     fun deleteCustomItem(item: ShoppingListCustomItemsEntity){
         coroutineScope.launch(Dispatchers.IO) {
             shoppingListScreenDao.deleteCustomItem(item.item)
+        }
+    }
+
+    fun clearAllCustomItems(){
+        coroutineScope.launch(Dispatchers.IO) {
+            shoppingListScreenDao.clearAllCustomItems()
         }
     }
 

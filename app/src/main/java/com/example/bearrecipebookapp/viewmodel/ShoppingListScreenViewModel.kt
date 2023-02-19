@@ -41,6 +41,19 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
             async(Dispatchers.IO){repository.cleanIngredients()}
             async(Dispatchers.IO) {repository.cleanFilters()}
         }
+
+        getCustomItems()
+    }
+
+    private fun getCustomItems(){
+        coroutineScope.launch(Dispatchers.IO){
+            val customItems = repository.getCustomItems()
+            shoppingScreenUiState.update {
+                it.copy(
+                    customItems = customItems
+                )
+            }
+        }
     }
 
 
@@ -106,6 +119,7 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
     }
 
     fun addCustomItem(){
+
         if (uiAlertState.value.inputText.text.length > 20) {
 
             uiAlertState.update {
@@ -115,28 +129,49 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
             }
 
         }
+
         else {
+
             repository.addCustomItem(ShoppingListCustomItemsEntity(uiAlertState.value.inputText.text))
+
+            val myList: MutableList<ShoppingListCustomItemsEntity> = mutableListOf<ShoppingListCustomItemsEntity>()
+
+            var foundConflict = false
+
+            for(listItem in shoppingScreenUiState.value.customItems){
+                if(listItem.item != uiAlertState.value.inputText.text){
+                    myList.add(listItem)
+                }
+                else{
+                    foundConflict = true
+                    break
+                }
+            }
+
+            if(!foundConflict){
+                myList.add(ShoppingListCustomItemsEntity(uiAlertState.value.inputText.text, 0))
+
+                shoppingScreenUiState.update {
+                    it.copy(
+                        customItems = myList
+                    )
+                }
+            }
+
+
+
 
             uiAlertState.update {
                 it.copy(
                     showAddCustomItemAlert = false,
                     inputText = TextFieldValue(""),
-                    newCustomItemAddedSuccessfully = true,
                 )
             }
 
         }
-    }
-
-    fun resetNewCustomItemAddedSuccessfully(){
-        uiAlertState.update {
-            it.copy(
-                newCustomItemAddedSuccessfully = false
-            )
-        }
 
     }
+
 
 
     fun updateInputText(input: TextFieldValue){
@@ -174,6 +209,22 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
         }
     }
 
+    fun triggerClearAllCustomItemsAlert(){
+        uiAlertState.update {
+            it.copy(
+                showClearAllCustomItemsAlert = true
+            )
+        }
+    }
+
+    fun cancelClearAllCustomItemsAlert(){
+        uiAlertState.update {
+            it.copy(
+                showClearAllCustomItemsAlert = false
+            )
+        }
+    }
+
     fun addTutorialAlert(){
         coroutineScope.launch(Dispatchers.IO){
             repository.addTutorialAlert()
@@ -182,15 +233,80 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
 
     fun customItemSelected(item: ShoppingListCustomItemsEntity){
+
         repository.setCustomItemToSelected(item)
+
+        val myList: MutableList<ShoppingListCustomItemsEntity> = mutableListOf<ShoppingListCustomItemsEntity>()
+
+        for(listItem in shoppingScreenUiState.value.customItems){
+            if(listItem.item == item.item){
+                myList.add(ShoppingListCustomItemsEntity(listItem.item, 1))
+            }
+            else{
+                myList.add(listItem)
+            }
+        }
+
+        shoppingScreenUiState.update {
+            it.copy(
+                customItems = myList
+            )
+        }
+
     }
 
     fun customItemDeselected(item: ShoppingListCustomItemsEntity){
         repository.setCustomItemToDeselected(item)
+
+        val myList: MutableList<ShoppingListCustomItemsEntity> = mutableListOf<ShoppingListCustomItemsEntity>()
+
+        for(listItem in shoppingScreenUiState.value.customItems){
+            if(listItem.item == item.item){
+                myList.add(ShoppingListCustomItemsEntity(listItem.item, 0))
+            }
+            else{
+                myList.add(listItem)
+            }
+        }
+
+        shoppingScreenUiState.update {
+            it.copy(
+                customItems = myList
+            )
+        }
+
     }
 
     fun deleteCustomItem(item: ShoppingListCustomItemsEntity){
+
         repository.deleteCustomItem(item)
+
+        val myList: MutableList<ShoppingListCustomItemsEntity> = mutableListOf<ShoppingListCustomItemsEntity>()
+
+        for(listItem in shoppingScreenUiState.value.customItems){
+            if(listItem.item != item.item){
+                myList.add(listItem)
+            }
+        }
+
+        shoppingScreenUiState.update {
+            it.copy(
+                customItems = myList
+            )
+        }
+
+    }
+
+    fun clearAllCustomItems(){
+        repository.clearAllCustomItems()
+
+        shoppingScreenUiState.update {
+            it.copy(
+                customItems = listOf()
+            )
+        }
+
+        cancelClearAllCustomItemsAlert()
     }
 
     fun ingredientSelected(ingredientEntity: IngredientEntity){

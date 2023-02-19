@@ -26,6 +26,10 @@ interface ShoppingListScreenDao {
     @Query("SELECT * FROM shopping_list_custom_items_table")
     fun getCustomIngredients(): LiveData<List<ShoppingListCustomItemsEntity>>
 
+    @Transaction
+    @Query("SELECT * FROM shopping_list_custom_items_table")
+    fun getCustomItems(): List<ShoppingListCustomItemsEntity>
+
 
     @Transaction
     @Query("UPDATE user_table SET show_tutorial = 'true' ")
@@ -73,6 +77,10 @@ interface ShoppingListScreenDao {
     @Transaction
     @Query("DELETE FROM shopping_list_custom_items_table WHERE item = :item")
     fun deleteCustomItem(item: String)
+
+    @Transaction
+    @Query("DELETE FROM shopping_list_custom_items_table")
+    fun clearAllCustomItems()
 
 
 

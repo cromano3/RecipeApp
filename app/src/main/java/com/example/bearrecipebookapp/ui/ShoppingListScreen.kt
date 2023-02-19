@@ -49,6 +49,7 @@ import com.example.bearrecipebookapp.data.annotatedstrings.addRecipeOrCustomItem
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
+import com.example.bearrecipebookapp.ui.components.BasicAlert
 import com.example.bearrecipebookapp.ui.components.CancelAlertButton
 import com.example.bearrecipebookapp.ui.components.ConfirmAlertButton
 import com.example.bearrecipebookapp.ui.theme.Cabin
@@ -77,7 +78,7 @@ fun ShoppingListScreen(
 
         val shoppingListScreenData by shoppingListScreenViewModel.shoppingListScreenData.observeAsState(listOf())
         val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
-        val customIngredients by shoppingListScreenViewModel.customIngredients.observeAsState(listOf())
+//        val customIngredients by shoppingListScreenViewModel.customIngredients.observeAsState(listOf())
 
         var filterWasClicked by remember { mutableStateOf(false) }
 
@@ -88,6 +89,8 @@ fun ShoppingListScreen(
 
         val listState = rememberLazyListState()
         val listState2 = rememberLazyListState()
+
+        var scrollDown by remember { mutableStateOf(false) }
 
         val focusRequester = remember { FocusRequester() }
 
@@ -107,10 +110,11 @@ fun ShoppingListScreen(
 //            filterWasClicked = false
         }
 
-        if(uiAlertState.newCustomItemAddedSuccessfully){
+//        if(uiAlertState.newCustomItemAddedSuccessfully){
+        if(scrollDown){
             coroutineScope.launch {
-                shoppingListScreenViewModel.resetNewCustomItemAddedSuccessfully()
-                listState.animateScrollToItem(selectedIngredients.size + customIngredients.size)
+                scrollDown = false
+                listState.animateScrollToItem(selectedIngredients.size + uiState.customItems.size)
             }
         }
 
@@ -156,7 +160,7 @@ fun ShoppingListScreen(
 
                     item{
                         androidx.compose.animation.AnimatedVisibility(
-                            visible = (customIngredients.isNotEmpty() && !filterWasClicked),
+                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked),
                             enter = fadeIn(TweenSpec(20)),
                             exit = fadeOut(TweenSpec(20)),
                         ) {
@@ -171,7 +175,7 @@ fun ShoppingListScreen(
                     }
                     item{
                         androidx.compose.animation.AnimatedVisibility(
-                            visible = (customIngredients.isNotEmpty() && !filterWasClicked),
+                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked),
                             enter = fadeIn(TweenSpec(20)),
                             exit = fadeOut(TweenSpec(20)),
                         ) {
@@ -193,9 +197,9 @@ fun ShoppingListScreen(
                             )
                         }
                     }
-                    items(customIngredients, key = {it.item}) {
+                    items(uiState.customItems, key = {it.item}) {
                         androidx.compose.animation.AnimatedVisibility(
-                            visible = (customIngredients.isNotEmpty() && !filterWasClicked),
+                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked),
                             enter = fadeIn(TweenSpec(20)),
                             exit = fadeOut(TweenSpec(20)),
                         ) {
@@ -214,8 +218,22 @@ fun ShoppingListScreen(
 
                     item {
                         androidx.compose.animation.AnimatedVisibility(
+                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked && !uiState.isFiltered),
+                            enter = fadeIn(TweenSpec(20)),
+                            exit = fadeOut(TweenSpec(20)),
+                        ) {
+                            ClearCustomItemButton(
+                                modifier = Modifier,
+                                isWorking = uiState.isWorking,
+                                onClickClearAll = { shoppingListScreenViewModel.triggerClearAllCustomItemsAlert() }
+                            )
+                        }
+                    }
+
+                    item {
+                        androidx.compose.animation.AnimatedVisibility(
                             visible = (
-                                (customIngredients.isNotEmpty() && !filterWasClicked && !uiState.isFiltered) ||
+                                (uiState.customItems.isNotEmpty() && !filterWasClicked && !uiState.isFiltered) ||
                                 (selectedIngredients.isNotEmpty() && !filterWasClicked  && !uiState.isFiltered)
                             ),
                             enter = fadeIn(TweenSpec(20)),
@@ -228,6 +246,8 @@ fun ShoppingListScreen(
                             )
                         }
                     }
+
+
 
                     item{ Spacer(
                         Modifier
@@ -290,7 +310,7 @@ fun ShoppingListScreen(
 //                    }
                 }
             }
-            if (selectedIngredients.isEmpty() && customIngredients.isEmpty()) {
+            if (selectedIngredients.isEmpty() && uiState.customItems.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Image(
 
@@ -448,46 +468,21 @@ fun ShoppingListScreen(
                                 }
                                 ConfirmAlertButton(buttonText = "Confirm") {
                                     shoppingListScreenViewModel.addCustomItem()
+                                    scrollDown = true
                                 }
-
-//                                Button(
-//                                    modifier = Modifier.wrapContentSize(),
-//                                    onClick = { shoppingListScreenViewModel.cancelAddCustomItemAlert() },
-//                                    elevation = ButtonDefaults.elevation(6.dp),
-//                                    shape = RoundedCornerShape(25.dp),
-//                                    border = BorderStroke(
-//                                        width = 2.dp,
-//                                        brush = (Brush.horizontalGradient(
-//                                            startX = -10f,
-//                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-//                                            tileMode = TileMode.Mirror
-//                                        )),
-//                                    ),
-//                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-//                                ) {
-//                                    Text("Cancel")
-//                                }
-//
-//                                Button(
-//                                    modifier = Modifier.wrapContentSize(),
-//                                    onClick = { shoppingListScreenViewModel.addCustomItem() },
-//                                    elevation = ButtonDefaults.elevation(6.dp),
-//                                    shape = RoundedCornerShape(25.dp),
-//                                    border = BorderStroke(
-//                                        width = 2.dp,
-//                                        brush = (Brush.horizontalGradient(
-//                                            startX = -10f,
-//                                            colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-//                                            tileMode = TileMode.Mirror
-//                                        )),
-//                                    ),
-//                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-//                                ) {
-//                                    Text("Add To List")
-//                                }
                             }
                         }
                     )
+                }
+                else if(uiAlertState.showClearAllCustomItemsAlert){
+                    BasicAlert(
+                        text = "Clear all custom items?",
+                        confirmButtonText = "Yes",
+                        cancelButtonText = "Cancel",
+                        onConfirmClick = { shoppingListScreenViewModel.clearAllCustomItems() },
+                        onCancelClick = { shoppingListScreenViewModel.cancelClearAllCustomItemsAlert() },
+                        onDismiss = { shoppingListScreenViewModel.cancelClearAllCustomItemsAlert() })
+
                 }
             }
         }
@@ -985,6 +980,68 @@ fun AddCustomItemButton(
                 onClick = onClickAddItem,
             ),
         shape = RoundedCornerShape(25.dp),
+        color = Color(0xFF682300),
+        elevation = 4.dp,
+        contentColor = Color(0xFFd8af84),
+    ){
+
+        Row(
+            Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center
+        )
+        {
+            Text(
+                modifier = Modifier
+                    // .weight(1f)
+                    .padding(start = 4.dp)
+                    .align(Alignment.CenterVertically)
+                    .alpha(alphaAnim),
+                text = "Add Item",
+                fontSize = 16.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun ClearCustomItemButton(
+    modifier: Modifier,
+    isWorking: Boolean,
+    onClickClearAll: () -> Unit,
+){
+
+    val alphaLevel : Float = 1f
+
+    val alphaAnim: Float by animateFloatAsState(
+        targetValue = alphaLevel,
+        animationSpec = tween(
+            durationMillis = 150,
+            delayMillis = 0,
+            easing = LinearEasing,
+        )
+    )
+
+
+    Surface(
+        modifier = modifier
+            .padding(start = 8.dp, top = 8.dp)
+            .width(240.dp)
+            .height(36.dp)
+            .alpha(alphaAnim)
+            .border(
+                width = 2.dp,
+                brush = (Brush.horizontalGradient(
+                    startX = -10f,
+                    colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
+                    tileMode = TileMode.Mirror
+                )),
+                shape = RoundedCornerShape(25.dp)
+            )
+            .clickable(
+                enabled = !isWorking,
+                onClick = onClickClearAll,
+            ),
+        shape = RoundedCornerShape(25.dp),
         color = Color(0xFFd8af84),
         elevation = 4.dp,
         contentColor = Color(0xFF682300),
@@ -1001,7 +1058,7 @@ fun AddCustomItemButton(
                     .padding(start = 4.dp)
                     .align(Alignment.CenterVertically)
                     .alpha(alphaAnim),
-                text = "Add Item",
+                text = "Clear Custom Items",
                 fontSize = 16.sp
             )
         }
