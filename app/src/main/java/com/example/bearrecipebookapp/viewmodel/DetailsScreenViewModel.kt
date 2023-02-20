@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DetailsScreenViewModel(application: Application, ): ViewModel() {
+class DetailsScreenViewModel(application: Application, recipeName: String): ViewModel() {
 
     private val repository: DetailsScreenRepository
 
@@ -27,6 +27,7 @@ class DetailsScreenViewModel(application: Application, ): ViewModel() {
 
 
     init {
+        println(" PLZ GOD $recipeName")
         val appDb = RecipeAppDatabase.getInstance(application)
         val detailsScreenDao = appDb.DetailsScreenDao()
         repository = DetailsScreenRepository(detailsScreenDao)

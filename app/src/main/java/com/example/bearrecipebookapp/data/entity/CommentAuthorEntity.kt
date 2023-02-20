@@ -20,5 +20,8 @@ class CommentAuthorEntity (
     @ColumnInfo(name ="author_image_url")
     var authorImageURL: String = "",
 
+    @ColumnInfo(name ="timestamp")
+    var timestamp: String = "",
+
 
 )

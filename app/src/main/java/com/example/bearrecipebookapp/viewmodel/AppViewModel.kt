@@ -51,7 +51,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 //            }
 
             val currentFirestoreUserNotNull = checkAuth()
-            val localOnlineUserType =  repository.onlineUserType()
+            val localOnlineUserType =  withContext(Dispatchers.IO) { repository.onlineUserType() }
 
             appUiState.update {
                 it.copy(
@@ -327,19 +327,19 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             }
 
 
-            //get ratings from remote
-            /**needs similar timing functionality as above*/
-            val recipeRatingsFromFirestore = firebaseRepository.getRecipeRatings()
-
-            println("before download ratings")
-            //update ratings in local db
-            if(recipeRatingsFromFirestore.isNotEmpty()){
-                println("new ratings not empty")
-                for(recipe in recipeRatingsFromFirestore){
-                    println("do ratings update")
-                    withContext(Dispatchers.IO) { repository.updateRecipeRating(recipe) }
-                }
-            }
+//            //get ratings from remote
+//            /**needs similar timing functionality as above*/
+//            val recipeRatingsFromFirestore = firebaseRepository.getRecipeRatings()
+//
+//            println("before download ratings")
+//            //update ratings in local db
+//            if(recipeRatingsFromFirestore.isNotEmpty()){
+//                println("new ratings not empty")
+//                for(recipe in recipeRatingsFromFirestore){
+//                    println("do ratings update")
+//                    withContext(Dispatchers.IO) { repository.updateRecipeRating(recipe) }
+//                }
+//            }
 
 
 

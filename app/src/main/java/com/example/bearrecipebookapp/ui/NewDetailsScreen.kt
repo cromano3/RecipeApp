@@ -81,9 +81,8 @@ fun NewDetailsScreen(
             viewModelStoreOwner,
             "DetailsScreenViewModel",
             DetailsScreenViewModelFactory(
-                LocalContext.current.applicationContext
-                        as Application,
-//                recipeName as String
+                LocalContext.current.applicationContext as Application,
+                recipeData.recipeEntity.recipeName,
             )
         )
 
@@ -730,13 +729,13 @@ fun NewDetailsScreen(
 
 class DetailsScreenViewModelFactory(
     val application: Application,
-//    val recipeName: String
+    val recipeName: String,
     ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
         return DetailsScreenViewModel(
             application,
-          //  recipeName
+            recipeName
         ) as T
     }
 }

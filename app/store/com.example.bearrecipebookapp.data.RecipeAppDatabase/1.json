@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6ad4c9edeb5d59e3c1c664ae174657ee",
+    "identityHash": "4a8c67f724b501eed9305ae4ff82a5e0",
     "entities": [
       {
         "tableName": "recipe_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `global_rating` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `is_search_result` INTEGER NOT NULL, `cooked_count` INTEGER NOT NULL, `is_rated` INTEGER NOT NULL, `local_user_rating` INTEGER NOT NULL, `is_rating_synced` INTEGER NOT NULL, `is_reviewed` INTEGER NOT NULL, `review` TEXT NOT NULL, `is_review_synced` INTEGER NOT NULL, `is_review_screen_target` INTEGER NOT NULL, PRIMARY KEY(`recipe_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `global_rating` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `is_search_result` INTEGER NOT NULL, `cooked_count` INTEGER NOT NULL, `is_rated` INTEGER NOT NULL, `local_user_rating` INTEGER NOT NULL, `is_rating_synced` INTEGER NOT NULL, `is_reviewed` INTEGER NOT NULL, `review` TEXT NOT NULL, `is_review_synced` INTEGER NOT NULL, `is_review_screen_target` INTEGER NOT NULL, `rating_timestamp` TEXT NOT NULL, PRIMARY KEY(`recipe_name`))",
         "fields": [
           {
             "fieldPath": "recipeName",
@@ -114,6 +114,12 @@
             "fieldPath": "isReviewScreenTarget",
             "columnName": "is_review_screen_target",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ratingTimestamp",
+            "columnName": "rating_timestamp",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -430,7 +436,7 @@
       },
       {
         "tableName": "comments_authors_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`author_id` TEXT NOT NULL, `author_name` TEXT NOT NULL, `author_karma` INTEGER NOT NULL, `author_image_url` TEXT NOT NULL, PRIMARY KEY(`author_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`author_id` TEXT NOT NULL, `author_name` TEXT NOT NULL, `author_karma` INTEGER NOT NULL, `author_image_url` TEXT NOT NULL, `timestamp` TEXT NOT NULL, PRIMARY KEY(`author_id`))",
         "fields": [
           {
             "fieldPath": "authorID",
@@ -455,6 +461,12 @@
             "columnName": "author_image_url",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -468,7 +480,7 @@
       },
       {
         "tableName": "comments_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment_id` TEXT NOT NULL, `recipe_name` TEXT NOT NULL, `author_id` TEXT NOT NULL, `comment_text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `liked_by_local_user` INTEGER NOT NULL, `local_user_like_was_synced` INTEGER NOT NULL, PRIMARY KEY(`comment_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment_id` TEXT NOT NULL, `recipe_name` TEXT NOT NULL, `author_id` TEXT NOT NULL, `comment_text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `liked_by_local_user` INTEGER NOT NULL, `local_user_like_was_synced` INTEGER NOT NULL, `timestamp` TEXT NOT NULL, PRIMARY KEY(`comment_id`))",
         "fields": [
           {
             "fieldPath": "commentID",
@@ -511,6 +523,12 @@
             "columnName": "local_user_like_was_synced",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -526,7 +544,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6ad4c9edeb5d59e3c1c664ae174657ee')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4a8c67f724b501eed9305ae4ff82a5e0')"
     ]
   }
 }

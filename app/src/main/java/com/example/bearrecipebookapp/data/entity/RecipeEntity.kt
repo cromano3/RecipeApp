@@ -61,6 +61,9 @@ data class RecipeEntity(
     @ColumnInfo(name = "is_review_screen_target")
     var isReviewScreenTarget: Int = 0,
 
+    @ColumnInfo(name = "rating_timestamp")
+    var ratingTimestamp: String = "",
+
 
 //
 //    @ColumnInfo(name = "ingredients")

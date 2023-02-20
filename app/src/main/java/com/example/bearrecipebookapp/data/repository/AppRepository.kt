@@ -6,6 +6,7 @@ import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AppRepository(private val appDao: AppDao) {
@@ -63,10 +64,10 @@ class AppRepository(private val appDao: AppDao) {
 
 
     fun setOnlineUserType(type: Int){
-        appDao.setOnlineUserType(type)
+        coroutineScope.launch (Dispatchers.IO) {
+            appDao.setOnlineUserType(type)
+        }
     }
-
-
 
 
     suspend fun updateLikes(comment: CommentsEntity){
@@ -95,12 +96,8 @@ class AppRepository(private val appDao: AppDao) {
     }
 
 
-
-
-
-    fun onlineUserType(): Int{
-        val x = appDao.onlineUserType()
-        return x
+    fun onlineUserType(): Int {
+        return appDao.onlineUserType()
     }
 
     fun setUid(uid: String){
