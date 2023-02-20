@@ -9,7 +9,7 @@ data class AppUiState(
     val userId: String = "",
 //    val userImageURL: String = "",
 //    val userNickname: String = "",
-    val showSignInAlert: Boolean = false,
+    val showSignInAlert: Boolean = true,
     val showLoadingAlert: Boolean = false,
     val googleSignInState: String = "",
     val googleSignInResult: BeginSignInResult? = null,

@@ -44,52 +44,45 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     private fun userSetup(){
         viewModelScope.launch {
 
-            appUiState.update {
-                it.copy(
-                    showLoadingAlert = true
-                )
-            }
+//            appUiState.update {
+//                it.copy(
+//                    showLoadingAlert = true
+//                )
+//            }
 
             val currentFirestoreUserNotNull = checkAuth()
             val localOnlineUserType =  repository.onlineUserType()
 
+            appUiState.update {
+                it.copy(
+                    userIsOnlineStatus = localOnlineUserType
+                )
+            }
+
             if(localOnlineUserType == 0){
                 //they are offline user do nothing
-
             }
-            else if(localOnlineUserType == -2 || localOnlineUserType == -1){
+            else if(localOnlineUserType == -2){
                 //user should be asked if they want to sign in/up for online stuff
+
+                /**if failed set to 0 and error log, NEED ANON USERS FOR THIS ERROR LOG*/
+
                 appUiState.update {
                     it.copy(
                         showLoadingAlert = false,
                         showSignInAlert = true
                     )
                 }
-
-                //if no set to =+ 1
-
-                //if yes try google sign in/up
-
-                    //if successful set to 1
-
-                    //if failed set to 0 and error log, NEED ANON USERS FOR THIS ERROR LOG
             }
             else if(localOnlineUserType == 1){
-
                 //they are already signed in
                 if(currentFirestoreUserNotNull){
                     //back up upload sync should then try to upload any of their stuff that wasn't uploaded
-
+                    dataSyncUploads()
                 }else{
                     //try google sign in/up
-
-                    //if success then back up upload sync should then try to upload any of their stuff that wasn't uploaded
-
+                    signIn()
                 }
-
-
-
-
             }
         }
 
@@ -101,26 +94,9 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         return firebaseRepository.currentUser() != null
     }
 
-    private fun signIn(application: Application){
-        /** Check DB, if online user == -2 or -1, then pop to ask if they want to sign-in,
-         * if 0 then they are always offline user
-         * if 1 then they are online user and we do auto sign-in
-         * set view model online mode
-         */
-
+    private fun signIn() {
 
         viewModelScope.launch {
-
-
-            val onlineUserType = withContext(Dispatchers.IO) { repository.onlineUserType() }
-
-            println("User type: $onlineUserType")
-
-            appUiState.update {
-                it.copy(
-                    userIsOnlineStatus = onlineUserType
-                )
-            }
 
             if (appUiState.value.userIsOnlineStatus == -2) {
                 println("in new to this device")
@@ -133,43 +109,14 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
                 if(isAuthed != null){
                     println("before sync and is authed")
-                    dataSync()
+                    dataSyncUploads()
                 }
                 else{
                     println("before sign IN and is NOT authed")
-                    googleOneTapSignIn()
+                    googleOneTapSignInOrUp()
                 }
             }
         }
-
-
-
-
-            //
-
-
-            //do sign in
-
-            /** if signed in and timestamp is ok, DO DATA SYNC*/
-
-            //check if device is connected to internet
-
-            //get data from local tables to upload
-
-            /**for each data type: comment, likes, ratings DO: */
-
-            //map data to firestore data types
-
-            //loop through and send them in a transaction to firestore
-
-            //if success mark local db entries as synced else don't update them
-
-            /**end first loop, repeat for each data type (one transaction for each) */
-
-            /**then do DOWNLOAD sync operation*/
-
-            //check connectivity again
-
 
     }
 
@@ -210,95 +157,89 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             )
         }
 
-        //user is new and needs to wait timeout for data sync
-        /**SET timeout start point here*/
         if(firebaseSignInWithGoogleResponse == "NewUserSuccess" && appUiState.value.userIsOnlineStatus == -2){
-            //set user info in local DB (name and image for now)
-            /**a similar function to this will eventually be used to sync user karma, but not in this exact location/call spot.*/
-            setupUser()
-        }
-        //user is new to THIS DEVICE but not our project, they need to wait for timeout for data sync as well
-        /**SET timeout start point here*/
-        else if(firebaseSignInWithGoogleResponse == "ReturningUserSuccess" && appUiState.value.userIsOnlineStatus == -2){
-            println("data sync from sign IN")
-            setupUser()
-        //user was successfully logged in and is not new to this device they also need to wait for timeout
-            /**check for time out here, if passed do sync*/
-        }else if(firebaseSignInWithGoogleResponse == "NewUserSuccess" || firebaseSignInWithGoogleResponse == "ReturningUserSuccess"){
-            dataSync()
-        }
-
-
-    }
-
-    private fun getUserIdFromRoom(): String{
-        return repository.getUserId()
-    }
-
-    private suspend fun setupUser(){
-
-
-        withContext(Dispatchers.IO) { repository.setOnlineUserType(1) }
-        appUiState.update {
-            it.copy(
-                userIsOnlineStatus = 1
-            )
-        }
-
-        val uid = firebaseRepository.getUid()
-
-        if (uid == ""){
-            println("failed to retrieve UID of new user")
-        }
-        else{
-            withContext(Dispatchers.IO) { repository.setUid(uid) }
+            repository.setOnlineUserType(1)
             appUiState.update {
                 it.copy(
-                    userId = uid
+                    userIsOnlineStatus = 1
                 )
             }
-
-//            val userData = firebaseRepository.getUserData(uid)
-
-            //try set user image URL
-//            if(userData.userPhotoURL == ""){
-//                println("failed to retrieve user image URL")
-//            }
-//            else{
-//                withContext(Dispatchers.IO) { repository.setUserImageURL(userData.userPhotoURL) }
-//                appUiState.update {
-//                    it.copy(
-//                        userImageURL = userData.userPhotoURL
-//                    )
-//                }
-//            }
-//
-//            //try set user nickname
-//            if(userData.userPhotoURL == ""){
-//                println("failed to retrieve user nickname")
-//            }
-//            else{
-//                withContext(Dispatchers.IO) { repository.setUserNickname(userData.userName) }
-//                appUiState.update {
-//                    it.copy(
-//                        userNickname = userData.userName
-//                    )
-//                }
-//            }
-
         }
-
-
-
+        else if(firebaseSignInWithGoogleResponse == "ReturningUserSuccess" && appUiState.value.userIsOnlineStatus == -2){
+            repository.setOnlineUserType(1)
+            appUiState.update {
+                it.copy(
+                    userIsOnlineStatus = 1
+                )
+            }
+        }else if((firebaseSignInWithGoogleResponse == "NewUserSuccess" && appUiState.value.userIsOnlineStatus == 1)
+            || (firebaseSignInWithGoogleResponse == "ReturningUserSuccess" && appUiState.value.userIsOnlineStatus == 1)){
+            dataSyncUploads()
+        }
     }
 
+
+    private fun dataSyncUploads(){
+        viewModelScope.launch {
+            println("data sync UPLOADS coroutine start")
+
+            val uid = firebaseRepository.getUid()
+
+            ////Comments////
+
+            val unsyncedUserComments = withContext(Dispatchers.IO) { repository.getUnsyncedUserComments() }
+
+            println("before comments upload")
+            //upload comments and mark as synced
+            if(unsyncedUserComments.isNotEmpty()) {
+                print("comments not empty")
+                for (comment in unsyncedUserComments) {
+                    //upload comments
+                    firebaseRepository.uploadComment(comment, uid)
+                    //mark as synced in local DB
+                    withContext(Dispatchers.IO) { repository.markCommentAsSynced(comment) }
+                }
+            }
+
+            ////Ratings////
+
+            val unsyncedUserRatings = withContext(Dispatchers.IO) { repository.getUnsyncedUserRatings() }
+
+            println("before ratings upload")
+            //upload ratings and mark as synced
+            if(unsyncedUserRatings.isNotEmpty()) {
+                println("ratings not empty")
+                for (rating in unsyncedUserRatings) {
+                    val successStatus = firebaseRepository.updateRating(rating, uid)
+                    if(successStatus == "Success") {
+                        println("rating successfully updated")
+                        withContext(Dispatchers.IO) { repository.markRatingAsSynced(rating) }
+                    }
+                }
+            }
+
+
+            ////Likes////
+
+            val unsyncedUserLikes = withContext(Dispatchers.IO) { repository.getUnsyncedUserLikes() }
+
+            println("before new likes upload")
+            if(unsyncedUserLikes.isNotEmpty()){
+                println("new likes not empty")
+                for(likeId in unsyncedUserLikes){
+                    val successStatus = firebaseRepository.updateLike(likeId)
+                    if(successStatus == "Success") {
+                        withContext(Dispatchers.IO) { repository.markLikeAsSynced(likeId) }
+                    }
+                }
+            }
+
+        }
+    }
 
     private fun dataSync(){
         viewModelScope.launch {
             println("data sync coroutine start")
-
-            setupUser()
-
 
 //            val uid = withContext(Dispatchers.IO) { getUserIdFromRoom() }
 //            appUiState.update { it.copy(userId = uid) }
@@ -406,6 +347,40 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
     }
 
+    fun confirmSignInWithGoogle(){
+        //if yes try google sign in/up
+        signIn()
+
+        appUiState.update {
+            it.copy(
+                showSignInAlert = false,
+            )
+        }
+    }
+
+    fun dismissSignInWithGoogle(){
+        if(appUiState.value.userIsOnlineStatus == -2) {
+
+            repository.setOnlineUserType(-1)
+
+            appUiState.update {
+                it.copy(
+                    showSignInAlert = false,
+                    userIsOnlineStatus = -1
+                )
+            }
+
+        }
+        else{
+            appUiState.update {
+                it.copy(
+                    showSignInAlert = false,
+                )
+            }
+        }
+
+
+    }
 
     fun setupDetailsScreen(recipeName: String){
         val recipeData = repository.getRecipeWithIngredientsAndInstructions(recipeName)

@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -44,7 +45,9 @@ import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.annotatedstrings.tutorialTextAnoString
 import com.example.bearrecipebookapp.data.entity.FilterEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
-import com.example.bearrecipebookapp.ui.components.*
+import com.example.bearrecipebookapp.ui.components.AddRecipeCard
+import com.example.bearrecipebookapp.ui.components.BasicAlert
+import com.example.bearrecipebookapp.ui.components.SmallRecipeCard
 import com.example.bearrecipebookapp.viewmodel.HomeScreenViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -318,12 +321,105 @@ fun HomeScreen(
                         AlertDialog(
                             onDismissRequest = { dismissSignInWithGoogle() },
                             text = {
+                                Row(Modifier.width(200.dp),
+                                horizontalArrangement = Arrangement.Center)
+                                {
+                                    Surface(
+                                        modifier = Modifier.size(150.dp),
+                                        shape = RoundedCornerShape(50.dp)
+                                    ) {
+                                        //image box
+                                        Box(
+                                            modifier = Modifier
+                                                .size(150.dp)
+                                                .border(
+                                                    width = 2.dp,
+                                                    brush = (Brush.verticalGradient(
+                                                        colors = listOf(
+                                                            Color(0xFFFFFFFF),
+                                                            Color(0xFFb15f33),
+                                                            Color(0xFFb15f33),
+                                                            Color(0xFFb15f33)
+                                                        ),
+                                                        tileMode = TileMode.Mirror
+                                                    )),
+                                                    shape = RoundedCornerShape(50.dp)
+                                                )
+                                                .background(
+                                                    color =
+//                                Color(0xFFd8af84)
+                                                    Color(0xFF682300)
+                                                ),
+                                            contentAlignment = Alignment.Center,
+                                        ) {
+                                            Image(
+
+                                                painter = painterResource(R.drawable.chef),
+                                                contentScale = ContentScale.Fit,
+                                                alignment = Alignment.Center,
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .height(90.dp)
+                                                    .width(120.dp),
+                                                colorFilter = ColorFilter.tint(Color(0xFFd8af84))
+                                            )
+                                        }
+                                    }
+                                }
                                 
                             },
                             buttons = {
                                 Column(){
-                                    ConfirmAlertButton(buttonText = "Sign in with Google") { confirmSignInWithGoogle() }
-                                    CancelAlertButton(buttonText = "Not now") { dismissSignInWithGoogle() }
+                                    Button(
+                                        modifier = Modifier
+                                            .width(250.dp)
+                                            .padding(start = 8.dp, end = 8.dp),
+                                        onClick =  confirmSignInWithGoogle,
+                                        elevation = ButtonDefaults.elevation(6.dp),
+                                        shape = RoundedCornerShape(10.dp),
+                                        border = BorderStroke(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                startX = -30f,
+                                                colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                        ),
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF682300), contentColor = Color(0xFFd8af84))
+                                    ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .width(250.dp)
+                                                .height(25.dp),
+                                            horizontalArrangement = Arrangement.SpaceEvenly,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ){
+                                            Image(
+                                                painter = painterResource(id = R.drawable.ic_google_logo),
+                                                contentDescription = null
+                                            )
+                                            Text("Sign in with Google")
+                                        }
+                                    }
+                                    Button(
+                                        modifier = Modifier
+                                            .width(250.dp)
+                                            .padding(8.dp),
+                                        onClick =  dismissSignInWithGoogle,
+                                        elevation = ButtonDefaults.elevation(6.dp),
+                                        shape = RoundedCornerShape(10.dp),
+                                        border = BorderStroke(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                startX = -30f,
+                                                colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror
+                                            )),
+                                        ),
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
+                                    ){
+                                        Text("Not now")
+                                    }
                                 }
                             }
                         )

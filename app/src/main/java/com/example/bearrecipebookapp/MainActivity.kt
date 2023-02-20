@@ -288,6 +288,8 @@ fun BearRecipeApp(
                 HomeScreen(
                     showLoadingAlert = appUiState.showLoadingAlert,
                     showSignInAlert = appUiState.showSignInAlert,
+                    confirmSignInWithGoogle = { appViewModel.confirmSignInWithGoogle() },
+                    dismissSignInWithGoogle = { appViewModel.dismissSignInWithGoogle() },
                     onDetailsClick = {
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
