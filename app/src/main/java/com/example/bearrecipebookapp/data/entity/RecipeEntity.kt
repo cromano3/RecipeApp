@@ -61,8 +61,14 @@ data class RecipeEntity(
     @ColumnInfo(name = "is_review_screen_target")
     var isReviewScreenTarget: Int = 0,
 
-    @ColumnInfo(name = "rating_timestamp")
-    var ratingTimestamp: String = "",
+//    @ColumnInfo(name = "when_user_last_synced_rating")
+//    var lastRatingSyncTime: String = "",
+
+    @ColumnInfo(name = "when_user_last_synced_comments")
+    var lastCommentSyncTime: String = "",
+
+    @ColumnInfo(name = "timestamp_of_latest_received_comment")
+    var lastDownloadedCommentTimestamp: String = "",
 
 
 //

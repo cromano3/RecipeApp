@@ -3,6 +3,7 @@ package com.example.bearrecipebookapp.data.repository
 import com.example.bearrecipebookapp.data.dao.AppDao
 import com.example.bearrecipebookapp.data.entity.CommentAuthorEntity
 import com.example.bearrecipebookapp.data.entity.CommentsEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +18,10 @@ class AppRepository(private val appDao: AppDao) {
 
     fun getRecipeWithIngredientsAndInstructions(recipeName: String): RecipeWithIngredientsAndInstructions{
         return appDao.getRecipeWithIngredientsAndInstructions(recipeName)
+    }
+
+    fun getRecipe(recipeName: String): RecipeEntity{
+        return appDao.getRecipe(recipeName)
     }
 
 
@@ -74,8 +79,14 @@ class AppRepository(private val appDao: AppDao) {
         withContext(Dispatchers.IO) { appDao.updateLikes(comment.likes, comment.commentID) }
     }
 
+
+
     fun addComment(comment: CommentsEntity){
        appDao.addComment(comment)
+    }
+
+    fun setMostRecentCommentTimestamp(recipeName: String, timestamp: String){
+        appDao.setMostRecentCommentTimestamp(recipeName, timestamp)
     }
 
 
@@ -87,7 +98,6 @@ class AppRepository(private val appDao: AppDao) {
             authorKarma = 0,
             authorImageURL = authorData.userPhotoURL))
     }
-
 
 
 

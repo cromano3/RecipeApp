@@ -2,10 +2,7 @@ package com.example.bearrecipebookapp.data.repository
 
 import android.app.Application
 import com.example.bearrecipebookapp.data.entity.CommentsEntity
-import com.example.bearrecipebookapp.datamodel.AuthorData
-import com.example.bearrecipebookapp.datamodel.FirebaseResult
-import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
-import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
+import com.example.bearrecipebookapp.datamodel.*
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -145,6 +142,10 @@ class FirebaseRepository(
 
     }
 
+    fun getCurrentTime(): String {
+        return serverTimestamp().toString()
+    }
+
 
 
 
@@ -249,24 +250,52 @@ class FirebaseRepository(
 
     }
 
-    suspend fun getAuthorData(comment: CommentsEntity): AuthorData {
+    suspend fun getAuthorsData(commentsList: MutableList<CommentsEntity>): MutableList<AuthorDataWithComment> {
 
-        val authorDoc = db.collection("users").document(comment.authorID).get().await()
+        val reviewsCollection = db.collection("users")
+        val querySnapshot = reviewsCollection.get().await()
 
-        var authorData: AuthorData = AuthorData("","")
+        val resultAuthorDataWithComment: MutableList<AuthorDataWithComment> = mutableListOf()
 
-        if(authorDoc != null){
+        if (querySnapshot != null) {
+            for(comment in commentsList){
+                for (user in querySnapshot.documents) {
+                    if(comment.authorID == user.id) {
 
-            val userName = authorDoc.getString("display_name")
-            val userPhotoURL = authorDoc.getString("user_photo")
+                        val userName = user.getString("display_name")  ?: ""
+                        val userPhotoURL = user.getString("user_photo") ?: ""
 
-            authorData = AuthorData(userName ?: "", userPhotoURL ?: "")
 
+                        resultAuthorDataWithComment.add(AuthorDataWithComment(AuthorData(userName, userPhotoURL), comment))
+
+                        break
+                    }
+                }
+            }
         }
 
-        return authorData
+        return resultAuthorDataWithComment
 
     }
+
+//    suspend fun getAuthorData(commentsList: MutableList<CommentsEntity>): AuthorData {
+//
+//        val authorDoc = db.collection("users").document(comment.authorID).get().await()
+//
+//        var authorData: AuthorData = AuthorData("","")
+//
+//        if(authorDoc != null){
+//
+//            val userName = authorDoc.getString("display_name")
+//            val userPhotoURL = authorDoc.getString("user_photo")
+//
+//            authorData = AuthorData(userName ?: "", userPhotoURL ?: "")
+//
+//        }
+//
+//        return authorData
+//
+//    }
 
 
     //get UID

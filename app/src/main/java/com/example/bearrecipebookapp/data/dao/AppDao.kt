@@ -3,6 +3,7 @@ package com.example.bearrecipebookapp.data.dao
 import androidx.room.*
 import com.example.bearrecipebookapp.data.entity.CommentAuthorEntity
 import com.example.bearrecipebookapp.data.entity.CommentsEntity
+import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
@@ -14,6 +15,10 @@ interface AppDao {
     @Transaction
     @Query("SELECT * FROM recipe_table WHERE recipe_name = :recipeName")
     fun getRecipeWithIngredientsAndInstructions(recipeName: String): RecipeWithIngredientsAndInstructions
+
+    @Transaction
+    @Query("SELECT * FROM recipe_table WHERE recipe_name = :recipeName")
+    fun getRecipe(recipeName: String): RecipeEntity
 
     @Transaction
     @Query("SELECT is_online_user_type FROM user_table")
@@ -71,6 +76,12 @@ interface AppDao {
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addComment(comment: CommentsEntity)
+
+
+    @Transaction
+    @Query("UPDATE recipe_table SET timestamp_of_latest_received_comment = :timestamp WHERE recipe_name = :recipeName")
+    fun setMostRecentCommentTimestamp(recipeName: String, timestamp: String)
+
 
 
 

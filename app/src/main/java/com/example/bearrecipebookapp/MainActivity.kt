@@ -326,6 +326,7 @@ fun BearRecipeApp(
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
                             navController.navigate("DetailsScreen")
+                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                         }
                      },
                     onFavoriteClick = { favoriteSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },

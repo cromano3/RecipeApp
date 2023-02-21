@@ -27,12 +27,13 @@ class DetailsScreenViewModel(application: Application, recipeName: String): View
 
 
     init {
-        println(" PLZ GOD $recipeName")
         val appDb = RecipeAppDatabase.getInstance(application)
         val detailsScreenDao = appDb.DetailsScreenDao()
         repository = DetailsScreenRepository(detailsScreenDao)
 
         detailsScreenData = repository.detailsScreenData
+
+
     }
 
     fun removeFromMenu(recipe: RecipeWithIngredientsAndInstructions){

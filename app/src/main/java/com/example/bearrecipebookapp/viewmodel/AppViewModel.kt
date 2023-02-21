@@ -4,10 +4,13 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
+import com.example.bearrecipebookapp.data.entity.CommentAuthorEntity
+import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.data.repository.AppRepository
 import com.example.bearrecipebookapp.data.repository.FirebaseRepository
 import com.example.bearrecipebookapp.datamodel.AppUiState
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
+import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
@@ -17,6 +20,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AppViewModel(application: Application, private val firebaseRepository: FirebaseRepository): ViewModel() {
 
@@ -300,31 +305,31 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
             ////Do Download Sync////
 
-            //get comments from remote
-            /**this needs to be: "get comments that are timestamped (at least 2-5 mins.) after my last sync completion timestamp
-             * this way we dont get all the comments that the local db already has over and over again each time we sync data.
-             * the local DB needs to store a timestamp (of the same timezone as the firestore) when the data sync is completed to use
-             * to compare this value.
-             */
-            val commentsFromFirestore = firebaseRepository.getComments()
-
-            println("before comments DOWNLOAD")
-            //add comments and update likes in local db
-            if(commentsFromFirestore.isNotEmpty()){
-                println("new comments not empty")
-                for(comment in commentsFromFirestore){
-                    println("do comment sync (authors)")
-                    val authorData = firebaseRepository.getAuthorData(comment)
-                    withContext(Dispatchers.IO) {repository.addAuthor(authorData, comment.authorID)}
-
-                }
-                for(comment in commentsFromFirestore){
-                    println("do comment sync (comments)")
-//                    repository.updateLikes(comment)
-                    withContext(Dispatchers.IO) { repository.addComment(comment) }
-
-                }
-            }
+//            //get comments from remote
+//            /**this needs to be: "get comments that are timestamped (at least 2-5 mins.) after my last sync completion timestamp
+//             * this way we dont get all the comments that the local db already has over and over again each time we sync data.
+//             * the local DB needs to store a timestamp (of the same timezone as the firestore) when the data sync is completed to use
+//             * to compare this value.
+//             */
+//            val commentsFromFirestore = firebaseRepository.getComments()
+//
+//            println("before comments DOWNLOAD")
+//            //add comments and update likes in local db
+//            if(commentsFromFirestore.isNotEmpty()){
+//                println("new comments not empty")
+//                for(comment in commentsFromFirestore){
+//                    println("do comment sync (authors)")
+//                    val authorData = firebaseRepository.getAuthorData(comment)
+//                    withContext(Dispatchers.IO) {repository.addAuthor(authorData, comment.authorID)}
+//
+//                }
+//                for(comment in commentsFromFirestore){
+//                    println("do comment sync (comments)")
+////                    repository.updateLikes(comment)
+//                    withContext(Dispatchers.IO) { repository.addComment(comment) }
+//
+//                }
+//            }
 
 
 //            //get ratings from remote
@@ -384,15 +389,103 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
     fun setupDetailsScreen(recipeName: String){
         val recipeData = repository.getRecipeWithIngredientsAndInstructions(recipeName)
-        val reviewsData = repository.getReviewsData(recipeName)
-        val localUserReview = repository.getLocalUserReviewData(recipeName) ?: ""
         appUiState.update {
             it.copy(
                 detailsScreenTarget = recipeData,
-                detailsScreenReviewsData = reviewsData,
-                detailsScreenLocalUserReview = localUserReview,
             )
         }
+    }
+
+    suspend fun setupDetailsScreenComments(recipeName: String){
+
+        val recipeData = repository.getRecipe(recipeName)
+        val reviewsData = repository.getReviewsData(recipeName) as MutableList
+
+        var newCommentsList: MutableList<CommentsEntity> = mutableListOf()
+
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+
+        val lastCommentSyncTime = recipeData.lastCommentSyncTime
+        val lastDownloadedCommentTimestamp = recipeData.lastDownloadedCommentTimestamp
+//        val lastRatingSyncTime = recipeData.lastRatingSyncTime
+
+//        val lastDownloadedCommentTimestampFormatted = formatter.parse(lastDownloadedCommentTimestamp)
+//        val lastDownloadedRatingTimestampFormatted = formatter.parse(lastDownloadedRatingTimestamp)
+
+        val lastCommentSyncTimeFormatted = formatter.parse(lastCommentSyncTime)
+
+        val oneHourAfterLastUpdate = Calendar.getInstance()
+
+        if (lastCommentSyncTime != "") {
+            if (lastCommentSyncTimeFormatted != null) {
+
+                oneHourAfterLastUpdate.time = lastCommentSyncTimeFormatted
+                oneHourAfterLastUpdate.add(Calendar.HOUR, 1)
+
+                val currentFirestoreTime = formatter.parse(firebaseRepository.getCurrentTime())
+                val currentTime = Calendar.getInstance()
+
+                if (currentFirestoreTime != null) {
+
+                    currentTime.time = currentFirestoreTime
+
+                    if(oneHourAfterLastUpdate > currentTime){
+                        //do download
+                        newCommentsList = firebaseRepository.getComments(lastDownloadedCommentTimestamp)
+                    }
+
+                }
+
+            }
+        }
+        else
+//            if(lastRatingSyncTime == "")
+            {
+            //do download
+            newCommentsList = firebaseRepository.getComments()
+        }
+
+        if(newCommentsList.isNotEmpty()) {
+
+            val authorsDataWithComments = firebaseRepository.getAuthorsData(newCommentsList)
+
+            var newMostRecentCommentTimestamp = authorsDataWithComments[0].comment.timestamp
+
+            for(comment in authorsDataWithComments){
+                withContext(Dispatchers.IO) { repository.addAuthor(comment.authorData, comment.comment.authorID) }
+                withContext(Dispatchers.IO) { repository.addComment(comment.comment) }
+                reviewsData.add(
+                    ReviewWithAuthorDataModel(
+                        comment.comment,
+                        CommentAuthorEntity(
+                            comment.comment.authorID,
+                            comment.authorData.userName,
+                            0,
+                            comment.authorData.userPhotoURL
+                        )
+                    )
+                )
+
+                val newMostRecentCommentTimestampAsDate = formatter.parse(newMostRecentCommentTimestamp)
+                val thisCommentsTimestampAsDate = formatter.parse(comment.comment.timestamp)
+
+
+                if(thisCommentsTimestampAsDate != null && newMostRecentCommentTimestampAsDate != null) {
+                    if (thisCommentsTimestampAsDate > newMostRecentCommentTimestampAsDate) {
+                        newMostRecentCommentTimestamp = comment.comment.timestamp
+                    }
+                }
+
+            }
+            withContext(Dispatchers.IO) { repository.setMostRecentCommentTimestamp(recipeName, newMostRecentCommentTimestamp) }
+        }
+
+        appUiState.update {
+            it.copy(
+                detailsScreenReviewsData = reviewsData,
+            )
+        }
+
     }
 
     fun updateDetailsScreenWithJustWrittenReview(){
