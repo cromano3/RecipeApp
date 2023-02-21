@@ -59,7 +59,7 @@ class FirebaseRepository(
     }
 
     //Write rating to Firestore
-    suspend fun updateRating(rating: RecipeNameAndRating, uid: String): String {
+    suspend fun updateRating(rating: RecipeNameAndRating): String {
 
         val currentRecipeDocument = db.collection("recipes").document(rating.recipeName)
         var result = ""

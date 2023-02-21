@@ -89,6 +89,9 @@ class AppRepository(private val appDao: AppDao) {
         appDao.setMostRecentCommentTimestamp(recipeName, timestamp)
     }
 
+    fun setTimeOfLastUpdate(recipeName: String, timestamp: String){
+        appDao.setTimeOfLastUpdate(recipeName, timestamp)
+    }
 
 
     fun addAuthor(authorData: AuthorData, id: String) {
@@ -100,6 +103,10 @@ class AppRepository(private val appDao: AppDao) {
     }
 
 
+
+    fun setUserRating(recipeName: String, rating: Int, syncStatus: Int){
+        appDao.setLocalRating(recipeName, rating, syncStatus)
+    }
 
     fun updateRecipeRating(rating: RecipeNameAndRating){
         appDao.updateRecipeRating(rating.recipeName, rating.rating)

@@ -9,6 +9,7 @@ import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.data.repository.AppRepository
 import com.example.bearrecipebookapp.data.repository.FirebaseRepository
 import com.example.bearrecipebookapp.datamodel.AppUiState
+import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 import com.google.android.gms.auth.api.identity.Identity
@@ -215,7 +216,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             if(unsyncedUserRatings.isNotEmpty()) {
                 println("ratings not empty")
                 for (rating in unsyncedUserRatings) {
-                    val successStatus = firebaseRepository.updateRating(rating, uid)
+                    val successStatus = firebaseRepository.updateRating(rating)
                     if(successStatus == "Success") {
                         println("rating successfully updated")
                         withContext(Dispatchers.IO) { repository.markRatingAsSynced(rating) }
@@ -278,7 +279,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             if(unsyncedUserRatings.isNotEmpty()) {
                 println("ratings not empty")
                 for (rating in unsyncedUserRatings) {
-                    val successStatus = firebaseRepository.updateRating(rating, uid)
+                    val successStatus = firebaseRepository.updateRating(rating)
                     if(successStatus == "Success") {
                         println("rating successfully updated")
                         withContext(Dispatchers.IO) { repository.markRatingAsSynced(rating) }
@@ -443,7 +444,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             {
             //do download
             newCommentsList = firebaseRepository.getComments()
-        }
+            }
 
         if(newCommentsList.isNotEmpty()) {
 
@@ -478,12 +479,45 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
             }
             withContext(Dispatchers.IO) { repository.setMostRecentCommentTimestamp(recipeName, newMostRecentCommentTimestamp) }
+            val currentTimeMarker = firebaseRepository.getCurrentTime()
+            withContext(Dispatchers.IO) { repository.setTimeOfLastUpdate(recipeName, currentTimeMarker) }
         }
 
         appUiState.update {
             it.copy(
                 detailsScreenReviewsData = reviewsData,
             )
+        }
+
+    }
+
+    fun storeRating(rating: Int){
+
+        viewModelScope.launch {
+
+            val result = firebaseRepository.updateRating(RecipeNameAndRating(appUiState.value.detailsScreenTarget.recipeEntity.recipeName, rating))
+
+            if(result == "Success"){
+                withContext(Dispatchers.IO) {
+                    repository.setUserRating(
+                        appUiState.value.detailsScreenTarget.recipeEntity.recipeName,
+                        rating,
+                        1
+                    )
+                }
+            }
+            else{
+                withContext(Dispatchers.IO) {
+                    repository.setUserRating(
+                        appUiState.value.detailsScreenTarget.recipeEntity.recipeName,
+                        rating,
+                        0
+                    )
+                }
+            }
+
+
+
         }
 
     }

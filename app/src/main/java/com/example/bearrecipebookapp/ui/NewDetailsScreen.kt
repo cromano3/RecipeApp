@@ -67,6 +67,7 @@ fun NewDetailsScreen(
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
 //    onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
 //    onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    storeRating: (Int) -> Unit,
     onIMadeThisClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onFinishedCookingClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     showAddedToFavoritesSnackBarMessage: (RecipeEntity) -> Unit,
@@ -619,7 +620,14 @@ fun NewDetailsScreen(
                     ThumbsRatingAlert(
                         confirmButtonText = "Confirm",
                         cancelButtonText = "Cancel",
-                        onConfirmClick = { detailsScreenViewModel.confirmRating(recipeData.recipeEntity) },
+                        onConfirmClick =
+                        {
+                            detailsScreenViewModel.confirmRating(recipeData.recipeEntity)
+                            if(uiAlertState.isThumbUpSelected || uiAlertState.isThumbDownSelected){
+                                storeRating(if(uiAlertState.isThumbUpSelected) 1 else -1)
+                            }
+
+                        },
                         onCancelClick = { detailsScreenViewModel.cancelRatingAlert() },
                         onDismiss = { detailsScreenViewModel.cancelRatingAlert() },
                         onThumbDownClick = { detailsScreenViewModel.thumbDownClicked() },

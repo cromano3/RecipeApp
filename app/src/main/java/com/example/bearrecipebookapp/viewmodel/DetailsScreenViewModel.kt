@@ -165,9 +165,9 @@ class DetailsScreenViewModel(application: Application, recipeName: String): View
             if(uiAlertState.value.isThumbUpSelected && recipeEntity.isFavorite == 0) {
 
                 //write rating to DB
-                coroutineScope.launch(Dispatchers.IO) {
-                    repository.setLocalRating(recipeEntity.recipeName, true)
+//                viewModelScope.launch(Dispatchers.IO) {
 
+//                    withContext(Dispatchers.IO) { repository.setLocalRating(recipeEntity.recipeName, 1) }
 
                     uiAlertState.update { currentState ->
                         currentState.copy(
@@ -178,7 +178,7 @@ class DetailsScreenViewModel(application: Application, recipeName: String): View
                         )
                     }
 
-                }
+//                }
 
             }
             //show write review alert
@@ -188,8 +188,14 @@ class DetailsScreenViewModel(application: Application, recipeName: String): View
 
 
                 //write rating to DB
-                coroutineScope.launch(Dispatchers.IO) {
-                    repository.setLocalRating(recipeEntity.recipeName, true)
+//                viewModelScope.launch(Dispatchers.IO) {
+
+//                    withContext(Dispatchers.IO) {
+//                        repository.setLocalRating(
+//                            recipeEntity.recipeName,
+//                            if (uiAlertState.value.isThumbUpSelected) 1 else -1
+//                        )
+//                    }
 
                     uiAlertState.update { currentState ->
                         currentState.copy(
@@ -200,7 +206,7 @@ class DetailsScreenViewModel(application: Application, recipeName: String): View
                         )
                     }
 
-                }
+//                }
 
             }
 

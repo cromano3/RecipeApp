@@ -429,6 +429,7 @@ fun BearRecipeApp(
 //                        localUserNickName = appUiState.userNickname,
 //                        localUserImageIRL = appUiState.userImageURL,
 //                        onGoBackClick = { navController.popBackStack() },
+                        storeRating = { appViewModel.storeRating(it) },
                         onMenuAddClick = {
                             appViewModel.updateDetailsScreenUiOnMenuStatus()
                             addMenuSnackBar(it.recipeEntity, scaffoldState, coroutineScope)

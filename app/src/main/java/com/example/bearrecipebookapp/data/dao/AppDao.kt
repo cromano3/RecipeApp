@@ -82,6 +82,9 @@ interface AppDao {
     @Query("UPDATE recipe_table SET timestamp_of_latest_received_comment = :timestamp WHERE recipe_name = :recipeName")
     fun setMostRecentCommentTimestamp(recipeName: String, timestamp: String)
 
+    @Transaction
+    @Query("UPDATE recipe_table SET when_user_last_synced_comments = :timestamp WHERE recipe_name = :recipeName")
+    fun setTimeOfLastUpdate(recipeName: String, timestamp: String)
 
 
 
@@ -96,6 +99,11 @@ interface AppDao {
     @Transaction
     @Query("UPDATE recipe_table SET global_rating = :rating WHERE recipe_name = :recipeName")
     fun updateRecipeRating(recipeName: String, rating: Int)
+
+
+    @Transaction
+    @Query("UPDATE recipe_table SET local_user_rating = :rating, is_rated = 1, is_rating_synced = :syncStatus WHERE recipe_name = :name")
+    fun setLocalRating(name: String, rating: Int, syncStatus: Int)
 
 
 
