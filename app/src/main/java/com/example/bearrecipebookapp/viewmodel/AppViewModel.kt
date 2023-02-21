@@ -453,6 +453,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             var newMostRecentCommentTimestamp = authorsDataWithComments[0].comment.timestamp
 
             for(comment in authorsDataWithComments){
+                /**should update this for karma system*/
                 withContext(Dispatchers.IO) { repository.addAuthor(comment.authorData, comment.comment.authorID) }
                 withContext(Dispatchers.IO) { repository.addComment(comment.comment) }
                 reviewsData.add(
@@ -519,6 +520,10 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
 
         }
+
+    }
+
+    fun updateLikes(commentId: String) {
 
     }
 

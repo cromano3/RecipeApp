@@ -38,6 +38,7 @@ fun ReviewWidget(
     authorImageUrl: String,
     reviewText: String,
     likes: Int,
+    likedByUser: Int,
     onLikeClick: () -> Unit,
 ){
     var expanded by remember { mutableStateOf(false) }
@@ -143,7 +144,7 @@ fun ReviewWidget(
                             .padding(16.dp)
                             .align(Alignment.CenterEnd)
                             .wrapContentSize()
-                            .clickable { },
+                            .clickable { if(likedByUser != 1) onLikeClick() },
                         color = Color.Transparent
                     ) {
                         Row(Modifier.wrapContentSize(),
@@ -151,7 +152,7 @@ fun ReviewWidget(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                if (false) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
+                                if (likedByUser == 1) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
                                 contentDescription = null,
                                 modifier = Modifier.size(30.dp),
                                 tint = Color(0xFFd8af84)

@@ -1,12 +1,14 @@
 package com.example.bearrecipebookapp.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
+import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.data.repository.DetailsScreenRepository
+import com.example.bearrecipebookapp.datamodel.DetailsScreenUiState
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
+import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 import com.example.bearrecipebookapp.datamodel.UiAlertStateDetailsScreenDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,15 +16,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DetailsScreenViewModel(application: Application, recipeName: String): ViewModel() {
+class DetailsScreenViewModel(application: Application, reviewsData: List<ReviewWithAuthorDataModel>): ViewModel() {
 
     private val repository: DetailsScreenRepository
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
+//    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
+//    var reviewsData: LiveData<List<ReviewWithAuthorDataModel>>
 
     val uiAlertState = MutableStateFlow(UiAlertStateDetailsScreenDataModel())
+
+    val uiState = MutableStateFlow(DetailsScreenUiState())
 
 
 
@@ -31,8 +36,42 @@ class DetailsScreenViewModel(application: Application, recipeName: String): View
         val detailsScreenDao = appDb.DetailsScreenDao()
         repository = DetailsScreenRepository(detailsScreenDao)
 
-        detailsScreenData = repository.detailsScreenData
+//        detailsScreenData = repository.detailsScreenData
+//        reviewsData = repository.reviewsData
 
+        uiState.update {
+            it.copy(reviewsData = reviewsData)
+        }
+
+
+    }
+
+    fun setLiked(commentID: String) {
+
+        val myList: MutableList<ReviewWithAuthorDataModel> = mutableListOf()
+
+        for(review in uiState.value.reviewsData){
+            if (review.commentsEntity.commentID == commentID){
+                val myComment = CommentsEntity(
+                    review.commentsEntity.commentID,
+                    review.commentsEntity.recipeName,
+                    review.commentsEntity.authorID,
+                    review.commentsEntity.commentText,
+                    review.commentsEntity.likes + 1,
+                    1,
+                    review.commentsEntity.myLikeWasSynced,
+                    review.commentsEntity.timestamp)
+                myList.add(ReviewWithAuthorDataModel(myComment, review.authorEntity))
+            }
+            else{
+                myList.add(review)
+            }
+
+        }
+
+        uiState.update {
+            it.copy(reviewsData = myList)
+        }
 
     }
 

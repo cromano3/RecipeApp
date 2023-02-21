@@ -1,6 +1,5 @@
 package com.example.bearrecipebookapp.data.repository
 
-import androidx.lifecycle.LiveData
 import com.example.bearrecipebookapp.data.dao.DetailsScreenDao
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
@@ -12,7 +11,8 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
-    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions> = detailsScreenDao.getData()
+//    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions> = detailsScreenDao.getData()
+//    var reviewsData: LiveData<List<ReviewWithAuthorDataModel>> = detailsScreenDao.getReviewsData()
 
 
     suspend fun removeFromMenu(recipeName: String){

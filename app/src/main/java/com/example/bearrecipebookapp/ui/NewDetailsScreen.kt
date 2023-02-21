@@ -68,6 +68,7 @@ fun NewDetailsScreen(
 //    onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
 //    onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     storeRating: (Int) -> Unit,
+    updateLikes: (String) -> Unit,
     onIMadeThisClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onFinishedCookingClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     showAddedToFavoritesSnackBarMessage: (RecipeEntity) -> Unit,
@@ -83,15 +84,20 @@ fun NewDetailsScreen(
             "DetailsScreenViewModel",
             DetailsScreenViewModelFactory(
                 LocalContext.current.applicationContext as Application,
-                recipeData.recipeEntity.recipeName,
+                reviewsData,
             )
         )
 
 //        val detailsScreenData by detailsScreenViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
 
         val uiAlertState by detailsScreenViewModel.uiAlertState.collectAsState()
+        val uiState by detailsScreenViewModel.uiState.collectAsState()
+
+//        val reviewsData by detailsScreenViewModel.reviewsData.observeAsState(listOf())
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
+
+
 
 
 //    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
@@ -539,14 +545,18 @@ fun NewDetailsScreen(
 //                    }
 
                     if(reviewsData.isNotEmpty()) {
-                        items(reviewsData, key = { it.commentsEntity.commentID })
+                        items(uiState.reviewsData, key = { it.commentsEntity.commentID })
                         {
                             ReviewWidget(
                                 authorName = it.authorEntity.authorName,
                                 authorImageUrl = it.authorEntity.authorImageURL,
                                 reviewText = it.commentsEntity.commentText,
                                 likes = it.commentsEntity.likes,
-                                onLikeClick = {},
+                                likedByUser = it.commentsEntity.likedByMe,
+                                onLikeClick = {
+                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
+                                    updateLikes(it.commentsEntity.commentID)
+                                              },
 
                                 )
                         }
@@ -737,13 +747,13 @@ fun NewDetailsScreen(
 
 class DetailsScreenViewModelFactory(
     val application: Application,
-    val recipeName: String,
+    val reviewsData: List<ReviewWithAuthorDataModel>,
     ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
         return DetailsScreenViewModel(
             application,
-            recipeName
+            reviewsData
         ) as T
     }
 }
