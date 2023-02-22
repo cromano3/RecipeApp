@@ -64,7 +64,7 @@ data class RecipeEntity(
 //    @ColumnInfo(name = "when_user_last_synced_rating")
 //    var lastRatingSyncTime: String = "",
 
-    @ColumnInfo(name = "when_user_last_synced_comments")
+    @ColumnInfo(name = "time_of_users_last_sync")
     var lastCommentSyncTime: String = "",
 
     @ColumnInfo(name = "timestamp_of_latest_received_comment")

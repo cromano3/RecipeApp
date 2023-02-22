@@ -45,8 +45,8 @@ import com.example.bearrecipebookapp.data.annotatedstrings.confirmCompletedCooki
 import com.example.bearrecipebookapp.data.annotatedstrings.confirmIMadeThisAnoString
 import com.example.bearrecipebookapp.data.annotatedstrings.confirmRemoveMenuAnoString
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
+import com.example.bearrecipebookapp.datamodel.AppUiState
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
-import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 import com.example.bearrecipebookapp.ui.components.*
 import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.DetailsScreenViewModel
@@ -58,7 +58,8 @@ import kotlinx.coroutines.Dispatchers
 fun NewDetailsScreen(
     //recipeName: String,
     recipeData: RecipeWithIngredientsAndInstructions,
-    reviewsData: List<ReviewWithAuthorDataModel>,
+//    reviewsData: List<ReviewWithAuthorDataModel>,
+    appUiState: AppUiState,
 //    localUserReview: String,
 //    localUserNickName: String,
 //    localUserImageIRL: String,
@@ -84,18 +85,22 @@ fun NewDetailsScreen(
             "DetailsScreenViewModel",
             DetailsScreenViewModelFactory(
                 LocalContext.current.applicationContext as Application,
-                reviewsData,
+//                reviewsData,
             )
         )
 
 //        val detailsScreenData by detailsScreenViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
 
         val uiAlertState by detailsScreenViewModel.uiAlertState.collectAsState()
-        val uiState by detailsScreenViewModel.uiState.collectAsState()
+//        val uiState by detailsScreenViewModel.uiState.collectAsState()
 
 //        val reviewsData by detailsScreenViewModel.reviewsData.observeAsState(listOf())
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
+
+//        println(reviewsData.size.toString() + "size")
+//        println("notEmpty" + reviewsData.isNotEmpty())
+//        println("isEmpty" + reviewsData.isEmpty())
 
 
 
@@ -495,7 +500,7 @@ fun NewDetailsScreen(
 //                        ReviewWidget(recipeData.reviewsList[x].reviewText)
 //                    }
 
-                    if (reviewsData.isNotEmpty()) {
+                    if (appUiState.detailsScreenReviewsData.isNotEmpty()) {
                         item {
                             Text(
                                 text = "Comments and Tips",
@@ -544,8 +549,8 @@ fun NewDetailsScreen(
 //                        }
 //                    }
 
-                    if(reviewsData.isNotEmpty()) {
-                        items(uiState.reviewsData, key = { it.commentsEntity.commentID })
+                    if(appUiState.detailsScreenReviewsData.isNotEmpty()) {
+                        items(appUiState.detailsScreenReviewsData, key = { it.commentsEntity.commentID })
                         {
                             ReviewWidget(
                                 authorName = it.authorEntity.authorName,
@@ -554,7 +559,8 @@ fun NewDetailsScreen(
                                 likes = it.commentsEntity.likes,
                                 likedByUser = it.commentsEntity.likedByMe,
                                 onLikeClick = {
-                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
+                                    println("click")
+//                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
                                     updateLikes(it.commentsEntity.commentID)
                                               },
 
@@ -747,13 +753,13 @@ fun NewDetailsScreen(
 
 class DetailsScreenViewModelFactory(
     val application: Application,
-    val reviewsData: List<ReviewWithAuthorDataModel>,
+//    val reviewsData: List<ReviewWithAuthorDataModel>,
     ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
         return DetailsScreenViewModel(
             application,
-            reviewsData
+//            reviewsData
         ) as T
     }
 }

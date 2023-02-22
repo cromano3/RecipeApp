@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4a8c67f724b501eed9305ae4ff82a5e0",
+    "identityHash": "b9ab638eb4c346f11a2ce2a0997fc550",
     "entities": [
       {
         "tableName": "recipe_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `global_rating` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `is_search_result` INTEGER NOT NULL, `cooked_count` INTEGER NOT NULL, `is_rated` INTEGER NOT NULL, `local_user_rating` INTEGER NOT NULL, `is_rating_synced` INTEGER NOT NULL, `is_reviewed` INTEGER NOT NULL, `review` TEXT NOT NULL, `is_review_synced` INTEGER NOT NULL, `is_review_screen_target` INTEGER NOT NULL, `rating_timestamp` TEXT NOT NULL, PRIMARY KEY(`recipe_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `global_rating` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `is_search_result` INTEGER NOT NULL, `cooked_count` INTEGER NOT NULL, `is_rated` INTEGER NOT NULL, `local_user_rating` INTEGER NOT NULL, `is_rating_synced` INTEGER NOT NULL, `is_reviewed` INTEGER NOT NULL, `review` TEXT NOT NULL, `is_review_synced` INTEGER NOT NULL, `is_review_screen_target` INTEGER NOT NULL, `time_of_users_last_sync` TEXT NOT NULL, `timestamp_of_latest_received_comment` TEXT NOT NULL, PRIMARY KEY(`recipe_name`))",
         "fields": [
           {
             "fieldPath": "recipeName",
@@ -117,8 +117,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "ratingTimestamp",
-            "columnName": "rating_timestamp",
+            "fieldPath": "lastCommentSyncTime",
+            "columnName": "time_of_users_last_sync",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastDownloadedCommentTimestamp",
+            "columnName": "timestamp_of_latest_received_comment",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -436,7 +442,7 @@
       },
       {
         "tableName": "comments_authors_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`author_id` TEXT NOT NULL, `author_name` TEXT NOT NULL, `author_karma` INTEGER NOT NULL, `author_image_url` TEXT NOT NULL, `timestamp` TEXT NOT NULL, PRIMARY KEY(`author_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`author_id` TEXT NOT NULL, `author_name` TEXT NOT NULL, `author_karma` INTEGER NOT NULL, `author_image_url` TEXT NOT NULL, PRIMARY KEY(`author_id`))",
         "fields": [
           {
             "fieldPath": "authorID",
@@ -459,12 +465,6 @@
           {
             "fieldPath": "authorImageURL",
             "columnName": "author_image_url",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "timestamp",
-            "columnName": "timestamp",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -544,7 +544,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4a8c67f724b501eed9305ae4ff82a5e0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b9ab638eb4c346f11a2ce2a0997fc550')"
     ]
   }
 }

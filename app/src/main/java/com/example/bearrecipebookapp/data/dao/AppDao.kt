@@ -83,7 +83,7 @@ interface AppDao {
     fun setMostRecentCommentTimestamp(recipeName: String, timestamp: String)
 
     @Transaction
-    @Query("UPDATE recipe_table SET when_user_last_synced_comments = :timestamp WHERE recipe_name = :recipeName")
+    @Query("UPDATE recipe_table SET time_of_users_last_sync = :timestamp WHERE recipe_name = :recipeName")
     fun setTimeOfLastUpdate(recipeName: String, timestamp: String)
 
 

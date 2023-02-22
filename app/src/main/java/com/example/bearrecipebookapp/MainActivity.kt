@@ -427,7 +427,8 @@ fun BearRecipeApp(
             ) {
                     NewDetailsScreen(
                         recipeData = appUiState.detailsScreenTarget,
-                        reviewsData = appUiState.detailsScreenReviewsData,
+//                        reviewsData = appUiState.detailsScreenReviewsData,
+                        appUiState = appUiState,
 //                        localUserReview = appUiState.detailsScreenLocalUserReview,
 //                        localUserNickName = appUiState.userNickname,
 //                        localUserImageIRL = appUiState.userImageURL,
