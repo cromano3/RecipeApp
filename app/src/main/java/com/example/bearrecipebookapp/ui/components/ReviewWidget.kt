@@ -37,6 +37,7 @@ fun ReviewWidget(
     authorName: String,
     authorImageUrl: String,
     reviewText: String,
+    karma: Int,
     likes: Int,
     likedByUser: Int,
     onLikeClick: () -> Unit,
@@ -128,7 +129,7 @@ fun ReviewWidget(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold)
                     Text(
-                        "Sous Chef",
+                        if (karma > 0) "Karma $karma" else "",
                         color = Color(0xFFd8af84),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Normal)

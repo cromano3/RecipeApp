@@ -544,7 +544,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
             val result = firebaseRepository.updateRating(RecipeNameAndRating(appUiState.value.detailsScreenTarget.recipeEntity.recipeName, rating))
 
-            if(result == "Success"){
+            if(result == "Success" || result == "Failed Duplicate Rating"){
                 withContext(Dispatchers.IO) {
                     repository.setUserRating(
                         appUiState.value.detailsScreenTarget.recipeEntity.recipeName,

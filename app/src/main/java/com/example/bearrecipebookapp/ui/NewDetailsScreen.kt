@@ -556,6 +556,7 @@ fun NewDetailsScreen(
                                 authorName = it.authorEntity.authorName,
                                 authorImageUrl = it.authorEntity.authorImageURL,
                                 reviewText = it.commentsEntity.commentText,
+                                karma = it.authorEntity.authorKarma,
                                 likes = if(it.commentsEntity.likedByMe == 1 && it.commentsEntity.myLikeWasSynced == 0) it.commentsEntity.likes + 1 else it.commentsEntity.likes,
                                 likedByUser = it.commentsEntity.likedByMe,
                                 onLikeClick = {
@@ -636,10 +637,11 @@ fun NewDetailsScreen(
                         cancelButtonText = "Cancel",
                         onConfirmClick =
                         {
-                            detailsScreenViewModel.confirmRating(recipeData.recipeEntity)
                             if(uiAlertState.isThumbUpSelected || uiAlertState.isThumbDownSelected){
                                 storeRating(if(uiAlertState.isThumbUpSelected) 1 else -1)
                             }
+                            detailsScreenViewModel.confirmRating(recipeData.recipeEntity)
+
 
                         },
                         onCancelClick = { detailsScreenViewModel.cancelRatingAlert() },
