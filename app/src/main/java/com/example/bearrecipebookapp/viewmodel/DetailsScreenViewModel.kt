@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.viewmodel
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
@@ -14,16 +15,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DetailsScreenViewModel(application: Application,
-//                             reviewsData: List<ReviewWithAuthorDataModel>
-): ViewModel() {
+class DetailsScreenViewModel(application: Application, recipeName: String): ViewModel() {
 
     private val repository: DetailsScreenRepository
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
 //    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
-//    var reviewsData: LiveData<List<ReviewWithAuthorDataModel>>
+
+    var reviewsData: LiveData<List<ReviewWithAuthorDataModel>>
 
     val uiAlertState = MutableStateFlow(UiAlertStateDetailsScreenDataModel())
 
@@ -37,7 +37,8 @@ class DetailsScreenViewModel(application: Application,
         repository = DetailsScreenRepository(detailsScreenDao)
 
 //        detailsScreenData = repository.detailsScreenData
-//        reviewsData = repository.reviewsData
+        reviewsData = repository.reviewsData
+        repository.setRecipeName(recipeName)
 
 //        uiState.update {
 //            it.copy(reviewsData = reviewsData)
@@ -45,6 +46,8 @@ class DetailsScreenViewModel(application: Application,
 
 
     }
+
+
 
     fun setLiked(commentID: String) {
 

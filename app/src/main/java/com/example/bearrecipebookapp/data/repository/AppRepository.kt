@@ -58,6 +58,11 @@ class AppRepository(private val appDao: AppDao) {
 
 
 
+    fun setAsLiked(commentID: String){
+        appDao.setAsLiked(commentID)
+    }
+
+
     fun getUnsyncedUserLikes(): List<String>{
         return appDao.getUnsyncedUserLikes()
     }

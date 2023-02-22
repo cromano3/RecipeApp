@@ -37,6 +37,12 @@ interface AppDao {
 
 
 
+
+    @Transaction
+    @Query("UPDATE comments_table SET liked_by_local_user = 1 WHERE comment_id = :commentID")
+    fun setAsLiked(commentID: String)
+
+
     @Transaction
     @Query("SELECT comment_id FROM comments_table WHERE local_user_like_was_synced = 0 AND liked_by_local_user = 1")
     fun getUnsyncedUserLikes(): List<String>

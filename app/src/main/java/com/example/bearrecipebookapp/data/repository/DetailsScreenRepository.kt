@@ -1,8 +1,12 @@
 package com.example.bearrecipebookapp.data.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.example.bearrecipebookapp.data.dao.DetailsScreenDao
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
+import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -12,7 +16,17 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
 //    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions> = detailsScreenDao.getData()
-//    var reviewsData: LiveData<List<ReviewWithAuthorDataModel>> = detailsScreenDao.getReviewsData()
+    val recipeNameLiveData = MutableLiveData<String>()
+
+    val reviewsData: LiveData<List<ReviewWithAuthorDataModel>> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
+        detailsScreenDao.getReviewsData(recipeName)
+    }
+
+
+    fun setRecipeName(recipeName: String) {
+        recipeNameLiveData.postValue(recipeName)
+    }
+
 
 
     suspend fun removeFromMenu(recipeName: String){

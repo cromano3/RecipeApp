@@ -20,6 +20,7 @@ import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -45,7 +46,6 @@ import com.example.bearrecipebookapp.data.annotatedstrings.confirmCompletedCooki
 import com.example.bearrecipebookapp.data.annotatedstrings.confirmIMadeThisAnoString
 import com.example.bearrecipebookapp.data.annotatedstrings.confirmRemoveMenuAnoString
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
-import com.example.bearrecipebookapp.datamodel.AppUiState
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.*
 import com.example.bearrecipebookapp.ui.theme.Cabin
@@ -59,7 +59,7 @@ fun NewDetailsScreen(
     //recipeName: String,
     recipeData: RecipeWithIngredientsAndInstructions,
 //    reviewsData: List<ReviewWithAuthorDataModel>,
-    appUiState: AppUiState,
+//    appUiState: AppUiState,
 //    localUserReview: String,
 //    localUserNickName: String,
 //    localUserImageIRL: String,
@@ -85,7 +85,7 @@ fun NewDetailsScreen(
             "DetailsScreenViewModel",
             DetailsScreenViewModelFactory(
                 LocalContext.current.applicationContext as Application,
-//                reviewsData,
+                recipeData.recipeEntity.recipeName,
             )
         )
 
@@ -94,7 +94,7 @@ fun NewDetailsScreen(
         val uiAlertState by detailsScreenViewModel.uiAlertState.collectAsState()
 //        val uiState by detailsScreenViewModel.uiState.collectAsState()
 
-//        val reviewsData by detailsScreenViewModel.reviewsData.observeAsState(listOf())
+        val reviewsData by detailsScreenViewModel.reviewsData.observeAsState(listOf())
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
 
@@ -500,7 +500,7 @@ fun NewDetailsScreen(
 //                        ReviewWidget(recipeData.reviewsList[x].reviewText)
 //                    }
 
-                    if (appUiState.detailsScreenReviewsData.isNotEmpty()) {
+                    if (reviewsData.isNotEmpty()) {
                         item {
                             Text(
                                 text = "Comments and Tips",
@@ -549,21 +549,19 @@ fun NewDetailsScreen(
 //                        }
 //                    }
 
-                    if(appUiState.detailsScreenReviewsData.isNotEmpty()) {
-                        items(appUiState.detailsScreenReviewsData, key = { it.commentsEntity.commentID })
+                    if(reviewsData.isNotEmpty()) {
+                        items(reviewsData, key = { it.commentsEntity.commentID })
                         {
                             ReviewWidget(
                                 authorName = it.authorEntity.authorName,
                                 authorImageUrl = it.authorEntity.authorImageURL,
                                 reviewText = it.commentsEntity.commentText,
-                                likes = it.commentsEntity.likes,
+                                likes = if(it.commentsEntity.likedByMe == 1 && it.commentsEntity.myLikeWasSynced == 0) it.commentsEntity.likes + 1 else it.commentsEntity.likes,
                                 likedByUser = it.commentsEntity.likedByMe,
                                 onLikeClick = {
                                     println("click")
 //                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
-                                    updateLikes(it.commentsEntity.commentID)
-                                              },
-
+                                    updateLikes(it.commentsEntity.commentID) },
                                 )
                         }
                     }
@@ -753,13 +751,13 @@ fun NewDetailsScreen(
 
 class DetailsScreenViewModelFactory(
     val application: Application,
-//    val reviewsData: List<ReviewWithAuthorDataModel>,
+    val recipeName: String,
     ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
         return DetailsScreenViewModel(
             application,
-//            reviewsData
+            recipeName
         ) as T
     }
 }

@@ -9,6 +9,7 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FieldValue.serverTimestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -53,6 +54,7 @@ class FirebaseRepository(
             "reviewText" to review.reviewText,
             "authorUid" to authorId,
             "likes" to 0,
+            "likedBy" to arrayListOf<String>(),
             "timestamp" to serverTimestamp()
         )
         db.collection("reviews").add(newComment).await()
@@ -102,33 +104,51 @@ class FirebaseRepository(
 
         val reviewRef = db.collection("reviews").document(likeId)
         val usersRef = db.collection("users")
+
         var result = ""
 
         db.runTransaction { transaction ->
 
             val snapshotReview = transaction.get(reviewRef)
+
             val authorId = snapshotReview.getString("authorUid") ?: ""
+
             val snapshotAuthor = transaction.get(usersRef.document(authorId))
             val authorRef = usersRef.document(authorId)
 
+
             var commentLikes: Double? = snapshotReview.getDouble("likes")
+
+            var likedByList = snapshotReview.get("likedBy") as? List<String> ?: listOf()
 
             var authorKarma: Double? = snapshotAuthor.getDouble("karma")
 
+
+
             if(commentLikes == null){
                 result = "Null Likes"
+            }
+            else if(auth.currentUser?.uid == null){
+                result = "Null Liker"
+            }
+            else if(likedByList.contains(auth.currentUser?.uid)){
+                result = "Failed Duplicate Like"
             }
 
             else{
                 commentLikes += 1
                 transaction.update(reviewRef, "likes", commentLikes)
+                transaction.update(reviewRef, "likedBy", FieldValue.arrayUnion(auth.currentUser?.uid))
 
                 val timestamp: Any = serverTimestamp()
+
                 transaction.update(reviewRef, "timestamp", timestamp)
+
                 if(authorKarma != null){
                     authorKarma += 1
                     transaction.update(authorRef, "karma", authorKarma)
                 }
+
             }
 
         }.addOnSuccessListener {
@@ -262,6 +282,7 @@ class FirebaseRepository(
                 for (user in querySnapshot.documents) {
                     if(comment.authorID == user.id) {
 
+                        /** can get karma values here */
                         val userName = user.getString("display_name")  ?: ""
                         val userPhotoURL = user.getString("user_photo") ?: ""
 
@@ -394,7 +415,8 @@ class FirebaseRepository(
         "display_name" to displayName,
         "email" to email,
         "user_photo" to photoUrl?.toString(),
-        "timestamp" to serverTimestamp()
+        "timestamp" to serverTimestamp(),
+        "karma" to 0
     )
 
 }

@@ -1,8 +1,10 @@
 package com.example.bearrecipebookapp.data.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 
 @Dao
 interface DetailsScreenDao {
@@ -11,9 +13,9 @@ interface DetailsScreenDao {
 //    @Query("SELECT recipe_table.* FROM recipe_table INNER JOIN details_screen_target_table ON details_screen_target_table.target_name = recipe_table.recipe_name")
 //    fun getData(): LiveData<RecipeWithIngredientsAndInstructions>
 
-//    @Transaction
-//    @Query("SELECT * FROM comments_table WHERE recipe_name = :recipeName")
-//    fun getReviewsData(recipeName: String): LiveData<List<ReviewWithAuthorDataModel>>
+    @Transaction
+    @Query("SELECT * FROM comments_table WHERE recipe_name = :recipeName")
+    fun getReviewsData(recipeName: String): LiveData<List<ReviewWithAuthorDataModel>>
 
 
     @Transaction
