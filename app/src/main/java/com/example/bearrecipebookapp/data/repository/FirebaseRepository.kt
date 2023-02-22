@@ -6,6 +6,7 @@ import com.example.bearrecipebookapp.datamodel.*
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -14,7 +15,8 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FieldValue.serverTimestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.*
 
 class FirebaseRepository(
     application: Application,
@@ -115,12 +117,12 @@ class FirebaseRepository(
             }
             else{
                 recipeRating += rating.rating
-                if(recipeRating > 99.0){
-                    recipeRating = 99.0
-                }
-                else if(recipeRating < 60){
-                    recipeRating = 60.0
-                }
+//                if(recipeRating > 99.0){
+//                    recipeRating = 99.0
+//                }
+//                else if(recipeRating < 60){
+//                    recipeRating = 60.0
+//                }
 //                val timestamp: Any = serverTimestamp()
                 transaction.update(currentRecipeDocument, "ratedBy", FieldValue.arrayUnion(auth.currentUser?.uid))
                 transaction.update(currentRecipeDocument, "rating", recipeRating)
@@ -150,7 +152,7 @@ class FirebaseRepository(
 
             val snapshotReview = transaction.get(reviewRef)
 
-            val authorId = snapshotReview.getString("authorUid") ?: ""
+            val authorId = snapshotReview.getString("authorUid") ?: "none"
 
             val snapshotAuthor = transaction.get(usersRef.document(authorId))
             val authorRef = usersRef.document(authorId)
@@ -207,17 +209,17 @@ class FirebaseRepository(
     ////Download Stuff////
 
     //get all comments (room has no timestamp)
-    suspend fun getComments(): MutableList<CommentsEntity>{
+    suspend fun getComments(recipeName: String): MutableList<CommentsEntity>{
 
         val reviewsCollection = db.collection("reviews")
-        val querySnapshot = reviewsCollection.get().await()
+        val querySnapshot = reviewsCollection.whereEqualTo("recipeName", recipeName).get().await()
 
         val resultCommentsList: MutableList<CommentsEntity> = mutableListOf()
 
         if (querySnapshot != null) {
             for (document in querySnapshot.documents) {
                 val commentId = document.id
-                val recipeName = document.getString("recipeName")
+                val thisRecipeName = document.getString("recipeName")
                 val reviewText = document.getString("reviewText")
                 val authorUid = document.getString("authorUid")
                 val likes = document.getDouble("likes")?.toInt()
@@ -225,7 +227,7 @@ class FirebaseRepository(
 
                 val comment = CommentsEntity(
                     commentID = commentId,
-                    recipeName  = recipeName ?: "",
+                    recipeName  = thisRecipeName ?: "",
                     authorID = authorUid ?: "",
                     commentText = reviewText ?: "",
                     likes = likes ?: 0,
@@ -243,11 +245,11 @@ class FirebaseRepository(
     }
 
     //get comments since timestamp
-    suspend fun getComments(sinceTimestamp: String): MutableList<CommentsEntity>{
+    suspend fun getComments(recipeName: String, sinceTimestamp: Date): MutableList<CommentsEntity>{
 
         val reviewsCollection = db.collection("reviews")
-        val sTimestamp = Timestamp.valueOf(sinceTimestamp)
-        val query = reviewsCollection.whereGreaterThan("timestamp", sTimestamp)
+        val sTimestamp = com.google.firebase.Timestamp(sinceTimestamp)
+        val query = reviewsCollection.whereGreaterThan("timestamp", sTimestamp).whereEqualTo("recipeName", recipeName)
         val querySnapshot = query.get().await()
 
         val resultCommentsList: MutableList<CommentsEntity> = mutableListOf()
@@ -255,7 +257,7 @@ class FirebaseRepository(
         if (querySnapshot != null) {
             for (document in querySnapshot.documents) {
                 val commentId = document.id
-                val recipeName = document.getString("recipeName")
+                val thisRecipeName = document.getString("recipeName")
                 val reviewText = document.getString("reviewText")
                 val authorUid = document.getString("authorUid")
                 val likes = document.getDouble("likes")?.toInt()
@@ -263,7 +265,7 @@ class FirebaseRepository(
 
                 val comment = CommentsEntity(
                     commentID = commentId,
-                    recipeName  = recipeName ?: "",
+                    recipeName  = thisRecipeName ?: "",
                     authorID = authorUid ?: "",
                     commentText = reviewText ?: "",
                     likes = likes ?: 0,
@@ -280,30 +282,60 @@ class FirebaseRepository(
 
     }
 
-    //get recipe ratings
-    suspend fun getRecipeRatings(sinceTimestamp: String): MutableList<RecipeNameAndRating> {
+    fun getMostRecentCommentTimestamp(newCommentsList: MutableList<CommentsEntity>): String {
+        try {
 
-        val recipesCollection = db.collection("recipes")
-        val sTimestamp = Timestamp.valueOf(sinceTimestamp)
-        val query = recipesCollection.whereGreaterThan("timestamp", sTimestamp)
-        val querySnapshot = query.get().await()
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+            val date = formatter.parse(newCommentsList[0].timestamp)
+            var newestTime = Timestamp(date!!)
 
-        val resultRecipeList: MutableList<RecipeNameAndRating> = mutableListOf()
+            for(comment in newCommentsList) {
 
-        if (querySnapshot != null) {
-            for (document in querySnapshot.documents) {
-                val recipeName = document.getString("recipeName")
-                val rating = document.getDouble("rating")?.toInt()
+                val formattedDate: String = comment.timestamp
+                val thisDate = formatter.parse(formattedDate)
+                val timestamp = Timestamp(thisDate!!)
 
-                val comment = RecipeNameAndRating(recipeName ?: "", rating ?: 99)
-                resultRecipeList.add(comment)
-
+                if(timestamp > newestTime){
+                    newestTime = timestamp
+                }
             }
+
+            val finalDate = newestTime.toDate()
+            return formatter.format(finalDate)
+
+        }
+        catch(e: Exception){
+            return "Failed ${e.message}"
         }
 
-        return resultRecipeList
+
 
     }
+
+//    //get recipe ratings
+//    suspend fun getRecipeRatings(sinceTimestamp: String): MutableList<RecipeNameAndRating> {
+//
+//        val recipesCollection = db.collection("recipes")
+//        val sTimestamp = Timestamp.valueOf(sinceTimestamp)
+//        val query = recipesCollection.whereGreaterThan("timestamp", sTimestamp)
+//        val querySnapshot = query.get().await()
+//
+//        val resultRecipeList: MutableList<RecipeNameAndRating> = mutableListOf()
+//
+//        if (querySnapshot != null) {
+//            for (document in querySnapshot.documents) {
+//                val recipeName = document.getString("recipeName")
+//                val rating = document.getDouble("rating")?.toInt()
+//
+//                val comment = RecipeNameAndRating(recipeName ?: "", rating ?: 99)
+//                resultRecipeList.add(comment)
+//
+//            }
+//        }
+//
+//        return resultRecipeList
+//
+//    }
 
     //get recipe ratings
     suspend fun getRecipeRating(recipeName: String): Int {
