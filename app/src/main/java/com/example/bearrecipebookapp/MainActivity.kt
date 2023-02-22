@@ -258,6 +258,9 @@ fun BearRecipeApp(
 //                                withContext(Dispatchers.IO){appViewModel.updateDetailsScreenWithJustWrittenReview()}
                                 navController.navigate("DetailsScreen")
                             }
+                            else{
+                                navController.popBackStack()
+                            }
                         }
                     },
                 )
