@@ -47,18 +47,47 @@ class FirebaseRepository(
 
 
     //Write comment to Firestore
-    suspend fun uploadComment(review: RecipeNameAndReview, authorId: String){
+    suspend fun uploadComment(review: RecipeNameAndReview, authorId: String): String{
         println("try upload comment")
-        val newComment = hashMapOf(
-            "recipeName" to review.recipeName,
-            "reviewText" to review.reviewText,
-            "authorUid" to authorId,
-            "likes" to 0,
-            "likedBy" to arrayListOf<String>(),
-            "timestamp" to serverTimestamp()
-        )
-        db.collection("reviews").add(newComment).await()
+
+        var result = "Failed"
+
+        val commentsCollection = db.collection("comments")
+
+        val uid = auth.currentUser?.uid
+
+        if(uid != null){
+            val querySnapshot = commentsCollection.whereEqualTo("authorUid", uid).limit(1).get().await()
+            if(querySnapshot.isEmpty){
+                val newComment = hashMapOf(
+                    "recipeName" to review.recipeName,
+                    "reviewText" to review.reviewText,
+                    "authorUid" to authorId,
+                    "likes" to 0,
+                    "likedBy" to arrayListOf<String>(),
+                    "timestamp" to serverTimestamp()
+                )
+                db.collection("reviews").add(newComment)
+                    .addOnSuccessListener { result = "Success" }
+                    .addOnFailureListener{e -> result = "Failed with $e" }.await()
+            }
+            else{
+                result = "User Comment Already Exists"
+            }
+
+        }
+        else{
+            result = "UID is null"
+        }
+
+        println("add comment result: $result")
+        return result
+
+
+
+
     }
+
 
     //Write rating to Firestore
     suspend fun updateRating(rating: RecipeNameAndRating): String {
@@ -70,10 +99,18 @@ class FirebaseRepository(
 
             val snapshot = transaction.get(currentRecipeDocument)
 
+            var likedByList = snapshot.get("ratedBy") as? List<String> ?: listOf()
+
             var recipeRating: Double? = snapshot.getDouble("rating")
 
             if(recipeRating == null){
                 result = "Null Rating"
+            }
+            else if(auth.currentUser?.uid == null){
+                result = "Null Liker"
+            }
+            else if(likedByList.contains(auth.currentUser?.uid)){
+                result = "Failed Duplicate Rating"
             }
             else{
                 recipeRating += rating.rating
@@ -84,6 +121,7 @@ class FirebaseRepository(
                     recipeRating = 60.0
                 }
                 val timestamp: Any = serverTimestamp()
+                transaction.update(currentRecipeDocument, "ratedBy", FieldValue.arrayUnion(auth.currentUser?.uid))
                 transaction.update(currentRecipeDocument, "rating", recipeRating)
                 transaction.update(currentRecipeDocument, "timestamp", timestamp)
             }
@@ -160,10 +198,6 @@ class FirebaseRepository(
         println("update rating result: $result")
         return result
 
-    }
-
-    fun getCurrentTime(): String {
-        return serverTimestamp().toString()
     }
 
 
