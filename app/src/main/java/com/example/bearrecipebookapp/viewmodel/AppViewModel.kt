@@ -8,10 +8,7 @@ import com.example.bearrecipebookapp.data.entity.CommentAuthorEntity
 import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.data.repository.AppRepository
 import com.example.bearrecipebookapp.data.repository.FirebaseRepository
-import com.example.bearrecipebookapp.datamodel.AppUiState
-import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
-import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
-import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
+import com.example.bearrecipebookapp.datamodel.*
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
@@ -201,9 +198,11 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 print("comments not empty")
                 for (comment in unsyncedUserComments) {
                     //upload comments
-                    firebaseRepository.uploadComment(comment, uid)
+                    val result = firebaseRepository.uploadComment(comment)
                     //mark as synced in local DB
-                    withContext(Dispatchers.IO) { repository.markCommentAsSynced(comment) }
+                    if(result == "Success" || result == "User Comment Already Exists") {
+                        withContext(Dispatchers.IO) { repository.markCommentAsSynced(comment) }
+                    }
                 }
             }
 
@@ -217,7 +216,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 println("ratings not empty")
                 for (rating in unsyncedUserRatings) {
                     val successStatus = firebaseRepository.updateRating(rating)
-                    if(successStatus == "Success") {
+                    if(successStatus == "Success" || successStatus == "Failed Duplicate Rating") {
                         println("rating successfully updated")
                         withContext(Dispatchers.IO) { repository.markRatingAsSynced(rating) }
                     }
@@ -234,7 +233,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 println("new likes not empty")
                 for(likeId in unsyncedUserLikes){
                     val successStatus = firebaseRepository.updateLike(likeId)
-                    if(successStatus == "Success") {
+                    if(successStatus == "Success" || successStatus == "Failed Duplicate Like") {
                         withContext(Dispatchers.IO) { repository.markLikeAsSynced(likeId) }
                     }
                 }
@@ -243,115 +242,115 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         }
     }
 
-    private fun dataSync(){
-        viewModelScope.launch {
-            println("data sync coroutine start")
-
-//            val uid = withContext(Dispatchers.IO) { getUserIdFromRoom() }
-//            appUiState.update { it.copy(userId = uid) }
+//    private fun dataSync(){
+//        viewModelScope.launch {
+//            println("data sync coroutine start")
 //
-//            println("uid is $uid")
-
-            val uid = firebaseRepository.getUid()
-
-            ////Comments////
-
-            val unsyncedUserComments = withContext(Dispatchers.IO) { repository.getUnsyncedUserComments() }
-
-            println("before comments upload")
-            //upload comments and mark as synced
-            if(unsyncedUserComments.isNotEmpty()) {
-                print("comments not empty")
-                for (comment in unsyncedUserComments) {
-                    //upload comments
-                    firebaseRepository.uploadComment(comment, uid)
-                    //mark as synced in local DB
-                    withContext(Dispatchers.IO) { repository.markCommentAsSynced(comment) }
-                }
-            }
-
-            ////Ratings////
-
-            val unsyncedUserRatings = withContext(Dispatchers.IO) { repository.getUnsyncedUserRatings() }
-
-            println("before ratings upload")
-            //upload ratings and mark as synced
-            if(unsyncedUserRatings.isNotEmpty()) {
-                println("ratings not empty")
-                for (rating in unsyncedUserRatings) {
-                    val successStatus = firebaseRepository.updateRating(rating)
-                    if(successStatus == "Success") {
-                        println("rating successfully updated")
-                        withContext(Dispatchers.IO) { repository.markRatingAsSynced(rating) }
-                    }
-                }
-            }
-
-
-            ////Likes////
-
-            val unsyncedUserLikes = withContext(Dispatchers.IO) { repository.getUnsyncedUserLikes() }
-
-            println("before new likes upload")
-            if(unsyncedUserLikes.isNotEmpty()){
-                println("new likes not empty")
-                for(likeId in unsyncedUserLikes){
-                    val successStatus = firebaseRepository.updateLike(likeId)
-                    if(successStatus == "Success") {
-                        withContext(Dispatchers.IO) { repository.markLikeAsSynced(likeId) }
-                    }
-                }
-            }
-
-
-            ////Do Download Sync////
-
-//            //get comments from remote
-//            /**this needs to be: "get comments that are timestamped (at least 2-5 mins.) after my last sync completion timestamp
-//             * this way we dont get all the comments that the local db already has over and over again each time we sync data.
-//             * the local DB needs to store a timestamp (of the same timezone as the firestore) when the data sync is completed to use
-//             * to compare this value.
-//             */
-//            val commentsFromFirestore = firebaseRepository.getComments()
+////            val uid = withContext(Dispatchers.IO) { getUserIdFromRoom() }
+////            appUiState.update { it.copy(userId = uid) }
+////
+////            println("uid is $uid")
 //
-//            println("before comments DOWNLOAD")
-//            //add comments and update likes in local db
-//            if(commentsFromFirestore.isNotEmpty()){
-//                println("new comments not empty")
-//                for(comment in commentsFromFirestore){
-//                    println("do comment sync (authors)")
-//                    val authorData = firebaseRepository.getAuthorData(comment)
-//                    withContext(Dispatchers.IO) {repository.addAuthor(authorData, comment.authorID)}
+//            val uid = firebaseRepository.getUid()
 //
-//                }
-//                for(comment in commentsFromFirestore){
-//                    println("do comment sync (comments)")
-////                    repository.updateLikes(comment)
-//                    withContext(Dispatchers.IO) { repository.addComment(comment) }
+//            ////Comments////
 //
+//            val unsyncedUserComments = withContext(Dispatchers.IO) { repository.getUnsyncedUserComments() }
+//
+//            println("before comments upload")
+//            //upload comments and mark as synced
+//            if(unsyncedUserComments.isNotEmpty()) {
+//                print("comments not empty")
+//                for (comment in unsyncedUserComments) {
+//                    //upload comments
+//                    firebaseRepository.uploadComment(comment)
+//                    //mark as synced in local DB
+//                    withContext(Dispatchers.IO) { repository.markCommentAsSynced(comment) }
 //                }
 //            }
-
-
-//            //get ratings from remote
-//            /**needs similar timing functionality as above*/
-//            val recipeRatingsFromFirestore = firebaseRepository.getRecipeRatings()
 //
-//            println("before download ratings")
-//            //update ratings in local db
-//            if(recipeRatingsFromFirestore.isNotEmpty()){
-//                println("new ratings not empty")
-//                for(recipe in recipeRatingsFromFirestore){
-//                    println("do ratings update")
-//                    withContext(Dispatchers.IO) { repository.updateRecipeRating(recipe) }
+//            ////Ratings////
+//
+//            val unsyncedUserRatings = withContext(Dispatchers.IO) { repository.getUnsyncedUserRatings() }
+//
+//            println("before ratings upload")
+//            //upload ratings and mark as synced
+//            if(unsyncedUserRatings.isNotEmpty()) {
+//                println("ratings not empty")
+//                for (rating in unsyncedUserRatings) {
+//                    val successStatus = firebaseRepository.updateRating(rating)
+//                    if(successStatus == "Success") {
+//                        println("rating successfully updated")
+//                        withContext(Dispatchers.IO) { repository.markRatingAsSynced(rating) }
+//                    }
 //                }
 //            }
-
-
-
-        }
-
-    }
+//
+//
+//            ////Likes////
+//
+//            val unsyncedUserLikes = withContext(Dispatchers.IO) { repository.getUnsyncedUserLikes() }
+//
+//            println("before new likes upload")
+//            if(unsyncedUserLikes.isNotEmpty()){
+//                println("new likes not empty")
+//                for(likeId in unsyncedUserLikes){
+//                    val successStatus = firebaseRepository.updateLike(likeId)
+//                    if(successStatus == "Success") {
+//                        withContext(Dispatchers.IO) { repository.markLikeAsSynced(likeId) }
+//                    }
+//                }
+//            }
+//
+//
+//            ////Do Download Sync////
+//
+////            //get comments from remote
+////            /**this needs to be: "get comments that are timestamped (at least 2-5 mins.) after my last sync completion timestamp
+////             * this way we dont get all the comments that the local db already has over and over again each time we sync data.
+////             * the local DB needs to store a timestamp (of the same timezone as the firestore) when the data sync is completed to use
+////             * to compare this value.
+////             */
+////            val commentsFromFirestore = firebaseRepository.getComments()
+////
+////            println("before comments DOWNLOAD")
+////            //add comments and update likes in local db
+////            if(commentsFromFirestore.isNotEmpty()){
+////                println("new comments not empty")
+////                for(comment in commentsFromFirestore){
+////                    println("do comment sync (authors)")
+////                    val authorData = firebaseRepository.getAuthorData(comment)
+////                    withContext(Dispatchers.IO) {repository.addAuthor(authorData, comment.authorID)}
+////
+////                }
+////                for(comment in commentsFromFirestore){
+////                    println("do comment sync (comments)")
+//////                    repository.updateLikes(comment)
+////                    withContext(Dispatchers.IO) { repository.addComment(comment) }
+////
+////                }
+////            }
+//
+//
+////            //get ratings from remote
+////            /**needs similar timing functionality as above*/
+////            val recipeRatingsFromFirestore = firebaseRepository.getRecipeRatings()
+////
+////            println("before download ratings")
+////            //update ratings in local db
+////            if(recipeRatingsFromFirestore.isNotEmpty()){
+////                println("new ratings not empty")
+////                for(recipe in recipeRatingsFromFirestore){
+////                    println("do ratings update")
+////                    withContext(Dispatchers.IO) { repository.updateRecipeRating(recipe) }
+////                }
+////            }
+//
+//
+//
+//        }
+//
+//    }
 
     fun confirmSignInWithGoogle(){
         //if yes try google sign in/up
@@ -569,6 +568,32 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
     }
 
+    fun storeReview(recipeName: String, reviewText: String) {
+        viewModelScope.launch {
+
+            val result = firebaseRepository.uploadComment(RecipeNameAndReview(recipeName, reviewText))
+
+            if(result == "Success"){
+                withContext(Dispatchers.IO) {
+                    repository.setReview(recipeName, reviewText)
+                }
+            }
+            else if(result == "User Comment Already Exists"){
+                withContext(Dispatchers.IO) {
+                    repository.setReviewIsSynced(recipeName)
+                }
+            }
+            else{
+                withContext(Dispatchers.IO) {
+                    repository.setReviewAsUnsynced(recipeName, reviewText)
+                }
+            }
+
+
+
+        }
+    }
+
     fun updateLikes(commentID: String) {
 
 //        val myList: MutableList<ReviewWithAuthorDataModel> = mutableListOf()
@@ -617,14 +642,14 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
     }
 
-    fun updateDetailsScreenWithJustWrittenReview(){
-        val localUserReview = repository.getLocalUserReviewData(appUiState.value.detailsScreenTarget.recipeEntity.recipeName) ?: ""
-        appUiState.update {
-            it.copy(
-                detailsScreenLocalUserReview = localUserReview,
-            )
-        }
-    }
+//    fun updateDetailsScreenWithJustWrittenReview(){
+//        val localUserReview = repository.getLocalUserReviewData(appUiState.value.detailsScreenTarget.recipeEntity.recipeName) ?: ""
+//        appUiState.update {
+//            it.copy(
+//                detailsScreenLocalUserReview = localUserReview,
+//            )
+//        }
+//    }
 
     suspend fun setupReviewScreen(recipeName: String){
         val result = repository.getRecipeWithIngredientsAndInstructions(recipeName)

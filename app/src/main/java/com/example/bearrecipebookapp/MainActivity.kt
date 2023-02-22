@@ -249,12 +249,13 @@ fun BearRecipeApp(
                     commentScreenData = appUiState.reviewScreenTarget,
                     onCancelClick = { navController.popBackStack() },
                     onConfirmClick =
-                    {
+                    { recipeName, reviewText ->
+                        appViewModel.storeReview(recipeName, reviewText)
                         coroutineScope.launch(Dispatchers.Main) {
                             if(navController.previousBackStackEntry?.destination?.route == "DetailsScreen")   {
                                 navController.popBackStack()
                                 navController.popBackStack()
-                                withContext(Dispatchers.IO){appViewModel.updateDetailsScreenWithJustWrittenReview()}
+//                                withContext(Dispatchers.IO){appViewModel.updateDetailsScreenWithJustWrittenReview()}
                                 navController.navigate("DetailsScreen")
                             }
                         }

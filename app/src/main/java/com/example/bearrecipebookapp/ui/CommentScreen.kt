@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -36,7 +35,7 @@ import kotlinx.coroutines.delay
 fun CommentScreen(
     commentScreenData: RecipeWithIngredientsAndInstructions,
     onCancelClick: () -> Unit,
-    onConfirmClick: () -> Unit
+    onConfirmClick: (String, String) -> Unit
 ) {
     val owner = LocalViewModelStoreOwner.current
 
@@ -115,8 +114,8 @@ fun CommentScreen(
                                 commentScreenViewModel.triggerTooLongAlert()
                             }
                             else{
-                                commentScreenViewModel.confirmReview(recipeName = commentScreenData.recipeEntity.recipeName, uiState.reviewText)
-                                onConfirmClick()
+//                                commentScreenViewModel.confirmReview(recipeName = commentScreenData.recipeEntity.recipeName, uiState.reviewText)
+                                onConfirmClick(commentScreenData.recipeEntity.recipeName, uiState.reviewText)
                             }
                         }
                     }
@@ -170,10 +169,10 @@ class CommentScreenViewModelFactory(
     }
 }
 
-@Preview
-@Composable
-fun comprev(){
-    CommentScreen(
-        RecipeWithIngredientsAndInstructions(),
-        onCancelClick = { /*TODO*/ }) {}
-}
+//@Preview
+//@Composable
+//fun comprev(){
+//    CommentScreen(
+//        RecipeWithIngredientsAndInstructions(),
+//        onCancelClick = { /*TODO*/ }) {}
+//}

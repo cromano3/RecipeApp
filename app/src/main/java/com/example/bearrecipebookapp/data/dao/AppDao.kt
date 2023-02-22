@@ -84,6 +84,23 @@ interface AppDao {
     fun addComment(comment: CommentsEntity)
 
 
+
+
+    @Transaction
+    @Query("UPDATE recipe_table SET review = :reviewText, is_reviewed = 1, is_review_synced = 1 WHERE recipe_name = :name")
+    fun setReview(name: String, reviewText: String)
+
+    @Transaction
+    @Query("UPDATE recipe_table SET is_reviewed = 1, is_review_synced = 1 WHERE recipe_name = :name")
+    fun setReviewIsSynced(name: String)
+
+    @Transaction
+    @Query("UPDATE recipe_table SET review = :reviewText, is_reviewed = 1, is_review_synced = 0 WHERE recipe_name = :recipeName")
+    fun setReviewAsUnsynced(recipeName: String, reviewText: String)
+
+
+
+
     @Transaction
     @Query("UPDATE recipe_table SET timestamp_of_latest_received_comment = :timestamp WHERE recipe_name = :recipeName")
     fun setMostRecentCommentTimestamp(recipeName: String, timestamp: String)

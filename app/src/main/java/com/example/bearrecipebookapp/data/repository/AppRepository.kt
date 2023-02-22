@@ -118,6 +118,20 @@ class AppRepository(private val appDao: AppDao) {
     }
 
 
+
+    fun setReview(recipeName: String, reviewText: String){
+        appDao.setReview(recipeName, reviewText)
+    }
+
+    fun setReviewIsSynced(name: String){
+        appDao.setReviewIsSynced(name)
+    }
+
+    fun setReviewAsUnsynced(recipeName: String, reviewText: String){
+        appDao.setReviewAsUnsynced(recipeName, reviewText)
+    }
+
+
     fun onlineUserType(): Int {
         return appDao.onlineUserType()
     }

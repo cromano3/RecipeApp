@@ -47,7 +47,7 @@ class FirebaseRepository(
 
 
     //Write comment to Firestore
-    suspend fun uploadComment(review: RecipeNameAndReview, authorId: String): String{
+    suspend fun uploadComment(review: RecipeNameAndReview): String{
         println("try upload comment")
 
         var result = "Failed"
@@ -62,7 +62,7 @@ class FirebaseRepository(
                 val newComment = hashMapOf(
                     "recipeName" to review.recipeName,
                     "reviewText" to review.reviewText,
-                    "authorUid" to authorId,
+                    "authorUid" to uid,
                     "likes" to 0,
                     "likedBy" to arrayListOf<String>(),
                     "timestamp" to serverTimestamp()
