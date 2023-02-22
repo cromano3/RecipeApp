@@ -95,6 +95,7 @@ fun NewDetailsScreen(
 //        val uiState by detailsScreenViewModel.uiState.collectAsState()
 
         val reviewsData by detailsScreenViewModel.reviewsData.observeAsState(listOf())
+        val globalRating by detailsScreenViewModel.globalRating.observeAsState()
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
 
@@ -398,7 +399,7 @@ fun NewDetailsScreen(
                                         contentDescription = null
                                     )
                                     Text(
-                                        text = "Rating: ${recipeData.recipeEntity.globalRating}" + "%",
+                                        text = "Rating: $globalRating",
                                         modifier = Modifier
                                             .padding(
                                                 start = 8.dp,
@@ -638,7 +639,7 @@ fun NewDetailsScreen(
                         onConfirmClick =
                         {
                             if(uiAlertState.isThumbUpSelected || uiAlertState.isThumbDownSelected){
-                                storeRating(if(uiAlertState.isThumbUpSelected) 1 else -1)
+                                storeRating(if(uiAlertState.isThumbUpSelected) 1 else 0)
                             }
                             detailsScreenViewModel.confirmRating(recipeData.recipeEntity)
 

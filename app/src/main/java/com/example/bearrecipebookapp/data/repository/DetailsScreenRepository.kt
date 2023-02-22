@@ -16,10 +16,14 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
 //    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions> = detailsScreenDao.getData()
-    val recipeNameLiveData = MutableLiveData<String>()
+    private val recipeNameLiveData = MutableLiveData<String>()
 
     val reviewsData: LiveData<List<ReviewWithAuthorDataModel>> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
         detailsScreenDao.getReviewsData(recipeName)
+    }
+
+    val globalRating: LiveData<Int> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
+        detailsScreenDao.getGlobalRating(recipeName)
     }
 
 

@@ -9,6 +9,7 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FieldValue.serverTimestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -301,6 +302,23 @@ class FirebaseRepository(
         }
 
         return resultRecipeList
+
+    }
+
+    //get recipe ratings
+    suspend fun getRecipeRating(recipeName: String): Int {
+
+        val recipesCollection = db.collection("recipes")
+        val query = recipesCollection.whereEqualTo(FieldPath.documentId(), recipeName)
+        val querySnapshot = query.limit(1).get().await()
+
+        var rating: Long? = -1
+
+        if (querySnapshot != null) {
+            rating = querySnapshot.documents[0].getLong("rating")
+        }
+
+        return rating?.toInt() ?: -1
 
     }
 

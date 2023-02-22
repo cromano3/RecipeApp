@@ -4,11 +4,13 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
-import com.example.bearrecipebookapp.data.entity.CommentAuthorEntity
 import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.data.repository.AppRepository
 import com.example.bearrecipebookapp.data.repository.FirebaseRepository
-import com.example.bearrecipebookapp.datamodel.*
+import com.example.bearrecipebookapp.datamodel.AppUiState
+import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
+import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
+import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
@@ -400,7 +402,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     suspend fun setupDetailsScreenComments(recipeName: String){
 
         val recipeData = repository.getRecipe(recipeName)
-        val reviewsData = repository.getReviewsData(recipeName) as MutableList
+//        val reviewsData = repository.getReviewsData(recipeName) as MutableList
 
         var newCommentsList: MutableList<CommentsEntity> = mutableListOf()
 
@@ -408,6 +410,11 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 //        println("a")
 //
 //        val lastCommentSyncTime = recipeData.lastCommentSyncTime
+
+        val rating = withContext(Dispatchers.IO) { firebaseRepository.getRecipeRating(recipeName) }
+        if(rating > -1){
+            withContext(Dispatchers.IO) {repository.setGlobalRating(recipeName, rating)}
+        }
 
 
         try{
@@ -493,17 +500,17 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
                 withContext(Dispatchers.IO) { repository.addComment(comment.comment) }
 
-                reviewsData.add(
-                    ReviewWithAuthorDataModel(
-                        comment.comment,
-                        CommentAuthorEntity(
-                            comment.comment.authorID,
-                            comment.authorData.userName,
-                            0,
-                            comment.authorData.userPhotoURL
-                        )
-                    )
-                )
+//                reviewsData.add(
+//                    ReviewWithAuthorDataModel(
+//                        comment.comment,
+//                        CommentAuthorEntity(
+//                            comment.comment.authorID,
+//                            comment.authorData.userName,
+//                            0,
+//                            comment.authorData.userPhotoURL
+//                        )
+//                    )
+//                )
 
                 try{
                     val newMostRecentCommentTimestampAsDate = formatter.parse(newMostRecentCommentTimestamp)
@@ -529,11 +536,11 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
         }
 
-        appUiState.update {
-            it.copy(
-                detailsScreenReviewsData = reviewsData,
-            )
-        }
+//        appUiState.update {
+//            it.copy(
+//                detailsScreenReviewsData = reviewsData,
+//            )
+//        }
 
     }
 

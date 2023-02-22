@@ -20,9 +20,17 @@ interface AppDao {
     @Query("SELECT * FROM recipe_table WHERE recipe_name = :recipeName")
     fun getRecipe(recipeName: String): RecipeEntity
 
+
+
     @Transaction
     @Query("SELECT is_online_user_type FROM user_table")
     fun onlineUserType(): Int
+
+
+    @Transaction
+    @Query("UPDATE recipe_table SET global_rating = :rating WHERE recipe_name = :recipeName")
+    fun setGlobalRating(recipeName: String, rating: Int)
+
 
 
 

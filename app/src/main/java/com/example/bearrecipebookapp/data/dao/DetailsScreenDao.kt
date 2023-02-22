@@ -17,6 +17,10 @@ interface DetailsScreenDao {
     @Query("SELECT * FROM comments_table WHERE recipe_name = :recipeName")
     fun getReviewsData(recipeName: String): LiveData<List<ReviewWithAuthorDataModel>>
 
+    @Transaction
+    @Query("SELECT global_rating FROM recipe_table WHERE recipe_name = :recipeName")
+    fun getGlobalRating(recipeName: String): LiveData<Int>
+
 
     @Transaction
     @Query("UPDATE recipe_table SET cooked_count = cooked_count + 1 WHERE recipe_name = :name")

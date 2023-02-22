@@ -24,6 +24,7 @@ class DetailsScreenViewModel(application: Application, recipeName: String): View
 //    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
 
     var reviewsData: LiveData<List<ReviewWithAuthorDataModel>>
+    var globalRating: LiveData<Int>
 
     val uiAlertState = MutableStateFlow(UiAlertStateDetailsScreenDataModel())
 
@@ -36,9 +37,12 @@ class DetailsScreenViewModel(application: Application, recipeName: String): View
         val detailsScreenDao = appDb.DetailsScreenDao()
         repository = DetailsScreenRepository(detailsScreenDao)
 
+        globalRating = repository.globalRating
 //        detailsScreenData = repository.detailsScreenData
         reviewsData = repository.reviewsData
         repository.setRecipeName(recipeName)
+
+
 
 //        uiState.update {
 //            it.copy(reviewsData = reviewsData)

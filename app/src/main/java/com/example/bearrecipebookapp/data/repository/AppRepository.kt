@@ -25,6 +25,9 @@ class AppRepository(private val appDao: AppDao) {
     }
 
 
+    fun setGlobalRating(recipeName: String, rating: Int){
+        appDao.setGlobalRating(recipeName, rating)
+    }
 
     fun getReviewsData(recipeName: String): List<ReviewWithAuthorDataModel> {
         return appDao.getReviewsData(recipeName)
