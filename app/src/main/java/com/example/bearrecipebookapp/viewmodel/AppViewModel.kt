@@ -582,7 +582,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             var isClean = true
 
             for(word in bannedWords){
-                if(reviewText.contains(word)){
+                if(reviewText.contains(word, true)){
                     isClean = false
                     break
                 }
