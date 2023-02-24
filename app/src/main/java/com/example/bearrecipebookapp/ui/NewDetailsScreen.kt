@@ -96,11 +96,13 @@ fun NewDetailsScreen(
 //        val detailsScreenData by detailsScreenViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
 
         val uiAlertState by detailsScreenViewModel.uiAlertState.collectAsState()
+
+        val commentsList by detailsScreenViewModel.commentsList.collectAsState()
 //        val uiState by detailsScreenViewModel.uiState.collectAsState()
 
-        val reviewsData by detailsScreenViewModel.reviewsData.observeAsState(listOf())
-        val firebaseCommentsLiveData by detailsScreenViewModel.firebaseCommentsLiveData.observeAsState(listOf())
-        val globalRating by detailsScreenViewModel.globalRating.observeAsState()
+//        val reviewsData by detailsScreenViewModel.reviewsData.observeAsState(listOf())
+//        val firebaseCommentsLiveData by detailsScreenViewModel.firebaseCommentsLiveData.observeAsState(listOf())
+//        val globalRating by detailsScreenViewModel.globalRating.observeAsState()
         val globalRatingFirebaseLiveData by detailsScreenViewModel.globalRatingFirebaseLiveData.observeAsState()
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -507,7 +509,7 @@ fun NewDetailsScreen(
 //                        ReviewWidget(recipeData.reviewsList[x].reviewText)
 //                    }
 
-                    if (firebaseCommentsLiveData.isNotEmpty()) {
+                    if (commentsList.isNotEmpty()) {
                         item {
                             Text(
                                 text = "Comments and Tips",
@@ -556,8 +558,8 @@ fun NewDetailsScreen(
 //                        }
 //                    }
 
-                    if(firebaseCommentsLiveData.isNotEmpty()) {
-                        items(firebaseCommentsLiveData, key = { it.comment.commentID })
+                    if(commentsList.isNotEmpty()) {
+                        items(if(commentsList.size <= 4) commentsList.take(3) else commentsList, key = { it.comment.commentID })
                         {
                             ReviewWidget(
                                 authorName = it.authorData.userName,
@@ -572,6 +574,14 @@ fun NewDetailsScreen(
 //                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
                                     updateLikes(it.comment.commentID) },
                             )
+                        }
+                        if(commentsList.size == 4){
+                            item() {
+                                ConfirmAlertButton(buttonText = "Show All Comments") {
+//                                    detailsScreenViewModel.setCommentsLimit(50)
+
+                                }
+                            }
                         }
                     }
 

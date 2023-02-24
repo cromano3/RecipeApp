@@ -3,6 +3,7 @@ package com.example.bearrecipebookapp.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.data.repository.DetailsScreenFirebaseRepository
@@ -14,8 +15,10 @@ import com.example.bearrecipebookapp.datamodel.UiAlertStateDetailsScreenDataMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetailsScreenViewModel(application: Application, recipeName: String, private val detailsScreenFirebaseRepository: DetailsScreenFirebaseRepository): ViewModel() {
 
@@ -25,10 +28,10 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
 //    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
 
-    var firebaseCommentsLiveData: LiveData<List<AuthorDataWithComment>>
+//    var firebaseCommentsLiveData: LiveData<List<AuthorDataWithComment>>
 
-    var reviewsData: LiveData<List<ReviewWithAuthorDataModel>>
-    var globalRating: LiveData<Int>
+
+//    var globalRating: LiveData<Int>
 
 
     var globalRatingFirebaseLiveData: LiveData<Int>
@@ -37,6 +40,21 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
 //    val uiState = MutableStateFlow(DetailsScreenUiState())
 
+    ////////////////
+    private val _commentsList = MutableStateFlow<List<AuthorDataWithComment>>(listOf())
+    val commentsList: StateFlow<List<AuthorDataWithComment>>
+        get() = _commentsList
+
+    private fun getCommentsList(recipeName: String){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){ detailsScreenFirebaseRepository.getCommentsList(recipeName, 4).collect {
+                _commentsList.value = it
+                }
+            }
+        }
+    }
+    ///////////////
+
 
 
     init {
@@ -44,16 +62,19 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
         val detailsScreenDao = appDb.DetailsScreenDao()
         repository = DetailsScreenRepository(detailsScreenDao)
 
-        globalRating = repository.globalRating
+//        globalRating = repository.globalRating
 //        detailsScreenData = repository.detailsScreenData
-        reviewsData = repository.reviewsData
+
         repository.setRecipeName(recipeName)
 
-        firebaseCommentsLiveData = detailsScreenFirebaseRepository.firebaseCommentsLiveData
+//        firebaseCommentsLiveData = detailsScreenFirebaseRepository.firebaseCommentsLiveData
         detailsScreenFirebaseRepository.setRecipeName(recipeName)
-        detailsScreenFirebaseRepository.setCommentResultLimit(3)
+        println("INIT INIT INIT INIT INIT")
+//        detailsScreenFirebaseRepository.setCommentResultLimit(4)
 
         globalRatingFirebaseLiveData = detailsScreenFirebaseRepository.globalRatingFirebaseLiveData
+
+        getCommentsList(recipeName)
 
 
 
@@ -66,6 +87,11 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
 
     }
+
+//    fun setCommentsLimit(limit: Int){
+//        println("SET LIMIT SET LIMIT SET LIMIT SET LIMIT SET LIMIT SET LIMIT SET LIMIT $limit")
+//        detailsScreenFirebaseRepository.setCommentResultLimit(limit)
+//    }
 
 
 
