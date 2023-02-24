@@ -578,6 +578,7 @@ fun NewDetailsScreen(
                         if(commentsList.size == 4){
                             item() {
                                 ConfirmAlertButton(buttonText = "Show All Comments") {
+                                    detailsScreenViewModel.changeLimit()
 //                                    detailsScreenViewModel.setCommentsLimit(50)
 
                                 }

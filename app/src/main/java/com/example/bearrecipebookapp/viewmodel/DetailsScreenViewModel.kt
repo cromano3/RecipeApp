@@ -45,14 +45,26 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
     val commentsList: StateFlow<List<AuthorDataWithComment>>
         get() = _commentsList
 
-    private fun getCommentsList(recipeName: String){
+    private val _recipeName = recipeName
+
+
+
+    fun getCommentsList(recipeName: String, limit: Int){
         viewModelScope.launch {
-            withContext(Dispatchers.IO){ detailsScreenFirebaseRepository.getCommentsList(recipeName, 4).collect {
+            withContext(Dispatchers.IO){ detailsScreenFirebaseRepository.getCommentsList(recipeName, limit).collect {
                 _commentsList.value = it
                 }
             }
         }
     }
+
+
+    fun changeLimit(){
+        getCommentsList(_recipeName, 50)
+    }
+
+
+
     ///////////////
 
 
@@ -74,7 +86,7 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
         globalRatingFirebaseLiveData = detailsScreenFirebaseRepository.globalRatingFirebaseLiveData
 
-        getCommentsList(recipeName)
+        getCommentsList(recipeName, 4)
 
 
 

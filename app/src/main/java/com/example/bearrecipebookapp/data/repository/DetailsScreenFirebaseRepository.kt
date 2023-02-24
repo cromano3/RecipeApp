@@ -152,7 +152,12 @@ class DetailsScreenFirebaseRepository(
                 }
             }
 
-        val registration = db.collection("reviews").whereEqualTo("recipeName", recipeName).addSnapshotListener(listener)
+        val registration = db
+            .collection("reviews")
+            .whereEqualTo("recipeName", recipeName)
+            .limit(limit.toLong())
+            .addSnapshotListener(listener)
+
         awaitClose {registration.remove()}
     }
 
