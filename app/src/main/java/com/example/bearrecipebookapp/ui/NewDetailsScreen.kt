@@ -101,6 +101,7 @@ fun NewDetailsScreen(
         val reviewsData by detailsScreenViewModel.reviewsData.observeAsState(listOf())
         val firebaseCommentsLiveData by detailsScreenViewModel.firebaseCommentsLiveData.observeAsState(listOf())
         val globalRating by detailsScreenViewModel.globalRating.observeAsState()
+        val globalRatingFirebaseLiveData by detailsScreenViewModel.globalRatingFirebaseLiveData.observeAsState()
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
 
@@ -404,7 +405,7 @@ fun NewDetailsScreen(
                                         contentDescription = null
                                     )
                                     Text(
-                                        text = "Rating: $globalRating",
+                                        text = "Rating: $globalRatingFirebaseLiveData",
                                         modifier = Modifier
                                             .padding(
                                                 start = 8.dp,

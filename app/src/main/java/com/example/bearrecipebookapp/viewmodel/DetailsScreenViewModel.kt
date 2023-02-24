@@ -31,6 +31,7 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
     var globalRating: LiveData<Int>
 
 
+    var globalRatingFirebaseLiveData: LiveData<Int>
 
     val uiAlertState = MutableStateFlow(UiAlertStateDetailsScreenDataModel())
 
@@ -51,6 +52,8 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
         firebaseCommentsLiveData = detailsScreenFirebaseRepository.firebaseCommentsLiveData
         detailsScreenFirebaseRepository.setRecipeName(recipeName)
         detailsScreenFirebaseRepository.setCommentResultLimit(3)
+
+        globalRatingFirebaseLiveData = detailsScreenFirebaseRepository.globalRatingFirebaseLiveData
 
 
 

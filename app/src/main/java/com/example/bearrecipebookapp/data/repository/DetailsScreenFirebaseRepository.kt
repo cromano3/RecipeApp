@@ -27,6 +27,14 @@ class DetailsScreenFirebaseRepository(
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
+    val globalRatingFirebaseLiveData: LiveData<Int> = MediatorLiveData<Int>().apply {
+        addSource(recipeNameLiveData) { recipeName ->
+            retrieveGlobalRatingFirebaseLiveData(recipeName) { rating ->
+                    value = rating
+            }
+        }
+    }
+
     val firebaseCommentsLiveData: LiveData<List<AuthorDataWithComment>> = MediatorLiveData<List<AuthorDataWithComment>>().apply {
         addSource(recipeNameLiveData) { recipeName ->
             val limit = commentResultLimit.value
@@ -56,6 +64,28 @@ class DetailsScreenFirebaseRepository(
     fun setCommentResultLimit(limit: Int) {
         println("set limit to $limit")
         commentResultLimit.postValue(limit)
+    }
+
+    private fun retrieveGlobalRatingFirebaseLiveData(recipeName: String, callback: (Int) -> Unit){
+        db.collection("recipes").whereEqualTo(FieldPath.documentId(), recipeName).limit(1).addSnapshotListener(){ snapshot, e ->
+            if(e != null){
+                println("couldn't get rating with: ${e.message}")
+                callback(0)
+            }
+            else{
+                try {
+                    val rating = snapshot!!.documents[0].getLong("rating")!!.toInt()
+                    callback(rating)
+                }
+                catch(e: Exception){
+                    println("couldn't get rating with: ${e.message}")
+                    callback(0)
+                }
+
+            }
+
+        }
+
     }
 
     private fun getReviewsData(recipeName: String, limit: Int, callback: (List<AuthorDataWithComment>) -> Unit) {
