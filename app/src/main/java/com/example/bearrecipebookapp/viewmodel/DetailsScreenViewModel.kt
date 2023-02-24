@@ -12,19 +12,18 @@ import com.example.bearrecipebookapp.datamodel.AuthorDataWithComment
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 import com.example.bearrecipebookapp.datamodel.UiAlertStateDetailsScreenDataModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class DetailsScreenViewModel(application: Application, recipeName: String, private val detailsScreenFirebaseRepository: DetailsScreenFirebaseRepository): ViewModel() {
 
     private val repository: DetailsScreenRepository
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    private var job: Job? = null
 
 //    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
 
@@ -49,8 +48,9 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
 
 
-    fun getCommentsList(recipeName: String, limit: Int){
-        viewModelScope.launch {
+    private fun getCommentsList(recipeName: String, limit: Int){
+        job?.cancel()
+        job = viewModelScope.launch {
             withContext(Dispatchers.IO){ detailsScreenFirebaseRepository.getCommentsList(recipeName, limit).collect {
                 _commentsList.value = it
                 }
