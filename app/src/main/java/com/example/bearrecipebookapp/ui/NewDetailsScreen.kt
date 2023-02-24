@@ -564,13 +564,14 @@ fun NewDetailsScreen(
                                 authorImageUrl = it.authorData.userPhotoURL,
                                 reviewText = it.comment.commentText,
                                 karma = 0,
-                                likes = if(it.comment.likedByMe == 1 && it.comment.myLikeWasSynced == 0) it.comment.likes + 1 else it.comment.likes,
+//                                likes = if(it.comment.likedByMe == 1 && it.comment.myLikeWasSynced == 0) it.comment.likes + 1 else it.comment.likes,
+                                likes = it.comment.likes,
                                 likedByUser = it.comment.likedByMe,
                                 onLikeClick = {
                                     println("click")
 //                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
                                     updateLikes(it.comment.commentID) },
-                                )
+                            )
                         }
                     }
 

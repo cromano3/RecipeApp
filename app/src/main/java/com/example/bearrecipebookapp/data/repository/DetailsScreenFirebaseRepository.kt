@@ -122,6 +122,21 @@ class DetailsScreenFirebaseRepository(
                                 println(photoUrl)
                                 authorData = AuthorData(userName!!, photoUrl!!)
 
+                                var wasLiked = 0
+
+                                val likedByList = document.get("likedBy") as? List<String> ?: listOf()
+
+                                if(likedByList.contains(auth.currentUser!!.uid)){
+                                    wasLiked = 1
+                                }
+
+
+
+//                                document.reference.collection("likedBy").whereEqualTo("userId", auth.currentUser!!.uid).get().addOnSuccessListener {
+//
+//                                }
+
+
                                 val likes = document.getDouble("likes")?.toInt()
 
 
@@ -131,7 +146,7 @@ class DetailsScreenFirebaseRepository(
                                     authorID = authorUid ?: "",
                                     commentText = reviewText ?: "",
                                     likes = likes ?: 0,
-                                    likedByMe = 0,
+                                    likedByMe = wasLiked,
                                     myLikeWasSynced = 0,
                                     timestamp = ""
                                 )
@@ -149,7 +164,6 @@ class DetailsScreenFirebaseRepository(
 
                             } catch (e3: Exception) {
                                 println("failed trying to get the author live ${e3.message}")
-                                authorData = AuthorData("", "")
                             }
                         }
 

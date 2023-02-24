@@ -43,6 +43,7 @@ fun ReviewWidget(
     onLikeClick: () -> Unit,
 ){
     var expanded by remember { mutableStateOf(false) }
+    var liked by remember { mutableStateOf(false) }
 //    val modifier = if(expanded) Modifier.wrapContentHeight() else Modifier.height(280.dp)
 
     val modifier =Modifier.wrapContentHeight()
@@ -145,7 +146,7 @@ fun ReviewWidget(
                             .padding(16.dp)
                             .align(Alignment.CenterEnd)
                             .wrapContentSize()
-                            .clickable { if(likedByUser != 1) onLikeClick() },
+                            .clickable(enabled = (likedByUser != 1 && !liked) ) { liked = true; onLikeClick() },
                         color = Color.Transparent
                     ) {
                         Row(Modifier.wrapContentSize(),
@@ -153,7 +154,7 @@ fun ReviewWidget(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                if (likedByUser == 1) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
+                                if (likedByUser == 1 || liked) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
                                 contentDescription = null,
                                 modifier = Modifier.size(30.dp),
                                 tint = Color(0xFFd8af84)

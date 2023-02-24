@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
-import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.data.repository.AppRepository
 import com.example.bearrecipebookapp.data.repository.FirebaseRepository
 import com.example.bearrecipebookapp.datamodel.AppUiState
@@ -20,8 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.*
 
 class AppViewModel(application: Application, private val firebaseRepository: FirebaseRepository): ViewModel() {
 
@@ -229,18 +226,18 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
             ////Likes////
 
-            val unsyncedUserLikes = withContext(Dispatchers.IO) { repository.getUnsyncedUserLikes() }
-
-            println("before new likes upload")
-            if(unsyncedUserLikes.isNotEmpty()){
-                println("new likes not empty")
-                for(likeId in unsyncedUserLikes){
-                    val successStatus = firebaseRepository.updateLike(likeId)
-                    if(successStatus == "Success" || successStatus == "Failed Duplicate Like") {
-                        withContext(Dispatchers.IO) { repository.markLikeAsSynced(likeId) }
-                    }
-                }
-            }
+//            val unsyncedUserLikes = withContext(Dispatchers.IO) { repository.getUnsyncedUserLikes() }
+//
+//            println("before new likes upload")
+//            if(unsyncedUserLikes.isNotEmpty()){
+//                println("new likes not empty")
+//                for(likeId in unsyncedUserLikes){
+//                    val successStatus = firebaseRepository.updateLike(likeId)
+//                    if(successStatus == "Success" || successStatus == "Failed Duplicate Like") {
+//                        withContext(Dispatchers.IO) { repository.markLikeAsSynced(likeId) }
+//                    }
+//                }
+//            }
 
         }
     }
@@ -400,190 +397,190 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         }
     }
 
-    suspend fun setupDetailsScreenComments(recipeName: String){
-
-        println("setup $recipeName")
-        val recipeData = repository.getRecipe(recipeName)
-
-
-        var newCommentsList: MutableList<CommentsEntity> = mutableListOf()
-
-//        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
-//        println("a")
+//    suspend fun setupDetailsScreenComments(recipeName: String){
 //
-//        val lastCommentSyncTime = recipeData.lastCommentSyncTime
-
-        val rating = withContext(Dispatchers.IO) { firebaseRepository.getRecipeRating(recipeName) }
-        if(rating > -1){
-            withContext(Dispatchers.IO) {repository.setGlobalRating(recipeName, rating)}
-        }
-
-
-        try{
-            val lastDownloadedCommentTimestamp = recipeData.lastDownloadedCommentTimestamp
-            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
-            val date = formatter.parse(lastDownloadedCommentTimestamp)
-
-//            val lastDownloadedCommentTimestampFormatted = formatter.parse(lastDownloadedCommentTimestamp)
-
-
-            newCommentsList = firebaseRepository.getComments(recipeName, date!!)
-
-        }
-        catch(e: Exception){
-            newCommentsList = firebaseRepository.getComments(recipeName)
-            println("failed to get new comments based on recent timestamp ${e.message}")
-        }
-//        val lastRatingSyncTime = recipeData.lastRatingSyncTime
-
-
-
-//        val lastDownloadedRatingTimestampFormatted = formatter.parse(lastDownloadedRatingTimestamp)
-
-
-//        val oneHourAfterLastUpdate = Calendar.getInstance()
-
-//        if (lastCommentSyncTime == "x") {
-//            println("lastCommentSyncTime != empty ")
-//            delay(5000)
-
-//            val lastCommentSyncTimeFormatted = formatter.parse(lastCommentSyncTime)
-
-//            if (lastCommentSyncTimeFormatted != null) {
-
-//                oneHourAfterLastUpdate.time = lastCommentSyncTimeFormatted
-//                oneHourAfterLastUpdate.add(Calendar.HOUR, 1)
-
-//                val currentFirestoreTime = formatter.parse(firebaseRepository.getCurrentTime())
-//                val currentTime = Calendar.getInstance()
-
-//                if (currentFirestoreTime != null) {
-
-//                    currentTime.time = currentFirestoreTime
+//        println("setup $recipeName")
+//        val recipeData = repository.getRecipe(recipeName)
 //
-//                    if(oneHourAfterLastUpdate > currentTime){
-
-            //we set this here to prevent abuse
-//                        val currentTimeMarker = firebaseRepository.getCurrentTime()
-//                        withContext(Dispatchers.IO) { repository.setTimeOfLastUpdate(recipeName, currentTimeMarker) }
 //
-//                        //do download
-
+//        var newCommentsList: MutableList<CommentsEntity> = mutableListOf()
+//
+////        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+////        println("a")
+////
+////        val lastCommentSyncTime = recipeData.lastCommentSyncTime
+//
+//        val rating = withContext(Dispatchers.IO) { firebaseRepository.getRecipeRating(recipeName) }
+//        if(rating > -1){
+//            withContext(Dispatchers.IO) {repository.setGlobalRating(recipeName, rating)}
 //        }
-//                    }
 //
-////                }
 //
-////            }
+//        try{
+//            val lastDownloadedCommentTimestamp = recipeData.lastDownloadedCommentTimestamp
+//            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+//            val date = formatter.parse(lastDownloadedCommentTimestamp)
+//
+////            val lastDownloadedCommentTimestampFormatted = formatter.parse(lastDownloadedCommentTimestamp)
+//
+//
+//            newCommentsList = firebaseRepository.getComments(recipeName, date!!)
+//
+//        }
+//        catch(e: Exception){
+//            newCommentsList = firebaseRepository.getComments(recipeName)
+//            println("failed to get new comments based on recent timestamp ${e.message}")
+//        }
+////        val lastRatingSyncTime = recipeData.lastRatingSyncTime
+//
+//
+//
+////        val lastDownloadedRatingTimestampFormatted = formatter.parse(lastDownloadedRatingTimestamp)
+//
+//
+////        val oneHourAfterLastUpdate = Calendar.getInstance()
+//
+////        if (lastCommentSyncTime == "x") {
+////            println("lastCommentSyncTime != empty ")
+////            delay(5000)
+//
+////            val lastCommentSyncTimeFormatted = formatter.parse(lastCommentSyncTime)
+//
+////            if (lastCommentSyncTimeFormatted != null) {
+//
+////                oneHourAfterLastUpdate.time = lastCommentSyncTimeFormatted
+////                oneHourAfterLastUpdate.add(Calendar.HOUR, 1)
+//
+////                val currentFirestoreTime = formatter.parse(firebaseRepository.getCurrentTime())
+////                val currentTime = Calendar.getInstance()
+//
+////                if (currentFirestoreTime != null) {
+//
+////                    currentTime.time = currentFirestoreTime
+////
+////                    if(oneHourAfterLastUpdate > currentTime){
+//
+//            //we set this here to prevent abuse
+////                        val currentTimeMarker = firebaseRepository.getCurrentTime()
+////                        withContext(Dispatchers.IO) { repository.setTimeOfLastUpdate(recipeName, currentTimeMarker) }
+////
+////                        //do download
+//
 ////        }
-
-////           if(lastRatingSyncTime == "")
-
-//                println("lastCommentSyncTime == empty")
-//                println("b")
+////                    }
+////
+//////                }
+////
+//////            }
+//////        }
 //
-//                //we set this here to prevent abuse
-//                val currentTimeMarker = firebaseRepository.getCurrentTime()
-//                withContext(Dispatchers.IO) { repository.setTimeOfLastUpdate(recipeName, currentTimeMarker) }
+//////           if(lastRatingSyncTime == "")
 //
-//                println("c")
-//                delay(5000)
-//                println("d")
-//            //do download
-
-
-
-        if(newCommentsList.isNotEmpty()) {
-
-            val reviewsData = withContext(Dispatchers.IO) { repository.getReviewsData(recipeName) }
-
-            val authorsDataWithComments = firebaseRepository.getAuthorsData(newCommentsList)
-
-            for(comment in authorsDataWithComments){
-                println("for each comment in new comments ${comment.comment.commentText}")
-
-                var commentAlreadyInRoom = false
-                var myLike = 0
-                var myLikeWasSynced = 0
-
-                for (review in reviewsData){
-                    println("for each review in room recipe Name ${review.commentsEntity.recipeName}")
-                    if(review.commentsEntity.commentID == comment.comment.commentID) {
-                        println("already in room")
-                        commentAlreadyInRoom = true
-                        if (review.commentsEntity.likedByMe == 1) {
-                            println("already liked")
-                            myLike = 1
-                        }
-                        if (review.commentsEntity.myLikeWasSynced == 1) {
-                            println("already synced")
-                            myLikeWasSynced = 1
-                        }
-                        break
-                    }
-                }
-
-                if(commentAlreadyInRoom){
-                    println("already in room adding to room with myLike $myLike and was synced $myLikeWasSynced")
-                    withContext(Dispatchers.IO) { repository.addComment(
-                        CommentsEntity(
-                            comment.comment.commentID,
-                            comment.comment.recipeName,
-                            comment.comment.authorID,
-                            comment.comment.commentText,
-                            comment.comment.likes,
-                            myLike,
-                            myLikeWasSynced,
-                            comment.comment.timestamp
-                        )
-                    ) }
-                }
-                else{
-                    withContext(Dispatchers.IO) { repository.addComment(comment.comment) }
-                }
-
-                /**should store karma value here with rest of author data*/
-                withContext(Dispatchers.IO) { repository.addAuthor(comment.authorData, comment.comment.authorID) }
-
-
-
-//                reviewsData.add(
-//                    ReviewWithAuthorDataModel(
-//                        comment.comment,
-//                        CommentAuthorEntity(
+////                println("lastCommentSyncTime == empty")
+////                println("b")
+////
+////                //we set this here to prevent abuse
+////                val currentTimeMarker = firebaseRepository.getCurrentTime()
+////                withContext(Dispatchers.IO) { repository.setTimeOfLastUpdate(recipeName, currentTimeMarker) }
+////
+////                println("c")
+////                delay(5000)
+////                println("d")
+////            //do download
+//
+//
+//
+//        if(newCommentsList.isNotEmpty()) {
+//
+//            val reviewsData = withContext(Dispatchers.IO) { repository.getReviewsData(recipeName) }
+//
+//            val authorsDataWithComments = firebaseRepository.getAuthorsData(newCommentsList)
+//
+//            for(comment in authorsDataWithComments){
+//                println("for each comment in new comments ${comment.comment.commentText}")
+//
+//                var commentAlreadyInRoom = false
+//                var myLike = 0
+//                var myLikeWasSynced = 0
+//
+//                for (review in reviewsData){
+//                    println("for each review in room recipe Name ${review.commentsEntity.recipeName}")
+//                    if(review.commentsEntity.commentID == comment.comment.commentID) {
+//                        println("already in room")
+//                        commentAlreadyInRoom = true
+//                        if (review.commentsEntity.likedByMe == 1) {
+//                            println("already liked")
+//                            myLike = 1
+//                        }
+//                        if (review.commentsEntity.myLikeWasSynced == 1) {
+//                            println("already synced")
+//                            myLikeWasSynced = 1
+//                        }
+//                        break
+//                    }
+//                }
+//
+//                if(commentAlreadyInRoom){
+//                    println("already in room adding to room with myLike $myLike and was synced $myLikeWasSynced")
+//                    withContext(Dispatchers.IO) { repository.addComment(
+//                        CommentsEntity(
+//                            comment.comment.commentID,
+//                            comment.comment.recipeName,
 //                            comment.comment.authorID,
-//                            comment.authorData.userName,
-//                            0,
-//                            comment.authorData.userPhotoURL
+//                            comment.comment.commentText,
+//                            comment.comment.likes,
+//                            myLike,
+//                            myLikeWasSynced,
+//                            comment.comment.timestamp
 //                        )
+//                    ) }
+//                }
+//                else{
+//                    withContext(Dispatchers.IO) { repository.addComment(comment.comment) }
+//                }
+//
+//                /**should store karma value here with rest of author data*/
+//                withContext(Dispatchers.IO) { repository.addAuthor(comment.authorData, comment.comment.authorID) }
+//
+//
+//
+////                reviewsData.add(
+////                    ReviewWithAuthorDataModel(
+////                        comment.comment,
+////                        CommentAuthorEntity(
+////                            comment.comment.authorID,
+////                            comment.authorData.userName,
+////                            0,
+////                            comment.authorData.userPhotoURL
+////                        )
+////                    )
+////                )
+//
+//
+//
+//            }
+//
+//            //get latest timestamp from firestore
+//            val newMostRecentCommentTimestamp = firebaseRepository.getMostRecentCommentTimestamp(newCommentsList)
+//
+//            if(!newMostRecentCommentTimestamp.contains("Failed")) {
+//
+//                withContext(Dispatchers.IO) {
+//                    repository.setMostRecentCommentTimestamp(
+//                        recipeName,
+//                        newMostRecentCommentTimestamp
 //                    )
-//                )
-
-
-
-            }
-
-            //get latest timestamp from firestore
-            val newMostRecentCommentTimestamp = firebaseRepository.getMostRecentCommentTimestamp(newCommentsList)
-
-            if(!newMostRecentCommentTimestamp.contains("Failed")) {
-
-                withContext(Dispatchers.IO) {
-                    repository.setMostRecentCommentTimestamp(
-                        recipeName,
-                        newMostRecentCommentTimestamp
-                    )
-                }
-            }
-        }
-
-//        appUiState.update {
-//            it.copy(
-//                detailsScreenReviewsData = reviewsData,
-//            )
+//                }
+//            }
 //        }
-
-    }
+//
+////        appUiState.update {
+////            it.copy(
+////                detailsScreenReviewsData = reviewsData,
+////            )
+////        }
+//
+//    }
 
     fun storeRating(rating: Int){
 
@@ -685,12 +682,12 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
 
         coroutineScope.launch(Dispatchers.IO) {
-            withContext(Dispatchers.IO) { repository.setAsLiked(commentID) }
+//            withContext(Dispatchers.IO) { repository.setAsLiked(commentID) }
 
             val successStatus = firebaseRepository.updateLike(commentID)
-            if(successStatus == "Success") {
-                withContext(Dispatchers.IO) { repository.markLikeAsSynced(commentID) }
-            }
+//            if(successStatus == "Success") {
+//                withContext(Dispatchers.IO) { repository.markLikeAsSynced(commentID) }
+//            }
 
         }
 

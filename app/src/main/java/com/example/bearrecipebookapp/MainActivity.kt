@@ -232,7 +232,7 @@ fun BearRecipeApp(
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
                             navController.navigate("DetailsScreen")
-                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
+//                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                         }
                     },
 //                    { navController.navigate("DetailsScreen"){ popUpTo("ProfileScreen"){ inclusive = true } } },
@@ -299,7 +299,7 @@ fun BearRecipeApp(
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
                             navController.navigate("DetailsScreen")
-                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
+//                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                         }
                     },
                     onFavoriteClick = { favoriteSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },
@@ -332,7 +332,7 @@ fun BearRecipeApp(
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
                             navController.navigate("DetailsScreen")
-                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
+//                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                         }
                      },
                     onFavoriteClick = { favoriteSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },
@@ -393,7 +393,7 @@ fun BearRecipeApp(
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
                             navController.navigate("DetailsScreen")
-                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
+//                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                         }
                      },
                     onSystemBackClick = {
@@ -483,7 +483,7 @@ fun BearRecipeApp(
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
                             navController.navigate("DetailsScreen")
-                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
+//                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                         }
                                      },
                     onFavoriteClick = { favoriteSnackBar(it, scaffoldState, coroutineScope) },
