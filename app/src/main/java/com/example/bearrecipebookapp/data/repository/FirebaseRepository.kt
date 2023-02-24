@@ -224,6 +224,15 @@ class FirebaseRepository(
                 val authorUid = document.getString("authorUid")
                 val likes = document.getDouble("likes")?.toInt()
                 val timestamp = document.getTimestamp("timestamp")
+                val date = timestamp?.toDate()
+                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+                var formattedDate = "Failed"
+                try{
+                    formattedDate = formatter.format(date!!)
+                }
+                catch (e: Exception){
+                    println("bad timestamp in firestore ${e.message}")
+                }
 
                 val comment = CommentsEntity(
                     commentID = commentId,
@@ -233,7 +242,7 @@ class FirebaseRepository(
                     likes = likes ?: 0,
                     likedByMe = 0,
                     myLikeWasSynced = 0,
-                    timestamp = timestamp?.toString() ?: ""
+                    timestamp = formattedDate
                 )
 
                 resultCommentsList.add(comment)

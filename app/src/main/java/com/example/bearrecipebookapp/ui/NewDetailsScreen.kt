@@ -46,10 +46,14 @@ import com.example.bearrecipebookapp.data.annotatedstrings.confirmCompletedCooki
 import com.example.bearrecipebookapp.data.annotatedstrings.confirmIMadeThisAnoString
 import com.example.bearrecipebookapp.data.annotatedstrings.confirmRemoveMenuAnoString
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
+import com.example.bearrecipebookapp.data.repository.DetailsScreenFirebaseRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.*
 import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.DetailsScreenViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -760,7 +764,8 @@ class DetailsScreenViewModelFactory(
 
         return DetailsScreenViewModel(
             application,
-            recipeName
+            recipeName,
+            DetailsScreenFirebaseRepository(application, Firebase.firestore, Firebase.auth)
         ) as T
     }
 }

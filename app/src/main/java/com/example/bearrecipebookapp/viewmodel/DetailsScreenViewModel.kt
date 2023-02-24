@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
+import com.example.bearrecipebookapp.data.repository.DetailsScreenFirebaseRepository
 import com.example.bearrecipebookapp.data.repository.DetailsScreenRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DetailsScreenViewModel(application: Application, recipeName: String): ViewModel() {
+class DetailsScreenViewModel(application: Application, recipeName: String, private val detailsScreenFirebaseRepository: DetailsScreenFirebaseRepository): ViewModel() {
 
     private val repository: DetailsScreenRepository
 
@@ -23,8 +24,12 @@ class DetailsScreenViewModel(application: Application, recipeName: String): View
 
 //    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
 
+    var firebaseCommentsLiveData: LiveData<List<ReviewWithAuthorDataModel>>
+
     var reviewsData: LiveData<List<ReviewWithAuthorDataModel>>
     var globalRating: LiveData<Int>
+
+
 
     val uiAlertState = MutableStateFlow(UiAlertStateDetailsScreenDataModel())
 
@@ -41,6 +46,12 @@ class DetailsScreenViewModel(application: Application, recipeName: String): View
 //        detailsScreenData = repository.detailsScreenData
         reviewsData = repository.reviewsData
         repository.setRecipeName(recipeName)
+
+        firebaseCommentsLiveData = detailsScreenFirebaseRepository.firebaseCommentsLiveData
+        detailsScreenFirebaseRepository.setRecipeName(recipeName)
+
+
+
 
 
 

@@ -28,6 +28,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     private val repository: AppRepository
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
+
     var oneTapClient: SignInClient = Identity.getSignInClient(application)
 
 
