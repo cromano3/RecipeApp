@@ -99,6 +99,7 @@ fun NewDetailsScreen(
 //        val uiState by detailsScreenViewModel.uiState.collectAsState()
 
         val reviewsData by detailsScreenViewModel.reviewsData.observeAsState(listOf())
+        val firebaseCommentsLiveData by detailsScreenViewModel.firebaseCommentsLiveData.observeAsState(listOf())
         val globalRating by detailsScreenViewModel.globalRating.observeAsState()
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -505,7 +506,7 @@ fun NewDetailsScreen(
 //                        ReviewWidget(recipeData.reviewsList[x].reviewText)
 //                    }
 
-                    if (reviewsData.isNotEmpty()) {
+                    if (firebaseCommentsLiveData.isNotEmpty()) {
                         item {
                             Text(
                                 text = "Comments and Tips",
@@ -554,20 +555,20 @@ fun NewDetailsScreen(
 //                        }
 //                    }
 
-                    if(reviewsData.isNotEmpty()) {
-                        items(reviewsData, key = { it.commentsEntity.commentID })
+                    if(firebaseCommentsLiveData.isNotEmpty()) {
+                        items(firebaseCommentsLiveData, key = { it.comment.commentID })
                         {
                             ReviewWidget(
-                                authorName = it.authorEntity.authorName,
-                                authorImageUrl = it.authorEntity.authorImageURL,
-                                reviewText = it.commentsEntity.commentText,
-                                karma = it.authorEntity.authorKarma,
-                                likes = if(it.commentsEntity.likedByMe == 1 && it.commentsEntity.myLikeWasSynced == 0) it.commentsEntity.likes + 1 else it.commentsEntity.likes,
-                                likedByUser = it.commentsEntity.likedByMe,
+                                authorName = it.authorData.userName,
+                                authorImageUrl = it.authorData.userPhotoURL,
+                                reviewText = it.comment.commentText,
+                                karma = 0,
+                                likes = if(it.comment.likedByMe == 1 && it.comment.myLikeWasSynced == 0) it.comment.likes + 1 else it.comment.likes,
+                                likedByUser = it.comment.likedByMe,
                                 onLikeClick = {
                                     println("click")
 //                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
-                                    updateLikes(it.commentsEntity.commentID) },
+                                    updateLikes(it.comment.commentID) },
                                 )
                         }
                     }

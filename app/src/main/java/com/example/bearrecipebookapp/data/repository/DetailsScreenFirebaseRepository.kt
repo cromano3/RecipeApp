@@ -5,9 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.bearrecipebookapp.data.entity.CommentsEntity
-import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
+import com.example.bearrecipebookapp.datamodel.AuthorData
+import com.example.bearrecipebookapp.datamodel.AuthorDataWithComment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.*
@@ -21,48 +25,115 @@ class DetailsScreenFirebaseRepository(
     private val recipeNameLiveData = MutableLiveData<String>()
     private val commentResultLimit = MutableLiveData<Int>()
 
-    val firebaseCommentsLiveData: LiveData<List<ReviewWithAuthorDataModel>> = MediatorLiveData<List<ReviewWithAuthorDataModel>>().apply {
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    val firebaseCommentsLiveData: LiveData<List<AuthorDataWithComment>> = MediatorLiveData<List<AuthorDataWithComment>>().apply {
         addSource(recipeNameLiveData) { recipeName ->
             val limit = commentResultLimit.value
             if (limit != null) {
-                value = getReviewsData(recipeName, limit)
+                println("passed null")
+                getReviewsData(recipeName, limit){ resultCommentsWithAuthorsList ->
+                    value = resultCommentsWithAuthorsList
+                }
             }
         }
         addSource(commentResultLimit) { limit ->
             val recipeName = recipeNameLiveData.value
             if (!recipeName.isNullOrEmpty()) {
-                value = getReviewsData(recipeName, limit)
+                println("passed null")
+                getReviewsData(recipeName, limit){ resultCommentsWithAuthorsList ->
+                    value = resultCommentsWithAuthorsList
+                }
             }
         }
     }
 
     fun setRecipeName(recipeName: String) {
+        println("set name to $recipeName")
         recipeNameLiveData.postValue(recipeName)
     }
 
     fun setCommentResultLimit(limit: Int) {
+        println("set limit to $limit")
         commentResultLimit.postValue(limit)
     }
 
-    private fun getReviewsData(recipeName: String, limit: Int): List<ReviewWithAuthorDataModel>? {
-        db.collection("recipes").where
-
-        //firestore db query goes here
-
-        //get recipe doc ref
-
-        //get all comments for this recipe and put in comment entity or new data type
-
-        //for all comments get all author details and add to reviewWithAuthorResultList
-
-        //for all comments -> for each comment query.get.likedByList where equals current user UID .limit(1)
-        //if result is found then set comment to liked by me in comment entity else not liked by me
+    private fun getReviewsData(recipeName: String, limit: Int, callback: (List<AuthorDataWithComment>) -> Unit) {
+        println("in get live")
 
 
-        //build this same query but for top comments to show first (choose how many to show, maybe top 3?)
+        db.collection("reviews").whereEqualTo("recipeName", recipeName).limit(if(limit == 4)limit.toLong()else 50).addSnapshotListener() { snapshot, e ->
+            if(e != null){
+                println("failed first live query with: ${e.message}")
+            }
+            else {
+                try {
+                    val resultCommentsWithAuthorsList: MutableList<AuthorDataWithComment> =
+                        mutableListOf()
+                    println("try get live")
+                    for (document in snapshot!!.documents) {
+                        println("for try get live")
+
+                        var authorData: AuthorData = AuthorData("", "")
+
+                        val commentId = document.id
+                        val thisRecipeName = document.getString("recipeName")
+                        val reviewText = document.getString("reviewText")
+                        val authorUid = document.getString("authorUid")
+                        println("authorUid is $authorUid")
+
+                        db.collection("users").whereEqualTo(FieldPath.documentId(), authorUid)
+                            .limit(1).get().addOnSuccessListener { snapshot2 ->
+                            try {
+                                val userName =
+                                    snapshot2!!.documents[0].getString("display_name")
+                                val photoUrl = snapshot2.documents[0].getString("user_photo")
+                                println(userName)
+                                println(photoUrl)
+                                authorData = AuthorData(userName!!, photoUrl!!)
+
+                                val likes = document.getDouble("likes")?.toInt()
 
 
-        return result
+                                val comment = CommentsEntity(
+                                    commentID = commentId,
+                                    recipeName = thisRecipeName ?: "",
+                                    authorID = authorUid ?: "",
+                                    commentText = reviewText ?: "",
+                                    likes = likes ?: 0,
+                                    likedByMe = 0,
+                                    myLikeWasSynced = 0,
+                                    timestamp = ""
+                                )
+                                resultCommentsWithAuthorsList.add(
+                                    AuthorDataWithComment(
+                                        authorData,
+                                        comment
+                                    )
+                                )
+                                println("BELOW")
+                                println(resultCommentsWithAuthorsList[0].authorData.userName)
+                                println(resultCommentsWithAuthorsList[0].authorData.userPhotoURL)
+                                println("ABOVE")
+                                callback(resultCommentsWithAuthorsList)
+
+                            } catch (e3: Exception) {
+                                println("failed trying to get the author live ${e3.message}")
+                                authorData = AuthorData("", "")
+                            }
+                        }
+
+
+
+                    }
+
+
+                } catch (e: Exception) {
+                    println("failed to get live with: ${e.message}")
+                }
+            }
+        }
+
 
     }
 

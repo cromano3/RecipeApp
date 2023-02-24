@@ -7,6 +7,7 @@ import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.data.repository.DetailsScreenFirebaseRepository
 import com.example.bearrecipebookapp.data.repository.DetailsScreenRepository
+import com.example.bearrecipebookapp.datamodel.AuthorDataWithComment
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 import com.example.bearrecipebookapp.datamodel.UiAlertStateDetailsScreenDataModel
@@ -24,7 +25,7 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
 //    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
 
-    var firebaseCommentsLiveData: LiveData<List<ReviewWithAuthorDataModel>>
+    var firebaseCommentsLiveData: LiveData<List<AuthorDataWithComment>>
 
     var reviewsData: LiveData<List<ReviewWithAuthorDataModel>>
     var globalRating: LiveData<Int>
@@ -49,6 +50,7 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
         firebaseCommentsLiveData = detailsScreenFirebaseRepository.firebaseCommentsLiveData
         detailsScreenFirebaseRepository.setRecipeName(recipeName)
+        detailsScreenFirebaseRepository.setCommentResultLimit(3)
 
 
 
