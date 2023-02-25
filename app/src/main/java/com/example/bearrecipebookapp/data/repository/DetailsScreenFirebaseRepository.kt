@@ -8,10 +8,7 @@ import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.AuthorData
 import com.example.bearrecipebookapp.datamodel.AuthorDataWithComment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.FieldPath
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -156,6 +153,7 @@ class DetailsScreenFirebaseRepository(
             .collection("reviews")
             .whereEqualTo("recipeName", recipeName)
             .limit(limit.toLong())
+            .orderBy("likes", Query.Direction.DESCENDING)
             .addSnapshotListener(listener)
 
         awaitClose {registration.remove()}

@@ -34,6 +34,7 @@ import coil.request.ImageRequest
 
 @Composable
 fun ReviewWidget(
+    modifier: Modifier,
     authorName: String,
     authorImageUrl: String,
     reviewText: String,
@@ -46,14 +47,13 @@ fun ReviewWidget(
     var liked by remember { mutableStateOf(false) }
 //    val modifier = if(expanded) Modifier.wrapContentHeight() else Modifier.height(280.dp)
 
-    val modifier =Modifier.wrapContentHeight()
 
 //    val reviewText = "This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This "
     val expandable = reviewText.length > 160
     val surfaceShape = if(expandable) RoundedCornerShape(10.dp, 10.dp, 25.dp, 25.dp) else RoundedCornerShape(10.dp)
 
     Surface(
-        modifier
+        modifier.wrapContentHeight()
             .fillMaxWidth()
             .padding(16.dp)
             .border(

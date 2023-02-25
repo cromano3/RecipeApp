@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.SnapSpec
+import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,20 +44,28 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
+import com.example.bearrecipebookapp.data.repository.ProfileScreenFirebaseRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.RecipeCard
+import com.example.bearrecipebookapp.ui.components.ReviewWidget
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
+import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.ProfileScreenViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    updateLikes: (String) -> Unit,
     onDetailsClick: (String) -> Unit,
+
 ) {
 
     val owner = LocalViewModelStoreOwner.current
@@ -74,6 +84,8 @@ fun ProfileScreen(
 
         val favoritesData by profileScreenViewModel.favoritesData.observeAsState(listOf())
         val cookedData by profileScreenViewModel.cookedData.observeAsState(listOf())
+
+        val commentsList by profileScreenViewModel.commentsList.collectAsState()
 
         val expToGive by profileScreenViewModel.expToGive.observeAsState()
 
@@ -799,35 +811,35 @@ fun ProfileScreen(
             Surface(Modifier.fillMaxSize(), color = Color(0xFFd8af84)) {
 
 
-            //Favorites List
-            androidx.compose.animation.AnimatedVisibility(
-                visible = uiState.activeTab == "favorites",
-                enter = slideInHorizontally { -it },
-                exit = slideOutHorizontally { -it },
-            ) {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 48.dp),
-                    color = Color.Transparent
-
+                //Favorites List
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = uiState.activeTab == "favorites",
+                    enter = slideInHorizontally { -it },
+                    exit = slideOutHorizontally { -it },
                 ) {
-                    LazyColumn {
-                        items(favoritesData, key = { it.recipeEntity.recipeName }) {
-                            RecipeCard(
-                                modifier = Modifier,
-                                recipeWithIngredientsAndInstructions = it,
-                                currentScreen = "FavoritesTab",
-                                onFavoriteClick =
-                                {
-                                    profileScreenViewModel.triggerRemoveFavoriteAlert(it)
-                                },
-                                onRemoveClick = {},
-                                onCompleteClick = {},
-                                onDetailsClick = {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 48.dp),
+                        color = Color.Transparent
 
-                                    profileScreenViewModel.cancelAnimationStack()
-                                    onDetailsClick(it.recipeEntity.recipeName)
+                    ) {
+                        LazyColumn {
+                            items(favoritesData, key = { it.recipeEntity.recipeName }) {
+                                RecipeCard(
+                                    modifier = Modifier,
+                                    recipeWithIngredientsAndInstructions = it,
+                                    currentScreen = "FavoritesTab",
+                                    onFavoriteClick =
+                                    {
+                                        profileScreenViewModel.triggerRemoveFavoriteAlert(it)
+                                    },
+                                    onRemoveClick = {},
+                                    onCompleteClick = {},
+                                    onDetailsClick = {
+
+                                        profileScreenViewModel.cancelAnimationStack()
+                                        onDetailsClick(it.recipeEntity.recipeName)
 
 //                                    /** main to IO coroutine */
 //                                    coroutineScope.launch(Dispatchers.Main) {
@@ -838,48 +850,48 @@ fun ProfileScreen(
 //                                        onDetailsClick()
 //                                    }
 
-                                }
-                            )
+                                    }
+                                )
 
-                        }
+                            }
 
-                        item {
-                            Spacer(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                            )
+                            item {
+                                Spacer(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp)
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            //Cooked list
-            androidx.compose.animation.AnimatedVisibility(
-                visible = uiState.activeTab == "cooked",
-                enter = if(uiState.previousTab == "favorites") slideInHorizontally { it } else slideInHorizontally { -it },
-                exit = if(uiState.activeTab == "favorites") slideOutHorizontally { it } else slideOutHorizontally { -it },
-            ) {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 48.dp),
-                    color = Color.Transparent
-
+                //Cooked list
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = uiState.activeTab == "cooked",
+                    enter = if (uiState.previousTab == "favorites") slideInHorizontally { it } else slideInHorizontally { -it },
+                    exit = if (uiState.activeTab == "favorites") slideOutHorizontally { it } else slideOutHorizontally { -it },
                 ) {
-
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
+                    Surface(
                         modifier = Modifier
-                            .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
-                        horizontalArrangement = Arrangement.spacedBy(0.dp)
+                            .fillMaxSize()
+                            .padding(bottom = 48.dp),
+                        color = Color.Transparent
+
                     ) {
-                        items(cookedData.size, key = { it }) { index ->
-                            RecipeIcon(
-                                recipeWithIngredients = cookedData[index],
-                                onDetailsClick = {
-                                    profileScreenViewModel.cancelAnimationStack()
-                                    onDetailsClick(cookedData[index].recipeEntity.recipeName)
+
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier
+                                .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
+                            horizontalArrangement = Arrangement.spacedBy(0.dp)
+                        ) {
+                            items(cookedData.size, key = { it }) { index ->
+                                RecipeIcon(
+                                    recipeWithIngredients = cookedData[index],
+                                    onDetailsClick = {
+                                        profileScreenViewModel.cancelAnimationStack()
+                                        onDetailsClick(cookedData[index].recipeEntity.recipeName)
 
 //                                    /** main to IO coroutine */
 //                                    coroutineScope.launch(Dispatchers.Main) {
@@ -888,9 +900,9 @@ fun ProfileScreen(
 //                                        }
 //                                        onDetailsClick()
 //                                    }
-                                }
-                            )
-                        }
+                                    }
+                                )
+                            }
 
 //                        item() {
 //                            Spacer(
@@ -899,12 +911,56 @@ fun ProfileScreen(
 //                                    .padding(16.dp)
 //                            )
 //                        }
+                        }
                     }
                 }
-            }
-            if (uiState.activeTab == "reviews")
-                LazyColumn {
+                //Reviews List
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = uiState.activeTab == "reviews",
+                    enter = slideInHorizontally { it },
+                    exit = slideOutHorizontally { it },
+                ) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 48.dp),
+                        color = Color.Transparent
 
+                    ) {
+                        LazyColumn {
+                            items(commentsList, key = { it.comment.commentID }) {
+                                Text(
+                                    text = it.comment.recipeName,
+                                    modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(200, delay = 0))).padding(
+                                        top = 8.dp,
+                                        start = 8.dp,
+                                        bottom = 2.dp
+                                    ),
+                                    fontSize = 18.sp,
+                                    fontFamily = Cabin,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF682300)
+                                )
+
+                                ReviewWidget(
+                                    modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(200, delay = 0))),
+                                    authorName = it.authorData.userName,
+                                    authorImageUrl = it.authorData.userPhotoURL,
+                                    reviewText = it.comment.commentText,
+                                    karma = 0,
+//                                likes = if(it.comment.likedByMe == 1 && it.comment.myLikeWasSynced == 0) it.comment.likes + 1 else it.comment.likes,
+                                    likes = it.comment.likes,
+                                    likedByUser = it.comment.likedByMe,
+                                    onLikeClick = {
+                                        println("click")
+//                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
+                                        updateLikes(it.comment.commentID)
+                                    },
+                                )
+                            }
+
+                        }
+                    }
                 }
             }
 
@@ -983,7 +1039,7 @@ fun ProfileScreen(
 class ProfileScreenViewModelFactory(val application: Application) : ViewModelProvider.Factory
 {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return ProfileScreenViewModel(application) as T
+        return ProfileScreenViewModel(application, ProfileScreenFirebaseRepository(Firebase.firestore, Firebase.auth)) as T
     }
 }
 

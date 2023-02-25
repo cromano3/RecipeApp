@@ -7,15 +7,18 @@ import androidx.compose.material.icons.outlined.Grade
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
+import com.example.bearrecipebookapp.data.repository.ProfileScreenFirebaseRepository
 import com.example.bearrecipebookapp.data.repository.ProfileScreenRepository
 import com.example.bearrecipebookapp.datamodel.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-class ProfileScreenViewModel(application: Application): ViewModel() {
+class ProfileScreenViewModel(application: Application, private val profileScreenFirebaseRepository: ProfileScreenFirebaseRepository): ViewModel() {
 
     private val repository: ProfileScreenRepository
 
@@ -30,6 +33,25 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
 
     var expToGive: LiveData<Int>
 //    var exp: LiveData<Int>
+
+
+    private val _commentsList = MutableStateFlow<List<AuthorDataWithComment>>(listOf())
+    val commentsList: StateFlow<List<AuthorDataWithComment>>
+        get() = _commentsList
+
+
+
+    private fun getCommentsList(){
+//        job?.cancel()
+//        job =
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                profileScreenFirebaseRepository.getCommentsList().collect {
+                    _commentsList.value = it
+                }
+            }
+        }
+    }
 
     init{
         val appDb = RecipeAppDatabase.getInstance(application)
@@ -513,6 +535,7 @@ class ProfileScreenViewModel(application: Application): ViewModel() {
     }
 
     fun setActiveTab(tabName: String){
+        getCommentsList()
         uiState.update { currentState ->
             currentState.copy(
                 previousTab = currentState.activeTab

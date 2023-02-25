@@ -1,13 +1,11 @@
 package com.example.bearrecipebookapp.ui
 
 import android.app.Application
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
@@ -57,7 +55,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-@OptIn(ExperimentalTextApi::class)
+@OptIn(ExperimentalTextApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun NewDetailsScreen(
     //recipeName: String,
@@ -562,6 +560,7 @@ fun NewDetailsScreen(
                         items(if(commentsList.size <= 4) commentsList.take(3) else commentsList, key = { it.comment.commentID })
                         {
                             ReviewWidget(
+                                modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
                                 authorName = it.authorData.userName,
                                 authorImageUrl = it.authorData.userPhotoURL,
                                 reviewText = it.comment.commentText,
