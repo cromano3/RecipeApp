@@ -49,18 +49,38 @@ class FirebaseRepository(
         .build()
 
 
+    //Delete comment from Firestore
+    suspend fun deleteComment(commentID: String): String{
+        println("try Delete comment")
+
+        var result = "Failed"
+
+        db.collection("reviews").document(commentID).delete()
+            .addOnSuccessListener {
+                println("DocumentSnapshot successfully deleted!")
+                result = "Success"
+            }
+            .addOnFailureListener { e ->
+                println("Error deleting document $e")
+                result = "Failed"
+            }.await()
+
+
+        return result
+    }
+
     //Write comment to Firestore
     suspend fun uploadComment(review: RecipeNameAndReview): String{
         println("try upload comment")
 
         var result = "Failed"
 
-        val commentsCollection = db.collection("comments")
+        val commentsCollection = db.collection("reviews")
 
         val uid = auth.currentUser?.uid
 
         if(uid != null){
-            val querySnapshot = commentsCollection.whereEqualTo("authorUid", uid).limit(1).get().await()
+            val querySnapshot = commentsCollection.whereEqualTo("authorUid", uid).whereEqualTo("recipeName", review.recipeName).limit(1).get().await()
             if(querySnapshot.isEmpty){
                 val newComment = hashMapOf(
                     "recipeName" to review.recipeName,

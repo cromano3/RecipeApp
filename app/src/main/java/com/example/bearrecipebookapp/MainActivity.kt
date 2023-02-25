@@ -236,6 +236,9 @@ fun BearRecipeApp(
                         }
                     },
                     updateLikes = { appViewModel.updateLikes(it) },
+                    deleteReview = { commentID, recipeName ->
+                        appViewModel.deleteReview(commentID, recipeName)
+                                   },
 //                    { navController.navigate("DetailsScreen"){ popUpTo("ProfileScreen"){ inclusive = true } } },
                     onRemoveClick = { favoriteSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },)
             }

@@ -134,6 +134,13 @@ class AppRepository(private val appDao: AppDao) {
         appDao.setReviewAsUnsynced(recipeName, reviewText)
     }
 
+    fun deleteReview(commentID: String){
+        appDao.deleteReview(commentID)
+    }
+
+    fun markReviewAsNotCommented(recipeName: String){
+        appDao.markReviewAsNotCommented(recipeName)
+    }
 
     fun onlineUserType(): Int {
         return appDao.onlineUserType()

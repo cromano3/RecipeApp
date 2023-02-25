@@ -530,6 +530,40 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
         }
     }
 
+
+    fun triggerDeleteReviewAlert(commentID: String, recipeName: String){
+        uiAlertState.update {
+            it.copy(
+                showDeleteReviewAlert = true,
+                recipeNameToDelete = recipeName,
+                commentIDToDelete = commentID
+            )
+        }
+    }
+
+    fun cancelDeleteReviewAlert(){
+        uiAlertState.update {
+            it.copy(
+                showDeleteReviewAlert = false,
+                commentIDToDelete = "",
+                recipeNameToDelete = "",
+            )
+        }
+    }
+
+    fun confirmDeleteReviewAlert(){
+
+        /** DELETE FROM FIRESTORE HERE */
+
+        uiAlertState.update {
+            it.copy(
+                showDeleteReviewAlert = false,
+                commentIDToDelete = "",
+                recipeNameToDelete = "",
+            )
+        }
+    }
+
     suspend fun setDetailsScreenTarget(recipeName: String){
         repository.setDetailsScreenTarget(recipeName)
     }

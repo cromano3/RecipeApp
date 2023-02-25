@@ -106,6 +106,15 @@ interface AppDao {
     @Query("UPDATE recipe_table SET review = :reviewText, is_reviewed = 1, is_review_synced = 0 WHERE recipe_name = :recipeName")
     fun setReviewAsUnsynced(recipeName: String, reviewText: String)
 
+    @Transaction
+    @Query("DELETE FROM comments_table WHERE comment_id = :commentID")
+    fun deleteReview(commentID: String)
+
+
+    @Transaction
+    @Query("UPDATE recipe_table SET is_reviewed = 0, is_review_synced = 0 WHERE recipe_name = :recipeName")
+    fun markReviewAsNotCommented(recipeName: String)
+
 
 
 

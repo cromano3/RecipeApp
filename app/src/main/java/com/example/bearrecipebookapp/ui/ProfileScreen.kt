@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Grade
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Reviews
 import androidx.compose.runtime.*
@@ -47,6 +48,7 @@ import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.repository.ProfileScreenFirebaseRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
+import com.example.bearrecipebookapp.ui.components.BasicAlert
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.ui.components.ReviewWidget
 import com.example.bearrecipebookapp.ui.theme.BearRecipeBookAppTheme
@@ -64,8 +66,8 @@ import kotlinx.coroutines.withContext
 fun ProfileScreen(
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     updateLikes: (String) -> Unit,
+    deleteReview: (String, String) -> Unit,
     onDetailsClick: (String) -> Unit,
-
 ) {
 
     val owner = LocalViewModelStoreOwner.current
@@ -929,18 +931,44 @@ fun ProfileScreen(
                     ) {
                         LazyColumn {
                             items(commentsList, key = { it.comment.commentID }) {
-                                Text(
-                                    text = it.comment.recipeName,
-                                    modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(200, delay = 0))).padding(
-                                        top = 8.dp,
-                                        start = 8.dp,
-                                        bottom = 2.dp
-                                    ),
-                                    fontSize = 18.sp,
-                                    fontFamily = Cabin,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF682300)
-                                )
+                                Row(
+                                    modifier = Modifier
+                                        .animateItemPlacement(
+                                            animationSpec = (TweenSpec(
+                                                200,
+                                                delay = 0
+                                            ))
+                                        )
+                                        .fillMaxWidth()
+                                        .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ){
+                                    Text(
+                                        text = it.comment.recipeName,
+                                        fontSize = 18.sp,
+                                        fontFamily = Cabin,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF682300)
+                                    )
+                                    Surface(Modifier.clickable { profileScreenViewModel.triggerDeleteReviewAlert(it.comment.commentID, it.comment.recipeName) })
+                                    {
+                                        Row{
+                                            Text(
+                                                text = "Delete",
+                                                fontSize = 18.sp,
+                                                fontFamily = Cabin,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Color.Red
+                                            )
+                                            Icon(
+                                                Icons.Outlined.Delete,
+                                                contentDescription = null,
+                                                tint = Color.Red
+                                            )
+                                        }
+                                    }
+                                }
+
 
                                 ReviewWidget(
                                     modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(200, delay = 0))),
@@ -1029,6 +1057,20 @@ fun ProfileScreen(
                             }
                         },
                     )
+                }
+
+                //delete review alert
+                if(uiAlertState.showDeleteReviewAlert) {
+                    BasicAlert(
+                        text = "Are you sure you want to delete your comment?",
+                        confirmButtonText = "Confirm",
+                        cancelButtonText = "Cancel",
+                        onConfirmClick = {
+                            deleteReview(uiAlertState.commentIDToDelete, uiAlertState.recipeNameToDelete)
+                            profileScreenViewModel.confirmDeleteReviewAlert()
+                                         },
+                        onCancelClick = { profileScreenViewModel.cancelDeleteReviewAlert() },
+                        onDismiss = { profileScreenViewModel.cancelDeleteReviewAlert() } )
                 }
             }
         }

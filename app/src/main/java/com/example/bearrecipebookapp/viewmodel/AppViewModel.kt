@@ -653,6 +653,23 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         }
     }
 
+    fun deleteReview(commentID: String, recipeName: String) {
+        viewModelScope.launch {
+
+
+            val result = firebaseRepository.deleteComment(commentID)
+
+            println("delete review result is: $result")
+
+            withContext(Dispatchers.IO) { repository.deleteReview(commentID) }
+            println("mark NOT COMMENTED $recipeName")
+            withContext(Dispatchers.IO) { repository.markReviewAsNotCommented(recipeName) }
+
+
+
+        }
+    }
+
     fun updateLikes(commentID: String) {
 
 //        val myList: MutableList<ReviewWithAuthorDataModel> = mutableListOf()
