@@ -14,7 +14,7 @@ interface CommentScreenDao {
     fun getCommentScreenTarget(): LiveData<RecipeWithIngredientsAndInstructions>
 
     @Transaction
-    @Query("UPDATE recipe_table SET is_reviewed = 1 WHERE recipe_name = :name")
+    @Query("UPDATE recipe_table SET is_reviewed = 1, is_review_synced = 1 WHERE recipe_name = :name")
     fun setReviewAsWritten(name: String)
 
     @Transaction

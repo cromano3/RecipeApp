@@ -251,9 +251,15 @@ fun BearRecipeApp(
             ){
                 CommentScreen(
                     commentScreenData = appUiState.reviewScreenTarget,
-                    onCancelClick = { navController.popBackStack() },
+                    onCancelClick =
+                    {
+                        appViewModel.markAsReviewed()
+                        appViewModel.markReviewAsSynced()
+                        navController.popBackStack()
+                    },
                     onConfirmClick =
                     { recipeName, reviewText ->
+                        appViewModel.markAsReviewed()
                         appViewModel.storeReview(recipeName, reviewText)
                         coroutineScope.launch(Dispatchers.Main) {
                             if(navController.previousBackStackEntry?.destination?.route == "DetailsScreen")   {
@@ -442,6 +448,9 @@ fun BearRecipeApp(
 //                        localUserImageIRL = appUiState.userImageURL,
 //                        onGoBackClick = { navController.popBackStack() },
                         storeRating = { appViewModel.storeRating(it) },
+                        markAsRated = { appViewModel.markAsRated() },
+                        markAsReviewed = { appViewModel.markAsReviewed() },
+                        addedToFavoriteUiUpdate = { appViewModel.addedToFavoriteUiUpdate() },
                         updateLikes = { appViewModel.updateLikes(it) },
                         onMenuAddClick = {
                             appViewModel.updateDetailsScreenUiOnMenuStatus()

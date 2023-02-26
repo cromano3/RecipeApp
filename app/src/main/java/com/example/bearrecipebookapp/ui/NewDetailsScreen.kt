@@ -54,6 +54,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalTextApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -70,13 +71,15 @@ fun NewDetailsScreen(
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
 //    onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
 //    onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    addedToFavoriteUiUpdate: () -> Unit,
+    markAsRated: () -> Unit,
     storeRating: (Int) -> Unit,
+    markAsReviewed: () -> Unit,
     updateLikes: (String) -> Unit,
     onIMadeThisClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onFinishedCookingClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     showAddedToFavoritesSnackBarMessage: (RecipeEntity) -> Unit,
     navigateToCommentScreen: (String) -> Unit,
-
     ) {
 
     val owner = LocalViewModelStoreOwner.current
@@ -656,11 +659,12 @@ fun NewDetailsScreen(
                         onConfirmClick =
                         {
                             if(uiAlertState.isThumbUpSelected || uiAlertState.isThumbDownSelected){
+                                markAsRated()
                                 storeRating(if(uiAlertState.isThumbUpSelected) 1 else 0)
                             }
-                            detailsScreenViewModel.confirmRating(recipeData.recipeEntity)
-
-
+                            coroutineScope.launch {
+                                detailsScreenViewModel.confirmRating(recipeData.recipeEntity)
+                            }
                         },
                         onCancelClick = { detailsScreenViewModel.cancelRatingAlert() },
                         onDismiss = { detailsScreenViewModel.cancelRatingAlert() },
@@ -680,6 +684,7 @@ fun NewDetailsScreen(
                         cancelButtonText = "No",
                         onConfirmClick =
                         {
+                            addedToFavoriteUiUpdate()
                             detailsScreenViewModel.addToFavorite(recipeData.recipeEntity)
                             showAddedToFavoritesSnackBarMessage(recipeData.recipeEntity)
                         },
@@ -697,7 +702,7 @@ fun NewDetailsScreen(
                         cancelButtonText = "No",
                         onConfirmClick =
                         {
-
+                            markAsReviewed()
                             detailsScreenViewModel.confirmShowWriteReviewAlert()
                             navigateToCommentScreen(recipeData.recipeEntity.recipeName)
 
@@ -713,7 +718,11 @@ fun NewDetailsScreen(
 //                            }
 
                         },
-                        onCancelClick = { detailsScreenViewModel.doNotWriteReview(recipeData.recipeEntity) },
+                        onCancelClick =
+                        {
+                            markAsReviewed()
+                            detailsScreenViewModel.doNotWriteReview(recipeData.recipeEntity)
+                        },
                         onDismiss = { detailsScreenViewModel.cancelShowWriteReviewAlert() }
                     )
                 }
