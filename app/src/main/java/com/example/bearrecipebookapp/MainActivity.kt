@@ -240,7 +240,9 @@ fun BearRecipeApp(
                         appViewModel.deleteReview(commentID, recipeName)
                                    },
 //                    { navController.navigate("DetailsScreen"){ popUpTo("ProfileScreen"){ inclusive = true } } },
-                    onRemoveClick = { favoriteSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },)
+                    onRemoveClick = { favoriteSnackBar(it.recipeEntity, scaffoldState, coroutineScope) },
+                    onSettingsClick = { navController.navigate("SettingsScreen") },
+                )
             }
 
             /**Comment Screen*/
@@ -278,6 +280,15 @@ fun BearRecipeApp(
 
             /** Add Recipe Screen */
             composable(route = "AddRecipeScreen"){ AddRecipeScreen() }
+
+            /** Settings Screen */
+            composable(
+                route = "SettingsScreen",
+                enterTransition = { fadeIn(animationSpec = tween(700)) },
+                exitTransition = { fadeOut(animationSpec = tween(700)) }
+                ){
+                SettingsScreen()
+            }
 
             /** Home Screen */
             composable(route = "RecipeScreen",
@@ -561,6 +572,10 @@ fun BearAppBottomBar(
                             navController.popBackStack()
                         }
                         else if (currentRoute == "ProfileScreen") {
+                            navController.popBackStack()
+                        }
+                        else if (currentRoute == "SettingsScreen") {
+                            navController.popBackStack()
                             navController.popBackStack()
                         }
 

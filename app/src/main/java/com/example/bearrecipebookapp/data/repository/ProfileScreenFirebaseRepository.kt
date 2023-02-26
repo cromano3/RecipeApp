@@ -28,6 +28,7 @@ class ProfileScreenFirebaseRepository(
                 cancel()
             }
             if (snapshot != null){
+                println("Success getting comments for profile screen")
 
 
 

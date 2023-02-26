@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Reviews
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -65,6 +66,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun ProfileScreen(
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    onSettingsClick: () -> Unit,
     updateLikes: (String) -> Unit,
     deleteReview: (String, String) -> Unit,
     onDetailsClick: (String) -> Unit,
@@ -153,6 +155,40 @@ fun ProfileScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
+
+                //Settings button
+                Box(modifier = Modifier.padding(16.dp).align(Alignment.TopEnd)){
+                    Surface(
+                        elevation = 8.dp,
+                        modifier = Modifier
+                            .border(
+                                width = 2.dp,
+                                brush = (Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFFd8af84),
+                                        Color(0xFFb15f33)
+                                    ),
+                                    tileMode = TileMode.Mirror
+                                )),
+                                shape = CircleShape
+                            )
+                            .size(36.dp)
+                            .clickable { onSettingsClick() },
+                        shape = CircleShape,
+                        color = Color(0xFF682300)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                Icons.Outlined.Settings,
+                                tint = Color(0xFFd8af84),
+                                modifier = Modifier.size(20.dp),
+                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
+                                contentDescription = null
+                            )
+                        }
+                    }
+
+                }
                 Column(
                     modifier = Modifier.wrapContentSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
