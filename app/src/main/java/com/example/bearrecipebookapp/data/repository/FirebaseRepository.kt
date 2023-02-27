@@ -525,6 +525,7 @@ class FirebaseRepository(
     }
 
     private fun FirebaseUser.toUser(displayName: String?, email: String?) = mapOf(
+        "name" to displayName,
         "display_name" to displayName,
         "email" to email,
         "user_photo" to photoUrl?.toString(),

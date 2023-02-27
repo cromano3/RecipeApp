@@ -177,6 +177,10 @@ fun BearRecipeApp(
                 if(currentScreen == "ProfileScreen"){
                     navController.popBackStack()
                 }
+                if(currentScreen == "SettingsScreen"){
+                    navController.popBackStack()
+                    navController.popBackStack()
+                }
                 navController.navigate("RecipeScreen"){
                     popUpTo(navController.graph.findStartDestination().id) {
                         saveState = true
@@ -287,7 +291,9 @@ fun BearRecipeApp(
                 enterTransition = { fadeIn(animationSpec = tween(700)) },
                 exitTransition = { fadeOut(animationSpec = tween(700)) }
                 ){
-                SettingsScreen()
+                SettingsScreen(
+                    confirmSignInWithGoogle = { appViewModel.confirmSignInWithGoogle() }
+                )
             }
 
             /** Home Screen */
@@ -732,6 +738,21 @@ fun BearAppTopBar(
                 show = true
                 textModifier = Modifier.wrapContentWidth()
                 title = "My Profile"
+                icon = Icons.Outlined.ArrowBack
+                icon2 = Icons.Outlined.Home
+                clickEffectLeft = onBackClick
+                clickEffectRight = onHomeClick
+                showTitle = true
+                showSearchField = false
+                showSearchButton = false
+                showShare = false
+                showIcon = true
+                showIcon2 = true
+            }
+            "SettingsScreen" -> {
+                show = true
+                textModifier = Modifier.wrapContentWidth()
+                title = "Settings"
                 icon = Icons.Outlined.ArrowBack
                 icon2 = Icons.Outlined.Home
                 clickEffectLeft = onBackClick
