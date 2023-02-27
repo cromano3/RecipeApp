@@ -211,7 +211,7 @@ fun SettingsScreen(
                 Surface(
                     Modifier
                         .padding(8.dp)
-                        .clickable { })
+                        .clickable { settingsScreenViewModel.deleteAccount() })
                 {
                     Text(
                         text = "Delete Account",

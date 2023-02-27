@@ -85,6 +85,11 @@ class SettingsScreenViewModel(
                 inputText = textFieldValue
             )
         }
+    }
 
+    fun deleteAccount(){
+        viewModelScope.launch {
+            settingsScreenFirebaseRepository.deleteAccount()
+        }
     }
 }

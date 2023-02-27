@@ -521,6 +521,10 @@ class FirebaseRepository(
         auth.currentUser?.apply {
             val user = toUser(this.displayName, this.email)
             db.collection("users").document(uid).set(user).await()
+            val newEmail = hashMapOf(
+                "email" to email
+            )
+            db.collection("email").add(newEmail).await()
         }
     }
 
