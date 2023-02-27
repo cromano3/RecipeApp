@@ -975,8 +975,8 @@ fun ProfileScreen(
                                                 delay = 0
                                             ))
                                         )
-                                        .fillMaxWidth()
-                                        .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
+                                        .fillMaxWidth().wrapContentHeight()
+                                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ){
                                     Text(
@@ -986,20 +986,21 @@ fun ProfileScreen(
                                         fontWeight = FontWeight.Bold,
                                         color = Color(0xFF682300)
                                     )
-                                    Surface(Modifier.clickable { profileScreenViewModel.triggerDeleteReviewAlert(it.comment.commentID, it.comment.recipeName) })
+                                    Surface(Modifier.fillMaxHeight().clickable { profileScreenViewModel.triggerDeleteReviewAlert(it.comment.commentID, it.comment.recipeName) })
                                     {
-                                        Row{
+                                        Row(Modifier.fillMaxHeight(),
+                                            verticalAlignment = Alignment.CenterVertically){
                                             Text(
                                                 text = "Delete",
                                                 fontSize = 18.sp,
                                                 fontFamily = Cabin,
                                                 fontWeight = FontWeight.Bold,
-                                                color = Color.Red
+                                                color = Color.Black
                                             )
                                             Icon(
                                                 Icons.Outlined.Delete,
                                                 contentDescription = null,
-                                                tint = Color.Red
+                                                tint = Color.Black
                                             )
                                         }
                                     }

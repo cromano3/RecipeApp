@@ -7,15 +7,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -31,11 +29,14 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.repository.SettingsScreenFirebaseRepository
+import com.example.bearrecipebookapp.ui.components.CancelAlertButton
+import com.example.bearrecipebookapp.ui.components.ConfirmAlertButton
 import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.SettingsScreenViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 
 @Composable
 fun SettingsScreen(
@@ -51,6 +52,9 @@ fun SettingsScreen(
         )
 
         val authState by settingsScreenViewModel.authState.observeAsState()
+        val uiAlertState by settingsScreenViewModel.uiAlertState.collectAsState()
+
+        val focusRequester = remember { FocusRequester() }
 
         Surface(Modifier.fillMaxSize()){
             Column()
@@ -215,6 +219,58 @@ fun SettingsScreen(
                         fontFamily = Cabin,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF682300)
+                    )
+                }
+            }
+            Box(Modifier.fillMaxSize()){
+                if(uiAlertState.showChangeDisplayNameAlert){
+                    LaunchedEffect(Unit) {
+                        delay(200)
+                        focusRequester.requestFocus()
+                    }
+
+                    AlertDialog(
+                        onDismissRequest = {
+                            settingsScreenViewModel.cancelChangeDisplayNameAlert()
+                        },
+                        title = {
+                            Text(text = "Enter item: ", color = Color(0xFF682300))
+                        },
+                        text = {
+                            Column {
+                                TextField(
+                                    value = uiAlertState.inputText,
+                                    placeholder = {
+                                        Text(text = uiAlertState.displayName)
+                                    },
+                                    onValueChange = { settingsScreenViewModel.updateInputText(it) },
+                                    modifier = Modifier.focusRequester(focusRequester),
+                                    singleLine = true,
+                                )
+                                Text(
+                                    text = "${uiAlertState.inputText.text.length}/20",
+                                    color = if(uiAlertState.inputText.text.length > 20) Color.Red else Color.Black
+                                )
+                            }
+                        },
+                        buttons = {
+                            Row(
+                                modifier = Modifier
+                                    .padding(all = 8.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+
+                                CancelAlertButton(buttonText = "Cancel") {
+                                    settingsScreenViewModel.cancelChangeDisplayNameAlert()
+                                }
+                                ConfirmAlertButton(buttonText = "Confirm") {
+                                    if(uiAlertState.inputText.text.length < 20 && uiAlertState.inputText.text != "") {
+                                        settingsScreenViewModel.confirmDisplayNameChange()
+                                    }
+                                }
+                            }
+                        }
                     )
                 }
             }

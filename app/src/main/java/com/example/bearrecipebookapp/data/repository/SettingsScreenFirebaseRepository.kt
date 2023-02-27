@@ -44,6 +44,14 @@ class SettingsScreenFirebaseRepository(
 
     }
 
+    fun updateDisplayName(newDisplayName: String) {
+
+        db.collection("users").document(auth.currentUser?.uid ?: "").update("display_name", newDisplayName)
+            .addOnSuccessListener { println("successfully updated display name")  }
+            .addOnFailureListener{ println("failed to update display name") }
+
+    }
+
 
 
 
