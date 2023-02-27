@@ -29,8 +29,10 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.repository.SettingsScreenFirebaseRepository
+import com.example.bearrecipebookapp.ui.components.BasicAlert
 import com.example.bearrecipebookapp.ui.components.CancelAlertButton
 import com.example.bearrecipebookapp.ui.components.ConfirmAlertButton
+import com.example.bearrecipebookapp.ui.components.OneButtonAlert
 import com.example.bearrecipebookapp.ui.theme.Cabin
 import com.example.bearrecipebookapp.viewmodel.SettingsScreenViewModel
 import com.google.firebase.auth.ktx.auth
@@ -41,6 +43,9 @@ import kotlinx.coroutines.delay
 @Composable
 fun SettingsScreen(
     confirmSignInWithGoogle: () -> Unit,
+    confirmReAuthForDeleteAccount: () -> Unit,
+    clearReAuthForDeleteSignInResult: () -> Unit,
+    reAuthForDeleteSignInResult: Boolean,
 ){
     val owner = LocalViewModelStoreOwner.current
 
@@ -211,7 +216,7 @@ fun SettingsScreen(
                 Surface(
                     Modifier
                         .padding(8.dp)
-                        .clickable { settingsScreenViewModel.deleteAccount() })
+                        .clickable { settingsScreenViewModel.triggerReAuthAlert() })
                 {
                     Text(
                         text = "Delete Account",
@@ -223,6 +228,42 @@ fun SettingsScreen(
                 }
             }
             Box(Modifier.fillMaxSize()){
+                if(uiAlertState.showAccountWasDeletedMessage){
+                    OneButtonAlert(
+                        text = "Your account was deleted successfully.",
+                        confirmButtonText = "Ok",
+                        onConfirmClick = { settingsScreenViewModel.cancelAccountWasDeletedMessage() },
+                        onDismiss = { settingsScreenViewModel.cancelAccountWasDeletedMessage() }
+                    )
+                }
+                if(reAuthForDeleteSignInResult){
+                    BasicAlert(
+                        text = "Are you sure you want to delete your account? Your comments will be deleted and you will not be able to use this Google ID to make a new account again.",
+                        confirmButtonText = "Yes I Am Sure",
+                        cancelButtonText = "Cancel",
+                        onConfirmClick =
+                        {
+                            clearReAuthForDeleteSignInResult()
+                            settingsScreenViewModel.confirmDeleteAccount()
+                                         },
+                        onCancelClick = { clearReAuthForDeleteSignInResult() },
+                        onDismiss = { clearReAuthForDeleteSignInResult() }
+                    )
+                }
+                if(uiAlertState.showReAuthAlert){
+                    BasicAlert(
+                        text = "You must Sign in again to authorize account deletion.",
+                        confirmButtonText = "Sign in",
+                        cancelButtonText = "Cancel",
+                        onConfirmClick =
+                        {
+                            settingsScreenViewModel.cancelReAuthAlert()
+                            confirmReAuthForDeleteAccount()
+                        },
+                        onCancelClick = { settingsScreenViewModel.cancelReAuthAlert() },
+                        onDismiss = { settingsScreenViewModel.cancelReAuthAlert() }
+                    )
+                }
                 if(uiAlertState.showChangeDisplayNameAlert){
                     LaunchedEffect(Unit) {
                         delay(200)

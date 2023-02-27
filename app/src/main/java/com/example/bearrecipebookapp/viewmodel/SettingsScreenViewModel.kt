@@ -7,15 +7,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.repository.SettingsScreenFirebaseRepository
+import com.example.bearrecipebookapp.data.repository.SettingsScreenRepository
 import com.example.bearrecipebookapp.datamodel.UiAlertStateSettingsScreenDataModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SettingsScreenViewModel(
     application: Application,
     private val settingsScreenFirebaseRepository: SettingsScreenFirebaseRepository
 ): ViewModel() {
+
+
+    private val repository: SettingsScreenRepository
 
     var authState: LiveData<Int>
 
@@ -24,8 +30,8 @@ class SettingsScreenViewModel(
 
     init {
         val appDb = RecipeAppDatabase.getInstance(application)
-//        val homeScreenDao = appDb.HomeScreenDao()
-//        repository = HomeScreenRepository(homeScreenDao)
+        val settingsScreenDao = appDb.SettingsScreenDao()
+        repository = SettingsScreenRepository(settingsScreenDao)
 
         authState = settingsScreenFirebaseRepository.authState
 
@@ -87,9 +93,88 @@ class SettingsScreenViewModel(
         }
     }
 
-    fun deleteAccount(){
+    fun triggerDeleteAccountAlert(){
+        uiAlertState.update {
+            it.copy(
+                showDeleteAccountAlert = true
+            )
+        }
+    }
+
+    fun triggerReAuthAlert(){
+        uiAlertState.update {
+            it.copy(
+                showReAuthAlert = true
+            )
+        }
+    }
+
+    fun cancelDeleteAccount(){
+        uiAlertState.update {
+            it.copy(
+                showDeleteAccountAlert = false
+            )
+        }
+    }
+
+    fun confirmReAuthBeforeDelete(){
+        uiAlertState.update {
+            it.copy(
+                showReAuthAlert = true
+            )
+        }
+    }
+
+    fun cancelReAuthAlert(){
+        uiAlertState.update {
+            it.copy(
+                showReAuthAlert = false
+            )
+        }
+    }
+
+    fun confirmDeleteAccount(){
         viewModelScope.launch {
-            settingsScreenFirebaseRepository.deleteAccount()
+
+            val deleteResult = settingsScreenFirebaseRepository.deleteAccount()
+
+            if(deleteResult == "Success"){
+                withContext(Dispatchers.IO) { repository.setLocalUserAsNew() }
+
+                uiAlertState.update {
+                    it.copy(
+                        showDeleteAccountAlert = false,
+                        showAccountWasDeletedMessage = true
+                    )
+                }
+            }
+//            else if(deleteResult == "FirebaseAuthRecentLoginRequiredException"){
+//
+//
+//                //show "you need to log in again first to authenticate your account before it can be deleted" message
+//
+//                uiAlertState.update {
+//                    it.copy(
+//                        showDeleteAccountAlert = false
+//                    )
+//                }
+//            }
+            else{
+                println("PROBLEM MESSAGE IS: $deleteResult")
+                uiAlertState.update {
+                    it.copy(
+                        showDeleteAccountAlert = false
+                    )
+                }
+            }
+        }
+    }
+
+    fun cancelAccountWasDeletedMessage(){
+        uiAlertState.update {
+            it.copy(
+                showAccountWasDeletedMessage = false
+            )
         }
     }
 }

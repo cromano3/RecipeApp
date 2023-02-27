@@ -162,6 +162,10 @@ class AppRepository(private val appDao: AppDao) {
         appDao.setUserNickname(name)
     }
 
+    fun setLocalUserAsNew(){
+        appDao.setLocalUserAsNew()
+    }
+
 //    fun setReviewAsWritten(recipeName: String){
 //        coroutineScope.launch(Dispatchers.IO){
 //            commentScreenDao.setReviewAsWritten(recipeName)

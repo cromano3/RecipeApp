@@ -292,7 +292,10 @@ fun BearRecipeApp(
                 exitTransition = { fadeOut(animationSpec = tween(700)) }
                 ){
                 SettingsScreen(
-                    confirmSignInWithGoogle = { appViewModel.confirmSignInWithGoogle() }
+                    confirmSignInWithGoogle = { appViewModel.signInWithGoogle() },
+                    confirmReAuthForDeleteAccount = { appViewModel.confirmReAuthForDeleteAccount() },
+                    reAuthForDeleteSignInResult = appUiState.reAuthForDeleteSuccessful,
+                    clearReAuthForDeleteSignInResult = { appViewModel.clearReAuthForDeleteSignInResult() }
                 )
             }
 

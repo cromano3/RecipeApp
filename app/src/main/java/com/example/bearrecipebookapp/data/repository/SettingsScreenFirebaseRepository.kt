@@ -4,13 +4,10 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class SettingsScreenFirebaseRepository(
@@ -60,9 +57,9 @@ class SettingsScreenFirebaseRepository(
 
     }
 
-    fun deleteAccount() {
+    suspend fun deleteAccount(): String {
 
-        coroutineScope.launch(Dispatchers.IO) {
+//        coroutineScope.launch(Dispatchers.IO) {
 
 
             val user = auth.currentUser
@@ -70,29 +67,49 @@ class SettingsScreenFirebaseRepository(
 
             var reauthResult = "Failed"
 
+            var deleteAccountResult = "Failed"
+
+            var idToken: String? = null
+
             if (userEmail != null) {
-                val credential = GoogleAuthProvider.getCredential(userEmail, null)
 
                 if (user != null) {
-                    user.reauthenticate(credential)
-                        .addOnSuccessListener {
-                            // User has been re-authenticated
-                            reauthResult = "Success"
 
-                        }
-                        .addOnFailureListener { exception ->
-                            // Re-authentication failed
-                            println("failed to RE-AUTH with $exception")
-                        }.await()
-                }
 
-                if(reauthResult == "Success"){
+//                    val r  = user.getIdToken(true).await()
+//
+//                    if (r != null) {
+//                        val credential = GoogleAuthProvider.getCredential(r.token, null)
+//
+//
+//                        user.reauthenticate(credential)
+//                            .addOnSuccessListener {
+//                                // User has been re-authenticated
+//                                reauthResult = "Success"
+//
+//                            }
+//                            .addOnFailureListener { exception ->
+//                                // Re-authentication failed
+//                                println("failed to RE-AUTH with $exception")
+//                            }.await()
+//                    }
+
+
+//                    if (reauthResult == "Success") {
+
+
+
+
+
                     val collectionRef = db.collection("reviews")
                     val query = collectionRef.whereEqualTo("authorUid", user.uid)
 
                     val querySnapshot = query.get().await()
 
-                    if(querySnapshot != null) {
+                    if (querySnapshot != null) {
+                        println("Documents to delete is not null")
+                        println("Documents to delete size: ${querySnapshot.documents.size}")
+
                         for (document in querySnapshot.documents) {
                             document.reference.delete()
                                 .addOnSuccessListener {
@@ -106,20 +123,31 @@ class SettingsScreenFirebaseRepository(
                         }
                     }
 
-                    user.delete()
-                        .addOnSuccessListener {
-                            // User account has been deleted
-                            println("account was deleted Successfully")
-                        }
-                        .addOnFailureListener { exception ->
-                            // Failed to delete user account
-                            println("Could not delete account: $exception")
-                        }.await()
+
+                    try{
+                        user.delete()
+                            .addOnSuccessListener {
+                                // User account has been deleted
+                                println("account was deleted Successfully")
+                                deleteAccountResult = "Success"
+                            }
+                            .addOnFailureListener { exception ->
+                                // Failed to delete user account
+                                deleteAccountResult = exception.message ?: ""
+                                println("Could not delete account: $exception")
+                            }.await()
+                    }
+                    catch(e: Exception){
+                        deleteAccountResult = e.message ?: ""
+                    }
+
+
+//                    }
 
                 }
-
             }
-        }
+            return deleteAccountResult
+//        }
     }
 
 

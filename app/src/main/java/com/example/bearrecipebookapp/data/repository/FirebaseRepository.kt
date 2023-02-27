@@ -77,15 +77,15 @@ class FirebaseRepository(
 
         val commentsCollection = db.collection("reviews")
 
-        val uid = auth.currentUser?.uid
+        val email = auth.currentUser?.email
 
-        if(uid != null){
-            val querySnapshot = commentsCollection.whereEqualTo("authorUid", uid).whereEqualTo("recipeName", review.recipeName).limit(1).get().await()
+        if(email != null){
+            val querySnapshot = commentsCollection.whereEqualTo("authorEmail", email).whereEqualTo("recipeName", review.recipeName).limit(1).get().await()
             if(querySnapshot.isEmpty){
                 val newComment = hashMapOf(
                     "recipeName" to review.recipeName,
                     "reviewText" to review.reviewText,
-                    "authorUid" to uid,
+                    "authorEmail" to email,
                     "likes" to 0,
                     "likedBy" to arrayListOf<String>(),
                     "timestamp" to serverTimestamp()
@@ -132,7 +132,7 @@ class FirebaseRepository(
             else if(auth.currentUser?.uid == null){
                 result = "Null Liker"
             }
-            else if(likedByList.contains(auth.currentUser?.uid)){
+            else if(likedByList.contains(auth.currentUser?.email)){
                 result = "Failed Duplicate Rating"
             }
             else{
@@ -144,7 +144,7 @@ class FirebaseRepository(
 //                    recipeRating = 60.0
 //                }
 //                val timestamp: Any = serverTimestamp()
-                transaction.update(currentRecipeDocument, "ratedBy", FieldValue.arrayUnion(auth.currentUser?.uid))
+                transaction.update(currentRecipeDocument, "ratedBy", FieldValue.arrayUnion(auth.currentUser?.email))
                 transaction.update(currentRecipeDocument, "rating", recipeRating)
 //                transaction.update(currentRecipeDocument, "timestamp", timestamp)
             }
@@ -164,7 +164,7 @@ class FirebaseRepository(
     suspend fun updateLike(likeId: String): String {
 
         val reviewRef = db.collection("reviews").document(likeId)
-        val usersRef = db.collection("users")
+
 
         var result = ""
 
@@ -172,18 +172,11 @@ class FirebaseRepository(
 
             val snapshotReview = transaction.get(reviewRef)
 
-            val authorId = snapshotReview.getString("authorUid") ?: "none"
-
-            val snapshotAuthor = transaction.get(usersRef.document(authorId))
-            val authorRef = usersRef.document(authorId)
-
-
             var commentLikes: Double? = snapshotReview.getDouble("likes")
 
+            val authorEmail = snapshotReview.get("authorEmail")
+
             var likedByList = snapshotReview.get("likedBy") as? List<String> ?: listOf()
-
-            var authorKarma: Double? = snapshotAuthor.getDouble("karma")
-
 
 
             if(commentLikes == null){
@@ -192,24 +185,14 @@ class FirebaseRepository(
             else if(auth.currentUser?.uid == null){
                 result = "Null Liker"
             }
-            else if(likedByList.contains(auth.currentUser?.uid)){
+            else if(likedByList.contains(auth.currentUser?.email)){
                 result = "Failed Duplicate Like"
             }
 
             else{
                 commentLikes += 1
                 transaction.update(reviewRef, "likes", commentLikes)
-                transaction.update(reviewRef, "likedBy", FieldValue.arrayUnion(auth.currentUser?.uid))
-
-                val timestamp: Any = serverTimestamp()
-
-                transaction.update(reviewRef, "timestamp", timestamp)
-
-                if(authorKarma != null){
-                    authorKarma += 1
-                    transaction.update(authorRef, "karma", authorKarma)
-                }
-
+                transaction.update(reviewRef, "likedBy", FieldValue.arrayUnion(auth.currentUser?.email))
             }
 
         }.addOnSuccessListener {
@@ -217,6 +200,26 @@ class FirebaseRepository(
         }.addOnFailureListener { e ->
             result = "Failed with $e"
         }.await()
+
+
+        if(result == "Success"){
+
+        }
+
+        val usersRef = db.collection("users").whereEqualTo("email", )
+
+        val authorEmail = snapshotReview.getString("authorEmail") ?: "none"
+
+        val snapshotAuthor = usersRef.whereEqualTo("email", authorEmail).limit(1).get().getResult().documents[0]
+        val authorRef = snapshotAuthor.reference
+
+        var authorKarma: Double? = snapshotAuthor.getDouble("karma")
+
+        if(authorKarma != null){
+            authorKarma += 1
+            transaction.update(authorRef, "karma", authorKarma)
+        }
+
 
         println("update rating result: $result")
         return result

@@ -184,4 +184,10 @@ interface AppDao {
     fun setUserNickname(name: String)
 
 
+
+    @Transaction
+    @Query("UPDATE user_table SET is_online_user_type = -2")
+    fun setLocalUserAsNew()
+
+
 }

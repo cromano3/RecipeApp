@@ -155,10 +155,33 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         println("in view firebase try")
         val firebaseSignInWithGoogleResponse = firebaseRepository.firebaseSignInWithGoogle(googleCredential)
         println(firebaseSignInWithGoogleResponse)
-        appUiState.update {
-            it.copy(
-                firebaseSignInResult = firebaseSignInWithGoogleResponse
-            )
+
+        if(appUiState.value.reAuthForDelete && firebaseSignInWithGoogleResponse == "ReturningUserSuccess") {
+                appUiState.update {
+                    it.copy(
+                        reAuthForDelete = false,
+                        reAuthForDeleteSuccessful = true,
+                        googleSignInState = ""
+                    )
+                }
+        }
+        else if(appUiState.value.reAuthForDelete){
+            appUiState.update {
+                it.copy(
+                    reAuthForDelete = false,
+                    googleSignInState = ""
+                )
+            }
+        }
+
+        else
+        {
+            appUiState.update {
+                it.copy(
+                    firebaseSignInResult = firebaseSignInWithGoogleResponse,
+                    googleSignInState = ""
+                )
+            }
         }
 
         if(firebaseSignInWithGoogleResponse == "NewUserSuccess" && appUiState.value.userIsOnlineStatus == -2){
@@ -353,6 +376,12 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 //
 //    }
 
+    fun signInWithGoogle(){
+        coroutineScope.launch {
+            googleOneTapSignInOrUp()
+        }
+    }
+
     fun confirmSignInWithGoogle(){
         //if yes try google sign in/up
         signIn()
@@ -362,6 +391,30 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 showSignInAlert = false,
             )
         }
+    }
+
+    fun confirmReAuthForDeleteAccount(){
+
+        coroutineScope.launch {
+
+            appUiState.update {
+                it.copy(
+                    reAuthForDelete = true
+                )
+            }
+            googleOneTapSignInOrUp()
+        }
+
+    }
+
+    fun clearReAuthForDeleteSignInResult(){
+
+        appUiState.update {
+            it.copy(
+                reAuthForDeleteSuccessful = false
+            )
+        }
+
     }
 
     fun dismissSignInWithGoogle(){
