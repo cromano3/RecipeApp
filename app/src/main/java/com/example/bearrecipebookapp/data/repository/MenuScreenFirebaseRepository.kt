@@ -15,6 +15,8 @@ class MenuScreenFirebaseRepository(
 ) {
 
     suspend fun getGlobalRatings(recipeNames: List<String>): MutableList<RecipeNamesWithRatings> {
+
+
         val query = db.collection("recipes").whereIn("recipeName", recipeNames).get().await()
 
         val results: MutableList<RecipeNamesWithRatings> = mutableListOf()

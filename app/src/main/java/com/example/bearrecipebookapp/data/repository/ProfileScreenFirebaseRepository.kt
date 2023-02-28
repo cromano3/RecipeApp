@@ -55,7 +55,7 @@ class ProfileScreenFirebaseRepository(
 
                     val likedByList = comment.get("likedBy") as? List<String> ?: listOf()
 
-                    if(likedByList.contains(auth.currentUser?.uid)){
+                    if(likedByList.contains(auth.currentUser?.email)){
                         likedByMe = 1
                     }
 

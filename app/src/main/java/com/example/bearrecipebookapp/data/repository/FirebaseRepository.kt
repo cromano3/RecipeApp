@@ -165,7 +165,7 @@ class FirebaseRepository(
     //upload local user likes to firestore
     suspend fun updateLike(likeId: String): String {
 
-        var result = ""
+        var result = "Success"
 
         try {
             val reviewRef = db.collection("reviews").document(likeId)
@@ -174,6 +174,8 @@ class FirebaseRepository(
 
 
             var authorEmail = ""
+
+            var duplicate = ""
 
             db.runTransaction { transaction ->
 
@@ -203,7 +205,7 @@ class FirebaseRepository(
                 }
 
             }.addOnSuccessListener {
-                result = "Success"
+
             }.addOnFailureListener { e ->
                 result = "Failed with $e"
             }.await()
@@ -217,15 +219,24 @@ class FirebaseRepository(
 
                 if (authorDocSnapshot != null) {
 
+
                     db.runTransaction { transaction ->
 
                         val snapshotAuthor = transaction.get(authorDocSnapshot.reference)
 
-                        var authorKarma: Double? = snapshotAuthor.getDouble("karma")
+                        //you cant get karma from liking your own comments
+                        if(auth.currentUser?.email != snapshotAuthor.getString("email")) {
 
-                        if(authorKarma != null){
-                            authorKarma += 1
-                            transaction.update(authorDocSnapshot.reference, "karma", authorKarma)
+                            var authorKarma: Double? = snapshotAuthor.getDouble("karma")
+
+                            if (authorKarma != null) {
+                                authorKarma += 1
+                                transaction.update(
+                                    authorDocSnapshot.reference,
+                                    "karma",
+                                    authorKarma
+                                )
+                            }
                         }
 
                     }.addOnSuccessListener {

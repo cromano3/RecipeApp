@@ -24,6 +24,7 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
 
     fun setGlobalRatings(namesWithRatings: MutableList<RecipeNamesWithRatings>) {
         for(item in namesWithRatings){
+            println("SET RATING name ${item.recipeName} rating ${item.rating}")
             menuScreenDao.setGlobalRatings(item.recipeName, item.rating)
         }
     }

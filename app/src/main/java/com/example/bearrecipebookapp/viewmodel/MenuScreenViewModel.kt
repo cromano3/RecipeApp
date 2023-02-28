@@ -33,6 +33,7 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
 
         menuScreenData = repository.menuScreenData
 
+        println("menu screen init")
         getGlobalRatings()
     }
 
@@ -40,10 +41,13 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
         viewModelScope.launch {
             val names = withContext(Dispatchers.IO) { repository.getOnMenuNames() }
 
-            val namesWithRatings = withContext(Dispatchers.IO) { menuScreenFirebaseRepository.getGlobalRatings(names) }
+            if(names.isNotEmpty()) {
+                val namesWithRatings = withContext(Dispatchers.IO) {
+                    menuScreenFirebaseRepository.getGlobalRatings(names)
+                }
 
-            withContext(Dispatchers.IO) { repository.setGlobalRatings(namesWithRatings) }
-
+                withContext(Dispatchers.IO) { repository.setGlobalRatings(namesWithRatings) }
+            }
         }
     }
 
