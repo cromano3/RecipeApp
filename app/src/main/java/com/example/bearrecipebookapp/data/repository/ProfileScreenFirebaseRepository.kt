@@ -4,7 +4,10 @@ import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.AuthorData
 import com.example.bearrecipebookapp.datamodel.AuthorDataWithComment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +24,7 @@ class ProfileScreenFirebaseRepository(
     fun getCommentsList(): Flow<List<AuthorDataWithComment>> = callbackFlow {
 
         println("do get comments")
-        println("auth uid is :" + auth.currentUser?.uid)
+        println("auth Email is :" + auth.currentUser?.email)
         val listener = EventListener<QuerySnapshot> { snapshot, exception ->
             if(exception != null){
                 println("FAILED WITH: $exception")
@@ -45,7 +48,7 @@ class ProfileScreenFirebaseRepository(
                     val commentId = comment.id
                     val thisRecipeName = comment.getString("recipeName")
                     val reviewText = comment.getString("reviewText")
-                    val authorUid = comment.getString("authorUid")
+                    val authorEmail = comment.getString("authorEmail")
                     val likes = comment.getDouble("likes")?.toInt()
 
                     var likedByMe = 0
@@ -59,7 +62,7 @@ class ProfileScreenFirebaseRepository(
                     val thisCommentEntity = CommentsEntity(
                         commentID = commentId,
                         recipeName  = thisRecipeName ?: "",
-                        authorID = authorUid ?: "",
+                        authorID = "",
                         commentText = reviewText ?: "",
                         likes = likes ?: 0,
                         likedByMe = likedByMe,
@@ -71,7 +74,7 @@ class ProfileScreenFirebaseRepository(
 
                 }
 
-                db.collection("users").whereEqualTo(FieldPath.documentId(), auth.currentUser?.uid ?: "").get().addOnSuccessListener {
+                db.collection("users").whereEqualTo("authorEmail", auth.currentUser?.email ?: "").get().addOnSuccessListener {
                     //found author
 
                     for(comment in commentsResult){
@@ -79,7 +82,8 @@ class ProfileScreenFirebaseRepository(
                             AuthorDataWithComment(
                                 AuthorData(
                                     it.documents[0].getString("display_name") ?: "",
-                                    it.documents[0].getString("user_photo") ?: ""
+                                    it.documents[0].getString("user_photo") ?: "",
+                                    karma = it.documents[0].getLong("karma")?.toInt() ?: 0
                                 ),
                                 comment
                             )
@@ -91,7 +95,7 @@ class ProfileScreenFirebaseRepository(
                 }.addOnFailureListener(){
                     //failed to get author
                     for(comment in commentsResult){
-                        result.add(AuthorDataWithComment(AuthorData("", ""), comment))
+                        result.add(AuthorDataWithComment(AuthorData("", "", 0), comment))
                     }
 
                     trySend(result)
@@ -105,7 +109,7 @@ class ProfileScreenFirebaseRepository(
 
         val registration = db
             .collection("reviews")
-            .whereEqualTo("authorUid", auth.currentUser?.uid ?: "")
+            .whereEqualTo("authorEmail", auth.currentUser?.email ?: "")
             .orderBy("likes", Query.Direction.DESCENDING)
             .addSnapshotListener(listener)
 

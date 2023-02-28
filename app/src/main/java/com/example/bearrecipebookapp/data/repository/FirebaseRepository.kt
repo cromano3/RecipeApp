@@ -2,7 +2,9 @@ package com.example.bearrecipebookapp.data.repository
 
 import android.app.Application
 import com.example.bearrecipebookapp.data.entity.CommentsEntity
-import com.example.bearrecipebookapp.datamodel.*
+import com.example.bearrecipebookapp.datamodel.FirebaseResult
+import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
+import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -163,63 +165,81 @@ class FirebaseRepository(
     //upload local user likes to firestore
     suspend fun updateLike(likeId: String): String {
 
-        val reviewRef = db.collection("reviews").document(likeId)
-
-
         var result = ""
 
-        db.runTransaction { transaction ->
-
-            val snapshotReview = transaction.get(reviewRef)
-
-            var commentLikes: Double? = snapshotReview.getDouble("likes")
-
-            val authorEmail = snapshotReview.get("authorEmail")
-
-            var likedByList = snapshotReview.get("likedBy") as? List<String> ?: listOf()
+        try {
+            val reviewRef = db.collection("reviews").document(likeId)
 
 
-            if(commentLikes == null){
-                result = "Null Likes"
+
+
+            var authorEmail = ""
+
+            db.runTransaction { transaction ->
+
+                val snapshotReview = transaction.get(reviewRef)
+
+                var commentLikes: Double? = snapshotReview.getDouble("likes")
+
+                authorEmail = snapshotReview.getString("authorEmail") ?: ""
+
+                var likedByList = snapshotReview.get("likedBy") as? List<String> ?: listOf()
+
+
+                if (commentLikes == null) {
+                    result = "Null Likes"
+                } else if (auth.currentUser?.uid == null) {
+                    result = "Null Liker"
+                } else if (likedByList.contains(auth.currentUser?.email)) {
+                    result = "Failed Duplicate Like"
+                } else {
+                    commentLikes += 1
+                    transaction.update(reviewRef, "likes", commentLikes)
+                    transaction.update(
+                        reviewRef,
+                        "likedBy",
+                        FieldValue.arrayUnion(auth.currentUser?.email)
+                    )
+                }
+
+            }.addOnSuccessListener {
+                result = "Success"
+            }.addOnFailureListener { e ->
+                result = "Failed with $e"
+            }.await()
+
+
+            if (result == "Success") {
+
+                val query =
+                    db.collection("users").whereEqualTo("email", authorEmail).limit(1).get().await()
+                val authorDocSnapshot = query.documents[0]
+
+                if (authorDocSnapshot != null) {
+
+                    db.runTransaction { transaction ->
+
+                        val snapshotAuthor = transaction.get(authorDocSnapshot.reference)
+
+                        var authorKarma: Double? = snapshotAuthor.getDouble("karma")
+
+                        if(authorKarma != null){
+                            authorKarma += 1
+                            transaction.update(authorDocSnapshot.reference, "karma", authorKarma)
+                        }
+
+                    }.addOnSuccessListener {
+                        result = "Success"
+                    }.addOnFailureListener {
+                        result = "Failed to update author karma"
+                    }.await()
+                }
+
             }
-            else if(auth.currentUser?.uid == null){
-                result = "Null Liker"
-            }
-            else if(likedByList.contains(auth.currentUser?.email)){
-                result = "Failed Duplicate Like"
-            }
-
-            else{
-                commentLikes += 1
-                transaction.update(reviewRef, "likes", commentLikes)
-                transaction.update(reviewRef, "likedBy", FieldValue.arrayUnion(auth.currentUser?.email))
-            }
-
-        }.addOnSuccessListener {
-            result = "Success"
-        }.addOnFailureListener { e ->
-            result = "Failed with $e"
-        }.await()
-
-
-        if(result == "Success"){
-
         }
-
-        val usersRef = db.collection("users").whereEqualTo("email", )
-
-        val authorEmail = snapshotReview.getString("authorEmail") ?: "none"
-
-        val snapshotAuthor = usersRef.whereEqualTo("email", authorEmail).limit(1).get().getResult().documents[0]
-        val authorRef = snapshotAuthor.reference
-
-        var authorKarma: Double? = snapshotAuthor.getDouble("karma")
-
-        if(authorKarma != null){
-            authorKarma += 1
-            transaction.update(authorRef, "karma", authorKarma)
+        catch(e: Exception){
+            println("failed to update comment with: $e")
         }
-
 
         println("update rating result: $result")
         return result
@@ -386,34 +406,34 @@ class FirebaseRepository(
 
     }
 
-    suspend fun getAuthorsData(commentsList: MutableList<CommentsEntity>): MutableList<AuthorDataWithComment> {
-
-        val reviewsCollection = db.collection("users")
-        val querySnapshot = reviewsCollection.get().await()
-
-        val resultAuthorDataWithComment: MutableList<AuthorDataWithComment> = mutableListOf()
-
-        if (querySnapshot != null) {
-            for(comment in commentsList){
-                for (user in querySnapshot.documents) {
-                    if(comment.authorID == user.id) {
-
-                        /** can get karma values here */
-                        val userName = user.getString("display_name")  ?: ""
-                        val userPhotoURL = user.getString("user_photo") ?: ""
-
-
-                        resultAuthorDataWithComment.add(AuthorDataWithComment(AuthorData(userName, userPhotoURL), comment))
-
-                        break
-                    }
-                }
-            }
-        }
-
-        return resultAuthorDataWithComment
-
-    }
+//    suspend fun getAuthorsData(commentsList: MutableList<CommentsEntity>): MutableList<AuthorDataWithComment> {
+//
+//        val reviewsCollection = db.collection("users")
+//        val querySnapshot = reviewsCollection.get().await()
+//
+//        val resultAuthorDataWithComment: MutableList<AuthorDataWithComment> = mutableListOf()
+//
+//        if (querySnapshot != null) {
+//            for(comment in commentsList){
+//                for (user in querySnapshot.documents) {
+//                    if(comment.authorID == user.id) {
+//
+//                        /** can get karma values here */
+//                        val userName = user.getString("display_name")  ?: ""
+//                        val userPhotoURL = user.getString("user_photo") ?: ""
+//
+//
+//                        resultAuthorDataWithComment.add(AuthorDataWithComment(AuthorData(userName, userPhotoURL), comment))
+//
+//                        break
+//                    }
+//                }
+//            }
+//        }
+//
+//        return resultAuthorDataWithComment
+//
+//    }
 
 //    suspend fun getAuthorData(commentsList: MutableList<CommentsEntity>): AuthorData {
 //
@@ -444,22 +464,22 @@ class FirebaseRepository(
         return auth.currentUser
     }
 
-    suspend fun getUserData(uid: String): AuthorData{
-        val userDoc = db.collection("users").document(uid).get().await()
-        var userData: AuthorData = AuthorData("", "")
-
-        if(userDoc != null){
-            val userName = userDoc.getString("display_name")
-            val userPhotoURL = userDoc.getString("user_photo")
-
-            userData = AuthorData(userName ?: "", userPhotoURL ?: "")
-        }
-
-        return userData
-
-
-
-    }
+//    suspend fun getUserData(uid: String): AuthorData{
+//        val userDoc = db.collection("users").document(uid).get().await()
+//        var userData: AuthorData = AuthorData("", "")
+//
+//        if(userDoc != null){
+//            val userName = userDoc.getString("display_name")
+//            val userPhotoURL = userDoc.getString("user_photo")
+//
+//            userData = AuthorData(userName ?: "", userPhotoURL ?: "")
+//        }
+//
+//        return userData
+//
+//
+//
+//    }
 
 
 

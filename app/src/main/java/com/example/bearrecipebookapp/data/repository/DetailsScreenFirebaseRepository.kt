@@ -91,7 +91,7 @@ class DetailsScreenFirebaseRepository(
                         val commentId = comment.id
                         val thisRecipeName = comment.getString("recipeName")
                         val reviewText = comment.getString("reviewText")
-                        val authorUid = comment.getString("authorUid")
+                        val authorEmail = comment.getString("authorEmail")
                         val likes = comment.getDouble("likes")?.toInt()
 
                         var likedByMe = 0
@@ -105,7 +105,7 @@ class DetailsScreenFirebaseRepository(
                         val thisCommentEntity = CommentsEntity(
                             commentID = commentId,
                             recipeName  = thisRecipeName ?: "",
-                            authorID = authorUid ?: "",
+                            authorID = "",
                             commentText = reviewText ?: "",
                             likes = likes ?: 0,
                             likedByMe = likedByMe,
@@ -113,13 +113,14 @@ class DetailsScreenFirebaseRepository(
                             timestamp = ""
                         )
 
-                        db.collection("users").whereEqualTo(FieldPath.documentId(), authorUid).get().addOnSuccessListener {
+                        db.collection("users").whereEqualTo("authorEmail", authorEmail).get().addOnSuccessListener {
                             //found author
                             result.add(
                                 AuthorDataWithComment(
                                     AuthorData(
                                         it.documents[0].getString("display_name") ?: "",
-                                    it.documents[0].getString("user_photo") ?: ""
+                                    it.documents[0].getString("user_photo") ?: "",
+                                        karma = it.documents[0].getLong("karma")?.toInt() ?: 0
                                     ),
                                     thisCommentEntity
                                 )
@@ -133,7 +134,7 @@ class DetailsScreenFirebaseRepository(
                             //failed to get author
                             result.add(
                                 AuthorDataWithComment(
-                                    AuthorData("", ""),
+                                    AuthorData("", "", 0),
                                     thisCommentEntity
                                 )
                             )
