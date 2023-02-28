@@ -321,7 +321,7 @@ fun HomeScreen(
                         AlertDialog(
                             onDismissRequest = { dismissSignInWithGoogle() },
                             text = {
-                                Column
+                                Column(Modifier.width(200.dp),)
                                 {
                                     Text(text =
                                     buildAnnotatedString {
@@ -330,7 +330,11 @@ fun HomeScreen(
                                             append("ratings and reviews system")
                                         }
                                         append(" please sign in!")
-                                    })
+                                    },
+                                        modifier = Modifier.padding(bottom = 16.dp),
+                                        color = Color(0xFF682300),
+                                        fontSize = 18.sp,
+                                        textAlign = TextAlign.Center)
                                     Row(
                                         Modifier.width(200.dp),
                                         horizontalArrangement = Arrangement.Center

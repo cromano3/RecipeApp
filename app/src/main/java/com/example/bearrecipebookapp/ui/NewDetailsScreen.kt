@@ -593,22 +593,6 @@ fun NewDetailsScreen(
                                     }
                                 }
                             }
-                            Spacer(
-                                Modifier
-                                    .height(2.dp)
-                                    .fillMaxWidth()
-                                    .border(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            colors = listOf(
-                                                Color(0xFFd8af84),
-                                                Color(0xFFb15f33)
-                                            ),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                        shape = RectangleShape
-                                    ),
-                            )
                         }
                     }
 
