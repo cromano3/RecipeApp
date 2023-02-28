@@ -3,19 +3,18 @@ package com.example.bearrecipebookapp.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
+import com.example.bearrecipebookapp.data.repository.MenuScreenFirebaseRepository
 import com.example.bearrecipebookapp.data.repository.MenuScreenRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.UiAlertStateMenuScreenDataModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
-class MenuScreenViewModel(application: Application): ViewModel() {
+class MenuScreenViewModel(application: Application, private val menuScreenFirebaseRepository: MenuScreenFirebaseRepository): ViewModel() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -33,6 +32,19 @@ class MenuScreenViewModel(application: Application): ViewModel() {
         repository = MenuScreenRepository(menuScreenDao)
 
         menuScreenData = repository.menuScreenData
+
+        getGlobalRatings()
+    }
+
+    private fun getGlobalRatings(){
+        viewModelScope.launch {
+            val names = withContext(Dispatchers.IO) { repository.getOnMenuNames() }
+
+            val namesWithRatings = withContext(Dispatchers.IO) { menuScreenFirebaseRepository.getGlobalRatings(names) }
+
+            withContext(Dispatchers.IO) { repository.setGlobalRatings(namesWithRatings) }
+
+        }
     }
 
     fun triggerCompletedAlert(recipe: RecipeWithIngredientsAndInstructions){

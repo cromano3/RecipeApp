@@ -3,6 +3,7 @@ package com.example.bearrecipebookapp.data.repository
 import androidx.lifecycle.LiveData
 import com.example.bearrecipebookapp.data.dao.MenuScreenDao
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
+import com.example.bearrecipebookapp.datamodel.RecipeNamesWithRatings
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,16 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
     var menuScreenData: LiveData<List<RecipeWithIngredientsAndInstructions>> = menuScreenDao.getData()
 
 
+
+    fun getOnMenuNames(): List<String>{
+        return menuScreenDao.getOnMenuNames()
+    }
+
+    fun setGlobalRatings(namesWithRatings: MutableList<RecipeNamesWithRatings>) {
+        for(item in namesWithRatings){
+            menuScreenDao.setGlobalRatings(item.recipeName, item.rating)
+        }
+    }
 
     suspend fun addExpToGive(expToGive: Int){
         menuScreenDao.addExpToGive(expToGive)

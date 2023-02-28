@@ -130,7 +130,7 @@ fun ReviewWidget(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold)
                     Text(
-                        if (karma > 0) "Karma $karma" else "",
+                        if (karma > 0) "Karma: $karma" else "",
                         color = Color(0xFFd8af84),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Normal)

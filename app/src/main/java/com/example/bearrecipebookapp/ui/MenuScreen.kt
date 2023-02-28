@@ -42,12 +42,16 @@ import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.annotatedstrings.confirmCompletedCookingAnoString
 import com.example.bearrecipebookapp.data.annotatedstrings.confirmRemoveMenuAnoString
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
+import com.example.bearrecipebookapp.data.repository.MenuScreenFirebaseRepository
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.ui.components.AnnotatedStringAlert
 import com.example.bearrecipebookapp.ui.components.BasicAlert
 import com.example.bearrecipebookapp.ui.components.RecipeCard
 import com.example.bearrecipebookapp.ui.components.ThumbsRatingAlert
 import com.example.bearrecipebookapp.viewmodel.MenuScreenViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -343,6 +347,7 @@ class MenuScreenViewModelFactory(
 
         return MenuScreenViewModel(
             application,
+            MenuScreenFirebaseRepository(application, Firebase.firestore, Firebase.auth)
             //  recipeName
         ) as T
     }

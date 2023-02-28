@@ -14,6 +14,14 @@ interface MenuScreenDao {
     fun getData(): LiveData<List<RecipeWithIngredientsAndInstructions>>
 
     @Transaction
+    @Query("SELECT recipe_name FROM recipe_table WHERE on_menu > 0")
+    fun getOnMenuNames(): List<String>
+
+    @Transaction
+    @Query("UPDATE recipe_table SET global_rating = :rating WHERE recipe_name = :recipeName")
+    fun setGlobalRatings(recipeName: String, rating: Int)
+
+    @Transaction
     @Query("UPDATE recipe_table SET is_shopping_filter = 1")
     fun cleanShoppingFilters()
 

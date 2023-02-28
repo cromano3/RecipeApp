@@ -567,7 +567,7 @@ fun NewDetailsScreen(
                                 authorName = it.authorData.userName,
                                 authorImageUrl = it.authorData.userPhotoURL,
                                 reviewText = it.comment.commentText,
-                                karma = 0,
+                                karma = it.authorData.karma,
 //                                likes = if(it.comment.likedByMe == 1 && it.comment.myLikeWasSynced == 0) it.comment.likes + 1 else it.comment.likes,
                                 likes = it.comment.likes,
                                 likedByUser = it.comment.likedByMe,
