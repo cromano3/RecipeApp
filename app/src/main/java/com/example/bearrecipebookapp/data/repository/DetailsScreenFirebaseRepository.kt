@@ -8,6 +8,7 @@ import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.AuthorData
 import com.example.bearrecipebookapp.datamodel.AuthorDataWithComment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,25 @@ class DetailsScreenFirebaseRepository(
     private val recipeNameLiveData = MutableLiveData<String>()
 //    private val commentResultLimit = MutableLiveData<Int>()
 
+
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+
+    private val _authState = MutableLiveData<Int>()
+    val authState: LiveData<Int>
+        get() = _authState
+
+
+
+    init {
+        auth.addAuthStateListener { auth ->
+            if (auth.currentUser != null) {
+                _authState.value = 1
+            } else {
+                _authState.value = 0
+            }
+        }
+    }
 
     val globalRatingFirebaseLiveData: LiveData<Int> = MediatorLiveData<Int>().apply {
         addSource(recipeNameLiveData) { recipeName ->
@@ -39,6 +58,10 @@ class DetailsScreenFirebaseRepository(
     fun setRecipeName(recipeName: String) {
         println("set name to $recipeName")
         recipeNameLiveData.postValue(recipeName)
+    }
+
+    fun currentUser(): FirebaseUser? {
+        return auth.currentUser
     }
 
 //    fun setCommentResultLimit(limit: Int) {

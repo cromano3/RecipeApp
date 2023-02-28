@@ -32,8 +32,8 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -321,52 +321,64 @@ fun HomeScreen(
                         AlertDialog(
                             onDismissRequest = { dismissSignInWithGoogle() },
                             text = {
-                                Row(Modifier.width(200.dp),
-                                horizontalArrangement = Arrangement.Center)
+                                Column
                                 {
-                                    Surface(
-                                        modifier = Modifier.size(150.dp),
-                                        shape = RoundedCornerShape(50.dp)
-                                    ) {
-                                        //image box
-                                        Box(
-                                            modifier = Modifier
-                                                .size(150.dp)
-                                                .border(
-                                                    width = 2.dp,
-                                                    brush = (Brush.verticalGradient(
-                                                        colors = listOf(
-                                                            Color(0xFFFFFFFF),
-                                                            Color(0xFFb15f33),
-                                                            Color(0xFFb15f33),
-                                                            Color(0xFFb15f33)
-                                                        ),
-                                                        tileMode = TileMode.Mirror
-                                                    )),
-                                                    shape = RoundedCornerShape(50.dp)
-                                                )
-                                                .background(
-                                                    color =
-//                                Color(0xFFd8af84)
-                                                    Color(0xFF682300)
-                                                ),
-                                            contentAlignment = Alignment.Center,
+                                    Text(text =
+                                    buildAnnotatedString {
+                                        append("Welcome! To participate in the ")
+                                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                            append("ratings and reviews system")
+                                        }
+                                        append(" please sign in!")
+                                    })
+                                    Row(
+                                        Modifier.width(200.dp),
+                                        horizontalArrangement = Arrangement.Center
+                                    )
+                                    {
+                                        Surface(
+                                            modifier = Modifier.size(150.dp),
+                                            shape = RoundedCornerShape(50.dp)
                                         ) {
-                                            Image(
-
-                                                painter = painterResource(R.drawable.chef),
-                                                contentScale = ContentScale.Fit,
-                                                alignment = Alignment.Center,
-                                                contentDescription = null,
+                                            //image box
+                                            Box(
                                                 modifier = Modifier
-                                                    .height(90.dp)
-                                                    .width(120.dp),
-                                                colorFilter = ColorFilter.tint(Color(0xFFd8af84))
-                                            )
+                                                    .size(150.dp)
+                                                    .border(
+                                                        width = 2.dp,
+                                                        brush = (Brush.verticalGradient(
+                                                            colors = listOf(
+                                                                Color(0xFFFFFFFF),
+                                                                Color(0xFFb15f33),
+                                                                Color(0xFFb15f33),
+                                                                Color(0xFFb15f33)
+                                                            ),
+                                                            tileMode = TileMode.Mirror
+                                                        )),
+                                                        shape = RoundedCornerShape(50.dp)
+                                                    )
+                                                    .background(
+                                                        color =
+//                                Color(0xFFd8af84)
+                                                        Color(0xFF682300)
+                                                    ),
+                                                contentAlignment = Alignment.Center,
+                                            ) {
+                                                Image(
+
+                                                    painter = painterResource(R.drawable.chef),
+                                                    contentScale = ContentScale.Fit,
+                                                    alignment = Alignment.Center,
+                                                    contentDescription = null,
+                                                    modifier = Modifier
+                                                        .height(90.dp)
+                                                        .width(120.dp),
+                                                    colorFilter = ColorFilter.tint(Color(0xFFd8af84))
+                                                )
+                                            }
                                         }
                                     }
                                 }
-                                
                             },
                             buttons = {
                                 Column(){

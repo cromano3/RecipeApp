@@ -58,6 +58,7 @@ import kotlinx.coroutines.Dispatchers
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MenuScreen(
+    userIsOnlineStatus: Int,
     onDetailsClick: (String) -> Unit,
     onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onAddedToFavoriteFromAlertClick: (RecipeEntity) -> Unit,
@@ -124,7 +125,7 @@ fun MenuScreen(
                                 onFavoriteClick(it)
                             },
                             onRemoveClick = { menuScreenViewModel.triggerRemoveAlert(it) },
-                            onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(it) },
+                            onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(it, userIsOnlineStatus) },
                             onDetailsClick = {
 
                                 onDetailsClick(it.recipeEntity.recipeName)

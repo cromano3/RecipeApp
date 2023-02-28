@@ -40,6 +40,8 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
     val uiAlertState = MutableStateFlow(UiAlertStateDetailsScreenDataModel())
 
+    var authState: LiveData<Int>
+
 //    val uiState = MutableStateFlow(DetailsScreenUiState())
 
     ////////////////
@@ -91,6 +93,8 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
         globalRatingFirebaseLiveData = detailsScreenFirebaseRepository.globalRatingFirebaseLiveData
 
         getCommentsList(recipeName, 4)
+
+        authState = detailsScreenFirebaseRepository.authState
 
 
 
@@ -216,29 +220,38 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
     fun confirmCompletedAlert(recipeEntity: RecipeEntity){
 
+        val isAuthed = detailsScreenFirebaseRepository.currentUser()
 
-        if(recipeEntity.isRated == 0) {
-            uiAlertState.update { currentState ->
-                currentState.copy(
-                    showCompletedAlert = false,
-                    showRatingAlert = true,
-                )
-            }
-        }
-        else if(recipeEntity.userRating == 1 && recipeEntity.isFavorite == 0){
-            uiAlertState.update { currentState ->
-                currentState.copy(
-                    showCompletedAlert = false,
-                    showFavoriteAlert = true,
-                )
-            }
-        }
-        else if(recipeEntity.isReviewed == 0){
-            uiAlertState.update { currentState ->
-                currentState.copy(
-                    showCompletedAlert = false,
-                    showLeaveReviewAlert = true,
-                )
+
+        if(isAuthed != null) {
+
+            if (recipeEntity.isRated == 0) {
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showCompletedAlert = false,
+                        showRatingAlert = true,
+                    )
+                }
+            } else if (recipeEntity.userRating == 1 && recipeEntity.isFavorite == 0) {
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showCompletedAlert = false,
+                        showFavoriteAlert = true,
+                    )
+                }
+            } else if (recipeEntity.isReviewed == 0) {
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showCompletedAlert = false,
+                        showLeaveReviewAlert = true,
+                    )
+                }
+            } else {
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showCompletedAlert = false,
+                    )
+                }
             }
         }
         else{

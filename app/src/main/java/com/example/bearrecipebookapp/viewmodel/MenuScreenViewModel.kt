@@ -47,9 +47,10 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
         }
     }
 
-    fun triggerCompletedAlert(recipe: RecipeWithIngredientsAndInstructions){
+    fun triggerCompletedAlert(recipe: RecipeWithIngredientsAndInstructions, userIsOnlineStatus: Int){
         uiAlertState.update { currentState ->
             currentState.copy(
+                userIsOnlineStatus = userIsOnlineStatus,
                 showCompletedAlert = true,
                 recipe = recipe
             )
@@ -66,29 +67,38 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
 
     fun confirmCompletedAlert(recipeEntity: RecipeEntity){
 
+        val isAuthed = menuScreenFirebaseRepository.currentUser()
 
-        if(recipeEntity.isRated == 0) {
-            uiAlertState.update { currentState ->
-                currentState.copy(
-                    showCompletedAlert = false,
-                    showRatingAlert = true,
-                )
-            }
-        }
-        else if(recipeEntity.userRating == 1 && recipeEntity.isFavorite == 0){
-            uiAlertState.update { currentState ->
-                currentState.copy(
-                    showCompletedAlert = false,
-                    showFavoriteAlert = true,
-                )
-            }
-        }
-        else if(recipeEntity.isReviewed == 0){
-            uiAlertState.update { currentState ->
-                currentState.copy(
-                    showCompletedAlert = false,
-                    showLeaveReviewAlert = true,
-                )
+
+        if(isAuthed != null) {
+
+            if (recipeEntity.isRated == 0) {
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showCompletedAlert = false,
+                        showRatingAlert = true,
+                    )
+                }
+            } else if (recipeEntity.userRating == 1 && recipeEntity.isFavorite == 0) {
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showCompletedAlert = false,
+                        showFavoriteAlert = true,
+                    )
+                }
+            } else if (recipeEntity.isReviewed == 0) {
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showCompletedAlert = false,
+                        showLeaveReviewAlert = true,
+                    )
+                }
+            } else {
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showCompletedAlert = false,
+                    )
+                }
             }
         }
         else{

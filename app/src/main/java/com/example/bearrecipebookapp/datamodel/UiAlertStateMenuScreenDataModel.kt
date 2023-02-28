@@ -3,6 +3,7 @@ package com.example.bearrecipebookapp.datamodel
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
 
 data class UiAlertStateMenuScreenDataModel(
+    val userIsOnlineStatus: Int = 0,
     val showRemoveAlert: Boolean = false,
     val showCompletedAlert: Boolean = false,
     val showAddRecipeAlert: Boolean = false,

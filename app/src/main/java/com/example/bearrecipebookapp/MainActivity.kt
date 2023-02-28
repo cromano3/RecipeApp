@@ -358,6 +358,7 @@ fun BearRecipeApp(
             ){
                 //Weekly menu screen
                 MenuScreen(
+                    userIsOnlineStatus = appUiState.userIsOnlineStatus,
                     onDetailsClick = {
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
@@ -467,6 +468,7 @@ fun BearRecipeApp(
 //                        localUserNickName = appUiState.userNickname,
 //                        localUserImageIRL = appUiState.userImageURL,
 //                        onGoBackClick = { navController.popBackStack() },
+                        confirmSignInWithGoogle = { appViewModel.signInWithGoogle() },
                         storeRating = { appViewModel.storeRating(it) },
                         markAsRated = { appViewModel.markAsRated() },
                         markAsReviewed = { appViewModel.markAsReviewed() },

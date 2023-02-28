@@ -63,7 +63,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 )
             }
 
-            if(localOnlineUserType == 0){
+            if(localOnlineUserType == 0 || localOnlineUserType == -1){
                 //they are offline user do nothing
             }
             else if(localOnlineUserType == -2){
@@ -184,7 +184,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             }
         }
 
-        if(firebaseSignInWithGoogleResponse == "NewUserSuccess" && appUiState.value.userIsOnlineStatus == -2){
+        if(firebaseSignInWithGoogleResponse == "NewUserSuccess"){
             repository.setOnlineUserType(1)
             appUiState.update {
                 it.copy(
@@ -192,15 +192,13 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 )
             }
         }
-        else if(firebaseSignInWithGoogleResponse == "ReturningUserSuccess" && appUiState.value.userIsOnlineStatus == -2){
+        else if(firebaseSignInWithGoogleResponse == "ReturningUserSuccess"){
             repository.setOnlineUserType(1)
             appUiState.update {
                 it.copy(
                     userIsOnlineStatus = 1
                 )
             }
-        }else if((firebaseSignInWithGoogleResponse == "NewUserSuccess" && appUiState.value.userIsOnlineStatus == 1)
-            || (firebaseSignInWithGoogleResponse == "ReturningUserSuccess" && appUiState.value.userIsOnlineStatus == 1)){
             dataSyncUploads()
         }
     }
@@ -420,12 +418,12 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     fun dismissSignInWithGoogle(){
         if(appUiState.value.userIsOnlineStatus == -2) {
 
-            repository.setOnlineUserType(-1)
+            repository.setOnlineUserType(0)
 
             appUiState.update {
                 it.copy(
                     showSignInAlert = false,
-                    userIsOnlineStatus = -1
+                    userIsOnlineStatus = 0
                 )
             }
 

@@ -3,6 +3,7 @@ package com.example.bearrecipebookapp.data.repository
 import android.app.Application
 import com.example.bearrecipebookapp.datamodel.RecipeNamesWithRatings
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -27,5 +28,9 @@ class MenuScreenFirebaseRepository(
         }
 
         return results
+    }
+
+    fun currentUser(): FirebaseUser? {
+        return auth.currentUser
     }
 }
