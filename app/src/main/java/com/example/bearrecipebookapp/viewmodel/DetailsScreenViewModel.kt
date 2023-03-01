@@ -59,9 +59,17 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 //        job?.cancel()
 //        job =
         viewModelScope.launch {
-            withContext(Dispatchers.IO){ detailsScreenFirebaseRepository.getCommentsList(recipeName, limit).collect {
-                _commentsList.value = it
+
+            val isAuthed = withContext(Dispatchers.IO) { detailsScreenFirebaseRepository.currentUser() }
+
+            if(isAuthed != null) {
+
+                withContext(Dispatchers.IO) {
+                    detailsScreenFirebaseRepository.getCommentsList(recipeName, limit).collect {
+                        _commentsList.value = it
+                    }
                 }
+
             }
         }
     }

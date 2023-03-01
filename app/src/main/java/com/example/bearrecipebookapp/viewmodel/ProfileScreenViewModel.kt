@@ -45,11 +45,17 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
 //        job?.cancel()
 //        job =
         viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                profileScreenFirebaseRepository.getCommentsList().collect {
-                    _commentsList.value = it
+
+            val isAuthed = withContext(Dispatchers.IO) { profileScreenFirebaseRepository.currentUser() }
+
+            if(isAuthed != null) {
+                withContext(Dispatchers.IO) {
+                    profileScreenFirebaseRepository.getCommentsList().collect {
+                        _commentsList.value = it
+                    }
                 }
             }
+
         }
     }
 

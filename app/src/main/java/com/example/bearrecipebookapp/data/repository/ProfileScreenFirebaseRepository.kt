@@ -4,6 +4,7 @@ import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.AuthorData
 import com.example.bearrecipebookapp.datamodel.AuthorDataWithComment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -20,6 +21,9 @@ class ProfileScreenFirebaseRepository(
 
 
 
+    fun currentUser(): FirebaseUser? {
+        return auth.currentUser
+    }
 
     fun getCommentsList(): Flow<List<AuthorDataWithComment>> = callbackFlow {
 
