@@ -223,7 +223,7 @@ class FirebaseRepository(
             if (result == "Success") {
 
                 val query =
-                    db.collection("users").whereEqualTo("email", authorEmail).limit(1).get().await()
+                    db.collection("users").whereEqualTo("email", authorEmail).whereNotEqualTo("archived", "true").limit(1).get().await()
                 val authorDocSnapshot = query.documents[0]
 
                 if (authorDocSnapshot != null) {
@@ -547,8 +547,39 @@ class FirebaseRepository(
             println("is new user? $isNewUser")
             if (isNewUser) {
                 println("in is new")
-                addUserToFirestore()
-                "NewUserSuccess"
+
+                val email = authResult.user?.email
+
+                if (email != null) {
+                    val userDoc = db.collection("users").whereEqualTo("email", email).get().await().documents.firstOrNull()
+                    if (userDoc != null) {
+                        // User already exists in Firestore, update their document ID
+                        val uid = authResult.user?.uid
+                        if (uid != null) {
+                            val data = userDoc.data
+                            if (data != null) {
+                                db.collection("users").document(uid).set(data).await()
+                                userDoc.reference.update("archived", "true").await()
+                                "RemadeAccount"
+                            } else {
+                                // User document has no data, cannot update ID
+                                "Failed: User document has no data"
+                            }
+                        } else {
+                            // Could not retrieve UID from authentication result
+                            "Failed: UID not found"
+                        }
+                    }
+                    else{
+                        //they are brand new user
+                        addUserToFirestore()
+                        "NewUserSuccess"
+                    }
+                }
+                else{
+                    "Failed null email"
+                }
+
             }else{
                 println("succeed!!!!")
                 "ReturningUserSuccess"

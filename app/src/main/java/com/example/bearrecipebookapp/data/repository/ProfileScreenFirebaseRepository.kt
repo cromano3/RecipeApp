@@ -74,7 +74,7 @@ class ProfileScreenFirebaseRepository(
 
                 }
 
-                db.collection("users").whereEqualTo("email", auth.currentUser?.email ?: "").get().addOnSuccessListener {
+                db.collection("users").whereEqualTo("email", auth.currentUser?.email ?: "").whereNotEqualTo("archived", "true").get().addOnSuccessListener {
                     //found author
 
                     for(comment in commentsResult){
