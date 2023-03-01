@@ -223,7 +223,7 @@ class FirebaseRepository(
             if (result == "Success") {
 
                 val query =
-                    db.collection("users").whereEqualTo("email", authorEmail).whereNotEqualTo("archived", "true").limit(1).get().await()
+                    db.collection("users").whereEqualTo("email", authorEmail).limit(1).get().await()
                 val authorDocSnapshot = query.documents[0]
 
                 if (authorDocSnapshot != null) {
@@ -554,21 +554,7 @@ class FirebaseRepository(
                     val userDoc = db.collection("users").whereEqualTo("email", email).get().await().documents.firstOrNull()
                     if (userDoc != null) {
                         // User already exists in Firestore, update their document ID
-                        val uid = authResult.user?.uid
-                        if (uid != null) {
-                            val data = userDoc.data
-                            if (data != null) {
-                                db.collection("users").document(uid).set(data).await()
-                                userDoc.reference.update("archived", "true").await()
-                                "RemadeAccount"
-                            } else {
-                                // User document has no data, cannot update ID
-                                "Failed: User document has no data"
-                            }
-                        } else {
-                            // Could not retrieve UID from authentication result
-                            "Failed: UID not found"
-                        }
+                        "ReturningUser"
                     }
                     else{
                         //they are brand new user
@@ -595,10 +581,12 @@ class FirebaseRepository(
         auth.currentUser?.apply {
             val user = toUser(this.displayName, this.email)
             db.collection("users").document(uid).set(user).await()
-            val newEmail = hashMapOf(
-                "email" to email
+            val backupData = hashMapOf(
+                "email" to this.email,
+                "uid" to this.uid,
+                "name" to this.displayName,
             )
-            db.collection("email").add(newEmail).await()
+            db.collection("backup").add(backupData).await()
         }
     }
 
@@ -608,7 +596,7 @@ class FirebaseRepository(
         "email" to email,
         "user_photo" to photoUrl?.toString(),
         "timestamp" to serverTimestamp(),
-        "karma" to 0
+        "karma" to 0,
     )
 
 }

@@ -139,7 +139,7 @@ class DetailsScreenFirebaseRepository(
                             timestamp = ""
                         )
 
-                        db.collection("users").whereEqualTo("email", authorEmail).whereNotEqualTo("archived", "true").get().addOnSuccessListener {
+                        db.collection("users").whereEqualTo("email", authorEmail).get().addOnSuccessListener {
                             //found author
                             result.add(
                                 AuthorDataWithComment(

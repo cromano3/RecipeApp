@@ -131,6 +131,23 @@ class SettingsScreenFirebaseRepository(
                         }
                     }
 
+                    try{
+                        val usersRef = db.collection("users")
+                        val queryUser = usersRef.whereEqualTo("email", userEmail)
+                        val userSnapshot = queryUser.get().await()
+
+                        if (!userSnapshot.isEmpty && userSnapshot != null) {
+
+                            for(document in userSnapshot.documents){
+                                document.reference.delete()
+                            }
+
+                        }
+                    }
+                    catch (e: Exception){
+                        println("Failed to delete user document with: $e")
+                    }
+
 
                     try{
                         user.delete()
