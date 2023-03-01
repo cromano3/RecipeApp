@@ -110,13 +110,14 @@ class SettingsScreenFirebaseRepository(
 
 
                     val collectionRef = db.collection("reviews")
-                    val query = collectionRef.whereEqualTo("authorUid", user.uid)
+                    val query = collectionRef.whereEqualTo("authorEmail", userEmail)
 
                     val querySnapshot = query.get().await()
 
                     if (querySnapshot != null) {
                         println("Documents to delete is not null")
                         println("Documents to delete size: ${querySnapshot.documents.size}")
+                        println("user email is: $userEmail")
 
                         for (document in querySnapshot.documents) {
                             document.reference.delete()

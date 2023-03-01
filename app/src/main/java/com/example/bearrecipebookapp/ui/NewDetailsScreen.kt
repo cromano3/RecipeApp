@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Star
@@ -25,7 +27,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.FontWeight
@@ -512,7 +513,9 @@ fun NewDetailsScreen(
 //                        ReviewWidget(recipeData.reviewsList[x].reviewText)
 //                    }
 
-                    if (commentsList.isNotEmpty() || authState == 0) {
+                    if (commentsList.isNotEmpty()
+//                        || authState == 0
+                    ) {
                         item {
                             Text(
                                 text = "Comments and Tips",
@@ -549,52 +552,52 @@ fun NewDetailsScreen(
                         }
                     }
 
-                    if (authState == 0) {
-                        item{
-                            Box(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                contentAlignment = Alignment.Center
-                            )
-                            {
-                                Button(
-                                    modifier = Modifier
-                                        .width(250.dp)
-                                        .padding(start = 8.dp, end = 8.dp),
-                                    onClick = confirmSignInWithGoogle,
-                                    elevation = ButtonDefaults.elevation(6.dp),
-                                    shape = RoundedCornerShape(10.dp),
-                                    border = BorderStroke(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            startX = -30f,
-                                            colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                    ),
-                                    colors = ButtonDefaults.buttonColors(
-                                        backgroundColor = Color(0xFF682300),
-                                        contentColor = Color(0xFFd8af84)
-                                    )
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .width(250.dp)
-                                            .height(25.dp),
-                                        horizontalArrangement = Arrangement.SpaceEvenly,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Image(
-                                            painter = painterResource(id = R.drawable.ic_google_logo),
-                                            contentDescription = null
-                                        )
-                                        Text("Sign in with Google")
-                                    }
-                                }
-                            }
-                        }
-                    }
+//                    if (authState == 0) {
+//                        item{
+//                            Box(
+//                                Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(8.dp),
+//                                contentAlignment = Alignment.Center
+//                            )
+//                            {
+//                                Button(
+//                                    modifier = Modifier
+//                                        .width(250.dp)
+//                                        .padding(start = 8.dp, end = 8.dp),
+//                                    onClick = confirmSignInWithGoogle,
+//                                    elevation = ButtonDefaults.elevation(6.dp),
+//                                    shape = RoundedCornerShape(10.dp),
+//                                    border = BorderStroke(
+//                                        width = 2.dp,
+//                                        brush = (Brush.horizontalGradient(
+//                                            startX = -30f,
+//                                            colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
+//                                            tileMode = TileMode.Mirror
+//                                        )),
+//                                    ),
+//                                    colors = ButtonDefaults.buttonColors(
+//                                        backgroundColor = Color(0xFF682300),
+//                                        contentColor = Color(0xFFd8af84)
+//                                    )
+//                                ) {
+//                                    Row(
+//                                        modifier = Modifier
+//                                            .width(250.dp)
+//                                            .height(25.dp),
+//                                        horizontalArrangement = Arrangement.SpaceEvenly,
+//                                        verticalAlignment = Alignment.CenterVertically
+//                                    ) {
+//                                        Image(
+//                                            painter = painterResource(id = R.drawable.ic_google_logo),
+//                                            contentDescription = null
+//                                        )
+//                                        Text("Sign in with Google")
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
 
 //                    if(localUserReview.isNotEmpty()){
 //                        item{

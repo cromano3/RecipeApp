@@ -173,6 +173,24 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 )
             }
         }
+        else if(firebaseSignInWithGoogleResponse == "ReturningUserSuccess"){
+            repository.setOnlineUserType(1)
+            appUiState.update {
+                it.copy(
+                    userIsOnlineStatus = 1,
+                    googleSignInState = ""
+                )
+            }
+            dataSyncUploads()
+        }
+        else if(firebaseSignInWithGoogleResponse == "NewUserSuccess"){
+            repository.setOnlineUserType(1)
+            appUiState.update {
+                it.copy(
+                    userIsOnlineStatus = 1
+                )
+            }
+        }
 
         else
         {
@@ -184,23 +202,8 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             }
         }
 
-        if(firebaseSignInWithGoogleResponse == "NewUserSuccess"){
-            repository.setOnlineUserType(1)
-            appUiState.update {
-                it.copy(
-                    userIsOnlineStatus = 1
-                )
-            }
-        }
-        else if(firebaseSignInWithGoogleResponse == "ReturningUserSuccess"){
-            repository.setOnlineUserType(1)
-            appUiState.update {
-                it.copy(
-                    userIsOnlineStatus = 1
-                )
-            }
-            dataSyncUploads()
-        }
+
+
     }
 
 

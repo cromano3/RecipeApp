@@ -117,13 +117,24 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
     private fun getGlobalRating(recipeName: String) {
         viewModelScope.launch {
 
-            if(recipeName.isNotEmpty()) {
-                val globalRating = withContext(Dispatchers.IO) {
-                    detailsScreenFirebaseRepository.getGlobalRating(recipeName)
-                }
+            val isAuthed = withContext(Dispatchers.IO) { detailsScreenFirebaseRepository.currentUser() }
 
-                withContext(Dispatchers.IO) { repository.setGlobalRating(recipeName, globalRating) }
+            if(isAuthed != null) {
+
+                if (recipeName.isNotEmpty()) {
+                    val globalRating = withContext(Dispatchers.IO) {
+                        detailsScreenFirebaseRepository.getGlobalRating(recipeName)
+                    }
+
+                    withContext(Dispatchers.IO) {
+                        repository.setGlobalRating(
+                            recipeName,
+                            globalRating
+                        )
+                    }
+                }
             }
+
         }
     }
 
