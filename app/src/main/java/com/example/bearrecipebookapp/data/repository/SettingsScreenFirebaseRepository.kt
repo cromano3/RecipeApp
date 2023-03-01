@@ -36,15 +36,23 @@ class SettingsScreenFirebaseRepository(
     }
 
     suspend fun getCurrentDisplayName(): String{
-        val reviewsCollection = db.collection("users")
-        val query = reviewsCollection.whereEqualTo(FieldPath.documentId(), auth.currentUser?.uid)
-        val querySnapshot = query.get().await()
+        try {
+            val reviewsCollection = db.collection("users")
+            val query =
+                reviewsCollection.whereEqualTo(FieldPath.documentId(), auth.currentUser?.uid)
+            val querySnapshot = query.get().await()
 
-        return if(querySnapshot != null){
-            querySnapshot.documents[0].getString("display_name") ?: ""
-        } else{
-            ""
+            return if (querySnapshot != null) {
+                querySnapshot.documents[0].getString("display_name") ?: ""
+            } else {
+                ""
+            }
         }
+        catch(e: Exception){
+            println("Failed to get current display name with: $e")
+            return ""
+        }
+
 
 
     }

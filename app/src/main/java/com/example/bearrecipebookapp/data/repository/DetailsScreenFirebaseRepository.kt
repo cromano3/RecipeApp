@@ -2,14 +2,16 @@ package com.example.bearrecipebookapp.data.repository
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.AuthorData
 import com.example.bearrecipebookapp.datamodel.AuthorDataWithComment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -47,13 +49,13 @@ class DetailsScreenFirebaseRepository(
         }
     }
 
-    val globalRatingFirebaseLiveData: LiveData<Int> = MediatorLiveData<Int>().apply {
-        addSource(recipeNameLiveData) { recipeName ->
-            retrieveGlobalRatingFirebaseLiveData(recipeName) { rating ->
-                    value = rating
-            }
-        }
-    }
+//    val globalRatingFirebaseLiveData: LiveData<Int> = MediatorLiveData<Int>().apply {
+//        addSource(recipeNameLiveData) { recipeName ->
+//            retrieveGlobalRatingFirebaseLiveData(recipeName) { rating ->
+//                    value = rating
+//            }
+//        }
+//    }
 
 
     fun setRecipeName(recipeName: String) {
@@ -71,27 +73,27 @@ class DetailsScreenFirebaseRepository(
 //
 //    }
 
-    private fun retrieveGlobalRatingFirebaseLiveData(recipeName: String, callback: (Int) -> Unit){
-        db.collection("recipes").whereEqualTo(FieldPath.documentId(), recipeName).limit(1).addSnapshotListener(){ snapshot, e ->
-            if(e != null){
-                println("couldn't get rating with: ${e.message}")
-                callback(0)
-            }
-            else{
-                try {
-                    val rating = snapshot!!.documents[0].getLong("rating")!!.toInt()
-                    callback(rating)
-                }
-                catch(e: Exception){
-                    println("couldn't get rating with: ${e.message}")
-                    callback(0)
-                }
-
-            }
-
-        }
-
-    }
+//    private fun retrieveGlobalRatingFirebaseLiveData(recipeName: String, callback: (Int) -> Unit){
+//        db.collection("recipes").whereEqualTo(FieldPath.documentId(), recipeName).limit(1).addSnapshotListener(){ snapshot, e ->
+//            if(e != null){
+//                println("couldn't get rating with: ${e.message}")
+//                callback(0)
+//            }
+//            else{
+//                try {
+//                    val rating = snapshot!!.documents[0].getLong("rating")!!.toInt()
+//                    callback(rating)
+//                }
+//                catch(e: Exception){
+//                    println("couldn't get rating with: ${e.message}")
+//                    callback(0)
+//                }
+//
+//            }
+//
+//        }
+//
+//    }
 
 
 
@@ -113,10 +115,10 @@ class DetailsScreenFirebaseRepository(
                     for(comment in snapshot){
 
                         val commentId = comment.id
-                        val thisRecipeName = comment.getString("recipeName")
-                        val reviewText = comment.getString("reviewText")
-                        val authorEmail = comment.getString("authorEmail")
-                        val likes = comment.getDouble("likes")?.toInt()
+                        val thisRecipeName = comment.getString("recipeName") ?: ""
+                        val reviewText = comment.getString("reviewText") ?: ""
+                        val authorEmail = comment.getString("authorEmail") ?: ""
+                        val likes = comment.getDouble("likes")?.toInt() ?: 0
 
                         var likedByMe = 0
 
@@ -128,10 +130,10 @@ class DetailsScreenFirebaseRepository(
 
                         val thisCommentEntity = CommentsEntity(
                             commentID = commentId,
-                            recipeName  = thisRecipeName ?: "",
+                            recipeName  = thisRecipeName,
                             authorID = "",
-                            commentText = reviewText ?: "",
-                            likes = likes ?: 0,
+                            commentText = reviewText,
+                            likes = likes,
                             likedByMe = likedByMe,
                             myLikeWasSynced = 0,
                             timestamp = ""

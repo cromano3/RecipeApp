@@ -17,16 +17,21 @@ class MenuScreenFirebaseRepository(
     suspend fun getGlobalRatings(recipeNames: List<String>): MutableList<RecipeNamesWithRatings> {
 
 
-        val query = db.collection("recipes").whereIn("recipeName", recipeNames).get().await()
-
         val results: MutableList<RecipeNamesWithRatings> = mutableListOf()
 
-        for(document in query.documents){
+        try {
+            val query = db.collection("recipes").whereIn("recipeName", recipeNames).get().await()
 
-            val thisName = document.getString("recipeName") ?: ""
-            val thisRating = document.getLong("rating")?.toInt() ?: 0
+            for (document in query.documents) {
 
-            results.add(RecipeNamesWithRatings(thisName, thisRating))
+                val thisName = document.getString("recipeName") ?: ""
+                val thisRating = document.getLong("rating")?.toInt() ?: 0
+
+                results.add(RecipeNamesWithRatings(thisName, thisRating))
+            }
+        }
+        catch(e: Exception){
+            println("Failed to get global ratings with $e")
         }
 
         return results

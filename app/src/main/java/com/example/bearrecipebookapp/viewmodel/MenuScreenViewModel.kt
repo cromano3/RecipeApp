@@ -46,7 +46,9 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
                     menuScreenFirebaseRepository.getGlobalRatings(names)
                 }
 
-                withContext(Dispatchers.IO) { repository.setGlobalRatings(namesWithRatings) }
+                if(namesWithRatings.isNotEmpty()) {
+                    withContext(Dispatchers.IO) { repository.setGlobalRatings(namesWithRatings) }
+                }
             }
         }
     }

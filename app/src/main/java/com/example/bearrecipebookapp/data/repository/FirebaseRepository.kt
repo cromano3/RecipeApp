@@ -1,24 +1,19 @@
 package com.example.bearrecipebookapp.data.repository
 
 import android.app.Application
-import com.example.bearrecipebookapp.data.entity.CommentsEntity
 import com.example.bearrecipebookapp.datamodel.FirebaseResult
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndRating
 import com.example.bearrecipebookapp.datamodel.RecipeNameAndReview
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FieldValue.serverTimestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import java.text.SimpleDateFormat
-import java.util.*
 
 class FirebaseRepository(
     application: Application,
@@ -82,24 +77,29 @@ class FirebaseRepository(
         val email = auth.currentUser?.email
 
         if(email != null){
-            val querySnapshot = commentsCollection.whereEqualTo("authorEmail", email).whereEqualTo("recipeName", review.recipeName).limit(1).get().await()
-            if(querySnapshot.isEmpty){
-                val newComment = hashMapOf(
-                    "recipeName" to review.recipeName,
-                    "reviewText" to review.reviewText,
-                    "authorEmail" to email,
-                    "likes" to 0,
-                    "likedBy" to arrayListOf<String>(),
-                    "timestamp" to serverTimestamp()
-                )
-                db.collection("reviews").add(newComment)
-                    .addOnSuccessListener { result = "Success" }
-                    .addOnFailureListener{e -> result = "Failed with $e" }.await()
-            }
-            else{
-                result = "User Comment Already Exists"
-            }
+            try {
+                val querySnapshot = commentsCollection.whereEqualTo("authorEmail", email)
+                    .whereEqualTo("recipeName", review.recipeName).limit(1).get().await()
+                if (querySnapshot.isEmpty) {
+                    val newComment = hashMapOf(
+                        "recipeName" to review.recipeName,
+                        "reviewText" to review.reviewText,
+                        "authorEmail" to email,
+                        "likes" to 0,
+                        "likedBy" to arrayListOf<String>(),
+                        "timestamp" to serverTimestamp()
+                    )
+                    db.collection("reviews").add(newComment)
+                        .addOnSuccessListener { result = "Success" }
+                        .addOnFailureListener { e -> result = "Failed with $e" }.await()
+                } else {
+                    result = "User Comment Already Exists"
+                }
 
+            }
+            catch(e: Exception){
+                println("Failed to upload comment with: $e")
+            }
         }
         else{
             result = "UID is null"
@@ -117,28 +117,28 @@ class FirebaseRepository(
     //Write rating to Firestore
     suspend fun updateRating(rating: RecipeNameAndRating): String {
 
-        val currentRecipeDocument = db.collection("recipes").document(rating.recipeName)
+
         var result = ""
 
-        db.runTransaction { transaction ->
+        try {
+            val currentRecipeDocument = db.collection("recipes").document(rating.recipeName)
 
-            val snapshot = transaction.get(currentRecipeDocument)
+            db.runTransaction { transaction ->
 
-            var likedByList = snapshot.get("ratedBy") as? List<String> ?: listOf()
+                val snapshot = transaction.get(currentRecipeDocument)
 
-            var recipeRating: Double? = snapshot.getDouble("rating")
+                val likedByList = snapshot.get("ratedBy") as? List<String> ?: listOf()
 
-            if(recipeRating == null){
-                result = "Null Rating"
-            }
-            else if(auth.currentUser?.uid == null){
-                result = "Null Liker"
-            }
-            else if(likedByList.contains(auth.currentUser?.email)){
-                result = "Failed Duplicate Rating"
-            }
-            else{
-                recipeRating += rating.rating
+                var recipeRating: Double? = snapshot.getDouble("rating")
+
+                if (recipeRating == null) {
+                    result = "Null Rating"
+                } else if (auth.currentUser?.uid == null) {
+                    result = "Null Liker"
+                } else if (likedByList.contains(auth.currentUser?.email)) {
+                    result = "Failed Duplicate Rating"
+                } else {
+                    recipeRating += rating.rating
 //                if(recipeRating > 99.0){
 //                    recipeRating = 99.0
 //                }
@@ -146,16 +146,25 @@ class FirebaseRepository(
 //                    recipeRating = 60.0
 //                }
 //                val timestamp: Any = serverTimestamp()
-                transaction.update(currentRecipeDocument, "ratedBy", FieldValue.arrayUnion(auth.currentUser?.email))
-                transaction.update(currentRecipeDocument, "rating", recipeRating)
+                    transaction.update(
+                        currentRecipeDocument,
+                        "ratedBy",
+                        FieldValue.arrayUnion(auth.currentUser?.email)
+                    )
+                    transaction.update(currentRecipeDocument, "rating", recipeRating)
 //                transaction.update(currentRecipeDocument, "timestamp", timestamp)
-            }
+                }
 
-        }.addOnSuccessListener {
-            result = "Success"
-        }.addOnFailureListener { e ->
+            }.addOnSuccessListener {
+                result = "Success"
+            }.addOnFailureListener { e ->
+                result = "Failed with $e"
+            }.await()
+        }
+        catch (e: Exception){
+            println("Failed update rating with: $e")
             result = "Failed with $e"
-        }.await()
+        }
 
         println("update rating result: $result")
         return result
@@ -263,117 +272,117 @@ class FirebaseRepository(
     ////Download Stuff////
 
     //get all comments (room has no timestamp)
-    suspend fun getComments(recipeName: String): MutableList<CommentsEntity>{
-
-        val reviewsCollection = db.collection("reviews")
-        val querySnapshot = reviewsCollection.whereEqualTo("recipeName", recipeName).get().await()
-
-        val resultCommentsList: MutableList<CommentsEntity> = mutableListOf()
-
-        if (querySnapshot != null) {
-            for (document in querySnapshot.documents) {
-                val commentId = document.id
-                val thisRecipeName = document.getString("recipeName")
-                val reviewText = document.getString("reviewText")
-                val authorUid = document.getString("authorUid")
-                val likes = document.getDouble("likes")?.toInt()
-                val timestamp = document.getTimestamp("timestamp")
-                val date = timestamp?.toDate()
-                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
-                var formattedDate = "Failed"
-                try{
-                    formattedDate = formatter.format(date!!)
-                }
-                catch (e: Exception){
-                    println("bad timestamp in firestore ${e.message}")
-                }
-
-                val comment = CommentsEntity(
-                    commentID = commentId,
-                    recipeName  = thisRecipeName ?: "",
-                    authorID = authorUid ?: "",
-                    commentText = reviewText ?: "",
-                    likes = likes ?: 0,
-                    likedByMe = 0,
-                    myLikeWasSynced = 0,
-                    timestamp = formattedDate
-                )
-
-                resultCommentsList.add(comment)
-
-            }
-        }
-        return resultCommentsList
-
-    }
+//    suspend fun getComments(recipeName: String): MutableList<CommentsEntity>{
+//
+//        val reviewsCollection = db.collection("reviews")
+//        val querySnapshot = reviewsCollection.whereEqualTo("recipeName", recipeName).get().await()
+//
+//        val resultCommentsList: MutableList<CommentsEntity> = mutableListOf()
+//
+//        if (querySnapshot != null) {
+//            for (document in querySnapshot.documents) {
+//                val commentId = document.id
+//                val thisRecipeName = document.getString("recipeName")
+//                val reviewText = document.getString("reviewText")
+//                val authorUid = document.getString("authorUid")
+//                val likes = document.getDouble("likes")?.toInt()
+//                val timestamp = document.getTimestamp("timestamp")
+//                val date = timestamp?.toDate()
+//                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+//                var formattedDate = "Failed"
+//                try{
+//                    formattedDate = formatter.format(date!!)
+//                }
+//                catch (e: Exception){
+//                    println("bad timestamp in firestore ${e.message}")
+//                }
+//
+//                val comment = CommentsEntity(
+//                    commentID = commentId,
+//                    recipeName  = thisRecipeName ?: "",
+//                    authorID = authorUid ?: "",
+//                    commentText = reviewText ?: "",
+//                    likes = likes ?: 0,
+//                    likedByMe = 0,
+//                    myLikeWasSynced = 0,
+//                    timestamp = formattedDate
+//                )
+//
+//                resultCommentsList.add(comment)
+//
+//            }
+//        }
+//        return resultCommentsList
+//
+//    }
 
     //get comments since timestamp
-    suspend fun getComments(recipeName: String, sinceTimestamp: Date): MutableList<CommentsEntity>{
+//    suspend fun getComments(recipeName: String, sinceTimestamp: Date): MutableList<CommentsEntity>{
+//
+//        val reviewsCollection = db.collection("reviews")
+//        val sTimestamp = com.google.firebase.Timestamp(sinceTimestamp)
+//        val query = reviewsCollection.whereGreaterThan("timestamp", sTimestamp).whereEqualTo("recipeName", recipeName)
+//        val querySnapshot = query.get().await()
+//
+//        val resultCommentsList: MutableList<CommentsEntity> = mutableListOf()
+//
+//        if (querySnapshot != null) {
+//            for (document in querySnapshot.documents) {
+//                val commentId = document.id
+//                val thisRecipeName = document.getString("recipeName")
+//                val reviewText = document.getString("reviewText")
+//                val authorUid = document.getString("authorUid")
+//                val likes = document.getDouble("likes")?.toInt()
+//                val timestamp = document.getTimestamp("timestamp")
+//
+//                val comment = CommentsEntity(
+//                    commentID = commentId,
+//                    recipeName  = thisRecipeName ?: "",
+//                    authorID = authorUid ?: "",
+//                    commentText = reviewText ?: "",
+//                    likes = likes ?: 0,
+//                    likedByMe = 0,
+//                    myLikeWasSynced = 0,
+//                    timestamp = timestamp?.toString() ?: ""
+//                )
+//
+//                resultCommentsList.add(comment)
+//
+//            }
+//        }
+//        return resultCommentsList
+//
+//    }
 
-        val reviewsCollection = db.collection("reviews")
-        val sTimestamp = com.google.firebase.Timestamp(sinceTimestamp)
-        val query = reviewsCollection.whereGreaterThan("timestamp", sTimestamp).whereEqualTo("recipeName", recipeName)
-        val querySnapshot = query.get().await()
-
-        val resultCommentsList: MutableList<CommentsEntity> = mutableListOf()
-
-        if (querySnapshot != null) {
-            for (document in querySnapshot.documents) {
-                val commentId = document.id
-                val thisRecipeName = document.getString("recipeName")
-                val reviewText = document.getString("reviewText")
-                val authorUid = document.getString("authorUid")
-                val likes = document.getDouble("likes")?.toInt()
-                val timestamp = document.getTimestamp("timestamp")
-
-                val comment = CommentsEntity(
-                    commentID = commentId,
-                    recipeName  = thisRecipeName ?: "",
-                    authorID = authorUid ?: "",
-                    commentText = reviewText ?: "",
-                    likes = likes ?: 0,
-                    likedByMe = 0,
-                    myLikeWasSynced = 0,
-                    timestamp = timestamp?.toString() ?: ""
-                )
-
-                resultCommentsList.add(comment)
-
-            }
-        }
-        return resultCommentsList
-
-    }
-
-    fun getMostRecentCommentTimestamp(newCommentsList: MutableList<CommentsEntity>): String {
-        try {
-
-            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
-            val date = formatter.parse(newCommentsList[0].timestamp)
-            var newestTime = Timestamp(date!!)
-
-            for(comment in newCommentsList) {
-
-                val formattedDate: String = comment.timestamp
-                val thisDate = formatter.parse(formattedDate)
-                val timestamp = Timestamp(thisDate!!)
-
-                if(timestamp > newestTime){
-                    newestTime = timestamp
-                }
-            }
-
-            val finalDate = newestTime.toDate()
-            return formatter.format(finalDate)
-
-        }
-        catch(e: Exception){
-            return "Failed ${e.message}"
-        }
-
-
-
-    }
+//    fun getMostRecentCommentTimestamp(newCommentsList: MutableList<CommentsEntity>): String {
+//        try {
+//
+//            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+//            val date = formatter.parse(newCommentsList[0].timestamp)
+//            var newestTime = Timestamp(date!!)
+//
+//            for(comment in newCommentsList) {
+//
+//                val formattedDate: String = comment.timestamp
+//                val thisDate = formatter.parse(formattedDate)
+//                val timestamp = Timestamp(thisDate!!)
+//
+//                if(timestamp > newestTime){
+//                    newestTime = timestamp
+//                }
+//            }
+//
+//            val finalDate = newestTime.toDate()
+//            return formatter.format(finalDate)
+//
+//        }
+//        catch(e: Exception){
+//            return "Failed ${e.message}"
+//        }
+//
+//
+//
+//    }
 
 //    //get recipe ratings
 //    suspend fun getRecipeRatings(sinceTimestamp: String): MutableList<RecipeNameAndRating> {
@@ -401,21 +410,21 @@ class FirebaseRepository(
 //    }
 
     //get recipe ratings
-    suspend fun getRecipeRating(recipeName: String): Int {
-
-        val recipesCollection = db.collection("recipes")
-        val query = recipesCollection.whereEqualTo(FieldPath.documentId(), recipeName)
-        val querySnapshot = query.limit(1).get().await()
-
-        var rating: Long? = -1
-
-        if (querySnapshot != null) {
-            rating = querySnapshot.documents[0].getLong("rating")
-        }
-
-        return rating?.toInt() ?: -1
-
-    }
+//    suspend fun getRecipeRating(recipeName: String): Int {
+//
+//        val recipesCollection = db.collection("recipes")
+//        val query = recipesCollection.whereEqualTo(FieldPath.documentId(), recipeName)
+//        val querySnapshot = query.limit(1).get().await()
+//
+//        var rating: Long? = -1
+//
+//        if (querySnapshot != null) {
+//            rating = querySnapshot.documents[0].getLong("rating")
+//        }
+//
+//        return rating?.toInt() ?: -1
+//
+//    }
 
 //    suspend fun getAuthorsData(commentsList: MutableList<CommentsEntity>): MutableList<AuthorDataWithComment> {
 //
