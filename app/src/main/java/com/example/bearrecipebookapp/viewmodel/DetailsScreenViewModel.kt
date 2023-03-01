@@ -36,7 +36,9 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 //    var globalRating: LiveData<Int>
 
 
-    var globalRatingFirebaseLiveData: LiveData<Int>
+//    var globalRatingFirebaseLiveData: LiveData<Int>
+
+    var globalRating: LiveData<Int>
 
     val uiAlertState = MutableStateFlow(UiAlertStateDetailsScreenDataModel())
 
@@ -90,11 +92,15 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
         println("INIT INIT INIT INIT INIT")
 //        detailsScreenFirebaseRepository.setCommentResultLimit(4)
 
-        globalRatingFirebaseLiveData = detailsScreenFirebaseRepository.globalRatingFirebaseLiveData
+//        globalRatingFirebaseLiveData = detailsScreenFirebaseRepository.globalRatingFirebaseLiveData
+
+        globalRating = repository.globalRating
 
         getCommentsList(recipeName, 4)
 
         authState = detailsScreenFirebaseRepository.authState
+
+        getGlobalRating(recipeName)
 
 
 
@@ -106,6 +112,19 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 //        }
 
 
+    }
+
+    private fun getGlobalRating(recipeName: String) {
+        viewModelScope.launch {
+
+            if(recipeName.isNotEmpty()) {
+                val globalRating = withContext(Dispatchers.IO) {
+                    detailsScreenFirebaseRepository.getGlobalRating(recipeName)
+                }
+
+                withContext(Dispatchers.IO) { repository.setGlobalRating(recipeName, globalRating) }
+            }
+        }
     }
 
 //    fun setCommentsLimit(limit: Int){

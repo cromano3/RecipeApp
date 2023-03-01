@@ -22,6 +22,14 @@ interface DetailsScreenDao {
     fun getGlobalRating(recipeName: String): LiveData<Int>
 
 
+
+    @Transaction
+    @Query("UPDATE recipe_table SET global_rating = :rating WHERE recipe_name = :recipeName")
+    fun setGlobalRating(recipeName: String, rating: Int)
+
+
+
+
     @Transaction
     @Query("UPDATE recipe_table SET cooked_count = cooked_count + 1 WHERE recipe_name = :name")
     fun addCooked(name: String)

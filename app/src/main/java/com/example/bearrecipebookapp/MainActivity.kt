@@ -181,14 +181,28 @@ fun BearRecipeApp(
                     navController.popBackStack()
                     navController.popBackStack()
                 }
-                navController.navigate("RecipeScreen"){
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
 
+                if(currentScreen == "WeeklyMenuScreen"){
+                    navController.navigate("RecipeScreen"){
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = false
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+
+                    }
                 }
+                else{
+                    navController.navigate("RecipeScreen"){
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+
+                    }
+                }
+
             },
             onBackClick = { navController.popBackStack() },
             onProfileClick = { navController.navigate("ProfileScreen") },
@@ -384,7 +398,7 @@ fun BearRecipeApp(
                     onAddRecipeClick = {
                         navController.navigate("RecipeScreen"){
                             popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+                                saveState = false
                             }
                             launchSingleTop = true
                             restoreState = true
@@ -590,15 +604,30 @@ fun BearAppBottomBar(
                             navController.popBackStack()
                         }
 
-                        navController.navigate(it) {
+                        if(currentRoute == "WeeklyMenuScreen"){
+                            navController.navigate(it) {
 
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = false
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+
                             }
-                            launchSingleTop = true
-                            restoreState = true
-
                         }
+                        else{
+                            navController.navigate(it) {
+
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+
+                            }
+                        }
+
+
                     },
                     icon = {
                         when (it) {

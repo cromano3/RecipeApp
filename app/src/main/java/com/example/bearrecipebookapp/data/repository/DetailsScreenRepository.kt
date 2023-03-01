@@ -26,6 +26,11 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
         detailsScreenDao.getGlobalRating(recipeName)
     }
 
+    fun setGlobalRating(recipeName: String, globalRating: Int) {
+
+        detailsScreenDao.setGlobalRating(recipeName, globalRating)
+
+    }
 
     fun setRecipeName(recipeName: String) {
         recipeNameLiveData.postValue(recipeName)

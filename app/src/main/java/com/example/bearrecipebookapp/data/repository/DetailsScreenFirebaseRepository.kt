@@ -16,6 +16,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 
 class DetailsScreenFirebaseRepository(
     application: Application,
@@ -185,6 +186,26 @@ class DetailsScreenFirebaseRepository(
 
 
 
+    suspend fun getGlobalRating(recipeName: String): Int {
+
+
+        var result: Int = 0
+
+        try {
+            val query =
+                db.collection("recipes").whereEqualTo("recipeName", recipeName).limit(1).get().await()
+
+
+            val thisRating = query.documents[0].getLong("rating")?.toInt() ?: 0
+
+            result = thisRating
+        }
+        catch(e: Exception){
+            println("Failed to get Detail Screen Rating from Firebase with: $e")
+        }
+
+        return result
+    }
 
 //    suspend fun getComments(recipeName: String): MutableList<CommentsEntity>{
 //
