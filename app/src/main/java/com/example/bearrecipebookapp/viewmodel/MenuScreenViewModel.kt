@@ -382,13 +382,13 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
 
         coroutineScope.launch(Dispatchers.IO) {
             val cookedCountMultiplier =
-                if(recipe.recipeEntity.cookedCount < 10){
-                    1 - (recipe.recipeEntity.cookedCount * .05)
+                if(recipe.recipeEntity.cookedCount < 5){
+                    1 - (recipe.recipeEntity.cookedCount * .10)
                 }
                 else{
                     .50
                 }
-            val exp = 50 + ((1 + (recipe.recipeEntity.difficulty - 1) * .25) * cookedCountMultiplier)
+            val exp = (35  * cookedCountMultiplier)  * ((.05 * recipe.recipeEntity.difficulty) + 1)
 
             repository.addExpToGive(exp.toInt())
         }

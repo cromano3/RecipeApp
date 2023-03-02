@@ -612,7 +612,7 @@ fun RecipeIconWithButton(
                     width = 2.dp,
                     brush = (Brush.horizontalGradient(
                         startX = -10f,
-                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                        colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
                         tileMode = TileMode.Mirror
                     )),
                     shape = RoundedCornerShape(25.dp)
@@ -716,7 +716,7 @@ fun ShoppingListItemWithButton(
                 width = 2.dp,
                 brush = (Brush.horizontalGradient(
                     startX = -10f,
-                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                    colors = listOf(Color(0xFF682300), Color(0xFF682300)),
                     tileMode = TileMode.Mirror
                 )),
                 shape = RoundedCornerShape(25.dp)
@@ -726,7 +726,7 @@ fun ShoppingListItemWithButton(
                 onClick = if (selected) onClickIngredientDeselected else onClickIngredientSelected,
             ),// { selected = !selected },
         shape = RoundedCornerShape(25.dp),
-        color = Color(0xFF682300),
+        color = Color(0xFF81340A),
         elevation = 4.dp,
         //color = Color(0xFF682300),//Color(0xFFd8af84),
         contentColor = Color(0xFFd8af84),
@@ -864,7 +864,7 @@ fun CustomShoppingListItem(
                 width = 2.dp,
                 brush = (Brush.horizontalGradient(
                     startX = -10f,
-                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                    colors = listOf(Color(0xFF682300), Color(0xFF682300)),
                     tileMode = TileMode.Mirror
                 )),
                 shape = RoundedCornerShape(25.dp)
@@ -882,7 +882,7 @@ fun CustomShoppingListItem(
                 onClick = if (selected) onClickItemDeselected else onClickItemSelected,
             ),
         shape = RoundedCornerShape(25.dp),
-        color = Color(0xFF682300),
+        color = Color(0xFF81340A),
         elevation = 4.dp,
         //color = Color(0xFF682300),//Color(0xFFd8af84),
         contentColor = Color(0xFFd8af84),
@@ -970,7 +970,7 @@ fun AddCustomItemButton(
                 width = 2.dp,
                 brush = (Brush.horizontalGradient(
                     startX = -10f,
-                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                    colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
                     tileMode = TileMode.Mirror
                 )),
                 shape = RoundedCornerShape(25.dp)
@@ -1032,7 +1032,7 @@ fun ClearCustomItemButton(
                 width = 2.dp,
                 brush = (Brush.horizontalGradient(
                     startX = -10f,
-                    colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
+                    colors = listOf(Color(0xFF682300), Color(0xFF682300)),
                     tileMode = TileMode.Mirror
                 )),
                 shape = RoundedCornerShape(25.dp)
