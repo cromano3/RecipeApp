@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bearrecipebookapp.data.RecipeAppDatabase
+import com.example.bearrecipebookapp.data.entity.QuantitiesTableEntity
 import com.example.bearrecipebookapp.data.entity.RecipeEntity
 import com.example.bearrecipebookapp.data.repository.DetailsScreenFirebaseRepository
 import com.example.bearrecipebookapp.data.repository.DetailsScreenRepository
@@ -38,11 +39,15 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
 //    var globalRatingFirebaseLiveData: LiveData<Int>
 
+    var ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>>
+
     var globalRating: LiveData<Int>
 
     val uiAlertState = MutableStateFlow(UiAlertStateDetailsScreenDataModel())
 
     var authState: LiveData<Int>
+
+
 
 //    val uiState = MutableStateFlow(DetailsScreenUiState())
 
@@ -103,6 +108,8 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 //        globalRatingFirebaseLiveData = detailsScreenFirebaseRepository.globalRatingFirebaseLiveData
 
         globalRating = repository.globalRating
+
+        ingredientQuantitiesList = repository.ingredientQuantitiesList
 
         getCommentsList(recipeName, 4)
 

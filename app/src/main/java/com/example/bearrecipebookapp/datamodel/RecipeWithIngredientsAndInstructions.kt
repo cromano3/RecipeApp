@@ -20,6 +20,7 @@ data class RecipeWithIngredientsAndInstructions (
 
     val ingredientsList: List<IngredientEntity> = listOf<IngredientEntity>(),
 
+
     @Relation(
         parentColumn = "recipe_name",
         entityColumn = "recipe_id",
@@ -28,6 +29,5 @@ data class RecipeWithIngredientsAndInstructions (
     val instructionsList: List<InstructionEntity> = listOf<InstructionEntity>()
 
 
-
-
 )
+

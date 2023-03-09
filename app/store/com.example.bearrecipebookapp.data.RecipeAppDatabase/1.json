@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b9ab638eb4c346f11a2ce2a0997fc550",
+    "identityHash": "6beb61bd9a50e0e3d84dedded4621f34",
     "entities": [
       {
         "tableName": "recipe_table",
@@ -539,12 +539,56 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "quantities_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `recipe_name` TEXT NOT NULL, `ingredient_name` TEXT NOT NULL, `quantity` TEXT NOT NULL, `unit` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipeName",
+            "columnName": "recipe_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "filterName",
+            "columnName": "ingredient_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "quantity",
+            "columnName": "quantity",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unit",
+            "columnName": "unit",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b9ab638eb4c346f11a2ce2a0997fc550')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6beb61bd9a50e0e3d84dedded4621f34')"
     ]
   }
 }

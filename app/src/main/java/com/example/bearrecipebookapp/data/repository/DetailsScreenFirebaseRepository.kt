@@ -140,17 +140,27 @@ class DetailsScreenFirebaseRepository(
                         )
 
                         db.collection("users").whereEqualTo("email", authorEmail).get().addOnSuccessListener {
-                            //found author
-                            result.add(
-                                AuthorDataWithComment(
-                                    AuthorData(
-                                        it.documents[0].getString("display_name") ?: "",
-                                    it.documents[0].getString("user_photo") ?: "",
-                                        karma = it.documents[0].getLong("karma")?.toInt() ?: 0
-                                    ),
-                                    thisCommentEntity
+
+                            if(it != null && !it.isEmpty) {
+                                result.add(
+                                    AuthorDataWithComment(
+                                        AuthorData(
+                                            it.documents[0].getString("display_name") ?: "",
+                                            it.documents[0].getString("user_photo") ?: "",
+                                            karma = it.documents[0].getLong("karma")?.toInt() ?: 0
+                                        ),
+                                        thisCommentEntity
+                                    )
                                 )
-                            )
+                            }
+                            else{
+                                result.add(
+                                    AuthorDataWithComment(
+                                        AuthorData("", "", 0),
+                                        thisCommentEntity
+                                    )
+                                )
+                            }
                             numCallbacks++
                             if(numCallbacks == numDocuments){
                                 trySend(result)

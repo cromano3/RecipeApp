@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.example.bearrecipebookapp.data.dao.DetailsScreenDao
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
+import com.example.bearrecipebookapp.data.entity.QuantitiesTableEntity
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredientsAndInstructions
 import com.example.bearrecipebookapp.datamodel.ReviewWithAuthorDataModel
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +18,10 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
 
 //    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions> = detailsScreenDao.getData()
     private val recipeNameLiveData = MutableLiveData<String>()
+
+    val ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
+        detailsScreenDao.getIngredientQuantitiesList(recipeName)
+    }
 
     val reviewsData: LiveData<List<ReviewWithAuthorDataModel>> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
         detailsScreenDao.getReviewsData(recipeName)

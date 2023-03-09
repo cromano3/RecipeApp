@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.ui.components
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +32,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
+import com.example.bearrecipebookapp.R
 
 
 @Composable
@@ -104,11 +107,15 @@ fun ReviewWidget(
                                 Box(
                                     Modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center) {
-                                    Text(
-                                        text = "T",
-                                        color = Color(0xFF682300),
-                                        fontSize = 36.sp
-                                    )
+                                    Image(
+                                        painterResource(R.drawable.app_symbol),
+                                        contentDescription = null)
+
+//                                    Text(
+//                                        text = "T",
+//                                        color = Color(0xFF682300),
+//                                        fontSize = 36.sp
+//                                    )
                                 }
                             }
                             else{

@@ -107,6 +107,8 @@ fun NewDetailsScreen(
 //        val reviewsData by detailsScreenViewModel.reviewsData.observeAsState(listOf())
 //        val firebaseCommentsLiveData by detailsScreenViewModel.firebaseCommentsLiveData.observeAsState(listOf())
         val globalRating by detailsScreenViewModel.globalRating.observeAsState()
+
+        val ingredientsQuantities by detailsScreenViewModel.ingredientQuantitiesList.observeAsState()
 //        val globalRatingFirebaseLiveData by detailsScreenViewModel.globalRatingFirebaseLiveData.observeAsState()
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -466,9 +468,32 @@ fun NewDetailsScreen(
 
 
                                     for (x in 0 until recipeData.ingredientsList.size) {
+
+                                        var myText = "- " + recipeData.ingredientsList[x].ingredientName
+
+                                        if(ingredientsQuantities?.size != null){
+                                            println("NOT NULL")
+                                            println(ingredientsQuantities?.size)
+                                        }
+
+                                        for(y in 0 until (ingredientsQuantities?.size ?: 0)){
+                                            println("LLOPER")
+                                            if(ingredientsQuantities?.get(y)?.ingredientName == recipeData.ingredientsList[x].ingredientName){
+                                                if(!ingredientsQuantities?.get(y)?.quantity.isNullOrBlank()) {
+                                                    println("PASSED LOP")
+                                                    myText += " ("
+                                                    myText += ingredientsQuantities?.get(y)?.quantity
+                                                    myText += " "
+                                                    myText += ingredientsQuantities?.get(y)?.unit
+                                                    myText += ")"
+                                                }
+                                                break
+                                            }
+                                        }
+
                                         Text(
                                             //modifier = Modifier.padding(start = 8.dp, end = 8.dp),
-                                            text = "- " + recipeData.ingredientsList[x].ingredientName,
+                                            text = myText,
                                             color = Color(0xFFd8af84),
                                             fontSize = 18.sp
 
