@@ -8,6 +8,7 @@ import com.example.bearrecipebookapp.data.RecipeAppDatabase
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
 import com.example.bearrecipebookapp.data.repository.ShoppingListScreenRepository
+import com.example.bearrecipebookapp.datamodel.IngredientsWithQuantities
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.datamodel.ShoppingScreenUiState
 import com.example.bearrecipebookapp.datamodel.UiAlertStateShoppingScreenDataModel
@@ -22,6 +23,7 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
     var shoppingListScreenData: LiveData<List<RecipeWithIngredients>>
     var selectedIngredients: LiveData<List<IngredientEntity>>
+    var selectedIngredients2: LiveData<List<IngredientsWithQuantities>>
     var customIngredients: LiveData<List<ShoppingListCustomItemsEntity>>
 
 
@@ -35,6 +37,7 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
         shoppingListScreenData = repository.shoppingListScreenData
         selectedIngredients = repository.selectedIngredients
+        selectedIngredients2 = repository.selectedIngredients2
         customIngredients = repository.customIngredients
 
         coroutineScope.launch(Dispatchers.IO) {

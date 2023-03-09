@@ -78,6 +78,7 @@ fun ShoppingListScreen(
 
         val shoppingListScreenData by shoppingListScreenViewModel.shoppingListScreenData.observeAsState(listOf())
         val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
+        val selectedIngredients2 by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
 //        val customIngredients by shoppingListScreenViewModel.customIngredients.observeAsState(listOf())
 
         var filterWasClicked by remember { mutableStateOf(false) }

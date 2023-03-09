@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.example.bearrecipebookapp.data.dao.ShoppingListScreenDao
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
+import com.example.bearrecipebookapp.datamodel.IngredientsWithQuantities
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,7 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
 
     var shoppingListScreenData: LiveData<List<RecipeWithIngredients>> = shoppingListScreenDao.getData()
     var selectedIngredients:  LiveData<List<IngredientEntity>> = shoppingListScreenDao.getNeededIngredients()
+    var selectedIngredients2:  LiveData<List<IngredientsWithQuantities>> = shoppingListScreenDao.getNeededIngredients2()
     var customIngredients: LiveData<List<ShoppingListCustomItemsEntity>> = shoppingListScreenDao.getCustomIngredients()
 
     suspend fun setDetailsScreenTarget(recipeName: String){

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
+import com.example.bearrecipebookapp.datamodel.IngredientsWithQuantities
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 
 @Dao
@@ -17,6 +18,18 @@ interface ShoppingListScreenDao {
     @Transaction
     @Query("SELECT * FROM ingredient_table WHERE quantity_needed > 0 ORDER BY is_shown DESC, ingredient_name ASC")
     fun getNeededIngredients(): LiveData<List<IngredientEntity>>
+
+    @Transaction
+    @Query("SELECT ingredient_table.ingredient_name, quantities_table.quantity " +
+            "FROM ingredient_table " +
+            "INNER JOIN quantities_table ON ingredient_table.ingredient_name = quantities_table.ingredient_name " +
+            "INNER JOIN recipe_ingredient_join_table ON quantities_table.recipe_name = recipe_ingredient_join_table.recipe_name " +
+            "INNER JOIN recipe_table ON recipe_ingredient_join_table.recipe_name = recipe_table.recipe_name " +
+            "WHERE ingredient_table.is_shown = 1 AND recipe_table.on_menu = 1" +
+            "ORDER BY is_shown DESC, ingredient_name ASC")
+    fun getNeededIngredients2(): LiveData<List<IngredientsWithQuantities>>
+
+
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
