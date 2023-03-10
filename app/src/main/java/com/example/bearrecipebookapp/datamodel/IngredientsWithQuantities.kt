@@ -7,4 +7,5 @@ data class IngredientsWithQuantities(
     val isShown: Int = 1,
     val quantity: String = "",
     val unit: String = "",
+
 )

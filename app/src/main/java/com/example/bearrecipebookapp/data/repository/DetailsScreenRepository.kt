@@ -19,8 +19,55 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
 //    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions> = detailsScreenDao.getData()
     private val recipeNameLiveData = MutableLiveData<String>()
 
-    val ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
+    private val _ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
         detailsScreenDao.getIngredientQuantitiesList(recipeName)
+    }
+
+    val ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>> = Transformations.map(_ingredientQuantitiesList) {
+        it.map { quantityEntity ->
+
+            if(quantityEntity.quantity.isBlank()){
+                quantityEntity
+            }
+            else
+            {
+                if (quantityEntity.quantity.toDouble().rem(1) == 0.0) {
+                    QuantitiesTableEntity(
+                        quantityEntity.id,
+                        quantityEntity.recipeName,
+                        quantityEntity.ingredientName,
+                        quantityEntity.quantity,
+                        quantityEntity.unit
+                    )
+                } else {
+                    val remainder = quantityEntity.quantity.toDouble().rem(1)
+                    val quotient = quantityEntity.quantity.toDouble().toInt()
+                    var remainderAsString = ""
+                    when (remainder) {
+                        0.75 -> {
+                            remainderAsString = "3/4"
+                        }
+                        0.5 -> {
+                            remainderAsString = "1/2"
+                        }
+                        0.25 -> {
+                            remainderAsString = "1/4"
+                        }
+                    }
+
+                    val result = if(quotient != 0) quotient.toString() else "" + remainderAsString
+
+                    QuantitiesTableEntity(
+                        quantityEntity.id,
+                        quantityEntity.recipeName,
+                        quantityEntity.ingredientName,
+                        result,
+                        quantityEntity.unit
+                    )
+                }
+            }
+
+        }
     }
 
     val reviewsData: LiveData<List<ReviewWithAuthorDataModel>> = Transformations.switchMap(recipeNameLiveData) { recipeName ->

@@ -467,29 +467,37 @@ fun NewDetailsScreen(
                                     )
 
 
-                                    for (x in 0 until recipeData.ingredientsList.size) {
+                                    for (x in 0 until (ingredientsQuantities?.size ?: 0)) {
 
-                                        var myText = "- " + recipeData.ingredientsList[x].ingredientName
+                                        var myText = "- " + ingredientsQuantities?.get(x)?.ingredientName
 
-                                        if(ingredientsQuantities?.size != null){
-                                            println("NOT NULL")
-                                            println(ingredientsQuantities?.size)
+                                        if(!ingredientsQuantities?.get(x)?.quantity.isNullOrBlank()) {
+                                            myText += " ("
+                                            myText += ingredientsQuantities?.get(x)?.quantity
+                                            myText += " "
+                                            myText += ingredientsQuantities?.get(x)?.unit
+                                            myText += ")"
                                         }
 
-                                        for(y in 0 until (ingredientsQuantities?.size ?: 0)){
-                                            println("LLOPER")
-                                            if(ingredientsQuantities?.get(y)?.ingredientName == recipeData.ingredientsList[x].ingredientName){
-                                                if(!ingredientsQuantities?.get(y)?.quantity.isNullOrBlank()) {
-                                                    println("PASSED LOP")
-                                                    myText += " ("
-                                                    myText += ingredientsQuantities?.get(y)?.quantity
-                                                    myText += " "
-                                                    myText += ingredientsQuantities?.get(y)?.unit
-                                                    myText += ")"
-                                                }
-                                                break
-                                            }
-                                        }
+//                                        if(ingredientsQuantities?.size != null){
+//                                            println("NOT NULL")
+//                                            println(ingredientsQuantities?.size)
+//                                        }
+//
+//                                        for(y in 0 until (ingredientsQuantities?.size ?: 0)){
+//                                            println("LLOPER")
+//                                            if(ingredientsQuantities?.get(y)?.ingredientName == recipeData.ingredientsList[x].ingredientName){
+//                                                if(!ingredientsQuantities?.get(y)?.quantity.isNullOrBlank()) {
+//                                                    println("PASSED LOP")
+//                                                    myText += " ("
+//                                                    myText += ingredientsQuantities?.get(y)?.quantity
+//                                                    myText += " "
+//                                                    myText += ingredientsQuantities?.get(y)?.unit
+//                                                    myText += ")"
+//                                                }
+//                                                break
+//                                            }
+//                                        }
 
                                         Text(
                                             //modifier = Modifier.padding(start = 8.dp, end = 8.dp),

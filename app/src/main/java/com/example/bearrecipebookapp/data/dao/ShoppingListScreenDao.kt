@@ -20,13 +20,18 @@ interface ShoppingListScreenDao {
     fun getNeededIngredients(): LiveData<List<IngredientEntity>>
 
     @Transaction
-    @Query("SELECT ingredient_table.ingredient_name, quantities_table.quantity " +
+    @Query("SELECT ingredient_table.ingredient_name as ingredientName, " +
+            "ingredient_table.quantity_owned as quantityOwned, " +
+            "ingredient_table.quantity_needed as quantityNeeded, " +
+            "ingredient_table.is_shown as isShown, " +
+            "quantities_table.quantity as quantity, " +
+            "quantities_table.unit as unit " +
             "FROM ingredient_table " +
             "INNER JOIN quantities_table ON ingredient_table.ingredient_name = quantities_table.ingredient_name " +
             "INNER JOIN recipe_ingredient_join_table ON quantities_table.recipe_name = recipe_ingredient_join_table.recipe_name " +
             "INNER JOIN recipe_table ON recipe_ingredient_join_table.recipe_name = recipe_table.recipe_name " +
-            "WHERE ingredient_table.is_shown = 1 AND recipe_table.on_menu = 1" +
-            "ORDER BY is_shown DESC, ingredient_name ASC")
+            "WHERE ingredient_table.is_shown = 1 AND recipe_table.on_menu = 1 " +
+            "ORDER BY ingredient_table.is_shown DESC, ingredient_table.ingredient_name ASC")
     fun getNeededIngredients2(): LiveData<List<IngredientsWithQuantities>>
 
 
