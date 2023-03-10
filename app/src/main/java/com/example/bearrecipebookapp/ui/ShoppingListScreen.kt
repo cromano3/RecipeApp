@@ -711,7 +711,7 @@ fun ShoppingListItemWithButton(
         modifier = modifier
             .padding(start = 8.dp, top = 8.dp)
             .width(240.dp)
-            .height(36.dp)
+            .wrapContentHeight()
             .alpha(alphaAnim)
             .border(
                 width = 2.dp,
@@ -754,8 +754,8 @@ fun ShoppingListItemWithButton(
 //            }
 //        }
         Row(
-            Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.Start
+            Modifier.fillMaxSize().padding(top = 1.dp, bottom = 1.dp),
+            horizontalArrangement = Arrangement.Start
         )
         {
             Icon(
@@ -776,8 +776,8 @@ fun ShoppingListItemWithButton(
 
             if(ingredientEntity.quantity.isNotBlank()) {
                 myText += " ("
-                myText += ingredientEntity.quantity
-                myText += " "
+                myText += ingredientEntity.quantity.replace("/", "\u002F")
+                myText += "\u00A0"
                 myText += ingredientEntity.unit
                 myText += ")"
             }
@@ -785,7 +785,7 @@ fun ShoppingListItemWithButton(
             Text(
                 modifier = Modifier
                     // .weight(1f)
-                    .padding(start = 4.dp)
+                    .padding(start = 2.dp, bottom = 2.dp)
                     .align(Alignment.CenterVertically)
                     .alpha(alphaLevel),
                 text = myText,
@@ -794,8 +794,9 @@ fun ShoppingListItemWithButton(
             )
             /*
                 Show (2) or more if the number needed is more than 1
+                AND there is no quantity/unit associated with the item
              */
-            if(ingredientEntity.quantityNeeded > 1) {
+            if(ingredientEntity.quantityNeeded > 1 && ingredientEntity.quantity.isBlank()) {
                 Text(
                     modifier = Modifier
                         //.weight(1f)

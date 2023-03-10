@@ -18,13 +18,8 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
     var shoppingListScreenData: LiveData<List<RecipeWithIngredients>> = shoppingListScreenDao.getData()
     var selectedIngredients:  LiveData<List<IngredientEntity>> = shoppingListScreenDao.getNeededIngredients()
     var selectedIngredients2:  LiveData<List<IngredientsWithQuantities>> = Transformations.map(shoppingListScreenDao.getNeededIngredients2()) { it ->
-        it.groupBy { quantityEntity ->
-            println("?????? ${quantityEntity.ingredientName}")
-            quantityEntity.ingredientName }
+        it.groupBy { quantityEntity -> quantityEntity.ingredientName }
             .map { mapEntry ->
-                println("KEY VALUE PAIRS!!!!!")
-                println(mapEntry.key)
-                println(mapEntry.value)
                 val totalQuantity = mapEntry.value.sumOf {
                     try{
                         it.quantity.toDouble()
