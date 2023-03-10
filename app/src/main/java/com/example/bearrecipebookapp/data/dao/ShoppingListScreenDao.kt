@@ -30,7 +30,7 @@ interface ShoppingListScreenDao {
             "INNER JOIN quantities_table ON ingredient_table.ingredient_name = quantities_table.ingredient_name " +
             "INNER JOIN recipe_ingredient_join_table ON quantities_table.recipe_name = recipe_ingredient_join_table.recipe_name " +
             "INNER JOIN recipe_table ON recipe_ingredient_join_table.recipe_name = recipe_table.recipe_name " +
-            "WHERE ingredient_table.is_shown = 1 AND recipe_table.on_menu = 1 " +
+            "WHERE ingredient_table.quantity_needed > 0 AND recipe_table.on_menu = 1 " +
             "ORDER BY ingredient_table.is_shown DESC, ingredient_table.ingredient_name ASC")
     fun getNeededIngredients2(): LiveData<List<IngredientsWithQuantities>>
 

@@ -1,6 +1,7 @@
 package com.example.bearrecipebookapp.data.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import com.example.bearrecipebookapp.data.dao.ShoppingListScreenDao
 import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
@@ -16,7 +17,45 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
 
     var shoppingListScreenData: LiveData<List<RecipeWithIngredients>> = shoppingListScreenDao.getData()
     var selectedIngredients:  LiveData<List<IngredientEntity>> = shoppingListScreenDao.getNeededIngredients()
-    var selectedIngredients2:  LiveData<List<IngredientsWithQuantities>> = shoppingListScreenDao.getNeededIngredients2()
+    var selectedIngredients2:  LiveData<List<IngredientsWithQuantities>> = Transformations.map(shoppingListScreenDao.getNeededIngredients2()) { it ->
+        it.groupBy { quantityEntity -> quantityEntity.ingredientName }
+            .map { (_, ingredientWithQuantities) ->
+                val totalQuantity = ingredientWithQuantities.sumOf {
+                    try{
+                        it.quantity.toDouble()
+                    } catch(e: java.lang.NumberFormatException){
+                        0.0
+                    }
+                }
+                val firstIngredient = ingredientWithQuantities.first()
+
+                val remainder = totalQuantity.rem(1)
+                val quotient = totalQuantity.toInt()
+                var remainderAsString = ""
+                when (remainder) {
+                    0.75 -> {
+                        remainderAsString = "3/4"
+                    }
+                    0.5 -> {
+                        remainderAsString = "1/2"
+                    }
+                    0.25 -> {
+                        remainderAsString = "1/4"
+                    }
+                }
+
+                val result = if(quotient != 0) quotient.toString() else "" + remainderAsString
+
+                IngredientsWithQuantities(
+                    firstIngredient.ingredientName,
+                    firstIngredient.quantityOwned,
+                    firstIngredient.quantityNeeded,
+                    firstIngredient.isShown,
+                    result,
+                    firstIngredient.unit
+                )
+            }
+    }
     var customIngredients: LiveData<List<ShoppingListCustomItemsEntity>> = shoppingListScreenDao.getCustomIngredients()
 
     suspend fun setDetailsScreenTarget(recipeName: String){
