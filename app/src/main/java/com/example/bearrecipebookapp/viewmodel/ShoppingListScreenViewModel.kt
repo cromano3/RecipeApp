@@ -312,21 +312,21 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
         cancelClearAllCustomItemsAlert()
     }
 
-    fun ingredientSelected(ingredientEntity: IngredientEntity){
+    fun ingredientSelected(ingredientName: String){
         shoppingScreenUiState.update {
             it.copy(counter = shoppingScreenUiState.value.counter + 1)
         }
 
-        repository.setIngredientToOwned(ingredientEntity)
+        repository.setIngredientToOwned(ingredientName)
     }
 
-    fun ingredientDeselected(ingredientEntity: IngredientEntity){
+    fun ingredientDeselected(ingredientName: String){
 
         shoppingScreenUiState.update {
             it.copy(counter = shoppingScreenUiState.value.counter + 1)
         }
 
-        repository.setIngredientToNotOwned(ingredientEntity)
+        repository.setIngredientToNotOwned(ingredientName)
     }
 
 

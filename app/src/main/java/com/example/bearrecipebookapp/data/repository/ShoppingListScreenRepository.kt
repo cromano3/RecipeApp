@@ -18,16 +18,21 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
     var shoppingListScreenData: LiveData<List<RecipeWithIngredients>> = shoppingListScreenDao.getData()
     var selectedIngredients:  LiveData<List<IngredientEntity>> = shoppingListScreenDao.getNeededIngredients()
     var selectedIngredients2:  LiveData<List<IngredientsWithQuantities>> = Transformations.map(shoppingListScreenDao.getNeededIngredients2()) { it ->
-        it.groupBy { quantityEntity -> quantityEntity.ingredientName }
-            .map { (_, ingredientWithQuantities) ->
-                val totalQuantity = ingredientWithQuantities.sumOf {
+        it.groupBy { quantityEntity ->
+            println("?????? ${quantityEntity.ingredientName}")
+            quantityEntity.ingredientName }
+            .map { mapEntry ->
+                println("KEY VALUE PAIRS!!!!!")
+                println(mapEntry.key)
+                println(mapEntry.value)
+                val totalQuantity = mapEntry.value.sumOf {
                     try{
                         it.quantity.toDouble()
                     } catch(e: java.lang.NumberFormatException){
                         0.0
                     }
                 }
-                val firstIngredient = ingredientWithQuantities.first()
+                val firstIngredient = mapEntry.value.first()
 
                 val remainder = totalQuantity.rem(1)
                 val quotient = totalQuantity.toInt()
@@ -47,7 +52,7 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
                 val result = if(quotient != 0) quotient.toString() else "" + remainderAsString
 
                 IngredientsWithQuantities(
-                    firstIngredient.ingredientName,
+                    mapEntry.key,
                     firstIngredient.quantityOwned,
                     firstIngredient.quantityNeeded,
                     firstIngredient.isShown,
@@ -146,15 +151,15 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
 
 
 
-    fun setIngredientToOwned(ingredientEntity: IngredientEntity){
+    fun setIngredientToOwned(ingredientName: String){
         coroutineScope.launch(Dispatchers.IO) {
-            shoppingListScreenDao.setIngredientToOwned(ingredientEntity.ingredientName)
+            shoppingListScreenDao.setIngredientToOwned(ingredientName)
         }
     }
 
-    fun setIngredientToNotOwned(ingredientEntity: IngredientEntity){
+    fun setIngredientToNotOwned(ingredientName: String){
         coroutineScope.launch(Dispatchers.IO) {
-            shoppingListScreenDao.setIngredientToNotOwned(ingredientEntity.ingredientName)
+            shoppingListScreenDao.setIngredientToNotOwned(ingredientName)
         }
     }
 }

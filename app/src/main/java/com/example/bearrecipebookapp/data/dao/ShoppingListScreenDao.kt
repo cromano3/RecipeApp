@@ -20,7 +20,7 @@ interface ShoppingListScreenDao {
     fun getNeededIngredients(): LiveData<List<IngredientEntity>>
 
     @Transaction
-    @Query("SELECT ingredient_table.ingredient_name as ingredientName, " +
+    @Query("SELECT DISTINCT ingredient_table.ingredient_name as ingredientName, " +
             "ingredient_table.quantity_owned as quantityOwned, " +
             "ingredient_table.quantity_needed as quantityNeeded, " +
             "ingredient_table.is_shown as isShown, " +

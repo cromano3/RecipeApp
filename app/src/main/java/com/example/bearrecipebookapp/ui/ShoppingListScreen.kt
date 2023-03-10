@@ -46,8 +46,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.bearrecipebookapp.R
 import com.example.bearrecipebookapp.data.annotatedstrings.addRecipeOrCustomItemAnoString
-import com.example.bearrecipebookapp.data.entity.IngredientEntity
 import com.example.bearrecipebookapp.data.entity.ShoppingListCustomItemsEntity
+import com.example.bearrecipebookapp.datamodel.IngredientsWithQuantities
 import com.example.bearrecipebookapp.datamodel.RecipeWithIngredients
 import com.example.bearrecipebookapp.ui.components.BasicAlert
 import com.example.bearrecipebookapp.ui.components.CancelAlertButton
@@ -78,7 +78,7 @@ fun ShoppingListScreen(
 
         val shoppingListScreenData by shoppingListScreenViewModel.shoppingListScreenData.observeAsState(listOf())
         val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
-        val selectedIngredients2 by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
+        val selectedIngredients2 by shoppingListScreenViewModel.selectedIngredients2.observeAsState(listOf())
 //        val customIngredients by shoppingListScreenViewModel.customIngredients.observeAsState(listOf())
 
         var filterWasClicked by remember { mutableStateOf(false) }
@@ -115,7 +115,7 @@ fun ShoppingListScreen(
         if(scrollDown){
             coroutineScope.launch {
                 scrollDown = false
-                listState.animateScrollToItem(selectedIngredients.size + uiState.customItems.size)
+                listState.animateScrollToItem(selectedIngredients2.size + uiState.customItems.size)
             }
         }
 
@@ -148,13 +148,13 @@ fun ShoppingListScreen(
 //                        Text(text = uiState.counter.toString())
 //                    }
 
-                    items(selectedIngredients, key = { it.ingredientName }) {
+                    items(selectedIngredients2, key = { it.ingredientName }) {
                         ShoppingListItemWithButton(
                             modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
                             ingredientEntity = it,
                             isWorking = uiState.isWorking,
-                            onClickIngredientSelected = { shoppingListScreenViewModel.ingredientSelected(it) },
-                            onClickIngredientDeselected = { shoppingListScreenViewModel.ingredientDeselected(it) },
+                            onClickIngredientSelected = { shoppingListScreenViewModel.ingredientSelected(it.ingredientName) },
+                            onClickIngredientDeselected = { shoppingListScreenViewModel.ingredientDeselected(it.ingredientName) },
                         )
                     }
 
@@ -235,7 +235,7 @@ fun ShoppingListScreen(
                         androidx.compose.animation.AnimatedVisibility(
                             visible = (
                                 (uiState.customItems.isNotEmpty() && !filterWasClicked && !uiState.isFiltered) ||
-                                (selectedIngredients.isNotEmpty() && !filterWasClicked  && !uiState.isFiltered)
+                                (selectedIngredients2.isNotEmpty() && !filterWasClicked  && !uiState.isFiltered)
                             ),
                             enter = fadeIn(TweenSpec(20)),
                             exit = fadeOut(TweenSpec(20)),
@@ -311,7 +311,7 @@ fun ShoppingListScreen(
 //                    }
                 }
             }
-            if (selectedIngredients.isEmpty() && uiState.customItems.isEmpty()) {
+            if (selectedIngredients2.isEmpty() && uiState.customItems.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Image(
 
@@ -657,7 +657,7 @@ fun RecipeIconWithButton(
 @Composable
 fun ShoppingListItemWithButton(
     modifier: Modifier,
-    ingredientEntity: IngredientEntity,
+    ingredientEntity: IngredientsWithQuantities,
     isWorking: Boolean,
     onClickIngredientSelected: () -> Unit,
     onClickIngredientDeselected: () -> Unit
@@ -772,13 +772,23 @@ fun ShoppingListItemWithButton(
                 //.weight(1f)
 
             )
+            var myText = ingredientEntity.ingredientName
+
+            if(ingredientEntity.quantity.isNotBlank()) {
+                myText += " ("
+                myText += ingredientEntity.quantity
+                myText += " "
+                myText += ingredientEntity.unit
+                myText += ")"
+            }
+
             Text(
                 modifier = Modifier
                     // .weight(1f)
                     .padding(start = 4.dp)
                     .align(Alignment.CenterVertically)
                     .alpha(alphaLevel),
-                text = ingredientEntity.ingredientName,
+                text = myText,
                 textDecoration = decoration,
                 fontSize = 16.sp
             )
