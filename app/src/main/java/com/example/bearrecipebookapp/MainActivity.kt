@@ -309,8 +309,18 @@ fun BearRecipeApp(
                     confirmSignInWithGoogle = { appViewModel.signInWithGoogle() },
                     confirmReAuthForDeleteAccount = { appViewModel.confirmReAuthForDeleteAccount() },
                     reAuthForDeleteSignInResult = appUiState.reAuthForDeleteSuccessful,
-                    clearReAuthForDeleteSignInResult = { appViewModel.clearReAuthForDeleteSignInResult() }
+                    clearReAuthForDeleteSignInResult = { appViewModel.clearReAuthForDeleteSignInResult() },
+                    navigateToLicensesScreen = { navController.navigate("LicensesScreen") }
                 )
+            }
+
+            /** Settings Screen */
+            composable(
+                route = "LicensesScreen",
+                enterTransition = { fadeIn(animationSpec = tween(700)) },
+                exitTransition = { fadeOut(animationSpec = tween(700)) }
+            ){
+                LicensesScreen()
             }
 
             /** Home Screen */
@@ -343,6 +353,7 @@ fun BearRecipeApp(
                         coroutineScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO){appViewModel.setupDetailsScreen(it)}
                             navController.navigate("DetailsScreen")
+
 //                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                         }
                     },
@@ -556,7 +567,7 @@ fun BearAppBottomBar(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
-    if(currentRoute != "CommentScreen") {
+    if(currentRoute != "CommentScreen" && currentRoute != "LicensesScreen") {
         BottomNavigation(
             backgroundColor = Color(0xFF682300),
             contentColor = Color(0xFFd8af84)
@@ -843,6 +854,22 @@ fun BearAppTopBar(
                 showSearchButton = false
                 showShare = false
                 showIcon = false
+                showIcon2 = false
+
+            }
+            "LicensesScreen" -> {
+                show = true
+                textModifier = Modifier.wrapContentWidth()
+                title = "Licenses Information"
+                icon = Icons.Outlined.ArrowBack
+                icon2 = Icons.Outlined.Person
+                clickEffectLeft = onBackClick
+                clickEffectRight = {}
+                showTitle = true
+                showSearchField = false
+                showSearchButton = false
+                showShare = false
+                showIcon = true
                 showIcon2 = false
 
             }

@@ -1,8 +1,6 @@
 package com.example.bearrecipebookapp.ui.components
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -71,7 +69,34 @@ fun OneButtonAlert(
         buttons =
         {
             Row(
-                Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ConfirmAlertButton(buttonText = confirmButtonText, onButtonClick = onConfirmClick)
+            }
+        }
+    )
+}
+
+@Composable
+fun OneButtonScrollableAlert(
+    text: String,
+    confirmButtonText: String,
+    onConfirmClick: () -> Unit,
+    onDismiss: () -> Unit
+){
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        text = { ScrollableAlertText(text = text)},
+        title = {Box(){  }},
+        buttons =
+        {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 ConfirmAlertButton(buttonText = confirmButtonText, onButtonClick = onConfirmClick)
@@ -107,6 +132,26 @@ fun AlertText(text: String){
         )
     }
 }
+
+
+@Composable
+fun ScrollableAlertText(text: String){
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState()),
+//        horizontalArrangement = Arrangement.Center
+    ){
+        Text(text = text,
+            modifier = Modifier.padding(bottom = 16.dp),
+            color = Color(0xFF682300),
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
 
 @Composable
 fun AnnotatedStringText(text: AnnotatedString){
