@@ -44,7 +44,29 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
                     }
                 }
 
-                val result = if(quotient != 0) quotient.toString() else "" + remainderAsString
+                val result = if(quotient != 0) {
+
+                    quotient.toString() + remainderAsString
+                }
+                else {
+                    "" + remainderAsString
+                }
+
+                var unit = firstIngredient.unit
+
+                if(quotient > 1){
+                   unit = when(firstIngredient.unit){
+                        "cup" -> "cups"
+                       "can" -> "cans"
+                       "handful" -> "handfuls"
+                       "large jar" -> "large jars"
+                       "quart" -> "quarts"
+                       "tablespoon" -> "tablespoons"
+                       "teaspoon" -> "teaspoons"
+                       else -> firstIngredient.unit
+                   }
+                }
+
 
                 IngredientsWithQuantities(
                     mapEntry.key,
@@ -52,7 +74,7 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
                     firstIngredient.quantityNeeded,
                     firstIngredient.isShown,
                     result,
-                    firstIngredient.unit
+                    unit
                 )
             }
     }
