@@ -125,6 +125,22 @@ class SettingsScreenViewModel(
         }
     }
 
+    fun showLicenses(){
+        uiAlertState.update {
+            it.copy(
+                showLicenses = true
+            )
+        }
+    }
+
+    fun closeLicenses(){
+        uiAlertState.update {
+            it.copy(
+                showLicenses = false
+            )
+        }
+    }
+
     fun cancelReAuthAlert(){
         uiAlertState.update {
             it.copy(

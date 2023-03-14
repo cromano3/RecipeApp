@@ -56,7 +56,7 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
 
                 if(quotient > 1){
                    unit = when(firstIngredient.unit){
-                        "cup" -> "cups"
+                       "cup" -> "cups"
                        "can" -> "cans"
                        "handful" -> "handfuls"
                        "large jar" -> "large jars"
