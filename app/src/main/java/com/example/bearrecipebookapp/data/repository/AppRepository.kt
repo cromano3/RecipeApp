@@ -25,9 +25,9 @@ class AppRepository(private val appDao: AppDao) {
     }
 
 
-    fun setGlobalRating(recipeName: String, rating: Int){
-        appDao.setGlobalRating(recipeName, rating)
-    }
+//    fun setGlobalRating(recipeName: String, rating: Int){
+//        appDao.setGlobalRating(recipeName, rating)
+//    }
 
     fun getReviewsData(recipeName: String): List<ReviewWithAuthorDataModel> {
         return appDao.getReviewsData(recipeName)
@@ -116,9 +116,9 @@ class AppRepository(private val appDao: AppDao) {
         appDao.setLocalRating(recipeName, rating, syncStatus)
     }
 
-    fun updateRecipeRating(rating: RecipeNameAndRating){
-        appDao.updateRecipeRating(rating.recipeName, rating.rating)
-    }
+//    fun updateRecipeRating(rating: RecipeNameAndRating){
+//        appDao.updateRecipeRating(rating.recipeName, rating.rating)
+//    }
 
 
 

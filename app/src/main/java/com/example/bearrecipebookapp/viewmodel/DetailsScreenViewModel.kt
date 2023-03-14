@@ -141,11 +141,13 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
                         detailsScreenFirebaseRepository.getGlobalRating(recipeName)
                     }
 
-                    withContext(Dispatchers.IO) {
-                        repository.setGlobalRating(
-                            recipeName,
-                            globalRating
-                        )
+                    if(globalRating != 0) {
+                        withContext(Dispatchers.IO) {
+                            repository.setGlobalRating(
+                                recipeName,
+                                globalRating
+                            )
+                        }
                     }
                 }
             }

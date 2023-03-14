@@ -27,9 +27,9 @@ interface AppDao {
     fun onlineUserType(): Int
 
 
-    @Transaction
-    @Query("UPDATE recipe_table SET global_rating = :rating WHERE recipe_name = :recipeName")
-    fun setGlobalRating(recipeName: String, rating: Int)
+//    @Transaction
+//    @Query("UPDATE recipe_table SET global_rating = :rating WHERE recipe_name = :recipeName")
+//    fun setGlobalRating(recipeName: String, rating: Int)
 
 
 
@@ -136,9 +136,9 @@ interface AppDao {
 
 
 
-    @Transaction
-    @Query("UPDATE recipe_table SET global_rating = :rating WHERE recipe_name = :recipeName")
-    fun updateRecipeRating(recipeName: String, rating: Int)
+//    @Transaction
+//    @Query("UPDATE recipe_table SET global_rating = :rating WHERE recipe_name = :recipeName")
+//    fun updateRecipeRating(recipeName: String, rating: Int)
 
 
     @Transaction

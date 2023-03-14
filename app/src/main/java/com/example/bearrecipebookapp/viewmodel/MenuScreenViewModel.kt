@@ -34,7 +34,7 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
         menuScreenData = repository.menuScreenData
 
         println("menu screen init")
-        getGlobalRatings()
+//        getGlobalRatings()
     }
 
     private fun getGlobalRatings(){

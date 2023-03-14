@@ -515,7 +515,7 @@ fun RecipeIconWithButton(
         "Mexican Style Rice" -> R.drawable.mexicanrice
         "Wild Rice Salad" -> R.drawable.wildrice
         "Rice Soup" -> R.drawable.ricesoup
-        else -> R.drawable.bagel
+        else -> R.drawable.garlic2
     }
 
 //    val gradientWidth = with(LocalDensity.current) { 100.dp.toPx() }

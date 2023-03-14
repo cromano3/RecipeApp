@@ -68,7 +68,7 @@ fun RecipeCard(
         "Mexican Style Rice" -> R.drawable.mexicanrice
         "Wild Rice Salad" -> R.drawable.wildrice
         "Rice Soup" -> R.drawable.ricesoup
-        else -> R.drawable.bagel
+        else -> R.drawable.garlic2
     }
 
     /*
