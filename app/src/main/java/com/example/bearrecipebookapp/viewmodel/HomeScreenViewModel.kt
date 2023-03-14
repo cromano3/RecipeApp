@@ -126,7 +126,10 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         coroutineScope.launch(Dispatchers.Main) {
 
         uiFiltersState.update { currentState ->
-            currentState.copy(isWorking = true)
+            currentState.copy(
+                isWorking = true,
+                isScrollable = !uiFiltersState.value.isScrollable
+            )
         }
             if (filter.isActiveFilter == 0 ||
                 filter.isActiveFilter == 1

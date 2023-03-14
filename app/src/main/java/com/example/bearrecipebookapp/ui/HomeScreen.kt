@@ -20,8 +20,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Restaurant
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -102,7 +105,7 @@ fun HomeScreen(
         val uiAlertState by homeScreenViewModel.uiAlertState.collectAsState()
 
 
-        var isScrollable by remember { mutableStateOf(true) }
+//        var isScrollable by remember { mutableStateOf(true) }
 
 
 
@@ -139,7 +142,7 @@ fun HomeScreen(
                             Color(0xFFd8af84)
                         ),
                         state = listState,
-                        userScrollEnabled = isScrollable
+                        userScrollEnabled = uiFiltersState.isScrollable
                     ){
                         items(filtersList, key = { it.filterName }) {
 
@@ -151,7 +154,7 @@ fun HomeScreen(
                                 onFilterClick =
                                 {
                                     homeScreenViewModel.filterBy(it)
-                                    isScrollable = !isScrollable
+//                                    isScrollable = !isScrollable
                                 },
                             )
                         }
@@ -561,6 +564,8 @@ fun FiltersButton(
         "Breakfast" -> R.drawable.coffee
         "Chinese" -> R.drawable.chinesefood1
         "Curry" -> R.drawable.curryicon
+        "Mallorcan" -> R.drawable.ensaimada
+        "Spanish" -> R.drawable.paella
         "Soups" -> R.drawable.soup
         "Thai" -> R.drawable.thai
         "Indian" -> R.drawable.samosa1
