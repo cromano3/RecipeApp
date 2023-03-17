@@ -1,0 +1,18 @@
+package com.christopherromano.culinarycompanion.datamodel
+
+import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
+
+data class UiAlertStateMenuScreenDataModel(
+    val userIsOnlineStatus: Int = 0,
+    val showRemoveAlert: Boolean = false,
+    val showCompletedAlert: Boolean = false,
+    val showAddRecipeAlert: Boolean = false,
+    val showRatingAlert: Boolean = false,
+    val showFavoriteAlert: Boolean = false,
+    val showLeaveReviewAlert: Boolean = false,
+    val isThumbUpSelected: Boolean = false,
+    val isThumbDownSelected: Boolean = false,
+    val recipe: RecipeWithIngredientsAndInstructions = RecipeWithIngredientsAndInstructions(
+        RecipeEntity(), listOf(), listOf()),
+)
+

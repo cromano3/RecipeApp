@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BearRecipeBookApp</string>
+    <string name="app_name">CulinaryCompanion</string>
 
     <string name="recipe1_name">Bagels</string>
     <string name="recipe1_ingredients">Yeast, Flour, Garlic powder, Honey, Garlic, Onion, Sesame seeds</string>

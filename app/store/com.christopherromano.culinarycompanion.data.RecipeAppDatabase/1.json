@@ -1,0 +1,594 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "6beb61bd9a50e0e3d84dedded4621f34",
+    "entities": [
+      {
+        "tableName": "recipe_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `on_menu` INTEGER NOT NULL, `is_details_screen_target` INTEGER NOT NULL, `time_to_make` INTEGER NOT NULL, `difficulty` INTEGER NOT NULL, `global_rating` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, `is_shopping_filter` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `is_search_result` INTEGER NOT NULL, `cooked_count` INTEGER NOT NULL, `is_rated` INTEGER NOT NULL, `local_user_rating` INTEGER NOT NULL, `is_rating_synced` INTEGER NOT NULL, `is_reviewed` INTEGER NOT NULL, `review` TEXT NOT NULL, `is_review_synced` INTEGER NOT NULL, `is_review_screen_target` INTEGER NOT NULL, `time_of_users_last_sync` TEXT NOT NULL, `timestamp_of_latest_received_comment` TEXT NOT NULL, PRIMARY KEY(`recipe_name`))",
+        "fields": [
+          {
+            "fieldPath": "recipeName",
+            "columnName": "recipe_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "onMenu",
+            "columnName": "on_menu",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDetailsScreenTarget",
+            "columnName": "is_details_screen_target",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeToMake",
+            "columnName": "time_to_make",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "difficulty",
+            "columnName": "difficulty",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "globalRating",
+            "columnName": "global_rating",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isShown",
+            "columnName": "is_shown",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isShoppingFilter",
+            "columnName": "is_shopping_filter",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isFavorite",
+            "columnName": "is_favorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isSearchResult",
+            "columnName": "is_search_result",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cookedCount",
+            "columnName": "cooked_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isRated",
+            "columnName": "is_rated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userRating",
+            "columnName": "local_user_rating",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isRatingSynced",
+            "columnName": "is_rating_synced",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isReviewed",
+            "columnName": "is_reviewed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reviewText",
+            "columnName": "review",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isReviewSynced",
+            "columnName": "is_review_synced",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isReviewScreenTarget",
+            "columnName": "is_review_screen_target",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastCommentSyncTime",
+            "columnName": "time_of_users_last_sync",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastDownloadedCommentTimestamp",
+            "columnName": "timestamp_of_latest_received_comment",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "recipe_name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ingredient_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ingredient_name` TEXT NOT NULL, `quantity_owned` INTEGER NOT NULL, `quantity_needed` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, PRIMARY KEY(`ingredient_name`))",
+        "fields": [
+          {
+            "fieldPath": "ingredientName",
+            "columnName": "ingredient_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "quantityOwned",
+            "columnName": "quantity_owned",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "quantityNeeded",
+            "columnName": "quantity_needed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isShown",
+            "columnName": "is_shown",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ingredient_name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "recipe_ingredient_join_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `ingredient_name` TEXT NOT NULL, PRIMARY KEY(`recipe_name`, `ingredient_name`))",
+        "fields": [
+          {
+            "fieldPath": "recipeName",
+            "columnName": "recipe_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ingredientName",
+            "columnName": "ingredient_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "recipe_name",
+            "ingredient_name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "instructions_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`instruction_id` INTEGER NOT NULL, `recipe_id` TEXT NOT NULL, `instruction` TEXT NOT NULL, PRIMARY KEY(`instruction_id`))",
+        "fields": [
+          {
+            "fieldPath": "instructionID",
+            "columnName": "instruction_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipeID",
+            "columnName": "recipe_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "instruction",
+            "columnName": "instruction",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "instruction_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "filters_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`filter_name` TEXT NOT NULL, `is_active_filter` INTEGER NOT NULL, `is_shown` INTEGER NOT NULL, PRIMARY KEY(`filter_name`))",
+        "fields": [
+          {
+            "fieldPath": "filterName",
+            "columnName": "filter_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isActiveFilter",
+            "columnName": "is_active_filter",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isShown",
+            "columnName": "is_shown",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "filter_name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "recipe_filters_join_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_name` TEXT NOT NULL, `filter_name` TEXT NOT NULL, PRIMARY KEY(`recipe_name`, `filter_name`))",
+        "fields": [
+          {
+            "fieldPath": "recipeName",
+            "columnName": "recipe_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "filterName",
+            "columnName": "filter_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "recipe_name",
+            "filter_name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "details_screen_target_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`target_name` TEXT NOT NULL, PRIMARY KEY(`target_name`))",
+        "fields": [
+          {
+            "fieldPath": "ingredientName",
+            "columnName": "target_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "target_name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "search_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`preview_list` TEXT NOT NULL, `results_list` TEXT NOT NULL, `show_results` INTEGER NOT NULL, `text_field_value` TEXT NOT NULL, PRIMARY KEY(`text_field_value`))",
+        "fields": [
+          {
+            "fieldPath": "previewList",
+            "columnName": "preview_list",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "resultsList",
+            "columnName": "results_list",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "showResults",
+            "columnName": "show_results",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "textFieldValue",
+            "columnName": "text_field_value",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "text_field_value"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "user_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_pk` INTEGER NOT NULL, `firestore_uid` TEXT NOT NULL, `exp_to_give` INTEGER NOT NULL, `exp_total` INTEGER NOT NULL, `show_tutorial` TEXT NOT NULL, `is_online_user_type` INTEGER NOT NULL, `user_image_url` TEXT NOT NULL, `user_nickname` TEXT NOT NULL, PRIMARY KEY(`user_pk`))",
+        "fields": [
+          {
+            "fieldPath": "userID",
+            "columnName": "user_pk",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firestoreUid",
+            "columnName": "firestore_uid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expToGive",
+            "columnName": "exp_to_give",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expTotal",
+            "columnName": "exp_total",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "showTutorial",
+            "columnName": "show_tutorial",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isOnlineUser",
+            "columnName": "is_online_user_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userImageUrl",
+            "columnName": "user_image_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userNickname",
+            "columnName": "user_nickname",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "user_pk"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "shopping_list_custom_items_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`item` TEXT NOT NULL, `selected` INTEGER NOT NULL, PRIMARY KEY(`item`))",
+        "fields": [
+          {
+            "fieldPath": "item",
+            "columnName": "item",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "selected",
+            "columnName": "selected",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "item"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "comments_authors_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`author_id` TEXT NOT NULL, `author_name` TEXT NOT NULL, `author_karma` INTEGER NOT NULL, `author_image_url` TEXT NOT NULL, PRIMARY KEY(`author_id`))",
+        "fields": [
+          {
+            "fieldPath": "authorID",
+            "columnName": "author_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorName",
+            "columnName": "author_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorKarma",
+            "columnName": "author_karma",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorImageURL",
+            "columnName": "author_image_url",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "author_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "comments_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment_id` TEXT NOT NULL, `recipe_name` TEXT NOT NULL, `author_id` TEXT NOT NULL, `comment_text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `liked_by_local_user` INTEGER NOT NULL, `local_user_like_was_synced` INTEGER NOT NULL, `timestamp` TEXT NOT NULL, PRIMARY KEY(`comment_id`))",
+        "fields": [
+          {
+            "fieldPath": "commentID",
+            "columnName": "comment_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipeName",
+            "columnName": "recipe_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorID",
+            "columnName": "author_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "commentText",
+            "columnName": "comment_text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "likes",
+            "columnName": "likes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "likedByMe",
+            "columnName": "liked_by_local_user",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "myLikeWasSynced",
+            "columnName": "local_user_like_was_synced",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "comment_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "quantities_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `recipe_name` TEXT NOT NULL, `ingredient_name` TEXT NOT NULL, `quantity` TEXT NOT NULL, `unit` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipeName",
+            "columnName": "recipe_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ingredientName",
+            "columnName": "ingredient_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "quantity",
+            "columnName": "quantity",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unit",
+            "columnName": "unit",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6beb61bd9a50e0e3d84dedded4621f34')"
+    ]
+  }
+}
