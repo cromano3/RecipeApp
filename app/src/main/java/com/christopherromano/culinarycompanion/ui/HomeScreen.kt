@@ -373,7 +373,7 @@ fun HomeScreen(
                                             ) {
                                                 Image(
 
-                                                    painter = painterResource(R.drawable.chef),
+                                                    painter = painterResource(R.drawable.culinary_companion_logo),
                                                     contentScale = ContentScale.Fit,
                                                     alignment = Alignment.Center,
                                                     contentDescription = null,

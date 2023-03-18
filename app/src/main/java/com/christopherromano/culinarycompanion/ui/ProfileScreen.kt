@@ -256,7 +256,7 @@ fun ProfileScreen(
                             ){
                                 //star 1
                                 Surface(
-                                    elevation = 8.dp,
+                                    elevation = 0.dp,
                                     modifier = Modifier
                                         .padding(top = 2.dp)
                                         .border(
@@ -291,7 +291,7 @@ fun ProfileScreen(
                                 }
                                 //star 2
                                 Surface(
-                                    elevation = 8.dp,
+                                    elevation = 0.dp,
                                     modifier = Modifier
                                         .padding(end = 20.dp, top = 7.dp)
                                         .border(
@@ -327,7 +327,7 @@ fun ProfileScreen(
                                 }
                                 //star 3
                                 Surface(
-                                    elevation = 8.dp,
+                                    elevation = 0.dp,
                                     modifier = Modifier
                                         .padding(bottom = 8.dp, end = 2.dp)
                                         .border(
@@ -362,7 +362,7 @@ fun ProfileScreen(
                                 }
                                 //star 9
                                 Surface(
-                                    elevation = 8.dp,
+                                    elevation = 0.dp,
                                     modifier = Modifier
                                         .padding(bottom = 8.dp, start = 2.dp)
                                         .border(
@@ -397,7 +397,7 @@ fun ProfileScreen(
                                 }
                                 //star 10
                                 Surface(
-                                    elevation = 8.dp,
+                                    elevation = 0.dp,
                                     modifier = Modifier
                                         .padding(start = 20.dp, top = 7.dp)
                                         .border(
