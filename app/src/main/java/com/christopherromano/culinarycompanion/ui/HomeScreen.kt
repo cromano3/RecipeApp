@@ -326,14 +326,15 @@ fun HomeScreen(
                             text = {
                                 Column(Modifier.width(200.dp),)
                                 {
-                                    Text(text =
-                                    buildAnnotatedString {
-                                        append("Welcome! To participate in the ")
-                                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                            append("ratings and reviews system")
-                                        }
-                                        append(" please sign in!")
-                                    },
+                                    Text(
+                                        text =
+                                            buildAnnotatedString {
+                                                append("Welcome! To participate in the ")
+                                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                                    append("ratings and reviews system")
+                                                }
+                                                append(" please sign in!")
+                                            },
                                         modifier = Modifier.padding(bottom = 16.dp),
                                         color = Color(0xFF682300),
                                         fontSize = 18.sp,
@@ -344,31 +345,22 @@ fun HomeScreen(
                                     )
                                     {
                                         Surface(
-                                            modifier = Modifier.size(150.dp),
-                                            shape = RoundedCornerShape(50.dp)
+                                            modifier = Modifier.size(120.dp),
+                                            shape = RoundedCornerShape(100)
                                         ) {
                                             //image box
                                             Box(
                                                 modifier = Modifier
-                                                    .size(150.dp)
+                                                    .size(120.dp)
                                                     .border(
                                                         width = 2.dp,
                                                         brush = (Brush.verticalGradient(
-                                                            colors = listOf(
-                                                                Color(0xFFFFFFFF),
-                                                                Color(0xFFb15f33),
-                                                                Color(0xFFb15f33),
-                                                                Color(0xFFb15f33)
-                                                            ),
+                                                            colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
                                                             tileMode = TileMode.Mirror
                                                         )),
-                                                        shape = RoundedCornerShape(50.dp)
+                                                        shape = RoundedCornerShape(100)
                                                     )
-                                                    .background(
-                                                        color =
-//                                Color(0xFFd8af84)
-                                                        Color(0xFF682300)
-                                                    ),
+                                                    .background(color = Color(0xFF682300)),
                                                 contentAlignment = Alignment.Center,
                                             ) {
                                                 Image(
@@ -378,9 +370,9 @@ fun HomeScreen(
                                                     alignment = Alignment.Center,
                                                     contentDescription = null,
                                                     modifier = Modifier
-                                                        .height(90.dp)
-                                                        .width(120.dp),
-                                                    colorFilter = ColorFilter.tint(Color(0xFFd8af84))
+                                                        .height(100.dp)
+                                                        .width(100.dp),
+//                                                    colorFilter = ColorFilter.tint(Color(0xFFd8af84))
                                                 )
                                             }
                                         }
