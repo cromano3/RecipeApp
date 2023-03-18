@@ -189,6 +189,7 @@ class DetailsScreenFirebaseRepository(
         val registration = db
             .collection("reviews")
             .whereEqualTo("recipeName", recipeName)
+            .whereEqualTo("isModApproved", 1)
             .limit(limit.toLong())
             .orderBy("likes", Query.Direction.DESCENDING)
             .addSnapshotListener(listener)

@@ -115,7 +115,7 @@ fun CommentScreen(
                             }
                             else{
 //                                commentScreenViewModel.confirmReview(recipeName = commentScreenData.recipeEntity.recipeName, uiState.reviewText)
-                                onConfirmClick(commentScreenData.recipeEntity.recipeName, uiState.reviewText)
+                                commentScreenViewModel.triggerPendingApprovalAlert()
                             }
                         }
                     }
@@ -148,9 +148,20 @@ fun CommentScreen(
             if(uiState.showTooLongAlert){
                 OneButtonAlert(
                     text = "The maximum size is 1000 characters.",
-                    confirmButtonText = "Got it",
+                    confirmButtonText = "Dismiss",
                     onConfirmClick = { commentScreenViewModel.cancelTooLongAlert() },
                     onDismiss = { commentScreenViewModel.cancelTooLongAlert() }
+                )
+            }
+            if(uiState.showPendingApprovalAlert){
+                OneButtonAlert(
+                    text = "Thank you for your comment! Your comment is pending approval from our moderation team and will displayed as soon as it is approved!",
+                    confirmButtonText = "Continue",
+                    onConfirmClick = {
+                        commentScreenViewModel.cancelPendingApprovalAlert()
+                        onConfirmClick(commentScreenData.recipeEntity.recipeName, uiState.reviewText)
+                                     },
+                    onDismiss = { }
                 )
             }
 
