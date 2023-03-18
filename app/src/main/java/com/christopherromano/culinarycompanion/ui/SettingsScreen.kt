@@ -1,6 +1,8 @@
 package com.christopherromano.culinarycompanion.ui
 
 import android.app.Application
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -59,6 +61,8 @@ fun SettingsScreen(
 
         val authState by settingsScreenViewModel.authState.observeAsState()
         val uiAlertState by settingsScreenViewModel.uiAlertState.collectAsState()
+
+        val ctx = LocalContext.current
 
         val focusRequester = remember { FocusRequester() }
 
@@ -159,36 +163,6 @@ fun SettingsScreen(
                 Surface(
                     Modifier
                         .padding(8.dp)
-                        .clickable { })
-                {
-                    Text(
-                        text = "Privacy Policy",
-                        fontSize = 18.sp,
-                        fontFamily = Cabin,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF682300)
-                    )
-                }
-                Spacer(
-                    Modifier
-                        .height(2.dp)
-                        .fillMaxWidth()
-                        .border(
-                            width = 2.dp,
-                            brush = (Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFFd8af84),
-                                    Color(0xFFb15f33)
-                                ),
-                                tileMode = TileMode.Mirror
-                            )),
-                            shape = RectangleShape
-                        ),
-                )
-                val context = LocalContext.current
-                Surface(
-                    Modifier
-                        .padding(8.dp)
                         .clickable { navigateToLicensesScreen() }
                 ){
                     Text(
@@ -218,10 +192,77 @@ fun SettingsScreen(
                 Surface(
                     Modifier
                         .padding(8.dp)
-                        .clickable { })
-                {
+                        .clickable {
+                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com"))
+                            ctx.startActivity(urlIntent)
+                        }
+                ){
                     Text(
-                        text = "Legal Notice",
+                        text = "Terms and Conditions",
+                        fontSize = 18.sp,
+                        fontFamily = Cabin,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF682300)
+                    )
+                }
+                Spacer(
+                    Modifier
+                        .height(2.dp)
+                        .fillMaxWidth()
+                        .border(
+                            width = 2.dp,
+                            brush = (Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFFd8af84),
+                                    Color(0xFFb15f33)
+                                ),
+                                tileMode = TileMode.Mirror
+                            )),
+                            shape = RectangleShape
+                        ),
+                )
+                Surface(
+                    Modifier
+                        .padding(8.dp)
+                        .clickable {
+                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com"))
+                            ctx.startActivity(urlIntent)
+                        }
+                ){
+                    Text(
+                        text = "EULA (End User License Agreement)",
+                        fontSize = 18.sp,
+                        fontFamily = Cabin,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF682300)
+                    )
+                }
+                Spacer(
+                    Modifier
+                        .height(2.dp)
+                        .fillMaxWidth()
+                        .border(
+                            width = 2.dp,
+                            brush = (Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFFd8af84),
+                                    Color(0xFFb15f33)
+                                ),
+                                tileMode = TileMode.Mirror
+                            )),
+                            shape = RectangleShape
+                        ),
+                )
+                Surface(
+                    Modifier
+                        .padding(8.dp)
+                        .clickable {
+                        val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com"))
+                            ctx.startActivity(urlIntent)
+                        }
+                ){
+                    Text(
+                        text = "Privacy Policy",
                         fontSize = 18.sp,
                         fontFamily = Cabin,
                         fontWeight = FontWeight.Bold,
