@@ -190,7 +190,7 @@ fun SettingsScreen(
                     Modifier
                         .padding(8.dp)
                         .clickable {
-                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com"))
+                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com/culinarycompaniontermsandconditions"))
                             ctx.startActivity(urlIntent)
                         }
                 ){
@@ -222,7 +222,7 @@ fun SettingsScreen(
                     Modifier
                         .padding(8.dp)
                         .clickable {
-                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com"))
+                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com/culinarycompanionEULA"))
                             ctx.startActivity(urlIntent)
                         }
                 ){
@@ -254,7 +254,7 @@ fun SettingsScreen(
                     Modifier
                         .padding(8.dp)
                         .clickable {
-                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com"))
+                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com/culinarycompanionprivacypolicy"))
                             ctx.startActivity(urlIntent)
                         }
                 ){
