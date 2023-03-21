@@ -873,11 +873,12 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
         }
 
+    }
 
-
-
-
-
+    fun updateDislikes(commentID: String){
+        coroutineScope.launch(Dispatchers.IO) {
+            val successStatus = firebaseRepository.updateDislike(commentID)
+        }
     }
 
 //    fun updateDetailsScreenWithJustWrittenReview(){

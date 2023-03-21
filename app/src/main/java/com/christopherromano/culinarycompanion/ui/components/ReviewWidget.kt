@@ -11,9 +11,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ThumbDown
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.ThumbDown
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,6 +28,7 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
@@ -44,10 +47,13 @@ fun ReviewWidget(
     karma: Int,
     likes: Int,
     likedByUser: Int,
+    dislikedByUser: Int,
     onLikeClick: () -> Unit,
+    onDislikeClick: () -> Unit,
 ){
     var expanded by remember { mutableStateOf(false) }
     var liked by remember { mutableStateOf(false) }
+    var disliked by remember { mutableStateOf(false) }
 //    val modifier = if(expanded) Modifier.wrapContentHeight() else Modifier.height(280.dp)
 
 
@@ -147,36 +153,67 @@ fun ReviewWidget(
                     Modifier
                         .fillMaxSize()
                         .padding(0.dp)){
-
-                    Surface(
+                    Box(
                         Modifier
                             .padding(16.dp)
                             .align(Alignment.CenterEnd)
                             .wrapContentSize()
-                            .clickable(enabled = (likedByUser != 1 && !liked) ) { liked = true; onLikeClick() },
-                        color = Color.Transparent
-                    ) {
+                    ){
                         Row(Modifier.wrapContentSize(),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                if (likedByUser == 1 || liked) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
-                                contentDescription = null,
-                                modifier = Modifier.size(30.dp),
-                                tint = Color(0xFFd8af84)
-                            )
+                            Surface(
+                                Modifier
+                                    .wrapContentSize()
+                                    .clickable(enabled = (likedByUser != 1 && !liked && dislikedByUser != 1 && !disliked)) {
+                                        liked = true; onLikeClick()
+                                    },
+                                color = Color.Transparent
+                            ) {
 
-                            Spacer(Modifier.width(6.dp))
+                                Icon(
+                                    if (likedByUser == 1 || liked) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(30.dp),
+                                    tint = Color(0xFFd8af84)
+                                )
+
+                            }
+
+                            Spacer(Modifier.width(8.dp))
+
+                            Surface(
+                                Modifier
+                                    .wrapContentSize()
+                                    .clickable(enabled = (likedByUser != 1 && !liked && dislikedByUser != 1 && !disliked)) {
+                                        disliked = true; onDislikeClick()
+                                    },
+                                color = Color.Transparent
+                            ) {
+
+                                Icon(
+                                    if (dislikedByUser == 1 || disliked) Icons.Filled.ThumbDown else Icons.Outlined.ThumbDown,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(30.dp),
+                                    tint = Color(0xFFd8af84)
+                                )
+
+                            }
+                            Spacer(Modifier.width(8.dp))
 
                             Text(
                                 likes.toString(),
+                                modifier = Modifier.padding(bottom = 1.dp),
                                 color = Color(0xFFd8af84),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         }
+
                     }
+
+
                 }
 
             }
@@ -256,8 +293,19 @@ fun ReviewWidget(
     }
 }
 
-//@Preview(showSystemUi = true)
-//@Composable
-//fun revwidprev(){
-//    ReviewWidget()
-//}
+@Preview(showSystemUi = true)
+@Composable
+fun revwidprev(){
+    ReviewWidget(
+        modifier = Modifier,
+        authorImageUrl = "",
+        authorName = "Chirs",
+        dislikedByUser = 0,
+        likedByUser = 0,
+        likes = 20,
+        onLikeClick = {},
+        karma = 5,
+        reviewText = "Review Text",
+        onDislikeClick = {}
+    )
+}

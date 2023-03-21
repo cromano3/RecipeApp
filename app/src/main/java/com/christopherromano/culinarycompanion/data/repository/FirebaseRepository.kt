@@ -271,6 +271,99 @@ class FirebaseRepository(
     }
 
 
+    //upload local user likes to firestore
+    suspend fun updateDislike(commentID: String): String {
+
+        var result = "Success"
+
+        try {
+            val reviewRef = db.collection("reviews").document(commentID)
+
+
+            var authorEmail = ""
+
+            var duplicate = ""
+
+            db.runTransaction { transaction ->
+
+                val snapshotReview = transaction.get(reviewRef)
+
+                var commentLikes: Double? = snapshotReview.getDouble("likes")
+
+                authorEmail = snapshotReview.getString("authorEmail") ?: ""
+
+                var dislikedByList = snapshotReview.get("dislikedBy") as? List<String> ?: listOf()
+
+
+                if (commentLikes == null) {
+                    result = "Null Likes"
+                } else if (auth.currentUser?.email == null) {
+                    result = "Null Liker"
+                } else if (dislikedByList.contains(auth.currentUser?.email)) {
+                    result = "Failed Duplicate Like"
+                } else {
+                    commentLikes -= 1
+                    transaction.update(reviewRef, "likes", commentLikes)
+                    transaction.update(
+                        reviewRef,
+                        "dislikedBy",
+                        FieldValue.arrayUnion(auth.currentUser?.email)
+                    )
+                }
+
+            }.addOnSuccessListener {
+
+            }.addOnFailureListener { e ->
+                result = "Failed with $e"
+            }.await()
+
+
+            if (result == "Success") {
+
+                val query =
+                    db.collection("users").whereEqualTo("email", authorEmail).limit(1).get().await()
+                val authorDocSnapshot = query.documents[0]
+
+                if (authorDocSnapshot != null) {
+
+
+                    db.runTransaction { transaction ->
+
+                        val snapshotAuthor = transaction.get(authorDocSnapshot.reference)
+
+                        //you cant get karma from liking your own comments
+                        if(auth.currentUser?.email != snapshotAuthor.getString("email")) {
+
+                            var authorKarma: Double? = snapshotAuthor.getDouble("karma")
+
+                            if (authorKarma != null) {
+                                authorKarma -= 1
+                                transaction.update(
+                                    authorDocSnapshot.reference,
+                                    "karma",
+                                    authorKarma
+                                )
+                            }
+                        }
+
+                    }.addOnSuccessListener {
+                        result = "Success"
+                    }.addOnFailureListener {
+                        result = "Failed to update author karma"
+                    }.await()
+                }
+
+            }
+        }
+        catch(e: Exception){
+            println("failed to update comment with: $e")
+        }
+
+        println("finished add new dislike to comment and result is: $result")
+        return result
+
+    }
+
 
 
     ////Download Stuff////

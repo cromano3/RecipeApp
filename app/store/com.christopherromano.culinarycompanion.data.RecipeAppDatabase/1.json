@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6beb61bd9a50e0e3d84dedded4621f34",
+    "identityHash": "2c0dd7a9e26155877f2fcb1bd8a8d382",
     "entities": [
       {
         "tableName": "recipe_table",
@@ -480,7 +480,7 @@
       },
       {
         "tableName": "comments_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment_id` TEXT NOT NULL, `recipe_name` TEXT NOT NULL, `author_id` TEXT NOT NULL, `comment_text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `liked_by_local_user` INTEGER NOT NULL, `local_user_like_was_synced` INTEGER NOT NULL, `timestamp` TEXT NOT NULL, PRIMARY KEY(`comment_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment_id` TEXT NOT NULL, `recipe_name` TEXT NOT NULL, `author_id` TEXT NOT NULL, `comment_text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `liked_by_local_user` INTEGER NOT NULL, `disliked_by_local_user` INTEGER NOT NULL, `local_user_like_was_synced` INTEGER NOT NULL, `timestamp` TEXT NOT NULL, PRIMARY KEY(`comment_id`))",
         "fields": [
           {
             "fieldPath": "commentID",
@@ -515,6 +515,12 @@
           {
             "fieldPath": "likedByMe",
             "columnName": "liked_by_local_user",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dislikedByMe",
+            "columnName": "disliked_by_local_user",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -588,7 +594,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6beb61bd9a50e0e3d84dedded4621f34')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2c0dd7a9e26155877f2fcb1bd8a8d382')"
     ]
   }
 }

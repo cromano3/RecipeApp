@@ -68,6 +68,7 @@ fun ProfileScreen(
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onSettingsClick: () -> Unit,
     updateLikes: (String) -> Unit,
+    updateDislikes: (String) -> Unit,
     deleteReview: (String, String) -> Unit,
     onDetailsClick: (String) -> Unit,
 ) {
@@ -1016,10 +1017,16 @@ fun ProfileScreen(
 //                                likes = if(it.comment.likedByMe == 1 && it.comment.myLikeWasSynced == 0) it.comment.likes + 1 else it.comment.likes,
                                     likes = it.comment.likes,
                                     likedByUser = it.comment.likedByMe,
+                                    dislikedByUser = it.comment.dislikedByMe,
                                     onLikeClick = {
                                         println("click")
 //                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
                                         updateLikes(it.comment.commentID)
+                                    },
+                                    onDislikeClick = {
+                                        println("dislike click")
+//                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
+                                        updateDislikes(it.comment.commentID)
                                     },
                                 )
                             }

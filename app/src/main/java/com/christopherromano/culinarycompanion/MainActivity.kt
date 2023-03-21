@@ -255,6 +255,7 @@ fun CulinaryCompanion(
                         }
                     },
                     updateLikes = { appViewModel.updateLikes(it) },
+                    updateDislikes = { appViewModel.updateDislikes(it) },
                     deleteReview = { commentID, recipeName ->
                         appViewModel.deleteReview(commentID, recipeName)
                                    },
@@ -500,6 +501,7 @@ fun CulinaryCompanion(
                         markAsReviewed = { appViewModel.markAsReviewed() },
                         addedToFavoriteUiUpdate = { appViewModel.addedToFavoriteUiUpdate() },
                         updateLikes = { appViewModel.updateLikes(it) },
+                        updateDislikes = { appViewModel.updateDislikes(it) },
                         onMenuAddClick = {
                             appViewModel.updateDetailsScreenUiOnMenuStatus()
                             addMenuSnackBar(it.recipeEntity, scaffoldState, coroutineScope)

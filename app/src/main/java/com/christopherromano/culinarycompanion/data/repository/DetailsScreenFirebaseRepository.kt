@@ -128,6 +128,14 @@ class DetailsScreenFirebaseRepository(
                             likedByMe = 1
                         }
 
+                        var dislikedByMe = 0
+
+                        var dislikedByList = comment.get("dislikedBy") as? List<String> ?: listOf()
+
+                        if(dislikedByList.contains(auth.currentUser?.email)){
+                            dislikedByMe = 1
+                        }
+
                         val thisCommentEntity = CommentsEntity(
                             commentID = commentId,
                             recipeName  = thisRecipeName,
@@ -135,6 +143,7 @@ class DetailsScreenFirebaseRepository(
                             commentText = reviewText,
                             likes = likes,
                             likedByMe = likedByMe,
+                            dislikedByMe = dislikedByMe,
                             myLikeWasSynced = 0,
                             timestamp = ""
                         )
