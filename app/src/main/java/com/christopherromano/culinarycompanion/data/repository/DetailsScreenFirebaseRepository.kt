@@ -199,6 +199,8 @@ class DetailsScreenFirebaseRepository(
             .collection("reviews")
             .whereEqualTo("recipeName", recipeName)
             .whereEqualTo("isModApproved", 1)
+            .whereEqualTo("isDeleted", 0)
+            .whereGreaterThan("likes", -2)
             .limit(limit.toLong())
             .orderBy("likes", Query.Direction.DESCENDING)
             .addSnapshotListener(listener)

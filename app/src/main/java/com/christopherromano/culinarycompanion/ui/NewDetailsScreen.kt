@@ -651,6 +651,7 @@ fun NewDetailsScreen(
                         {
                             ReviewWidget(
                                 modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
+                                isProfileScreen = false,
                                 authorName = it.authorData.userName,
                                 authorImageUrl = it.authorData.userPhotoURL,
                                 reviewText = it.comment.commentText,

@@ -91,7 +91,8 @@ class FirebaseRepository(
                         "likedBy" to arrayListOf<String>(email),
                         "dislikedBy" to arrayListOf<String>(),
                         "timestamp" to serverTimestamp(),
-                        "isModApproved" to 0,
+                        "isModApproved" to 1,
+                        "isDeleted" to 0,
                     )
                     db.collection("reviews").add(newComment)
                         .addOnSuccessListener { result = "Success" }

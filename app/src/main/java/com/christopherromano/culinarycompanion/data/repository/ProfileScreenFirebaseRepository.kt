@@ -52,16 +52,16 @@ class ProfileScreenFirebaseRepository(
                     val commentId = comment.id
                     val thisRecipeName = comment.getString("recipeName")
                     val reviewText = comment.getString("reviewText")
-                    val authorEmail = comment.getString("authorEmail")
+//                    val authorEmail = comment.getString("authorEmail")
                     val likes = comment.getDouble("likes")?.toInt()
 
-                    var likedByMe = 0
-
-                    val likedByList = comment.get("likedBy") as? List<String> ?: listOf()
-
-                    if(likedByList.contains(auth.currentUser?.email)){
-                        likedByMe = 1
-                    }
+//                    var likedByMe = 0
+//
+//                    val likedByList = comment.get("likedBy") as? List<String> ?: listOf()
+//
+//                    if(likedByList.contains(auth.currentUser?.email)){
+//                        likedByMe = 1
+//                    }
 
                     val thisCommentEntity = CommentsEntity(
                         commentID = commentId,
@@ -69,7 +69,8 @@ class ProfileScreenFirebaseRepository(
                         authorID = "",
                         commentText = reviewText ?: "",
                         likes = likes ?: 0,
-                        likedByMe = likedByMe,
+                        likedByMe = 1,
+                        dislikedByMe = 0,
                         myLikeWasSynced = 0,
                         timestamp = ""
                     )

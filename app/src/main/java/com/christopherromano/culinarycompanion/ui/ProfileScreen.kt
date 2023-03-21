@@ -1010,6 +1010,7 @@ fun ProfileScreen(
 
                                 ReviewWidget(
                                     modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(200, delay = 0))),
+                                    isProfileScreen = true,
                                     authorName = it.authorData.userName,
                                     authorImageUrl = it.authorData.userPhotoURL,
                                     reviewText = it.comment.commentText,
