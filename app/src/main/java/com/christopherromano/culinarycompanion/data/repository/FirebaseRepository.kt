@@ -89,6 +89,7 @@ class FirebaseRepository(
                         "authorEmail" to email,
                         "likes" to 0,
                         "likedBy" to arrayListOf<String>(email),
+                        "dislikedBy" to arrayListOf<String>(),
                         "timestamp" to serverTimestamp(),
                         "isModApproved" to 0,
                     )
