@@ -45,6 +45,7 @@ import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmIMad
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmRemoveMenuAnoString
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.DetailsScreenFirebaseRepository
+import com.christopherromano.culinarycompanion.datamodel.AuthorDataWithComment
 import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAndInstructions
 import com.christopherromano.culinarycompanion.ui.components.*
 import com.christopherromano.culinarycompanion.ui.theme.Cabin
@@ -82,6 +83,7 @@ fun NewDetailsScreen(
     onFinishedCookingClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     showAddedToFavoritesSnackBarMessage: (RecipeEntity) -> Unit,
     navigateToCommentScreen: (String) -> Unit,
+    submitReport: (AuthorDataWithComment) -> Unit,
     ) {
 
     val owner = LocalViewModelStoreOwner.current
@@ -663,9 +665,14 @@ fun NewDetailsScreen(
                                 onLikeClick = {
                                     println("click")
 //                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
-                                    updateLikes(it.comment.commentID) },
+                                    updateLikes(it.comment.commentID)
+                                },
                                 onDislikeClick = {
-                                    updateDislikes(it.comment.commentID) },
+                                    updateDislikes(it.comment.commentID)
+                                },
+                                onReportClick = {
+                                    detailsScreenViewModel.triggerReportAlert(it)
+                                }
                             )
                         }
                         if(commentsList.size == 4){
@@ -692,6 +699,23 @@ fun NewDetailsScreen(
 
             //Alerts
             Box(Modifier.fillMaxSize()){
+
+                //Report Alert
+                if(uiAlertState.showReportAlert){
+                    BasicAlert(
+                        text = "Report this comment for being inappropriate or off topic? Please note: submitting false reports may result in your account being banned.",
+                        confirmButtonText = "Submit report",
+                        cancelButtonText = "Cancel",
+                        onConfirmClick = {
+                            submitReport(uiAlertState.reportedComment)
+                             detailsScreenViewModel.cancelReportAlert()
+                                         },
+                        onCancelClick = { detailsScreenViewModel.cancelReportAlert() },
+                        onDismiss = {
+                            detailsScreenViewModel.cancelReportAlert()
+                        }
+                    )
+                }
 
                 //Remove Alert
                 if(uiAlertState.showRemoveAlert){

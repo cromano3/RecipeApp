@@ -51,6 +51,7 @@ fun ReviewWidget(
     dislikedByUser: Int,
     onLikeClick: () -> Unit,
     onDislikeClick: () -> Unit,
+    onReportClick: () -> Unit,
 ){
     var expanded by remember { mutableStateOf(false) }
     var liked by remember { mutableStateOf(false) }
@@ -145,7 +146,7 @@ fun ReviewWidget(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold)
                     Text(
-                        if (karma > 0) "Karma: $karma" else "",
+                        "Karma: $karma",
                         color = Color(0xFFd8af84),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Normal)
@@ -157,65 +158,88 @@ fun ReviewWidget(
                         .padding(0.dp)){
                     Box(
                         Modifier
-                            .padding(16.dp)
-                            .align(Alignment.CenterEnd)
+                            .padding(top = 4.dp, end = 16.dp)
+                            .align(Alignment.TopEnd)
                             .wrapContentSize()
                     ){
-                        Row(Modifier.wrapContentSize(),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            Modifier.wrapContentSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            if(!isProfileScreen)
-                            {
-                                Surface(
-                                    Modifier
-                                        .wrapContentSize()
-                                        .clickable(enabled = (likedByUser != 1 && !liked && dislikedByUser != 1 && !disliked)) {
-                                            liked = true; onLikeClick()
-                                        },
-                                    color = Color.Transparent
-                                ) {
+                            Row(
+                                Modifier.wrapContentSize(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                if (!isProfileScreen) {
+                                    Surface(
+                                        Modifier
+                                            .wrapContentSize()
+                                            .clickable(enabled = (likedByUser != 1 && !liked && dislikedByUser != 1 && !disliked)) {
+                                                liked = true; onLikeClick()
+                                            },
+                                        color = Color.Transparent
+                                    ) {
 
-                                    Icon(
-                                        if (likedByUser == 1 || liked) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(30.dp),
-                                        tint = Color(0xFFd8af84)
-                                    )
+                                        Icon(
+                                            if (likedByUser == 1 || liked) Icons.Filled.ThumbUp else Icons.Outlined.ThumbUp,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(30.dp),
+                                            tint = Color(0xFFd8af84)
+                                        )
 
+                                    }
+
+                                    Spacer(Modifier.width(8.dp))
+
+                                    Surface(
+                                        Modifier
+                                            .wrapContentSize()
+                                            .clickable(enabled = (likedByUser != 1 && !liked && dislikedByUser != 1 && !disliked)) {
+                                                disliked = true; onDislikeClick()
+                                            },
+                                        color = Color.Transparent
+                                    ) {
+
+                                        Icon(
+                                            if (dislikedByUser == 1 || disliked) Icons.Filled.ThumbDown else Icons.Outlined.ThumbDown,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(30.dp),
+                                            tint = Color(0xFFd8af84)
+                                        )
+
+                                    }
+                                    Spacer(Modifier.width(8.dp))
                                 }
 
-                                Spacer(Modifier.width(8.dp))
-
-                                Surface(
-                                    Modifier
-                                        .wrapContentSize()
-                                        .clickable(enabled = (likedByUser != 1 && !liked && dislikedByUser != 1 && !disliked)) {
-                                            disliked = true; onDislikeClick()
-                                        },
-                                    color = Color.Transparent
-                                ) {
-
-                                    Icon(
-                                        if (dislikedByUser == 1 || disliked) Icons.Filled.ThumbDown else Icons.Outlined.ThumbDown,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(30.dp),
-                                        tint = Color(0xFFd8af84)
-                                    )
-
-                                }
-                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    likes.toString(),
+                                    modifier = Modifier.padding(bottom = 1.dp),
+                                    color = Color(0xFFd8af84),
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
                             }
-
-                            Text(
-                                likes.toString(),
-                                modifier = Modifier.padding(bottom = 1.dp),
-                                color = Color(0xFFd8af84),
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Box(Modifier.padding(top = 8.dp)){
+                                Surface(
+                                    Modifier
+                                        .clickable(
+                                            enabled = !isProfileScreen) {
+                                            onReportClick()
+                                        }
+                                        .wrapContentSize(),
+                                    color = Color.Transparent
+                                ){
+                                    Text(
+                                        "Report",
+                                        color = Color(0xFFd8af84),
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Normal
+                                    )
+                                }
+                            }
                         }
-
                     }
 
 
@@ -303,7 +327,7 @@ fun ReviewWidget(
 fun revwidprev(){
     ReviewWidget(
         modifier = Modifier,
-        isProfileScreen = true,
+        isProfileScreen = false,
         authorImageUrl = "",
         authorName = "Chirs",
         dislikedByUser = 0,
@@ -312,6 +336,7 @@ fun revwidprev(){
         onLikeClick = {},
         karma = 5,
         reviewText = "Review Text",
-        onDislikeClick = {}
+        onDislikeClick = {},
+        onReportClick = {},
     )
 }

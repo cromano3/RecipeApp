@@ -5,14 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.christopherromano.culinarycompanion.data.RecipeAppDatabase
+import com.christopherromano.culinarycompanion.data.entity.CommentsEntity
 import com.christopherromano.culinarycompanion.data.entity.QuantitiesTableEntity
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.DetailsScreenFirebaseRepository
 import com.christopherromano.culinarycompanion.data.repository.DetailsScreenRepository
-import com.christopherromano.culinarycompanion.datamodel.AuthorDataWithComment
-import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAndInstructions
-import com.christopherromano.culinarycompanion.datamodel.ReviewWithAuthorDataModel
-import com.christopherromano.culinarycompanion.datamodel.UiAlertStateDetailsScreenDataModel
+import com.christopherromano.culinarycompanion.datamodel.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -527,6 +525,24 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
             currentState.copy(
                 showRemoveAlert = false,
                 recipe = RecipeWithIngredientsAndInstructions(RecipeEntity(), listOf(), listOf())
+            )
+        }
+    }
+
+    fun triggerReportAlert(authorDataWithComment: AuthorDataWithComment) {
+        uiAlertState.update {
+            it.copy(
+                showReportAlert = true,
+                reportedComment = authorDataWithComment
+            )
+        }
+    }
+
+    fun cancelReportAlert() {
+        uiAlertState.update {
+            it.copy(
+                showReportAlert = false,
+                reportedComment = AuthorDataWithComment(AuthorData("","",0), CommentsEntity())
             )
         }
     }

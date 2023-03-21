@@ -518,6 +518,9 @@ fun CulinaryCompanion(
                                 withContext(Dispatchers.IO){appViewModel.setupReviewScreen(it)}
                                 navController.navigate("CommentScreen") }
                         },
+                        submitReport = {
+                            appViewModel.submitReport(it)
+                        }
                     )
             }
 

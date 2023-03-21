@@ -7,10 +7,7 @@ import com.christopherromano.culinarycompanion.data.RecipeAppDatabase
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.AppRepository
 import com.christopherromano.culinarycompanion.data.repository.FirebaseRepository
-import com.christopherromano.culinarycompanion.datamodel.AppUiState
-import com.christopherromano.culinarycompanion.datamodel.RecipeNameAndRating
-import com.christopherromano.culinarycompanion.datamodel.RecipeNameAndReview
-import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAndInstructions
+import com.christopherromano.culinarycompanion.datamodel.*
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
@@ -898,6 +895,12 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 appUiState.value.detailsScreenTarget.ingredientsList,
                 appUiState.value.detailsScreenTarget.instructionsList
             ))
+        }
+    }
+
+    fun submitReport(authorDataWithComment: AuthorDataWithComment) {
+        coroutineScope.launch (Dispatchers.IO){
+            firebaseRepository.submitReport(authorDataWithComment)
         }
     }
 
