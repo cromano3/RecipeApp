@@ -97,6 +97,16 @@ class SettingsScreenFirebaseRepository(
 
                             }.await()
                     }
+
+                    val userData = hashMapOf("email" to userEmail)
+
+                    db.collection("deletedUsers").document(user.uid).set(userData)
+                        .addOnSuccessListener { deleteAccountResult = "Success" }
+                        .addOnFailureListener { e ->
+                            deleteAccountResult = "Failed with $e"
+                            println("failed to delete account (add to deleted users list) with $e")
+                        }.await()
+
                 }
 
             }
