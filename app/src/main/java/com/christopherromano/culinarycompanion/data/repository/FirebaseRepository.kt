@@ -48,17 +48,17 @@ class FirebaseRepository(
 
     //Delete comment from Firestore
     suspend fun deleteComment(commentID: String): String{
-        println("try Delete comment")
+        println("try Soft Delete comment")
 
         var result = "Failed"
 
-        db.collection("reviews").document(commentID).delete()
+        db.collection("reviews").document(commentID).update("isDeleted", 1)
             .addOnSuccessListener {
-                println("DocumentSnapshot successfully deleted!")
+                println("Comment successfully hidden")
                 result = "Success"
             }
             .addOnFailureListener { e ->
-                println("Error deleting document $e")
+                println("Error hiding document $e")
                 result = "Failed"
             }.await()
 

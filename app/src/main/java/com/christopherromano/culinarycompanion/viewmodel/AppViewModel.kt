@@ -156,24 +156,25 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         val firebaseSignInWithGoogleResponse = firebaseRepository.firebaseSignInWithGoogle(googleCredential)
         println(firebaseSignInWithGoogleResponse)
 
-        if(appUiState.value.reAuthForDelete && firebaseSignInWithGoogleResponse == "ReturningUserSuccess") {
-                appUiState.update {
-                    it.copy(
-                        reAuthForDelete = false,
-                        reAuthForDeleteSuccessful = true,
-                        googleSignInState = ""
-                    )
-                }
-        }
-        else if(appUiState.value.reAuthForDelete){
-            appUiState.update {
-                it.copy(
-                    reAuthForDelete = false,
-                    googleSignInState = ""
-                )
-            }
-        }
-        else if(firebaseSignInWithGoogleResponse == "ReturningUserSuccess"){
+//        if(appUiState.value.reAuthForDelete && firebaseSignInWithGoogleResponse == "ReturningUserSuccess") {
+//                appUiState.update {
+//                    it.copy(
+////                        reAuthForDelete = false,
+////                        reAuthForDeleteSuccessful = true,
+//                        googleSignInState = ""
+//                    )
+//                }
+//        }
+////        else if(appUiState.value.reAuthForDelete){
+////            appUiState.update {
+////                it.copy(
+////                    reAuthForDelete = false,
+////                    googleSignInState = ""
+////                )
+////            }
+////        }
+//        else
+        if(firebaseSignInWithGoogleResponse == "ReturningUserSuccess"){
             repository.setOnlineUserType(1)
             appUiState.update {
                 it.copy(
@@ -394,29 +395,6 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         }
     }
 
-    fun confirmReAuthForDeleteAccount(){
-
-        coroutineScope.launch {
-
-            appUiState.update {
-                it.copy(
-                    reAuthForDelete = true
-                )
-            }
-            googleOneTapSignInOrUp()
-        }
-
-    }
-
-    fun clearReAuthForDeleteSignInResult(){
-
-        appUiState.update {
-            it.copy(
-                reAuthForDeleteSuccessful = false
-            )
-        }
-
-    }
 
     fun dismissSignInWithGoogle(){
         if(appUiState.value.userIsOnlineStatus == -2) {
@@ -826,9 +804,9 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
             println("delete review result is: $result")
 
-            withContext(Dispatchers.IO) { repository.deleteReview(commentID) }
-            println("mark NOT COMMENTED $recipeName")
-            withContext(Dispatchers.IO) { repository.markReviewAsNotCommented(recipeName) }
+//            withContext(Dispatchers.IO) { repository.deleteReview(commentID) }
+//            println("mark NOT COMMENTED $recipeName")
+//            withContext(Dispatchers.IO) { repository.markReviewAsNotCommented(recipeName) }
 
 
 

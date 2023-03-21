@@ -309,9 +309,6 @@ fun CulinaryCompanion(
                 ){
                 SettingsScreen(
                     confirmSignInWithGoogle = { appViewModel.signInWithGoogle() },
-                    confirmReAuthForDeleteAccount = { appViewModel.confirmReAuthForDeleteAccount() },
-                    reAuthForDeleteSignInResult = appUiState.reAuthForDeleteSuccessful,
-                    clearReAuthForDeleteSignInResult = { appViewModel.clearReAuthForDeleteSignInResult() },
                     navigateToLicensesScreen = { navController.navigate("LicensesScreen") }
                 )
             }

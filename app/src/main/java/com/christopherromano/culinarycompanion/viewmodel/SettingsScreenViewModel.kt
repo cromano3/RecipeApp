@@ -108,15 +108,7 @@ class SettingsScreenViewModel(
         }
     }
 
-    fun triggerReAuthAlert(){
-        uiAlertState.update {
-            it.copy(
-                showReAuthAlert = true
-            )
-        }
-    }
-
-    fun cancelDeleteAccount(){
+    fun cancelDeleteAccountAlert(){
         uiAlertState.update {
             it.copy(
                 showDeleteAccountAlert = false
@@ -124,13 +116,6 @@ class SettingsScreenViewModel(
         }
     }
 
-    fun confirmReAuthBeforeDelete(){
-        uiAlertState.update {
-            it.copy(
-                showReAuthAlert = true
-            )
-        }
-    }
 
     fun showLicenses(){
         uiAlertState.update {
@@ -148,13 +133,6 @@ class SettingsScreenViewModel(
         }
     }
 
-    fun cancelReAuthAlert(){
-        uiAlertState.update {
-            it.copy(
-                showReAuthAlert = false
-            )
-        }
-    }
 
     fun confirmDeleteAccount(){
         viewModelScope.launch {

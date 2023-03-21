@@ -45,10 +45,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SettingsScreen(
     confirmSignInWithGoogle: () -> Unit,
-    confirmReAuthForDeleteAccount: () -> Unit,
-    clearReAuthForDeleteSignInResult: () -> Unit,
     navigateToLicensesScreen: () -> Unit,
-    reAuthForDeleteSignInResult: Boolean,
 ){
     val owner = LocalViewModelStoreOwner.current
 
@@ -257,7 +254,7 @@ fun SettingsScreen(
                     Modifier
                         .padding(8.dp)
                         .clickable {
-                        val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com"))
+                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com"))
                             ctx.startActivity(urlIntent)
                         }
                 ){
@@ -288,7 +285,7 @@ fun SettingsScreen(
                 Surface(
                     Modifier
                         .padding(8.dp)
-                        .clickable { settingsScreenViewModel.triggerReAuthAlert() })
+                        .clickable { settingsScreenViewModel.triggerDeleteAccountAlert() })
                 {
                     Text(
                         text = "Delete Account",
@@ -308,34 +305,20 @@ fun SettingsScreen(
                         onDismiss = { settingsScreenViewModel.cancelAccountWasDeletedMessage() }
                     )
                 }
-                if(reAuthForDeleteSignInResult){
+                if(uiAlertState.showDeleteAccountAlert){
                     BasicAlert(
-                        text = "Are you sure you want to delete your account? Your comments will be deleted and you will not be able to use this Google ID to make a new account again.",
-                        confirmButtonText = "Yes I Am Sure",
+                        text = "Are you sure you want to delete your account? This process is permanent and cannot be reversed.",
+                        confirmButtonText = "Yes I am sure",
                         cancelButtonText = "Cancel",
                         onConfirmClick =
                         {
-                            clearReAuthForDeleteSignInResult()
                             settingsScreenViewModel.confirmDeleteAccount()
                                          },
-                        onCancelClick = { clearReAuthForDeleteSignInResult() },
-                        onDismiss = { clearReAuthForDeleteSignInResult() }
+                        onCancelClick = { settingsScreenViewModel.cancelDeleteAccountAlert() },
+                        onDismiss = { settingsScreenViewModel.cancelDeleteAccountAlert() }
                     )
                 }
-                if(uiAlertState.showReAuthAlert){
-                    BasicAlert(
-                        text = "You must Sign in again to authorize account deletion.",
-                        confirmButtonText = "Sign in",
-                        cancelButtonText = "Cancel",
-                        onConfirmClick =
-                        {
-                            settingsScreenViewModel.cancelReAuthAlert()
-                            confirmReAuthForDeleteAccount()
-                        },
-                        onCancelClick = { settingsScreenViewModel.cancelReAuthAlert() },
-                        onDismiss = { settingsScreenViewModel.cancelReAuthAlert() }
-                    )
-                }
+
                 if(uiAlertState.showChangeDisplayNameAlert){
                     LaunchedEffect(Unit) {
                         delay(200)

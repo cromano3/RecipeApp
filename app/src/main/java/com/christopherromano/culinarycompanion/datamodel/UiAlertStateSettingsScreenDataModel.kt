@@ -6,7 +6,6 @@ data class UiAlertStateSettingsScreenDataModel(
     val showChangeDisplayNameAlert: Boolean = false,
     val showDeleteAccountAlert: Boolean = false,
     val showAccountWasDeletedMessage: Boolean = false,
-    val showReAuthAlert: Boolean = false,
     val showLicenses: Boolean = false,
     val displayName: String = "",
     val inputText: TextFieldValue = TextFieldValue(""),

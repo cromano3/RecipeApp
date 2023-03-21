@@ -67,116 +67,46 @@ class SettingsScreenFirebaseRepository(
 
     suspend fun deleteAccount(): String {
 
-//        coroutineScope.launch(Dispatchers.IO) {
-
-
             val user = auth.currentUser
             val userEmail = user?.email
 
-            var reauthResult = "Failed"
-
             var deleteAccountResult = "Failed"
 
-            var idToken: String? = null
 
-            if (userEmail != null) {
-
-                if (user != null) {
+        try {
+            if (user != null) {
 
 
-//                    val r  = user.getIdToken(true).await()
-//
-//                    if (r != null) {
-//                        val credential = GoogleAuthProvider.getCredential(r.token, null)
-//
-//
-//                        user.reauthenticate(credential)
-//                            .addOnSuccessListener {
-//                                // User has been re-authenticated
-//                                reauthResult = "Success"
-//
-//                            }
-//                            .addOnFailureListener { exception ->
-//                                // Re-authentication failed
-//                                println("failed to RE-AUTH with $exception")
-//                            }.await()
-//                    }
+                val collectionRef = db.collection("reviews")
+                val query = collectionRef.whereEqualTo("authorEmail", userEmail)
 
+                val querySnapshot = query.get().await()
 
-//                    if (reauthResult == "Success") {
+                if (querySnapshot != null) {
 
-
-
-
-
-                    val collectionRef = db.collection("reviews")
-                    val query = collectionRef.whereEqualTo("authorEmail", userEmail)
-
-                    val querySnapshot = query.get().await()
-
-                    if (querySnapshot != null) {
-                        println("Documents to delete is not null")
-                        println("Documents to delete size: ${querySnapshot.documents.size}")
-                        println("user email is: $userEmail")
-
-                        for (document in querySnapshot.documents) {
-                            document.reference.delete()
-                                .addOnSuccessListener {
-                                    println("Review successfully deleted")
-
-                                }
-                                .addOnFailureListener { e ->
-                                    println("Error deleting Review: $e")
-
-                                }.await()
-                        }
-                    }
-
-                    try{
-                        val usersRef = db.collection("users")
-                        val queryUser = usersRef.whereEqualTo("email", userEmail)
-                        val userSnapshot = queryUser.get().await()
-
-                        if (!userSnapshot.isEmpty && userSnapshot != null) {
-
-                            for(document in userSnapshot.documents){
-                                document.reference.delete()
-                            }
-
-                        }
-                    }
-                    catch (e: Exception){
-                        println("Failed to delete user document with: $e")
-                    }
-
-
-                    try{
-                        user.delete()
+                    for (document in querySnapshot.documents) {
+                        document.reference.update("isDeleted", 1)
                             .addOnSuccessListener {
-                                // User account has been deleted
-                                println("account was deleted Successfully")
                                 deleteAccountResult = "Success"
+                                println("Review successfully deleted")
+
                             }
-                            .addOnFailureListener { exception ->
-                                // Failed to delete user account
-                                deleteAccountResult = exception.message ?: ""
-                                println("Could not delete account: $exception")
+                            .addOnFailureListener { e ->
+                                deleteAccountResult = "Failed"
+                                println("Error deleting Review: $e")
+
                             }.await()
                     }
-                    catch(e: Exception){
-                        deleteAccountResult = e.message ?: ""
-                    }
-
-
-//                    }
-
                 }
+
             }
-            return deleteAccountResult
-//        }
+        }
+        catch (error: Exception){
+            println("delete account try/catch error: $error")
+        }
+
+        return deleteAccountResult
+
     }
-
-
-
 
 }
