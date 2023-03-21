@@ -72,12 +72,14 @@ class FirebaseRepository(
 
         var result = "Failed"
 
-        val commentsCollection = db.collection("reviews")
+        try {
 
-        val email = auth.currentUser?.email
+            val commentsCollection = db.collection("reviews")
 
-        if(email != null){
-            try {
+            val email = auth.currentUser?.email
+
+            if(email != null){
+
                 val querySnapshot = commentsCollection.whereEqualTo("authorEmail", email)
                     .whereEqualTo("recipeName", review.recipeName).limit(1).get().await()
                 if (querySnapshot.isEmpty) {
@@ -86,7 +88,7 @@ class FirebaseRepository(
                         "reviewText" to review.reviewText,
                         "authorEmail" to email,
                         "likes" to 0,
-                        "likedBy" to arrayListOf<String>(),
+                        "likedBy" to arrayListOf<String>(email),
                         "timestamp" to serverTimestamp(),
                         "isModApproved" to 0,
                     )
@@ -98,15 +100,15 @@ class FirebaseRepository(
                 }
 
             }
-            catch(e: Exception){
-                println("Failed to upload comment with: $e")
+            else{
+                result = "UID is null"
             }
         }
-        else{
-            result = "UID is null"
+        catch(e: Exception){
+            println("Failed to upload comment with: $e")
         }
 
-        println("add comment result: $result")
+        println("tried to add comment and result is: $result")
         return result
 
 
@@ -200,7 +202,7 @@ class FirebaseRepository(
 
                 if (commentLikes == null) {
                     result = "Null Likes"
-                } else if (auth.currentUser?.uid == null) {
+                } else if (auth.currentUser?.email == null) {
                     result = "Null Liker"
                 } else if (likedByList.contains(auth.currentUser?.email)) {
                     result = "Failed Duplicate Like"
