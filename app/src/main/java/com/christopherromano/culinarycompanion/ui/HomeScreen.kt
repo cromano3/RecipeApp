@@ -62,15 +62,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
 //    triggerTutorialAlert: String,
-    showLoadingAlert: Boolean,
-    showSignInAlert: Boolean,
     onDetailsClick: (String) -> Unit,
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
     onMenuClick: (RecipeWithIngredients) -> Unit,
     onMenuRemovedClick: (RecipeWithIngredients) -> Unit,
     onCreateRecipeClick: () -> Unit,
-    confirmSignInWithGoogle: () -> Unit,
-    dismissSignInWithGoogle: () -> Unit,
  ) {
 
     val owner = LocalViewModelStoreOwner.current
@@ -312,130 +308,6 @@ fun HomeScreen(
 
                 }
                 Box(Modifier.fillMaxSize()){
-
-                    if(showLoadingAlert){
-                        AlertDialog(
-                            onDismissRequest = {},
-                            text = { CircularProgressIndicator(color = Color(0xFF682300)) },
-                            buttons = {},
-                        )
-                    }
-                    if(showSignInAlert){
-                        AlertDialog(
-                            onDismissRequest = { dismissSignInWithGoogle() },
-                            text = {
-                                Column(Modifier.width(200.dp),)
-                                {
-                                    Text(
-                                        text =
-                                            buildAnnotatedString {
-                                                append("Welcome! To participate in the ")
-                                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                                    append("ratings and reviews system")
-                                                }
-                                                append(" please sign in!")
-                                            },
-                                        modifier = Modifier.padding(bottom = 16.dp),
-                                        color = Color(0xFF682300),
-                                        fontSize = 18.sp,
-                                        textAlign = TextAlign.Center)
-                                    Row(
-                                        Modifier.width(200.dp),
-                                        horizontalArrangement = Arrangement.Center
-                                    )
-                                    {
-                                        Surface(
-                                            modifier = Modifier.size(120.dp),
-                                            shape = RoundedCornerShape(100)
-                                        ) {
-                                            //image box
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(120.dp)
-                                                    .border(
-                                                        width = 2.dp,
-                                                        brush = (Brush.verticalGradient(
-                                                            colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
-                                                            tileMode = TileMode.Mirror
-                                                        )),
-                                                        shape = RoundedCornerShape(100)
-                                                    )
-                                                    .background(color = Color(0xFF682300)),
-                                                contentAlignment = Alignment.Center,
-                                            ) {
-                                                Image(
-
-                                                    painter = painterResource(R.drawable.culinary_companion_logo),
-                                                    contentScale = ContentScale.Fit,
-                                                    alignment = Alignment.Center,
-                                                    contentDescription = null,
-                                                    modifier = Modifier
-                                                        .height(100.dp)
-                                                        .width(100.dp),
-//                                                    colorFilter = ColorFilter.tint(Color(0xFFd8af84))
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            buttons = {
-                                Column(){
-                                    Button(
-                                        modifier = Modifier
-                                            .width(250.dp)
-                                            .padding(start = 8.dp, end = 8.dp),
-                                        onClick =  confirmSignInWithGoogle,
-                                        elevation = ButtonDefaults.elevation(6.dp),
-                                        shape = RoundedCornerShape(10.dp),
-                                        border = BorderStroke(
-                                            width = 2.dp,
-                                            brush = (Brush.horizontalGradient(
-                                                startX = -30f,
-                                                colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
-                                                tileMode = TileMode.Mirror
-                                            )),
-                                        ),
-                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF682300), contentColor = Color(0xFFd8af84))
-                                    ) {
-                                        Row(
-                                            modifier = Modifier
-                                                .width(250.dp)
-                                                .height(25.dp),
-                                            horizontalArrangement = Arrangement.SpaceEvenly,
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ){
-                                            Image(
-                                                painter = painterResource(id = R.drawable.ic_google_logo),
-                                                contentDescription = null
-                                            )
-                                            Text("Sign in with Google")
-                                        }
-                                    }
-                                    Button(
-                                        modifier = Modifier
-                                            .width(250.dp)
-                                            .padding(8.dp),
-                                        onClick =  dismissSignInWithGoogle,
-                                        elevation = ButtonDefaults.elevation(6.dp),
-                                        shape = RoundedCornerShape(10.dp),
-                                        border = BorderStroke(
-                                            width = 2.dp,
-                                            brush = (Brush.horizontalGradient(
-                                                startX = -30f,
-                                                colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
-                                                tileMode = TileMode.Mirror
-                                            )),
-                                        ),
-                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFd8af84), contentColor = Color(0xFF682300))
-                                    ){
-                                        Text("Not now")
-                                    }
-                                }
-                            }
-                        )
-
-                    }
                     if(showTutorial.toBoolean()){
                         AlertDialog(
                             onDismissRequest = {

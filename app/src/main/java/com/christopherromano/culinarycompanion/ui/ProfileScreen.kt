@@ -1029,6 +1029,7 @@ fun ProfileScreen(
 //                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
                                         updateDislikes(it.comment.commentID)
                                     },
+                                    onReportClick = {},
                                 )
                             }
 

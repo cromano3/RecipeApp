@@ -60,18 +60,21 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 )
             }
 
-            if(localOnlineUserType == 0 || localOnlineUserType == -1){
+            if(localOnlineUserType == 0){
                 //they are offline user do nothing
+                appUiState.update {
+                    it.copy(
+                        showLoading = true,
+                        endSplash = true,
+                    )
+                }
             }
             else if(localOnlineUserType == -2){
                 //user should be asked if they want to sign in/up for online stuff
 
-                /**if failed set to 0 and error log, NEED ANON USERS FOR THIS ERROR LOG*/
-
                 appUiState.update {
                     it.copy(
-                        showLoadingAlert = false,
-                        showSignInAlert = true
+                        showSignInButtons = true
                     )
                 }
             }
@@ -95,12 +98,18 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         return firebaseRepository.currentUser() != null
     }
 
-    private fun signIn() {
+    fun signIn() {
 
         viewModelScope.launch {
 
             if (appUiState.value.userIsOnlineStatus == -2) {
                 println("in new to this device")
+                appUiState.update {
+                    it.copy(
+                        showSignInButtons = false,
+                        showLoading = true,
+                    )
+                }
                 googleOneTapSignInOrUp()
 
             }
@@ -110,10 +119,23 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
                 if(isAuthed != null){
                     println("before sync and is authed")
+                    appUiState.update {
+                        it.copy(
+                            showSignInButtons = false,
+                            showLoading = true,
+                            endSplash = true,
+                        )
+                    }
                     dataSyncUploads()
                 }
                 else{
                     println("before sign IN and is NOT authed")
+                    appUiState.update {
+                        it.copy(
+                            showSignInButtons = false,
+                            showLoading = true,
+                        )
+                    }
                     googleOneTapSignInOrUp()
                 }
             }
@@ -176,7 +198,9 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             appUiState.update {
                 it.copy(
                     userIsOnlineStatus = 1,
-                    googleSignInState = ""
+                    googleSignInState = "",
+                    endSplash = true,
+
                 )
             }
             dataSyncUploads()
@@ -185,7 +209,9 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             repository.setOnlineUserType(1)
             appUiState.update {
                 it.copy(
-                    userIsOnlineStatus = 1
+                    userIsOnlineStatus = 1,
+                    googleSignInState = "",
+                    endSplash = true,
                 )
             }
         }
@@ -195,7 +221,8 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
             appUiState.update {
                 it.copy(
                     firebaseSignInResult = firebaseSignInWithGoogleResponse,
-                    googleSignInState = ""
+                    googleSignInState = "",
+                    endSplash = true,
                 )
             }
         }
@@ -381,41 +408,41 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         }
     }
 
-    fun confirmSignInWithGoogle(){
-        //if yes try google sign in/up
-        signIn()
-
-        appUiState.update {
-            it.copy(
-                showSignInAlert = false,
-            )
-        }
-    }
-
-
-    fun dismissSignInWithGoogle(){
-        if(appUiState.value.userIsOnlineStatus == -2) {
-
-            repository.setOnlineUserType(0)
-
-            appUiState.update {
-                it.copy(
-                    showSignInAlert = false,
-                    userIsOnlineStatus = 0
-                )
-            }
-
-        }
-        else{
-            appUiState.update {
-                it.copy(
-                    showSignInAlert = false,
-                )
-            }
-        }
-
-
-    }
+//    fun confirmSignInWithGoogle(){
+//        //if yes try google sign in/up
+//        signIn()
+//
+//        appUiState.update {
+//            it.copy(
+//                showSignInAlert = false,
+//            )
+//        }
+//    }
+//
+//
+//    fun dismissSignInWithGoogle(){
+//        if(appUiState.value.userIsOnlineStatus == -2) {
+//
+//            repository.setOnlineUserType(0)
+//
+//            appUiState.update {
+//                it.copy(
+//                    showSignInAlert = false,
+//                    userIsOnlineStatus = 0
+//                )
+//            }
+//
+//        }
+//        else{
+//            appUiState.update {
+//                it.copy(
+//                    showSignInAlert = false,
+//                )
+//            }
+//        }
+//
+//
+//    }
 
     fun setupDetailsScreen(recipeName: String){
         val recipeData = repository.getRecipeWithIngredientsAndInstructions(recipeName)
