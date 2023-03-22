@@ -106,6 +106,12 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
     }
 
+    fun toggleConsentBoxCheck(){
+        appUiState.update {
+            it.copy(consentBoxChecked = !appUiState.value.consentBoxChecked)
+        }
+    }
+
     private fun checkAuth(): Boolean{
         return firebaseRepository.currentUser() != null
     }

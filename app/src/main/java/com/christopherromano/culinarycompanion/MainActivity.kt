@@ -9,7 +9,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResult.resultCodeToString
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContentScope
@@ -128,35 +128,9 @@ fun CulinaryCompanion(
 
         val showSplashScreen = rememberSaveable { mutableStateOf(true) }
 
-        if (showSplashScreen.value) {
-            SplashScreen(
-                showLoading = appUiState.showLoading,
-                showSignInButtons = appUiState.showSignInButtons,
-                endSplash = appUiState.endSplash,
-                continueWithoutSignIn = {
-//                    appViewModel.dontSignIn()
-                                        },
-                trySignInWithGoogle = {appViewModel.signIn()}
-            ) {
-                showSplashScreen.value = false
-            }
-        }
-        else {
-
-
-
-        val navController: NavHostController = rememberAnimatedNavController()
-        val currentBackStackEntry by navController.currentBackStackEntryAsState()
-
-        val currentScreen = currentBackStackEntry?.destination?.route ?: "RecipeScreen"
-
-        val coroutineScope = rememberCoroutineScope()
-        val scaffoldState = rememberScaffoldState()
-
-
         val launcher =
             rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-                println("result code is ${resultCodeToString(result.resultCode)}")
+                println("result code is ${ActivityResult.resultCodeToString(result.resultCode)}")
 //        if (result.resultCode == Activity.RESULT_OK) {
                 println("result ok")
                 try {
@@ -190,6 +164,31 @@ fun CulinaryCompanion(
 
         }
 
+        if (showSplashScreen.value) {
+            SplashScreen(
+                showLoading = appUiState.showLoading,
+                showSignInButtons = appUiState.showSignInButtons,
+                endSplash = appUiState.endSplash,
+                isConsentBoxChecked = appUiState.consentBoxChecked,
+                consentBoxClicked = { appViewModel.toggleConsentBoxCheck() },
+                continueWithoutSignIn = {
+//                    appViewModel.dontSignIn()
+                                        },
+                trySignInWithGoogle = {appViewModel.signIn()}
+            ) {
+                showSplashScreen.value = false
+            }
+        }
+        else {
+
+
+        val navController: NavHostController = rememberAnimatedNavController()
+        val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+        val currentScreen = currentBackStackEntry?.destination?.route ?: "RecipeScreen"
+
+        val coroutineScope = rememberCoroutineScope()
+        val scaffoldState = rememberScaffoldState()
 
 
         Scaffold(

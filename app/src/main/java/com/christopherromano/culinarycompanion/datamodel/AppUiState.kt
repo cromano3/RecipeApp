@@ -12,6 +12,7 @@ data class AppUiState(
     val showSignInButtons: Boolean = false,
     val showLoading: Boolean = false,
     val endSplash: Boolean = false,
+    val consentBoxChecked: Boolean = false,
 //    val reAuthForDelete: Boolean = false,
 //    val reAuthForDeleteSuccessful : Boolean = false,
     val googleSignInState: String = "",
