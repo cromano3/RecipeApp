@@ -28,7 +28,7 @@ class ProfileScreenFirebaseRepository(
     fun getCommentsList(): Flow<List<AuthorDataWithComment>> = callbackFlow {
 
         println("do get comments")
-        println("auth Email is :" + auth.currentUser?.email)
+        println("auth uid is :" + auth.currentUser?.uid)
         val listener = EventListener<QuerySnapshot> { snapshot, exception ->
             if(exception != null){
                 println("FAILED WITH: $exception")
@@ -79,7 +79,7 @@ class ProfileScreenFirebaseRepository(
 
                 }
 
-                db.collection("users").whereEqualTo("email", auth.currentUser?.email ?: "").get().addOnSuccessListener {
+                db.collection("users").whereEqualTo("uid", auth.currentUser?.uid ?: "").get().addOnSuccessListener {
                     //found author
 
                     for(comment in commentsResult){
@@ -114,7 +114,7 @@ class ProfileScreenFirebaseRepository(
 
         val registration = db
             .collection("reviews")
-            .whereEqualTo("authorEmail", auth.currentUser?.email ?: "")
+            .whereEqualTo("authorUid", auth.currentUser?.uid ?: "")
             .orderBy("likes", Query.Direction.DESCENDING)
             .addSnapshotListener(listener)
 

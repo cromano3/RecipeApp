@@ -69,6 +69,7 @@ class SettingsScreenFirebaseRepository(
 
             val user = auth.currentUser
             val userEmail = user?.email
+            val uid = user?.uid
 
             var deleteAccountResult = "Failed"
 
@@ -78,7 +79,7 @@ class SettingsScreenFirebaseRepository(
 
 
                 val collectionRef = db.collection("reviews")
-                val query = collectionRef.whereEqualTo("authorEmail", userEmail)
+                val query = collectionRef.whereEqualTo("authorUid", uid)
 
                 val querySnapshot = query.get().await()
 

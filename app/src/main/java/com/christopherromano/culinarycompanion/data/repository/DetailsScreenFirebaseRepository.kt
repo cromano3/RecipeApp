@@ -117,14 +117,14 @@ class DetailsScreenFirebaseRepository(
                         val commentId = comment.id
                         val thisRecipeName = comment.getString("recipeName") ?: ""
                         val reviewText = comment.getString("reviewText") ?: ""
-                        val authorEmail = comment.getString("authorEmail") ?: ""
+                        val authorUid = comment.getString("authorUid") ?: ""
                         val likes = comment.getDouble("likes")?.toInt() ?: 0
 
                         var likedByMe = 0
 
                         var likedByList = comment.get("likedBy") as? List<String> ?: listOf()
 
-                        if(likedByList.contains(auth.currentUser?.email)){
+                        if(likedByList.contains(auth.currentUser?.uid)){
                             likedByMe = 1
                         }
 
@@ -132,7 +132,7 @@ class DetailsScreenFirebaseRepository(
 
                         var dislikedByList = comment.get("dislikedBy") as? List<String> ?: listOf()
 
-                        if(dislikedByList.contains(auth.currentUser?.email)){
+                        if(dislikedByList.contains(auth.currentUser?.uid)){
                             dislikedByMe = 1
                         }
 
@@ -148,7 +148,7 @@ class DetailsScreenFirebaseRepository(
                             timestamp = ""
                         )
 
-                        db.collection("users").whereEqualTo("email", authorEmail).get().addOnSuccessListener {
+                        db.collection("users").whereEqualTo("uid", authorUid).get().addOnSuccessListener {
 
                             if(it != null && !it.isEmpty) {
                                 result.add(

@@ -77,19 +77,22 @@ class FirebaseRepository(
 
             val commentsCollection = db.collection("reviews")
 
-            val email = auth.currentUser?.email
+            val uid = auth.currentUser?.uid
 
-            if(email != null){
+            if(uid != null){
 
-                val querySnapshot = commentsCollection.whereEqualTo("authorEmail", email)
-                    .whereEqualTo("recipeName", review.recipeName).limit(1).get().await()
+                val querySnapshot = commentsCollection
+                    .whereEqualTo("authorUid", uid)
+                    .whereEqualTo("recipeName", review.recipeName)
+                    .limit(1).get().await()
+
                 if (querySnapshot.isEmpty) {
                     val newComment = hashMapOf(
                         "recipeName" to review.recipeName,
                         "reviewText" to review.reviewText,
-                        "authorEmail" to email,
+                        "authorUid" to uid,
                         "likes" to 0,
-                        "likedBy" to arrayListOf<String>(email),
+                        "likedBy" to arrayListOf<String>(uid),
                         "dislikedBy" to arrayListOf<String>(),
                         "timestamp" to serverTimestamp(),
                         "isModApproved" to 1,
@@ -141,7 +144,7 @@ class FirebaseRepository(
                     result = "Null Rating"
                 } else if (auth.currentUser?.uid == null) {
                     result = "Null Liker"
-                } else if (likedByList.contains(auth.currentUser?.email)) {
+                } else if (likedByList.contains(auth.currentUser?.uid)) {
                     result = "Failed Duplicate Rating"
                 } else {
                     recipeRating += rating.rating
@@ -155,7 +158,7 @@ class FirebaseRepository(
                     transaction.update(
                         currentRecipeDocument,
                         "ratedBy",
-                        FieldValue.arrayUnion(auth.currentUser?.email)
+                        FieldValue.arrayUnion(auth.currentUser?.uid)
                     )
                     transaction.update(currentRecipeDocument, "rating", recipeRating)
 //                transaction.update(currentRecipeDocument, "timestamp", timestamp)
@@ -188,7 +191,7 @@ class FirebaseRepository(
 
 
 
-            var authorEmail = ""
+            var authorUid = ""
 
             var duplicate = ""
 
@@ -198,16 +201,16 @@ class FirebaseRepository(
 
                 var commentLikes: Double? = snapshotReview.getDouble("likes")
 
-                authorEmail = snapshotReview.getString("authorEmail") ?: ""
+                authorUid = snapshotReview.getString("authorUid") ?: ""
 
                 var likedByList = snapshotReview.get("likedBy") as? List<String> ?: listOf()
 
 
                 if (commentLikes == null) {
                     result = "Null Likes"
-                } else if (auth.currentUser?.email == null) {
+                } else if (auth.currentUser?.uid == null) {
                     result = "Null Liker"
-                } else if (likedByList.contains(auth.currentUser?.email)) {
+                } else if (likedByList.contains(auth.currentUser?.uid)) {
                     result = "Failed Duplicate Like"
                 } else {
                     commentLikes += 1
@@ -215,7 +218,7 @@ class FirebaseRepository(
                     transaction.update(
                         reviewRef,
                         "likedBy",
-                        FieldValue.arrayUnion(auth.currentUser?.email)
+                        FieldValue.arrayUnion(auth.currentUser?.uid)
                     )
                 }
 
@@ -229,7 +232,7 @@ class FirebaseRepository(
             if (result == "Success") {
 
                 val query =
-                    db.collection("users").whereEqualTo("email", authorEmail).limit(1).get().await()
+                    db.collection("users").whereEqualTo("uid", authorUid).limit(1).get().await()
                 val authorDocSnapshot = query.documents[0]
 
                 if (authorDocSnapshot != null) {
@@ -240,7 +243,7 @@ class FirebaseRepository(
                         val snapshotAuthor = transaction.get(authorDocSnapshot.reference)
 
                         //you cant get karma from liking your own comments
-                        if(auth.currentUser?.email != snapshotAuthor.getString("email")) {
+                        if(auth.currentUser?.uid != snapshotAuthor.getString("uid")) {
 
                             var authorKarma: Double? = snapshotAuthor.getDouble("karma")
 
@@ -282,7 +285,7 @@ class FirebaseRepository(
             val reviewRef = db.collection("reviews").document(commentID)
 
 
-            var authorEmail = ""
+            var authorUid = ""
 
             var duplicate = ""
 
@@ -292,16 +295,16 @@ class FirebaseRepository(
 
                 var commentLikes: Double? = snapshotReview.getDouble("likes")
 
-                authorEmail = snapshotReview.getString("authorEmail") ?: ""
+                authorUid = snapshotReview.getString("authorUid") ?: ""
 
                 var dislikedByList = snapshotReview.get("dislikedBy") as? List<String> ?: listOf()
 
 
                 if (commentLikes == null) {
                     result = "Null Likes"
-                } else if (auth.currentUser?.email == null) {
+                } else if (auth.currentUser?.uid == null) {
                     result = "Null Liker"
-                } else if (dislikedByList.contains(auth.currentUser?.email)) {
+                } else if (dislikedByList.contains(auth.currentUser?.uid)) {
                     result = "Failed Duplicate Like"
                 } else {
                     commentLikes -= 1
@@ -309,7 +312,7 @@ class FirebaseRepository(
                     transaction.update(
                         reviewRef,
                         "dislikedBy",
-                        FieldValue.arrayUnion(auth.currentUser?.email)
+                        FieldValue.arrayUnion(auth.currentUser?.uid)
                     )
                 }
 
@@ -323,7 +326,7 @@ class FirebaseRepository(
             if (result == "Success") {
 
                 val query =
-                    db.collection("users").whereEqualTo("email", authorEmail).limit(1).get().await()
+                    db.collection("users").whereEqualTo("uid", authorUid).limit(1).get().await()
                 val authorDocSnapshot = query.documents[0]
 
                 if (authorDocSnapshot != null) {
@@ -334,7 +337,7 @@ class FirebaseRepository(
                         val snapshotAuthor = transaction.get(authorDocSnapshot.reference)
 
                         //you cant get karma from liking your own comments
-                        if(auth.currentUser?.email != snapshotAuthor.getString("email")) {
+                        if(auth.currentUser?.uid != snapshotAuthor.getString("uid")) {
 
                             var authorKarma: Double? = snapshotAuthor.getDouble("karma")
 
@@ -371,14 +374,14 @@ class FirebaseRepository(
 
         try {
 
-            val email = auth.currentUser?.email
+            val uid = auth.currentUser?.uid
 
-            if(email != null){
+            if(uid != null){
                     val newReport = hashMapOf(
                         "commentAuthor" to authorDataWithComment.comment.authorID,
                         "commentText" to authorDataWithComment.comment.commentText,
                         "commentID" to authorDataWithComment.comment.commentID,
-                        "reporterID" to email,
+                        "reporterID" to uid,
                     )
                     db.collection("reports").add(newReport)
                         .addOnSuccessListener { println("Report successfully uploaded") }
@@ -453,10 +456,10 @@ class FirebaseRepository(
             if (isNewUser) {
                 println("in is new")
 
-                val email = authResult.user?.email
+                val uid = authResult.user?.uid
 
-                if (email != null) {
-                    val userDoc = db.collection("users").whereEqualTo("email", email).get().await().documents.firstOrNull()
+                if (uid != null) {
+                    val userDoc = db.collection("users").whereEqualTo("uid", uid).get().await().documents.firstOrNull()
                     if (userDoc != null) {
                         // User already exists in Firestore, update their document ID
                         "ReturningUser"
@@ -468,7 +471,7 @@ class FirebaseRepository(
                     }
                 }
                 else{
-                    "Failed null email"
+                    "Failed null uid"
                 }
 
             }else{
@@ -484,7 +487,7 @@ class FirebaseRepository(
     private suspend fun addUserToFirestore() {
         println("in add new")
         auth.currentUser?.apply {
-            val user = toUser(this.displayName, this.email)
+            val user = toUser(this.displayName, this.uid)
             db.collection("users").document(uid).set(user).await()
             val backupData = hashMapOf(
                 "email" to this.email,
@@ -495,10 +498,10 @@ class FirebaseRepository(
         }
     }
 
-    private fun FirebaseUser.toUser(displayName: String?, email: String?) = mapOf(
+    private fun FirebaseUser.toUser(displayName: String?, uid: String?) = mapOf(
         "name" to displayName,
         "display_name" to displayName,
-        "email" to email,
+        "uid" to uid,
         "user_photo" to photoUrl?.toString(),
         "timestamp" to serverTimestamp(),
         "karma" to 0,
