@@ -132,7 +132,12 @@ fun CulinaryCompanion(
             SplashScreen(
                 showLoading = appUiState.showLoading,
                 showSignInButtons = appUiState.showSignInButtons,
-                endSplash = appUiState.endSplash) {
+                endSplash = appUiState.endSplash,
+                continueWithoutSignIn = {
+//                    appViewModel.dontSignIn()
+                                        },
+                trySignInWithGoogle = {appViewModel.signIn()}
+            ) {
                 showSplashScreen.value = false
             }
         }

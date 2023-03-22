@@ -82,9 +82,21 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 //they are already signed in
                 if(currentFirestoreUserNotNull){
                     //back up upload sync should then try to upload any of their stuff that wasn't uploaded
+                    appUiState.update {
+                        it.copy(
+                            showLoading = true,
+                            endSplash = true,
+                        )
+                    }
                     dataSyncUploads()
+
                 }else{
                     //try google sign in/up
+                    appUiState.update {
+                        it.copy(
+                            showLoading = true,
+                        )
+                    }
                     signIn()
                 }
             }
