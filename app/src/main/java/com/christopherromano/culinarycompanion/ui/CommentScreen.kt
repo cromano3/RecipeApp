@@ -114,8 +114,7 @@ fun CommentScreen(
                                 commentScreenViewModel.triggerTooLongAlert()
                             }
                             else{
-//                                commentScreenViewModel.confirmReview(recipeName = commentScreenData.recipeEntity.recipeName, uiState.reviewText)
-                                commentScreenViewModel.triggerPendingApprovalAlert()
+                                onConfirmClick(commentScreenData.recipeEntity.recipeName, uiState.reviewText)
                             }
                         }
                     }
@@ -153,17 +152,7 @@ fun CommentScreen(
                     onDismiss = { commentScreenViewModel.cancelTooLongAlert() }
                 )
             }
-            if(uiState.showPendingApprovalAlert){
-                OneButtonAlert(
-                    text = "Thank you for your comment! Your comment is pending approval from our moderation team and will displayed as soon as it is approved!",
-                    confirmButtonText = "Continue",
-                    onConfirmClick = {
-                        commentScreenViewModel.cancelPendingApprovalAlert()
-                        onConfirmClick(commentScreenData.recipeEntity.recipeName, uiState.reviewText)
-                                     },
-                    onDismiss = { }
-                )
-            }
+
 
         }
     }

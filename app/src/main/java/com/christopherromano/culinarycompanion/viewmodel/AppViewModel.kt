@@ -116,6 +116,19 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         return firebaseRepository.currentUser() != null
     }
 
+    fun dontSignIn(){
+        repository.setOnlineUserType(0)
+        appUiState.update {
+            it.copy(
+                userIsOnlineStatus = 0,
+                showSignInButtons = false,
+                showLoading = true,
+                endSplash = true,
+            )
+        }
+
+    }
+
     fun signIn() {
 
         viewModelScope.launch {

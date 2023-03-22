@@ -77,3 +77,11 @@ fun completedCookingSnackBar(recipe: RecipeEntity, scaffoldState: ScaffoldState,
             duration = SnackbarDuration.Short)
     }
 }
+
+fun reportSubmittedSnackBar(scaffoldState: ScaffoldState, coroutineScope: CoroutineScope){
+    coroutineScope.launch{
+        scaffoldState.snackbarHostState.showSnackbar(
+            message = "Your report has been submitted.",
+            duration = SnackbarDuration.Short)
+    }
+}

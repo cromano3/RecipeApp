@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckBox
@@ -19,7 +20,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.christopherromano.culinarycompanion.R
@@ -49,6 +57,63 @@ fun SplashScreen(
 
         var myTextColor by remember { mutableStateOf(Color.Black) }
 
+        val uriHandler = LocalUriHandler.current
+
+        val myText = buildAnnotatedString {
+
+            append("I agree to the ")
+
+            pushStringAnnotation(
+                tag = "URL",
+                annotation = "https://www.ChristopherRomano.com/culinarycompaniontermsandconditions"
+            )
+            withStyle(
+                style = SpanStyle(
+                    color = myTextColor,
+                    textDecoration = TextDecoration.Underline,
+                    fontWeight = FontWeight.Bold
+                )
+            ) {
+                append("Terms and Conditions")
+            }
+
+            pop()
+
+            append(", ")
+
+            pushStringAnnotation(
+                tag = "URL",
+                annotation = "https://www.ChristopherRomano.com/culinarycompanionprivacypolicy"
+            )
+            withStyle(
+                style = SpanStyle(
+                    color = myTextColor,
+                    textDecoration = TextDecoration.Underline,
+                    fontWeight = FontWeight.Bold
+                )
+            ) {
+                append("Privacy Policy")
+            }
+            pop()
+
+            append(", and ")
+
+            pushStringAnnotation(
+                tag = "URL",
+                annotation = "https://www.ChristopherRomano.com/culinarycompanionEULA"
+            )
+            withStyle(
+                style = SpanStyle(
+                    color = myTextColor,
+                    textDecoration = TextDecoration.Underline,
+                    fontWeight = FontWeight.Bold
+                )
+            ) {
+                append("EULA")
+            }
+            pop()
+        }
+
         LaunchedEffect(Unit){
 //            animatedAlpha.animateTo(1f)
             visible = true
@@ -56,7 +121,7 @@ fun SplashScreen(
 
         if(endSplash){
             LaunchedEffect(Unit){
-                delay(5000)
+                delay(3000)
                 onSplashFinished()
             }
         }
@@ -175,11 +240,16 @@ fun SplashScreen(
                                     .width(8.dp)
                                     .height(1.dp))
 
-                            Text(
-                                text = "I agree to the Terms and Conditions, Privacy Policy, and EULA",
-                                color = myTextColor,
-                                fontSize = 12.sp
+                            ClickableText(
+                                text = myText,
+                                modifier = Modifier,
+                                style = TextStyle.Default.copy(color = myTextColor, fontSize = 12.sp),
+                                onClick = { offset ->
+                                    myText.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                                        .firstOrNull()?.let { uriHandler.openUri(it.item) }
+                                }
                             )
+
                         }
                     }
 

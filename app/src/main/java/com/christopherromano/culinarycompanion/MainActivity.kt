@@ -172,7 +172,7 @@ fun CulinaryCompanion(
                 isConsentBoxChecked = appUiState.consentBoxChecked,
                 consentBoxClicked = { appViewModel.toggleConsentBoxCheck() },
                 continueWithoutSignIn = {
-//                    appViewModel.dontSignIn()
+                    appViewModel.dontSignIn()
                                         },
                 trySignInWithGoogle = {appViewModel.signIn()}
             ) {
@@ -643,6 +643,7 @@ fun CulinaryCompanion(
                             }
                         },
                         submitReport = {
+                            reportSubmittedSnackBar(scaffoldState, coroutineScope)
                             appViewModel.submitReport(it)
                         }
                     )

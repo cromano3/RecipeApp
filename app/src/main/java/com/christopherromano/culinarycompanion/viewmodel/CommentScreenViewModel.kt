@@ -63,11 +63,6 @@ class CommentScreenViewModel(application: Application): ViewModel() {
 
     }
 
-    fun triggerPendingApprovalAlert(){
-        uiState.update {
-            it.copy(showPendingApprovalAlert = true)
-        }
-    }
 
     fun cancelTooLongAlert(){
         uiState.update {
@@ -75,11 +70,7 @@ class CommentScreenViewModel(application: Application): ViewModel() {
         }
     }
 
-    fun cancelPendingApprovalAlert(){
-        uiState.update {
-            it.copy(showPendingApprovalAlert = false)
-        }
-    }
+
 
 
 
