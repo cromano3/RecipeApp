@@ -233,7 +233,7 @@ fun RecipeCard(
 
                             )
                             Text(
-                                text = "${recipeWithIngredientsAndInstructions.recipeEntity.globalRating}" + "%",
+                                text = "${recipeWithIngredientsAndInstructions.recipeEntity.globalRating}",
                                 modifier = Modifier
                                     .padding(
                                         start = 0.dp,
