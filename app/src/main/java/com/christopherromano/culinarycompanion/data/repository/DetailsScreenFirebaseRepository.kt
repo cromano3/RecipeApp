@@ -100,8 +100,6 @@ class DetailsScreenFirebaseRepository(
                             likes = likes,
                             likedByMe = likedByMe,
                             dislikedByMe = dislikedByMe,
-                            myLikeWasSynced = 0,
-                            timestamp = ""
                         )
 
                         db.collection("users").whereEqualTo("uid", authorUid).get().addOnSuccessListener {

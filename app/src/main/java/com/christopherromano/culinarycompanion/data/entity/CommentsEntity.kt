@@ -29,10 +29,5 @@ class CommentsEntity(
     @ColumnInfo(name = "disliked_by_local_user")
     var dislikedByMe: Int = 0,
 
-    @ColumnInfo(name = "local_user_like_was_synced")
-    var myLikeWasSynced: Int = 0,
-
-    @ColumnInfo(name ="timestamp")
-    var timestamp: String = "",
 )
 
