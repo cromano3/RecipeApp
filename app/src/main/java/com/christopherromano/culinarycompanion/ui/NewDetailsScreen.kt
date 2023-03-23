@@ -132,18 +132,25 @@ fun NewDetailsScreen(
          * Get the image based on the recipe Name
          */
         val image: Int = when (recipeData.recipeEntity.recipeName) {
-            "Bagels" -> R.drawable.bagel2
+            "Bagels" -> R.drawable.rice_soup2
             "Garlic Knots" -> R.drawable.garlic2
             "Cauliflower Walnut Tacos" -> R.drawable.cauliflower
-            "Lentil Sweet Potato Curry" -> R.drawable.curry
-            "Thai Style Peanut Soup" -> R.drawable.thaisoup
-            "Yummy Rice with Marinated Tofu" -> R.drawable.yummyrice
-            "Corn Chowder" -> R.drawable.cornchowder
+            "Lentil Sweet Potato Curry" -> R.drawable.garlic
+            "Thai Style Peanut Soup" -> R.drawable.garlic
+            "Yummy Rice with Marinated Tofu" -> R.drawable.garlic
+            "Corn Chowder" -> R.drawable.corn_chowder
             "Vegan Eggplant Parmesan" -> R.drawable.eggplant
-            "Mexican Style Rice" -> R.drawable.mexicanrice
-            "Wild Rice Salad" -> R.drawable.wildrice
-            "Rice Soup" -> R.drawable.ricesoup
-            else -> R.drawable.garlic2
+            "Mexican Style Rice" -> R.drawable.garlic
+            "Wild Rice Salad" -> R.drawable.garlic
+            "Rice Soup" -> R.drawable.rice_soup
+            "Miso Soup" -> R.drawable.miso_soup
+            "Sweet Potato Tortilla" -> R.drawable.sweet_potato_tortilla
+            "Tumbet" -> R.drawable.tumbet
+            "Chinese Eggplant" -> R.drawable.garlic
+            "Coca De Prebes" -> R.drawable.garlic
+            "Banana Walnut Pancakes" -> R.drawable.garlic
+            "Huevos Rotos" -> R.drawable.garlic
+            else -> R.drawable.garlic
         }
 
 
