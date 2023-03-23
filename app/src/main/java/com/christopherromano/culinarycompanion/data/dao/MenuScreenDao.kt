@@ -46,13 +46,6 @@ interface MenuScreenDao {
     @Query("UPDATE recipe_table SET is_reviewed = 1 WHERE recipe_name = :name")
     fun setReviewAsWritten(name: String)
 
-    @Transaction
-    @Query("UPDATE recipe_table SET is_review_screen_target = 1 WHERE recipe_name = :name")
-    fun setReviewTarget(name: String)
-
-    @Transaction
-    @Query("UPDATE recipe_table SET is_review_screen_target = 0")
-    fun cleanReviewTarget()
 
     @Transaction
     @Query("UPDATE ingredient_table SET quantity_needed = :quantityNeeded WHERE ingredient_name = :name")
@@ -85,23 +78,5 @@ interface MenuScreenDao {
     @Query("UPDATE user_table SET exp_to_give = exp_to_give + :expToGive")
     fun addExpToGive(expToGive: Int)
 
-
-    /**
-     * This query executes successfully and as intended in the DB Builder.
-     * However, it will not compile here.
-     *
-     *
-     * SOLVED: Because Room does not support UPDATE FROM
-     *
-     */
-//    @Transaction
-//    @Query("UPDATE ingredient_table AS it SET quantity_needed = it.quantity_needed + 1 " +
-//            "FROM recipe_ingredient_join_table " +
-//            "JOIN ingredient_table " +
-//            "ON it.ingredient_name = recipe_ingredient_join_table.ingredient_name " +
-//            "JOIN recipe_table " +
-//            "ON recipe_ingredient_join_table.recipe_name = recipe_table.recipe_name " +
-//            "WHERE recipe_table.recipe_name = :name")
-//    fun update(name:String)
 
 }

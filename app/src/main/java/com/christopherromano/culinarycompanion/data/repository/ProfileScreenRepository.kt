@@ -15,13 +15,12 @@ class ProfileScreenRepository(private val profileScreenDao: ProfileScreenDao) {
     var favoritesData: LiveData<List<RecipeWithIngredientsAndInstructions>> = profileScreenDao.getFavorites()
     var cookedData: LiveData<List<RecipeWithIngredients>> = profileScreenDao.getCooked()
     var expToGive: LiveData<Int> = profileScreenDao.getExpToGive()
-    var exp: LiveData<Int> = profileScreenDao.getExp()
 
-    suspend fun getExpToGive(): Int{
+    fun getExpToGive(): Int{
         return profileScreenDao.getExpToGive1()
     }
 
-    suspend fun getExp(): Int{
+    fun getExp(): Int{
         return profileScreenDao.getExp1()
     }
 
@@ -31,26 +30,11 @@ class ProfileScreenRepository(private val profileScreenDao: ProfileScreenDao) {
         }
     }
 
-    suspend fun setDetailsScreenTarget(recipeName: String){
-//        coroutineScope.launch(Dispatchers.IO) {
-            profileScreenDao.setDetailsScreenTarget(recipeName)
-//        }
+    fun setDetailsScreenTarget(recipeName: String){
+        profileScreenDao.setDetailsScreenTarget(recipeName)
     }
 
-    suspend fun addToExp(expChange: Int){
-//        coroutineScope.launch(Dispatchers.IO) {
-            profileScreenDao.addToExp(expChange)
-//        }
-    }
-
-
-    suspend fun clearExpToGive(){
-//        coroutineScope.launch(Dispatchers.IO) {
-            profileScreenDao.clearExpToGive()
-//        }
-    }
-
-    suspend fun updateExp(expChange: Int){
+    fun updateExp(expChange: Int){
         profileScreenDao.updateExp(expChange)
     }
 

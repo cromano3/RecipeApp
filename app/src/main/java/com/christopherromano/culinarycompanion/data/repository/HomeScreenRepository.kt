@@ -8,7 +8,6 @@ import com.christopherromano.culinarycompanion.datamodel.HomeScreenDataModel
 import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredients
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
@@ -51,157 +50,35 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
 
 
 
-    suspend fun removeOtherFilters(name: String){
-//        coroutineScope.launch(Dispatchers.IO) {
-//            println("ZeroA")
-//            delay(5000)
-//            println("FirstA")
-            homeScreenDao.removeOtherFilters(name)
-//            println("SecondA")
-//            delay(5000)
-//            println("ThirdA")
-//        }
+    fun removeOtherFilters(name: String){
+        homeScreenDao.removeOtherFilters(name)
     }
 
-    suspend fun filterBy(name: String){
-//        coroutineScope.launch(Dispatchers.IO) {
-
-//            println("ZeroB")
-//            delay(5000)
-//            println("FirstB")
-            homeScreenDao.filterBy(name)
-//            println("SecondB")
-//            delay(5000)
-//            println("ThirdB")
-//        }
+    fun filterBy(name: String){
+        homeScreenDao.filterBy(name)
     }
 
     //
 
-    suspend fun setRecipeToNotShown(name: String){
-//        coroutineScope.launch(Dispatchers.IO) {
-            homeScreenDao.setRecipeToNotShown(name)
-//        }
+    fun setRecipeToNotShown(name: String){
+        homeScreenDao.setRecipeToNotShown(name)
     }
 
-    suspend fun setRecipeToShown(name: String){
-//        coroutineScope.launch(Dispatchers.IO) {
-            homeScreenDao.setRecipeToShown(name)
-//        }
+    fun setRecipeToShown(name: String){
+        homeScreenDao.setRecipeToShown(name)
     }
 
     //
 
-    suspend fun cleanFilters(){
-//        coroutineScope.launch(Dispatchers.IO) {
-//        println("zeroB")
-//        delay(5000)
-//        println("firstB")
-            homeScreenDao.cleanFilters()
-//        }
+    fun cleanFilters(){
+        homeScreenDao.cleanFilters()
     }
 
-    suspend fun cleanRecipes(){
-//        coroutineScope.launch(Dispatchers.IO) {
-//        println("zeroA")
-//        delay(5000)
-//        println("firstA")
-            homeScreenDao.cleanRecipes()
-
-//        }
+    fun cleanRecipes(){
+        homeScreenDao.cleanRecipes()
     }
 
 
-
-
-
-
-
-
-    //////////////////
-
-    suspend fun getUiData(): MutableList<FilterEntity>{
-        return homeScreenDao.getUiData()
-    }
-
-    suspend fun newGetData(): MutableList<HomeScreenDataModel>{
-           return homeScreenDao.newGetData()
-    }
-
-
-    fun setAllFiltersToShown(){
-        coroutineScope.launch(Dispatchers.IO) {
-            homeScreenDao.setAllFiltersToShown()
-        }
-    }
-
-    ///
-    fun setAllFiltersToOff(){
-        coroutineScope.launch(Dispatchers.IO) {
-            homeScreenDao.setAllFiltersToOff()
-        }
-    }
-
-    fun setAllToShown(){
-        coroutineScope.launch(Dispatchers.IO) {
-            delay(150)
-            homeScreenDao.setAllToShown()
-        }
-    }
-
-    fun setIsShown(recipeName: String, isShown: Int){
-        coroutineScope.launch(Dispatchers.IO) {
-            homeScreenDao.setIsShown(recipeName, isShown)
-        }
-    }
-
-    ///
-
-    fun setAsUnfiltered(){
-        coroutineScope.launch(Dispatchers.IO) {
-            // UPDATE filter_table SET is_active_filter = 1 WHERE filter_name = Unfiltered
-            homeScreenDao.setAsUnfiltered()
-        }
-    }
-    fun setAsFiltered(){
-        coroutineScope.launch(Dispatchers.IO) {
-            //UPDATE filter_table SET is_active_filter = 0 WHERE filter_name = Unfiltered
-            homeScreenDao.setAsFiltered()
-        }
-    }
-
-    fun clearFilters(){
-        coroutineScope.launch(Dispatchers.IO){
-            // UPDATE filter_table SET is_active_filter = 0 WHERE filter_name != Unfiltered
-            homeScreenDao.clearFilters()
-        }
-    }
-    fun addFilter(filterName: String){
-        coroutineScope.launch(Dispatchers.IO) {
-            //UPDATE filter_table SET is_active_filter = 1 WHERE filter_name = 'filterName'
-            homeScreenDao.addFilter(filterName)
-        }
-    }
-
-    fun hideOtherFilters(filterName: String){
-        coroutineScope.launch(Dispatchers.IO) {
-            homeScreenDao.hideOtherFilters(filterName)
-        }
-    }
-
-    fun removeFilter(filterName: String){
-        coroutineScope.launch(Dispatchers.IO) {
-            //UPDATE filter_table SET is_active_filter = 0 WHERE filter_name = 'filterName'
-            homeScreenDao.removeFilter(filterName)
-        }
-    }
-
-
-
-
-
-
-    ///
 
     fun updateFavorite(recipeName: String, isFavoriteStatus: Int) {
         coroutineScope.launch(Dispatchers.IO) {
@@ -227,9 +104,8 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
         }
     }
 
-    suspend fun setDetailsScreenTarget(recipeName: String){
-//        coroutineScope.launch(Dispatchers.IO) {
-            homeScreenDao.setDetailsScreenTarget(recipeName)
-//        }
+    fun setDetailsScreenTarget(recipeName: String){
+        homeScreenDao.setDetailsScreenTarget(recipeName)
     }
+
 }

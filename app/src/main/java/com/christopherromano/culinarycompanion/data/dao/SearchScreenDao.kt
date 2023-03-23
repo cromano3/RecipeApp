@@ -11,24 +11,10 @@ import com.christopherromano.culinarycompanion.datamodel.HomeScreenDataModel
 interface SearchScreenDao {
 
     @Transaction
-    @Query("SELECT recipe_name FROM recipe_table ORDER BY recipe_name ASC")
-    fun getRecipeNamesReferenceList(): List<String>
-
-    @Transaction
-    @Query("SELECT ingredient_name FROM ingredient_table ORDER BY ingredient_name ASC")
-    fun getIngredientNamesReferenceList(): List<String>
-    @Transaction
-    @Query("SELECT filter_name FROM filters_table ORDER BY filter_name ASC")
-    fun getFilterNamesReferenceList(): List<String>
-
-    @Transaction
     @Query("SELECT * FROM recipe_table")
     fun getRecipes(): List<HomeScreenDataModel>
 
-    //
-//    @Transaction
-//    @Query("SELECT * FROM recipe_table")
-//    fun getAllRecipes(): LiveData<List<HomeScreenDataModel>>
+
 
     @Transaction
     @Query("UPDATE search_table SET show_results = :isShown")

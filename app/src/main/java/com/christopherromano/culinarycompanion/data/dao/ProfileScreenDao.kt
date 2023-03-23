@@ -24,9 +24,7 @@ interface ProfileScreenDao {
     @Query("SELECT exp_to_give FROM user_table")
     fun getExpToGive(): LiveData<Int>
 
-    @Transaction
-    @Query("SELECT exp_total FROM user_table")
-    fun getExp(): LiveData<Int>
+
 
     @Transaction
     @Query("SELECT exp_to_give FROM user_table")
@@ -44,18 +42,6 @@ interface ProfileScreenDao {
     fun setDetailsScreenTarget(recipeName: String)
 
 
-
-//    @Transaction
-//    @Query("UPDATE user_table SET exp_to_give = exp_to_give - :expChange")
-//    fun removeFromExpToGive(expChange: Int)
-
-    @Transaction
-    @Query("UPDATE user_table SET exp_total = exp_total + :expChange")
-    fun addToExp(expChange: Int)
-
-    @Transaction
-    @Query("UPDATE user_table SET exp_to_give = 0")
-    fun clearExpToGive()
 
     @Transaction
     @Query("UPDATE user_table SET exp_to_give = 0, exp_total = exp_total + :expChange")

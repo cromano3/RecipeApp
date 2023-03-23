@@ -6,19 +6,11 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.christopherromano.culinarycompanion.data.entity.QuantitiesTableEntity
-import com.christopherromano.culinarycompanion.datamodel.ReviewWithAuthorDataModel
 
 
 @Dao
 interface DetailsScreenDao {
 
-//    @Transaction
-//    @Query("SELECT recipe_table.* FROM recipe_table INNER JOIN details_screen_target_table ON details_screen_target_table.target_name = recipe_table.recipe_name")
-//    fun getData(): LiveData<RecipeWithIngredientsAndInstructions>
-
-    @Transaction
-    @Query("SELECT * FROM comments_table WHERE recipe_name = :recipeName")
-    fun getReviewsData(recipeName: String): LiveData<List<ReviewWithAuthorDataModel>>
 
     @Transaction
     @Query("SELECT global_rating FROM recipe_table WHERE recipe_name = :recipeName")
@@ -66,14 +58,6 @@ interface DetailsScreenDao {
     @Transaction
     @Query("UPDATE recipe_table SET is_reviewed = 1, is_review_synced = 1 WHERE recipe_name = :name")
     fun setReviewAsWritten(name: String)
-
-    @Transaction
-    @Query("UPDATE recipe_table SET is_review_screen_target = 1 WHERE recipe_name = :name")
-    fun setReviewTarget(name: String)
-
-    @Transaction
-    @Query("UPDATE recipe_table SET is_review_screen_target = 0")
-    fun cleanReviewTarget()
 
     @Transaction
     @Query("UPDATE ingredient_table SET quantity_owned = :quantityOwned WHERE ingredient_name = :name")

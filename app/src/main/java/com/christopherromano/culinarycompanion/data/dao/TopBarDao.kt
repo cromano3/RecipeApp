@@ -11,10 +11,6 @@ import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAn
 interface TopBarDao {
 
     @Transaction
-    @Query("UPDATE search_table SET text_field_value = :input")
-    fun setTextFieldValue(input: String)
-
-    @Transaction
     @Query("SELECT show_results FROM search_table")
     fun getShowResults(): LiveData<Int>
 
@@ -37,6 +33,7 @@ interface TopBarDao {
     @Transaction
     @Query("SELECT ingredient_name FROM ingredient_table ORDER BY ingredient_name ASC")
     fun getIngredientNamesReferenceList(): List<String>
+
     @Transaction
     @Query("SELECT filter_name FROM filters_table ORDER BY filter_name ASC")
     fun getFilterNamesReferenceList(): List<String>

@@ -148,20 +148,12 @@ class FirebaseRepository(
                     result = "Failed Duplicate Rating"
                 } else {
                     recipeRating += rating.rating
-//                if(recipeRating > 99.0){
-//                    recipeRating = 99.0
-//                }
-//                else if(recipeRating < 60){
-//                    recipeRating = 60.0
-//                }
-//                val timestamp: Any = serverTimestamp()
                     transaction.update(
                         currentRecipeDocument,
                         "ratedBy",
                         FieldValue.arrayUnion(auth.currentUser?.uid)
                     )
                     transaction.update(currentRecipeDocument, "rating", recipeRating)
-//                transaction.update(currentRecipeDocument, "timestamp", timestamp)
                 }
 
             }.addOnSuccessListener {

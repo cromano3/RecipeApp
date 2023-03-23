@@ -29,7 +29,6 @@ import com.christopherromano.culinarycompanion.data.entity.*
     )
 public abstract class RecipeAppDatabase : RoomDatabase() {
 
-    abstract fun RecipeDao(): RecipeDao
     abstract fun HomeScreenDao(): HomeScreenDao
     abstract fun DetailsScreenDao(): DetailsScreenDao
     abstract fun MenuScreenDao(): MenuScreenDao

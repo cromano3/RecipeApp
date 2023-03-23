@@ -80,10 +80,8 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
     }
     var customIngredients: LiveData<List<ShoppingListCustomItemsEntity>> = shoppingListScreenDao.getCustomIngredients()
 
-    suspend fun setDetailsScreenTarget(recipeName: String){
-//        coroutineScope.launch(Dispatchers.IO) {
-            shoppingListScreenDao.setDetailsScreenTarget(recipeName)
-//        }
+    fun setDetailsScreenTarget(recipeName: String){
+        shoppingListScreenDao.setDetailsScreenTarget(recipeName)
     }
 
     fun setIngredientToNotShown(name: String){
