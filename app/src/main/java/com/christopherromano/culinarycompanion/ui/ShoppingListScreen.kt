@@ -36,7 +36,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -598,7 +597,6 @@ fun ShoppingListItemWithButton(
 
     val myIcon: ImageVector
     val checkBoxBackgroundColor: Color
-    val decoration : TextDecoration
     var alphaLevel : Float
 
 
@@ -608,7 +606,6 @@ fun ShoppingListItemWithButton(
         selected = true
         myIcon = Icons.Filled.CheckBox
         checkBoxBackgroundColor = Color(0xFFd8af84)
-        decoration = TextDecoration.LineThrough
         alphaLevel = 0.55f
 
 
@@ -618,7 +615,6 @@ fun ShoppingListItemWithButton(
         selected = false
         myIcon = Icons.Outlined.CheckBoxOutlineBlank
         checkBoxBackgroundColor = Color(0xFFd8af84)
-        decoration = TextDecoration.None
         alphaLevel = 1f
 
     }
@@ -691,7 +687,6 @@ fun ShoppingListItemWithButton(
                     .align(Alignment.CenterVertically)
                     .alpha(alphaLevel),
                 text = myText,
-                textDecoration = decoration,
                 fontSize = 16.sp
             )
             /*
@@ -704,7 +699,6 @@ fun ShoppingListItemWithButton(
                         .align(Alignment.CenterVertically)
                         .alpha(alphaLevel),
                     text = " (${ingredientEntity.quantityNeeded})",
-                    textDecoration = decoration,
                     fontSize = 16.sp
                 )
             }
@@ -728,7 +722,6 @@ fun CustomShoppingListItem(
 
     val myIcon: ImageVector
     val checkBoxBackgroundColor: Color
-    val decoration : TextDecoration
     var alphaLevel : Float
 
 
@@ -737,7 +730,6 @@ fun CustomShoppingListItem(
         selected = true
         myIcon = Icons.Filled.CheckBox
         checkBoxBackgroundColor = Color(0xFFd8af84)
-        decoration = TextDecoration.LineThrough
         alphaLevel = 0.55f
 
 
@@ -747,7 +739,6 @@ fun CustomShoppingListItem(
         selected = false
         myIcon = Icons.Outlined.CheckBoxOutlineBlank
         checkBoxBackgroundColor = Color(0xFFd8af84)
-        decoration = TextDecoration.None
         alphaLevel = 1f
 
     }
@@ -831,7 +822,6 @@ fun CustomShoppingListItem(
                     .align(Alignment.CenterVertically)
                     .alpha(alphaLevel),
                 text = shoppingListCustomItemEntity.item,
-                textDecoration = decoration,
                 fontSize = 16.sp
             )
         }
