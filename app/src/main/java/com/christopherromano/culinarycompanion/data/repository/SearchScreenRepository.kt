@@ -66,8 +66,5 @@ class SearchScreenRepository(private val searchScreenDao: SearchScreenDao) {
         }
     }
 
-    fun setDetailsScreenTarget(recipeName: String){
-        searchScreenDao.setDetailsScreenTarget(recipeName)
-    }
 
 }

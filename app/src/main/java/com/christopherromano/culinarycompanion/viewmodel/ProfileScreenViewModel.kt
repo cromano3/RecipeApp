@@ -570,9 +570,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
         }
     }
 
-    suspend fun setDetailsScreenTarget(recipeName: String){
-        repository.setDetailsScreenTarget(recipeName)
-    }
 
     fun setActiveTab(tabName: String){
         getCommentsList()

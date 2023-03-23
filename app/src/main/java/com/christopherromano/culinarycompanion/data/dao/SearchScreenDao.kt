@@ -62,9 +62,4 @@ interface SearchScreenDao {
     fun setIngredientQuantityOwned(name: String, quantityOwned: Int)
 
 
-    @Transaction
-    @Query("UPDATE details_screen_target_table SET target_name = :recipeName")
-    fun setDetailsScreenTarget(recipeName: String)
-
-
 }

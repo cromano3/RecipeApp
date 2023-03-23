@@ -38,6 +38,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.christopherromano.culinarycompanion.R
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmCompletedCookingAnoString
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmRemoveMenuAnoString
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
@@ -48,13 +49,10 @@ import com.christopherromano.culinarycompanion.ui.components.BasicAlert
 import com.christopherromano.culinarycompanion.ui.components.RecipeCard
 import com.christopherromano.culinarycompanion.ui.components.ThumbsRatingAlert
 import com.christopherromano.culinarycompanion.viewmodel.MenuScreenViewModel
-import com.christopherromano.culinarycompanion.R
-
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
-
 import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -350,7 +348,7 @@ class MenuScreenViewModelFactory(
 
         return MenuScreenViewModel(
             application,
-            MenuScreenFirebaseRepository(application, Firebase.firestore, Firebase.auth)
+            MenuScreenFirebaseRepository(Firebase.firestore, Firebase.auth)
             //  recipeName
         ) as T
     }

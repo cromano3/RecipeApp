@@ -15,11 +15,9 @@ import com.christopherromano.culinarycompanion.data.entity.*
                         InstructionEntity::class,
                         FilterEntity::class,
                         RecipeFiltersJoinEntity::class,
-                        DetailsScreenTargetEntity::class,
                         SearchEntity::class,
                         UserEntity::class,
                         ShoppingListCustomItemsEntity::class,
-                        CommentAuthorEntity::class,
                         CommentsEntity::class,
                         QuantitiesTableEntity::class,
 
@@ -53,10 +51,10 @@ public abstract class RecipeAppDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                RecipeAppDatabase::class.java, "app_database65.db"
+                RecipeAppDatabase::class.java, "app_database67.db"
             )
               //  .allowMainThreadQueries()
-                .createFromAsset("database/app_database65.db")
+                .createFromAsset("database/app_database67.db")
                 .build()
                 // prepopulate the database after onCreate was called
 //                .addCallback(object : Callback() {

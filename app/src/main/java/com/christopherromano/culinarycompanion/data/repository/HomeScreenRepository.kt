@@ -104,8 +104,5 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
         }
     }
 
-    fun setDetailsScreenTarget(recipeName: String){
-        homeScreenDao.setDetailsScreenTarget(recipeName)
-    }
 
 }

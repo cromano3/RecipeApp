@@ -37,11 +37,6 @@ interface ProfileScreenDao {
     @Query("UPDATE recipe_table SET is_favorite = :isFavoriteStatus WHERE recipe_name = :name")
     fun updateFavorite(name: String, isFavoriteStatus: Int)
 
-    @Transaction
-    @Query("UPDATE details_screen_target_table SET target_name = :recipeName")
-    fun setDetailsScreenTarget(recipeName: String)
-
-
 
     @Transaction
     @Query("UPDATE user_table SET exp_to_give = 0, exp_total = exp_total + :expChange")

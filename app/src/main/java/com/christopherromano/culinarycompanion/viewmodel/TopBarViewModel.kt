@@ -20,8 +20,6 @@ class TopBarViewModel(application: Application, ): ViewModel() {
 
     private val repository: TopBarRepository
 
-    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
-
 //    var textFieldValue: LiveData<String>
     var showResults: LiveData<Int>
 
@@ -36,7 +34,6 @@ class TopBarViewModel(application: Application, ): ViewModel() {
         val topBarDao = appDb.TopBarDao()
         repository = TopBarRepository(topBarDao)
 
-        detailsScreenData = repository.detailsScreenData
 //        textFieldValue = repository.textFieldValue
         showResults = repository.showResults
 

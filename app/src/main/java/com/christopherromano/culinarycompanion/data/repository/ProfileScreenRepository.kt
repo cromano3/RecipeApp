@@ -30,9 +30,6 @@ class ProfileScreenRepository(private val profileScreenDao: ProfileScreenDao) {
         }
     }
 
-    fun setDetailsScreenTarget(recipeName: String){
-        profileScreenDao.setDetailsScreenTarget(recipeName)
-    }
 
     fun updateExp(expChange: Int){
         profileScreenDao.updateExp(expChange)

@@ -33,9 +33,6 @@ class MenuScreenRepository(private val menuScreenDao: MenuScreenDao)
         menuScreenDao.addExpToGive(expToGive)
     }
 
-    fun setDetailsScreenTarget(recipeName: String){
-        menuScreenDao.setDetailsScreenTarget(recipeName)
-    }
 
     fun setReviewAsWritten(recipeName: String){
         menuScreenDao.setReviewAsWritten(recipeName)

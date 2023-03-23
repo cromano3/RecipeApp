@@ -480,7 +480,6 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         appUiState.update {
             it.copy(
                 detailsScreenTarget = recipeData,
-                detailsScreenReviewsData = listOf(),
             )
         }
     }

@@ -909,7 +909,7 @@ class DetailsScreenViewModelFactory(
         return DetailsScreenViewModel(
             application,
             recipeName,
-            DetailsScreenFirebaseRepository(application, Firebase.firestore, Firebase.auth)
+            DetailsScreenFirebaseRepository(Firebase.firestore, Firebase.auth)
         ) as T
     }
 }

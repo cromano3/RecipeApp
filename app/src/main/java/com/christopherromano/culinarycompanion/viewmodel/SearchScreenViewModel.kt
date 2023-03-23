@@ -265,7 +265,5 @@ class SearchScreenViewModel (application: Application): ViewModel() {
         }
     }
 
-    suspend fun setDetailsScreenTarget(recipeName: String){
-        repository.setDetailsScreenTarget(recipeName)
-    }
+
 }

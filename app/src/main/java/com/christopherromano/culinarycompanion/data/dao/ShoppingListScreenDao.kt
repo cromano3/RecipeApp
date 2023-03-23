@@ -116,11 +116,4 @@ interface ShoppingListScreenDao {
     fun setIngredientToNotOwned(name: String)
 
 
-
-
-
-    @Transaction
-    @Query("UPDATE details_screen_target_table SET target_name = :recipeName")
-    fun setDetailsScreenTarget(recipeName: String)
-
 }

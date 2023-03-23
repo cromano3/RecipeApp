@@ -255,7 +255,4 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         }
     }
 
-    suspend fun setDetailsScreenTarget(recipeName: String){
-        repository.setDetailsScreenTarget(recipeName)
-    }
 }

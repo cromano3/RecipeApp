@@ -526,7 +526,7 @@ class SettingsScreenViewModelFactory(
         return SettingsScreenViewModel(
             application,
 //            recipeName,
-            SettingsScreenFirebaseRepository(application, Firebase.firestore, Firebase.auth)
+            SettingsScreenFirebaseRepository(Firebase.firestore, Firebase.auth)
         ) as T
     }
 }

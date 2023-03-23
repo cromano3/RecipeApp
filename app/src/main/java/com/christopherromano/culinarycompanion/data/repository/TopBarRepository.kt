@@ -3,7 +3,6 @@ package com.christopherromano.culinarycompanion.data.repository
 import androidx.lifecycle.LiveData
 import com.christopherromano.culinarycompanion.data.dao.TopBarDao
 import com.christopherromano.culinarycompanion.datamodel.HomeScreenDataModel
-import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAndInstructions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,7 +12,6 @@ class TopBarRepository(private val topBarDao: TopBarDao) {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
-    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions> = topBarDao.getData()
     var showResults: LiveData<Int> = topBarDao.getShowResults()
 
 

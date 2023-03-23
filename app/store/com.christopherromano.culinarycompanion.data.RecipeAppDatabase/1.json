@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2c0dd7a9e26155877f2fcb1bd8a8d382",
+    "identityHash": "75ea80f0bf2c712ab35a1173804a0635",
     "entities": [
       {
         "tableName": "recipe_table",
@@ -295,26 +295,6 @@
         "foreignKeys": []
       },
       {
-        "tableName": "details_screen_target_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`target_name` TEXT NOT NULL, PRIMARY KEY(`target_name`))",
-        "fields": [
-          {
-            "fieldPath": "ingredientName",
-            "columnName": "target_name",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "target_name"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
         "tableName": "search_table",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`preview_list` TEXT NOT NULL, `results_list` TEXT NOT NULL, `show_results` INTEGER NOT NULL, `text_field_value` TEXT NOT NULL, PRIMARY KEY(`text_field_value`))",
         "fields": [
@@ -441,44 +421,6 @@
         "foreignKeys": []
       },
       {
-        "tableName": "comments_authors_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`author_id` TEXT NOT NULL, `author_name` TEXT NOT NULL, `author_karma` INTEGER NOT NULL, `author_image_url` TEXT NOT NULL, PRIMARY KEY(`author_id`))",
-        "fields": [
-          {
-            "fieldPath": "authorID",
-            "columnName": "author_id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "authorName",
-            "columnName": "author_name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "authorKarma",
-            "columnName": "author_karma",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "authorImageURL",
-            "columnName": "author_image_url",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "author_id"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
         "tableName": "comments_table",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment_id` TEXT NOT NULL, `recipe_name` TEXT NOT NULL, `author_id` TEXT NOT NULL, `comment_text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `liked_by_local_user` INTEGER NOT NULL, `disliked_by_local_user` INTEGER NOT NULL, `local_user_like_was_synced` INTEGER NOT NULL, `timestamp` TEXT NOT NULL, PRIMARY KEY(`comment_id`))",
         "fields": [
@@ -594,7 +536,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2c0dd7a9e26155877f2fcb1bd8a8d382')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '75ea80f0bf2c712ab35a1173804a0635')"
     ]
   }
 }

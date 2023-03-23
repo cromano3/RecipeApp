@@ -397,10 +397,6 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
 
 
 
-    suspend fun setDetailsScreenTarget(recipeName: String){
-        repository.setDetailsScreenTarget(recipeName)
-    }
-
 
     fun removeFromMenu(recipe: RecipeWithIngredientsAndInstructions){
 

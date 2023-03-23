@@ -10,7 +10,10 @@ import com.christopherromano.culinarycompanion.data.entity.QuantitiesTableEntity
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.DetailsScreenFirebaseRepository
 import com.christopherromano.culinarycompanion.data.repository.DetailsScreenRepository
-import com.christopherromano.culinarycompanion.datamodel.*
+import com.christopherromano.culinarycompanion.datamodel.AuthorData
+import com.christopherromano.culinarycompanion.datamodel.AuthorDataWithComment
+import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAndInstructions
+import com.christopherromano.culinarycompanion.datamodel.UiAlertStateDetailsScreenDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -159,35 +162,6 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 //    }
 
 
-
-    fun setLiked(commentID: String) {
-
-        val myList: MutableList<ReviewWithAuthorDataModel> = mutableListOf()
-
-//        for(review in uiState.value.reviewsData){
-//            if (review.commentsEntity.commentID == commentID){
-//                val myComment = CommentsEntity(
-//                    review.commentsEntity.commentID,
-//                    review.commentsEntity.recipeName,
-//                    review.commentsEntity.authorID,
-//                    review.commentsEntity.commentText,
-//                    review.commentsEntity.likes + 1,
-//                    1,
-//                    review.commentsEntity.myLikeWasSynced,
-//                    review.commentsEntity.timestamp)
-//                myList.add(ReviewWithAuthorDataModel(myComment, review.authorEntity))
-//            }
-//            else{
-//                myList.add(review)
-//            }
-//
-//        }
-
-//        uiState.update {
-//            it.copy(reviewsData = myList)
-//        }
-
-    }
 
     fun removeFromMenu(recipe: RecipeWithIngredientsAndInstructions){
 
