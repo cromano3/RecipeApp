@@ -36,8 +36,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.ui.components.SmallRecipeCard
 import com.christopherromano.culinarycompanion.viewmodel.SearchScreenViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -58,7 +56,7 @@ fun SearchScreen(
         )
 
         val uiState by searchScreenViewModel.uiState.collectAsState()
-//        val allRecipes by searchScreenViewModel.allRecipes.observeAsState()
+
         val results by searchScreenViewModel.results.observeAsState(listOf())
         val previewList by searchScreenViewModel.previewList.observeAsState()
 
@@ -66,20 +64,9 @@ fun SearchScreen(
 
         val showResults by searchScreenViewModel.showResults.observeAsState()
 
-        val coroutineScope = CoroutineScope(Dispatchers.Main)
-
-//        val focusRequester = remember { FocusRequester() }
         val focusManager = LocalFocusManager.current
 
-//        val text by remember { mutableStateOf("") }
 
-//        var isKeyboardOpen by remember { mutableStateOf(true) }
-
-//        if(!uiState.showResults) {
-//            LaunchedEffect(Unit) {
-//                focusRequester.requestFocus()
-//            }
-//        }
 
 
 
@@ -87,67 +74,6 @@ fun SearchScreen(
 
         Surface(){
             Column(){
-//                Row(){
-//
-//                    //Go back button
-//                    IconButton(
-//                        onClick = { onGoBackClick() },
-//                        modifier =
-//                        Modifier
-//                            .size(48.dp)
-//                            .align(Alignment.CenterVertically)
-//                            .background(color = Color.Transparent),
-//                        // color = Color.Transparent
-//
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Outlined.ArrowBack,
-//                            contentDescription = null,
-//                            modifier = Modifier
-//                                .size(24.dp),
-//                            // .padding(start = 16.dp)
-//                            // .clickable(onClick = {onGoBackClick(detailsScreenData)}),
-//                            tint = Color(0xFF000000)
-//                        )
-//                    }
-//
-//                    //Search field
-//                    TextField(
-//                        value = uiState.currentInput,
-//                        onValueChange =
-//                        {
-//                            searchScreenViewModel.updatePreview( it, it.text)
-//                        },
-//                        modifier = Modifier.focusRequester(focusRequester),
-//                        textStyle = TextStyle.Default.copy(color = Color(0xFF000000), fontSize = 16.sp),
-//                        leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null, tint = Color(0xFF000000)) },
-//                        trailingIcon =
-//                        {
-//                            if(uiState.currentInput.text.isNotEmpty()){
-//                                Surface(
-//                                    color = Color.Transparent,
-//                                    modifier = Modifier.clickable {  searchScreenViewModel.updatePreview( TextFieldValue(""), "") }
-//                                )
-//                                {
-//                                    Icon(
-//                                        Icons.Outlined.Close,
-//                                        contentDescription = null,
-//                                        tint = Color(0xFF000000)
-//                                    )
-//                                }
-//                            }
-//                        },
-//                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-//                        keyboardActions = KeyboardActions(
-//                            onSearch = {
-//                                searchScreenViewModel.liveSearchForClick()
-////                                searchScreenViewModel.searchFor(text)
-//                                focusManager.clearFocus()
-//                            })
-////                        colors =
-//                    )
-//                }
-
                 Surface(
                     Modifier
                         .fillMaxSize()
@@ -184,13 +110,11 @@ fun SearchScreen(
                         )
                         {
                             items(items = myPreviewList, key = {it}){
-//                            items(items = uiState.previewList, key = {it.name}){
                                 Surface(
                                     Modifier
                                         .wrapContentSize()
                                         .clickable(onClick = {
                                             searchScreenViewModel.liveSearchForPush(it)
-//                                            searchScreenViewModel.searchForClick(it)
                                             focusManager.clearFocus()
                                         })
                                 )
@@ -207,8 +131,6 @@ fun SearchScreen(
                         }
                     }
 
-                    //search results
-//                    if(uiState.showResults){
                     //Results Cards
                     if(showResults == 1){
 
@@ -255,19 +177,8 @@ fun SearchScreen(
                                     },
                                     onDetailsClick =
                                     {
-
                                         focusManager.clearFocus()
                                         onDetailsClick(results[index].recipeEntity.recipeName)
-
-//                                        /** main to IO coroutine */
-//                                        coroutineScope.launch(Dispatchers.Main) {
-//                                            withContext(Dispatchers.IO) {
-//                                                searchScreenViewModel.setDetailsScreenTarget(results[index].recipeEntity.recipeName)
-//                                            }
-//                                            onDetailsClick()
-//                                            focusManager.clearFocus()
-//                                        }
-
                                     },
                                 )
 
@@ -275,54 +186,6 @@ fun SearchScreen(
                             }
                         }
 
-//                        LazyColumn(state = listState,
-//                            modifier = Modifier.padding(bottom = 0.dp).pointerInput(Unit) {
-//                                detectTapGestures(
-//                                    onTap = { focusManager.clearFocus() },
-//                                    onPress = { focusManager.clearFocus() },
-//                                )
-//                                detectVerticalDragGestures { _, _ -> focusManager.clearFocus()  }
-//                                detectDragGestures { _, _ -> focusManager.clearFocus() }
-//
-//                            }){
-//
-//                            items(
-//                                items =
-////                                uiState.clickSearchResults
-//                                results
-//                                ,
-//                                key = {it.recipeEntity.recipeName}
-//                            ){
-//                                SmallRecipeCard(
-//                                    modifier = Modifier,
-//                                    recipe = it.recipeEntity,
-//                                    ingredients = it.ingredientsList,
-//                                    onFavoriteClick = {
-//                                        onFavoriteClick(it.recipeEntity)
-//                                        searchScreenViewModel.toggleFavorite(it)
-//                                        focusManager.clearFocus()},
-//                                    onMenuClick =
-//                                    {
-//                                        if (it.recipeEntity.onMenu == 0){
-//                                            focusManager.clearFocus()
-//                                            onMenuClick(it.recipeEntity)
-//                                            searchScreenViewModel.toggleMenu(it)
-//                                        }
-//                                        else if(it.recipeEntity.onMenu == 1){
-//                                            focusManager.clearFocus()
-//                                            searchScreenViewModel.triggerAlert(it)
-//                                        }
-//                                    },
-//                                    onDetailsClick = {
-//                                        searchScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
-//                                        onDetailsClick()
-//                                        focusManager.clearFocus()},
-//                                )
-//                            }
-//                            item(){
-//                                Spacer(Modifier.fillMaxWidth().height(64.dp))
-//                            }
-//                        }
                         if(uiState.showAlert){
                             AlertDialog(
                                 onDismissRequest = {},

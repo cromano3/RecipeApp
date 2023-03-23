@@ -121,10 +121,7 @@ fun ProfileScreen(
             coroutineScope.launch {
                 println("do animation")
                 profileScreenViewModel.stopDoAnimation()
-//                delay(1000)
-//                println("before")
                 withContext(Dispatchers.Main) { animatedFirstValue.animateTo(uiState.animationTargetFirst, animationSpec = tween(500)) }
-//                println("after")
                 profileScreenViewModel.endAnimation()
             }
         }
@@ -183,7 +180,6 @@ fun ProfileScreen(
                                 Icons.Outlined.Settings,
                                 tint = Color(0xFFd8af84),
                                 modifier = Modifier.size(20.dp),
-                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
                                 contentDescription = null
                             )
                         }
@@ -230,7 +226,6 @@ fun ProfileScreen(
                                 )
                                 .background(
                                     color =
-//                                Color(0xFFd8af84)
                                     Color(0xFF682300)
                                 ),
                             contentAlignment = Alignment.Center,
@@ -279,12 +274,10 @@ fun ProfileScreen(
                                     Box(contentAlignment = Alignment.Center) {
                                         this@Column.AnimatedVisibility((uiStarsState.starList[0] == Icons.Filled.Grade), enter = scaleIn(tween(200))
                                         ){
-                                    //                                        if(uiStarsState.starList[0] == Icons.Filled.Grade){
                                             Icon(
                                                 uiStarsState.starList[0],
                                                 tint = Color(0xFFd8af84),
                                                 modifier = Modifier.size(20.dp),
-                                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
                                                 contentDescription = null
                                             )
                                         }
@@ -666,9 +659,7 @@ fun ProfileScreen(
                                 /**
                                 Animate this for exp changes
                                  */
-                                size =
-//                                if(uiState.xpToGive == 0) Size(uiState.animationTargetFirst * barWidth, barHeight-10f) else
-                                    mySize,
+                                size = mySize,
                                 cornerRadius = CornerRadius(25f, 25f),
                             )
                         }
@@ -724,7 +715,6 @@ fun ProfileScreen(
                                     Icons.Outlined.Favorite,
                                     tint = Color(0xFFd8af84),
                                     modifier = Modifier.size(20.dp),
-                                    // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
                                     contentDescription = null
                                 )
                             }
@@ -833,7 +823,6 @@ fun ProfileScreen(
                                     Icons.Outlined.Reviews,
                                     tint = Color(0xFFd8af84),
                                     modifier = Modifier.size(20.dp),
-                                    // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
                                     contentDescription = null
                                 )
                             }
@@ -876,19 +865,8 @@ fun ProfileScreen(
                                     onRemoveClick = {},
                                     onCompleteClick = {},
                                     onDetailsClick = {
-
                                         profileScreenViewModel.cancelAnimationStack()
                                         onDetailsClick(it.recipeEntity.recipeName)
-
-//                                    /** main to IO coroutine */
-//                                    coroutineScope.launch(Dispatchers.Main) {
-//                                        withContext(Dispatchers.IO) {
-//                                            profileScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
-//
-//                                        }
-//                                        onDetailsClick()
-//                                    }
-
                                     }
                                 )
 
@@ -931,25 +909,9 @@ fun ProfileScreen(
                                     onDetailsClick = {
                                         profileScreenViewModel.cancelAnimationStack()
                                         onDetailsClick(cookedData[index].recipeEntity.recipeName)
-
-//                                    /** main to IO coroutine */
-//                                    coroutineScope.launch(Dispatchers.Main) {
-//                                        withContext(Dispatchers.IO) {
-//                                            profileScreenViewModel.setDetailsScreenTarget(cookedData[index].recipeEntity.recipeName)
-//                                        }
-//                                        onDetailsClick()
-//                                    }
                                     }
                                 )
                             }
-
-//                        item() {
-//                            Spacer(
-//                                Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(16.dp)
-//                            )
-//                        }
                         }
                     }
                 }
@@ -1015,18 +977,15 @@ fun ProfileScreen(
                                     authorImageUrl = it.authorData.userPhotoURL,
                                     reviewText = it.comment.commentText,
                                     karma = it.authorData.karma,
-//                                likes = if(it.comment.likedByMe == 1 && it.comment.myLikeWasSynced == 0) it.comment.likes + 1 else it.comment.likes,
                                     likes = it.comment.likes,
                                     likedByUser = it.comment.likedByMe,
                                     dislikedByUser = it.comment.dislikedByMe,
                                     onLikeClick = {
                                         println("click")
-//                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
                                         updateLikes(it.comment.commentID)
                                     },
                                     onDislikeClick = {
                                         println("dislike click")
-//                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
                                         updateDislikes(it.comment.commentID)
                                     },
                                     onReportClick = {},
@@ -1132,36 +1091,6 @@ class ProfileScreenViewModelFactory(val application: Application) : ViewModelPro
 }
 
 
-//@Composable
-//fun Star(alignment: Alignment) {
-//    Surface(
-//        elevation = 8.dp,
-//        modifier = Modifier
-//            .border(
-//                width = 2.dp,
-//                brush = (Brush.horizontalGradient(
-//                    colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-//                    tileMode = TileMode.Mirror
-//                )),
-//                shape = CircleShape
-//            )
-//            .size(36.dp)
-//            .align(alignment),
-//        shape = CircleShape,
-//        color = Color(0xFF682300)
-//    ) {
-//        Box(contentAlignment = Alignment.Center) {
-//            Icon(
-//                Icons.Outlined.Grade,
-//                tint = Color(0xFFd8af84),
-//                modifier = Modifier.size(20.dp),
-//                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-//                contentDescription = null
-//            )
-//        }
-//    }
-//}
-
 @Composable
 fun RecipeIcon(
     recipeWithIngredients: RecipeWithIngredients,
@@ -1242,21 +1171,10 @@ fun RecipeIcon(
 
         Surface(
             modifier = Modifier
-                // .padding(top = 4.dp)
                 .wrapContentSize(),
-            //               .background(
-//                    brush = Brush.horizontalGradient(
-//                        colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
-//                        endX = gradientWidth,
-//                        tileMode = TileMode.Mirror
-//                    ),
-//                    shape = RoundedCornerShape((25.dp))
-//                ),
-            //   .clickable(enabled = !selected) { selected = !selected },
             shape = RoundedCornerShape(25.dp),
             color = Color(0xFF682300),
             elevation = 6.dp,
-            //color = Color(0xFF682300),//Color(0xFFd8af84),
             contentColor = Color(0xFFd8af84),
         ){
             Text(

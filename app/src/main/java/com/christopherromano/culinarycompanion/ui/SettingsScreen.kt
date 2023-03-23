@@ -330,31 +330,20 @@ fun SettingsScreen(
                                 .firstOrNull()?.let {
                                     val i = Intent(Intent.ACTION_SEND)
 
-                                    // on below line we are passing email address,
-                                    // email subject and email body
                                     val emailAddress = arrayOf(email)
                                     i.putExtra(Intent.EXTRA_EMAIL,emailAddress)
                                     i.putExtra(Intent.EXTRA_SUBJECT,subject)
                                     i.putExtra(Intent.EXTRA_TEXT,body)
 
-                                    // on below line we are
-                                    // setting type of intent
                                     i.type = "message/rfc822"
 
-                                    // on the below line we are starting our activity to open email application.
                                     context.startActivity(Intent.createChooser(i,"Choose an Email client: "))
                                 }
 
 
                         }
                     )
-//                    Text(
-//                        text = "Submit Bug Report",
-//                        fontSize = 18.sp,
-//                        fontFamily = Cabin,
-//                        fontWeight = FontWeight.Bold,
-//                        color = Color(0xFF682300)
-//                    )
+
                 }
                 Spacer(
                     Modifier
@@ -519,13 +508,11 @@ fun SettingsScreen(
 
 class SettingsScreenViewModelFactory(
     val application: Application,
-//    val recipeName: String,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
         return SettingsScreenViewModel(
             application,
-//            recipeName,
             SettingsScreenFirebaseRepository(Firebase.firestore, Firebase.auth)
         ) as T
     }

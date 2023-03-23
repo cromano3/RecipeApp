@@ -52,8 +52,6 @@ import com.christopherromano.culinarycompanion.viewmodel.MenuScreenViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -85,10 +83,6 @@ fun MenuScreen(
 
         val uiAlertState by menuScreenViewModel.uiAlertState.collectAsState()
 
-        val coroutineScope = CoroutineScope(Dispatchers.Main)
-
-//        val coroutineScope = rememberCoroutineScope()
-
         BackHandler {  onSystemBackClick() }
 
 
@@ -116,7 +110,6 @@ fun MenuScreen(
                                         animationSpec = TweenSpec(250, 0, FastOutLinearInEasing)
                                     )
                                 ),
-//                                .animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
                             recipeWithIngredientsAndInstructions = it,
                             currentScreen = "WeeklyMenuScreen",
                             onFavoriteClick =
@@ -126,22 +119,8 @@ fun MenuScreen(
                             },
                             onRemoveClick = { menuScreenViewModel.triggerRemoveAlert(it) },
                             onCompleteClick = { menuScreenViewModel.triggerCompletedAlert(it, userIsOnlineStatus) },
-                            onDetailsClick = {
-
-                                onDetailsClick(it.recipeEntity.recipeName)
-
-//                                /** main to IO coroutine */
-//                                coroutineScope.launch(Dispatchers.Main) {
-//                                    withContext(Dispatchers.IO){
-//                                        menuScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
-//                                    }
-//                                    onDetailsClick()
-//                                }
-
-
-                            }
+                            onDetailsClick = { onDetailsClick(it.recipeEntity.recipeName) }
                         )
-
                     }
                 }
                 item {
@@ -161,14 +140,12 @@ fun MenuScreen(
                             Modifier
                                 .fillMaxWidth()
                                 .weight(1f))
-//                        Text(text = "The Menu is empty", color = Color(0xFF682300))
                         Image(
                             painterResource(id = R.drawable.hungry),
                             contentDescription = null,
                             alpha = .5f,
                             colorFilter = ColorFilter.tint(Color(0xFF682300))
                         )
-//                        Text(text = "add some recipes", color = Color(0xFF682300))
                         Spacer(
                             Modifier
                                 .fillMaxWidth()
@@ -209,7 +186,6 @@ fun MenuScreen(
                                 imageVector = Icons.Outlined.Add,
                                 tint = Color(0xFFd8af84),
                                 modifier = Modifier.size(28.dp),
-                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
                                 contentDescription = null
                             )
                         }
@@ -316,18 +292,8 @@ fun MenuScreen(
                         cancelButtonText = "No",
                         onConfirmClick =
                         {
-
                             menuScreenViewModel.confirmShowWriteReviewAlert()
                             onConfirmWriteReviewClick(uiAlertState.recipe.recipeEntity.recipeName)
-
-//                            /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
-//
-//                            coroutineScope.launch(Dispatchers.Main) {
-//                                withContext(Dispatchers.IO) {
-//                                    menuScreenViewModel.confirmShowWriteReviewAlert(uiAlertState.recipe.recipeEntity)
-//                                }
-//                                onConfirmWriteReviewClick()
-//                            }
                         },
                         onCancelClick = { menuScreenViewModel.doNotWriteReview(uiAlertState.recipe.recipeEntity) },
                         onDismiss = { menuScreenViewModel.cancelShowWriteReviewAlert() }
@@ -342,14 +308,12 @@ fun MenuScreen(
 
 class MenuScreenViewModelFactory(
     val application: Application,
-//    val recipeName: String
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
         return MenuScreenViewModel(
             application,
             MenuScreenFirebaseRepository(Firebase.firestore, Firebase.auth)
-            //  recipeName
         ) as T
     }
 

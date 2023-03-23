@@ -50,9 +50,6 @@ fun SplashScreen(
         color = Color.White
     ){
 
-
-
-//        val animatedAlpha = remember { Animatable(0f) }
         var visible by remember { mutableStateOf(false) }
 
         var myTextColor by remember { mutableStateOf(Color.Black) }
@@ -115,7 +112,6 @@ fun SplashScreen(
         }
 
         LaunchedEffect(Unit){
-//            animatedAlpha.animateTo(1f)
             visible = true
         }
 
@@ -145,7 +141,6 @@ fun SplashScreen(
                     painter = painterResource(id = R.drawable.mainlogo),
                     contentDescription = null,
                     modifier = Modifier
-//                        .alpha(animatedAlpha.value)
                 )
             }
 
@@ -249,15 +244,10 @@ fun SplashScreen(
                                         .firstOrNull()?.let { uriHandler.openUri(it.item) }
                                 }
                             )
-
                         }
                     }
-
                 }
             }
         }
-
-
-
     }
 }

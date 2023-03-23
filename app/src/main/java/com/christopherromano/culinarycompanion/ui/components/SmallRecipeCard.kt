@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.LineHeightStyle
@@ -36,7 +35,6 @@ import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.ui.theme.CulinaryCompanionTheme
 
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun SmallRecipeCard(
     modifier: Modifier,
@@ -83,10 +81,6 @@ fun SmallRecipeCard(
     }
 
 
-//    val gradientWidth = with(LocalDensity.current) {
-//        (6 * (HighlightCardWidth + HighlightCardPadding).toPx())
-//    }
-
     Surface(
         elevation = 4.dp,
         modifier = modifier
@@ -110,8 +104,6 @@ fun SmallRecipeCard(
             .clickable(onClick = onDetailsClick),
         shape = RoundedCornerShape(15.dp),
         color = Color(0xFFdfe0fb)
-        //theme is assigning this value automatically so we don't need to assign it again here
-        //color = MaterialTheme.colors.surface
     ){
         Column{
             Box(
@@ -123,7 +115,6 @@ fun SmallRecipeCard(
                     modifier = Modifier
                         .height(140.dp)
                         .fillMaxWidth()
-                        //.background(color = MaterialTheme.colors.secondaryVariant)
                         .background(
                             Brush.horizontalGradient(
                                 colors = listOf(
@@ -145,7 +136,6 @@ fun SmallRecipeCard(
                         Text(
                             modifier = Modifier
                                 .align(alignment = Alignment.Center)
-                                //.padding(top = 4.dp)
                                 .fillMaxWidth()
                                 .wrapContentHeight(),
                             //recipe name
@@ -180,12 +170,6 @@ fun SmallRecipeCard(
                             brush = (Brush.verticalGradient(
                                 colors = listOf(
                                     Color(0xFFFFFFFF),
-//                                //    Color(0xFFFFFFFF),
-//                                    Color(0xFFE10600),
-//                                    Color(0xFFFFFFFF),
-//                                    Color(0xFF6769f1),
-//                                    Color(0xFFFFFFFF),
-//                                    Color(0xFFb15f33),
                                     Color(0xFFb15f33),
                                     Color(0xFFb15f33),
                                     Color(0xFFb15f33)
@@ -234,13 +218,8 @@ fun SmallRecipeCard(
                         )
                         .align(Alignment.BottomStart)
                         .size(36.dp)
-                        //the background of the square for this button, it stays a square even tho
-                        //we have shape = circle shape.  If this is not changed you see a solid
-                        //square for the "background" of this button.
                         .background(color = Color.Transparent),
                     shape = CircleShape,
-                    //this is the background color of the button after the "Shaping" is applied.
-                    //it is different then the background attribute above.
                     backgroundColor = Color(0xFF682300)
                 ) {
                     Icon(
@@ -280,20 +259,14 @@ fun SmallRecipeCard(
                         )
                         .align(Alignment.BottomEnd)
                         .size(36.dp)
-                        //the background of the square for this button, it stays a square even tho
-                        //we have shape = circle shape.  If this is not changed you see a solid
-                        //square for the "background" of this button.
                         .background(color = Color.Transparent),
                     shape = CircleShape,
-                    //this is the background color of the button after the "Shaping" is applied.
-                    //it is different then the background attribute above.
                     backgroundColor = Color(0xFF682300)
                 ) {
                     Icon(
                         icon,
                         tint = Color(0xFFd8af84),
                         modifier = Modifier.size(20.dp),
-                        // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
                         contentDescription = null
                     )
                 }
@@ -334,23 +307,6 @@ fun SmallRecipeCard(
                     lineHeight = (1.5).em,
                     modifier = Modifier.padding(start = 4.dp, end = 4.dp)
                 )
-                /*
-                        0/7 quantity owned/quantity needed
-                 */
-//                Surface(
-//                    modifier = Modifier
-//                        .align(Alignment.BottomEnd)
-//                        .padding(bottom = 8.dp, start = 2.dp),
-//                    color = Color.Transparent
-//                ){
-//                    Text(
-//                        text = "0/7",
-//                        style = MaterialTheme.typography.body2,
-//                        color = MaterialTheme.colors.primary,
-//                        fontSize = 12.sp,
-//                        modifier = Modifier.padding(end = 2.dp)
-//                    )
-//                }
 
             }
         }

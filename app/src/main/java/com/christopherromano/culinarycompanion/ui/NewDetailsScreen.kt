@@ -2,7 +2,10 @@ package com.christopherromano.culinarycompanion.ui
 
 import android.app.Application
 import androidx.compose.animation.core.TweenSpec
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,7 +31,6 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -57,22 +59,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalTextApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NewDetailsScreen(
-    //recipeName: String,
     recipeData: RecipeWithIngredientsAndInstructions,
-//    reviewsData: List<ReviewWithAuthorDataModel>,
-//    appUiState: AppUiState,
-//    localUserReview: String,
-//    localUserNickName: String,
-//    localUserImageIRL: String,
-//    onGoBackClick: () -> Unit,
-    confirmSignInWithGoogle: () -> Unit,
     onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
-//    onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
-//    onCompleteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     addedToFavoriteUiUpdate: () -> Unit,
     markAsRated: () -> Unit,
     storeRating: (Int) -> Unit,
@@ -98,35 +90,17 @@ fun NewDetailsScreen(
             )
         )
 
-//        val detailsScreenData by detailsScreenViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
-
         val uiAlertState by detailsScreenViewModel.uiAlertState.collectAsState()
 
         val commentsList by detailsScreenViewModel.commentsList.collectAsState()
-//        val uiState by detailsScreenViewModel.uiState.collectAsState()
 
         val authState by detailsScreenViewModel.authState.observeAsState()
 
-//        val reviewsData by detailsScreenViewModel.reviewsData.observeAsState(listOf())
-//        val firebaseCommentsLiveData by detailsScreenViewModel.firebaseCommentsLiveData.observeAsState(listOf())
         val globalRating by detailsScreenViewModel.globalRating.observeAsState()
 
         val ingredientsQuantities by detailsScreenViewModel.ingredientQuantitiesList.observeAsState()
-//        val globalRatingFirebaseLiveData by detailsScreenViewModel.globalRatingFirebaseLiveData.observeAsState()
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
-
-//        println(reviewsData.size.toString() + "size")
-//        println("notEmpty" + reviewsData.isNotEmpty())
-//        println("isEmpty" + reviewsData.isEmpty())
-
-
-
-
-//    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
-
-//        BackHandler { onGoBackClick() }
-
 
         /*
          * Get the image based on the recipe Name
@@ -178,8 +152,6 @@ fun NewDetailsScreen(
             }
         }
 
-        val scrollState = rememberScrollState()
-
         Surface(
             modifier = Modifier
                 .fillMaxSize(),
@@ -187,7 +159,6 @@ fun NewDetailsScreen(
 
 
         ) {
-//            BackHandler { onGoBackClick() }
             Column() {
 
                 LazyColumn(
@@ -227,15 +198,6 @@ fun NewDetailsScreen(
                         )
                     }
 
-
-//                    Column(
-//                        modifier = Modifier
-//                            // .weight(1f)
-//                            .fillMaxSize(),
-//                        verticalArrangement = Arrangement.Center,
-//                        horizontalAlignment = Alignment.CenterHorizontally
-//                    ) {
-
                     //Buttons Row beneath image
                     item{
                         Surface(
@@ -258,7 +220,6 @@ fun NewDetailsScreen(
                             ) {
 
                             val selected: Boolean
-//                            val alphaLevel: Float
                             val menuText: String
                             val finishedText: String
 
@@ -274,24 +235,14 @@ fun NewDetailsScreen(
 
                             if (recipeData.recipeEntity.onMenu == 1) {
                                 selected = true
-//                            alphaLevel = 1f
                                 menuText = "Remove from Menu"
                                 finishedText = "Finished Cooking!"
                             } else {
                                 selected = false
-//                            alphaLevel = 1f
                                 menuText = "Add to Menu"
                                 finishedText = "I Made This!"
                             }
 
-//                        val alphaAnim: Float by animateFloatAsState(
-//                            targetValue = alphaLevel,
-//                            animationSpec = tween(
-//                                durationMillis = 150,
-//                                delayMillis = 0,
-//                                easing = LinearEasing,
-//                            )
-//                        )
 
                             Row(
                                 Modifier.fillMaxSize(),
@@ -346,7 +297,6 @@ fun NewDetailsScreen(
                                 .wrapContentSize(),
                             shape = RoundedCornerShape(10.dp),
                             color = Color(0xFF682300),
-                            //color = Color(0xFF682300),//Color(0xFFd8af84),
                             contentColor = Color(0xFFd8af84),
                             elevation = 6.dp
                         ) {
@@ -489,28 +439,7 @@ fun NewDetailsScreen(
                                             myText += ")"
                                         }
 
-//                                        if(ingredientsQuantities?.size != null){
-//                                            println("NOT NULL")
-//                                            println(ingredientsQuantities?.size)
-//                                        }
-//
-//                                        for(y in 0 until (ingredientsQuantities?.size ?: 0)){
-//                                            println("LLOPER")
-//                                            if(ingredientsQuantities?.get(y)?.ingredientName == recipeData.ingredientsList[x].ingredientName){
-//                                                if(!ingredientsQuantities?.get(y)?.quantity.isNullOrBlank()) {
-//                                                    println("PASSED LOP")
-//                                                    myText += " ("
-//                                                    myText += ingredientsQuantities?.get(y)?.quantity
-//                                                    myText += " "
-//                                                    myText += ingredientsQuantities?.get(y)?.unit
-//                                                    myText += ")"
-//                                                }
-//                                                break
-//                                            }
-//                                        }
-
                                         Text(
-                                            //modifier = Modifier.padding(start = 8.dp, end = 8.dp),
                                             text = myText,
                                             color = Color(0xFFd8af84),
                                             fontSize = 18.sp
@@ -526,7 +455,6 @@ fun NewDetailsScreen(
 
                     //Instructions List
 
-                    //for (x in 0 until recipeData.instructionsList.size) {
                     items(recipeData.instructionsList, key = { it.instruction })
                     {
                         Surface(
@@ -550,14 +478,7 @@ fun NewDetailsScreen(
                         }
                     }
 
-//                    }
-
-//                    for(x in 0 until recipeData.reviewsList.size){
-//                        ReviewWidget(recipeData.reviewsList[x].reviewText)
-//                    }
-
                     if (commentsList.isNotEmpty()
-//                        || authState == 0
                     ) {
                         item {
                             Text(
@@ -595,66 +516,6 @@ fun NewDetailsScreen(
                         }
                     }
 
-//                    if (authState == 0) {
-//                        item{
-//                            Box(
-//                                Modifier
-//                                    .fillMaxWidth()
-//                                    .padding(8.dp),
-//                                contentAlignment = Alignment.Center
-//                            )
-//                            {
-//                                Button(
-//                                    modifier = Modifier
-//                                        .width(250.dp)
-//                                        .padding(start = 8.dp, end = 8.dp),
-//                                    onClick = confirmSignInWithGoogle,
-//                                    elevation = ButtonDefaults.elevation(6.dp),
-//                                    shape = RoundedCornerShape(10.dp),
-//                                    border = BorderStroke(
-//                                        width = 2.dp,
-//                                        brush = (Brush.horizontalGradient(
-//                                            startX = -30f,
-//                                            colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
-//                                            tileMode = TileMode.Mirror
-//                                        )),
-//                                    ),
-//                                    colors = ButtonDefaults.buttonColors(
-//                                        backgroundColor = Color(0xFF682300),
-//                                        contentColor = Color(0xFFd8af84)
-//                                    )
-//                                ) {
-//                                    Row(
-//                                        modifier = Modifier
-//                                            .width(250.dp)
-//                                            .height(25.dp),
-//                                        horizontalArrangement = Arrangement.SpaceEvenly,
-//                                        verticalAlignment = Alignment.CenterVertically
-//                                    ) {
-//                                        Image(
-//                                            painter = painterResource(id = R.drawable.ic_google_logo),
-//                                            contentDescription = null
-//                                        )
-//                                        Text("Sign in with Google")
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-
-//                    if(localUserReview.isNotEmpty()){
-//                        item{
-//                            ReviewWidget(
-//                                authorName = localUserNickName,
-//                                authorImageUrl = localUserImageIRL,
-//                                reviewText = localUserReview,
-//                                likes = 10,
-//                                onLikeClick = {},
-//
-//                            )
-//                        }
-//                    }
-
                     if(commentsList.isNotEmpty()) {
                         items(if(commentsList.size <= 4) commentsList.take(3) else commentsList, key = { it.comment.commentID })
                         {
@@ -665,13 +526,11 @@ fun NewDetailsScreen(
                                 authorImageUrl = it.authorData.userPhotoURL,
                                 reviewText = it.comment.commentText,
                                 karma = it.authorData.karma,
-//                                likes = if(it.comment.likedByMe == 1 && it.comment.myLikeWasSynced == 0) it.comment.likes + 1 else it.comment.likes,
                                 likes = it.comment.likes,
                                 likedByUser = it.comment.likedByMe,
                                 dislikedByUser = it.comment.dislikedByMe,
                                 onLikeClick = {
                                     println("click")
-//                                    detailsScreenViewModel.setLiked(it.commentsEntity.commentID)
                                     updateLikes(it.comment.commentID)
                                 },
                                 onDislikeClick = {
@@ -686,8 +545,6 @@ fun NewDetailsScreen(
                             item() {
                                 ConfirmAlertButton(buttonText = "Show All Comments") {
                                     detailsScreenViewModel.changeLimit()
-//                                    detailsScreenViewModel.setCommentsLimit(50)
-
                                 }
                             }
                         }
@@ -827,18 +684,6 @@ fun NewDetailsScreen(
                             markAsReviewed()
                             detailsScreenViewModel.confirmShowWriteReviewAlert()
                             navigateToCommentScreen(recipeData.recipeEntity.recipeName)
-
-//                            /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
-//
-//                            coroutineScope.launch(Dispatchers.Main){
-//                                withContext(Dispatchers.IO) {
-//                                    detailsScreenViewModel.confirmShowWriteReviewAlert(
-//                                        recipeData.recipeEntity
-//                                    )
-//                                }
-//                                navigateToCommentScreen()
-//                            }
-
                         },
                         onCancelClick =
                         {
@@ -853,52 +698,6 @@ fun NewDetailsScreen(
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun MyPreview234(){
-//    BearRecipeBookAppTheme {
-//
-//        val myRecipe = RecipeEntity(
-//            recipeName = "Cauliflower Walnut Tacos",
-//            onMenu = 0,
-//            1,
-//            rating = 98,
-//            timeToMake = 90,
-//            difficulty = 4
-//        )
-//
-//        val ing1 = IngredientEntity(ingredientName = "Ingredient 1", quantityOwned = 0, quantityNeeded = 0)
-//        val ing2 = IngredientEntity(ingredientName = "Ingredient 2", quantityOwned = 0, quantityNeeded = 0)
-//        val ing3 = IngredientEntity(ingredientName = "Ingredient 3", quantityOwned = 0, quantityNeeded = 0)
-//
-//        val ins1 = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it.")
-//        val ins2 = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!.")
-//        val ins3 = InstructionEntity(instructionID = 1, recipeID = "Bagels", instruction = "Munch it!!.")
-//
-//        var recList = listOf(
-//            RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)),
-//            RecipeWithIngredients(myRecipe,listOf(ing1, ing2, ing3)))
-//
-//        var recInsList = listOf(
-//            RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
-//            RecipeWithInstructions(myRecipe, listOf(ins1, ins2, ins3)),
-//        )
-//
-//        val recipeAll = RecipeWithIngredientsAndInstructions(myRecipe,listOf(ing1, ing2,ing1, ing2, ing1, ing2, ing1 ,ing2), listOf(ins1, ins2))
-//
-//        NewDetailsScreen(
-//            //recList,
-//            // recInsList,
-//            {},
-//            // recList[0],
-//            {},
-//            {},
-//            {},
-//            {}
-//            )
-//    }
-//}
 
 class DetailsScreenViewModelFactory(
     val application: Application,

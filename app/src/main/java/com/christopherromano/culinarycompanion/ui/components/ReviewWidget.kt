@@ -56,11 +56,8 @@ fun ReviewWidget(
     var expanded by remember { mutableStateOf(false) }
     var liked by remember { mutableStateOf(false) }
     var disliked by remember { mutableStateOf(false) }
-//    val modifier = if(expanded) Modifier.wrapContentHeight() else Modifier.height(280.dp)
 
-
-//    val reviewText = "This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This This "
-    val expandable = reviewText.length > 160
+   val expandable = reviewText.length > 160
     val surfaceShape = if(expandable) RoundedCornerShape(10.dp, 10.dp, 25.dp, 25.dp) else RoundedCornerShape(10.dp)
 
     Surface(
@@ -78,7 +75,6 @@ fun ReviewWidget(
             ),
         shape = surfaceShape,
         color = Color(0xFF682300)
-//        Color(0xFFb15f33)
         ,
     ){
         Column{
@@ -91,7 +87,6 @@ fun ReviewWidget(
                 Surface(
                     Modifier
                         .size(65.dp)
-//                        .padding(12.dp)
                         .border(
                             width = 2.dp,
                             brush = (Brush.horizontalGradient(
@@ -119,12 +114,6 @@ fun ReviewWidget(
                                     Image(
                                         painterResource(R.drawable.app_symbol),
                                         contentDescription = null)
-
-//                                    Text(
-//                                        text = "T",
-//                                        color = Color(0xFF682300),
-//                                        fontSize = 36.sp
-//                                    )
                                 }
                             }
                             else{
@@ -134,6 +123,7 @@ fun ReviewWidget(
                         }
 
                 }
+
                 //Chef title and name
                 Column(
                     Modifier
