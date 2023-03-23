@@ -221,22 +221,21 @@ fun ReviewWidget(
                                     fontWeight = FontWeight.Bold
                                 )
                             }
-                            Box(Modifier.padding(top = 8.dp)){
-                                Surface(
-                                    Modifier
-                                        .clickable(
-                                            enabled = !isProfileScreen) {
-                                            onReportClick()
-                                        }
-                                        .wrapContentSize(),
-                                    color = Color.Transparent
-                                ){
-                                    Text(
-                                        "Report",
-                                        color = Color(0xFFd8af84),
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Normal
-                                    )
+                            if (!isProfileScreen) {
+                                Box(Modifier.padding(top = 8.dp)) {
+                                    Surface(
+                                        Modifier
+                                            .clickable() { onReportClick() }
+                                            .wrapContentSize(),
+                                        color = Color.Transparent
+                                    ) {
+                                        Text(
+                                            "Report",
+                                            color = Color(0xFFd8af84),
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Normal
+                                        )
+                                    }
                                 }
                             }
                         }
