@@ -194,7 +194,6 @@ fun ShoppingListScreen(
                                 modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(20, delay = 0))),
                                 shoppingListCustomItemEntity = it,
                                 isWorking = uiState.isWorking,
-                                isFiltered = uiState.isFiltered,
                                 onClickItemSelected = { shoppingListScreenViewModel.customItemSelected(it) },
                                 onClickItemDeselected = { shoppingListScreenViewModel.customItemDeselected(it) },
                                 onClickDeleteCustomItem = { shoppingListScreenViewModel.deleteCustomItem(it) }
@@ -205,7 +204,7 @@ fun ShoppingListScreen(
 
                     item {
                         androidx.compose.animation.AnimatedVisibility(
-                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked && !uiState.isFiltered),
+                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked),
                             enter = fadeIn(TweenSpec(20)),
                             exit = fadeOut(TweenSpec(20)),
                         ) {
@@ -217,11 +216,12 @@ fun ShoppingListScreen(
                         }
                     }
 
+
                     item {
                         androidx.compose.animation.AnimatedVisibility(
                             visible = (
-                                (uiState.customItems.isNotEmpty() && !filterWasClicked && !uiState.isFiltered) ||
-                                (selectedIngredients2.isNotEmpty() && !filterWasClicked  && !uiState.isFiltered)
+                                (uiState.customItems.isNotEmpty() && !filterWasClicked ) ||
+                                (selectedIngredients2.isNotEmpty() && !filterWasClicked )
                             ),
                             enter = fadeIn(TweenSpec(20)),
                             exit = fadeOut(TweenSpec(20)),
@@ -657,7 +657,9 @@ fun ShoppingListItemWithButton(
         contentColor = Color(0xFFd8af84),
     ){
         Row(
-            Modifier.fillMaxSize().padding(top = 1.dp, bottom = 1.dp),
+            Modifier
+                .fillMaxSize()
+                .padding(top = 1.dp, bottom = 1.dp),
             horizontalArrangement = Arrangement.Start
         )
         {
@@ -711,7 +713,6 @@ fun CustomShoppingListItem(
     modifier: Modifier,
     shoppingListCustomItemEntity: ShoppingListCustomItemsEntity,
     isWorking: Boolean,
-    isFiltered: Boolean,
     onClickItemSelected: () -> Unit,
     onClickItemDeselected: () -> Unit,
     onClickDeleteCustomItem: () -> Unit,
@@ -743,8 +744,6 @@ fun CustomShoppingListItem(
 
     }
 
-    if (isFiltered) alphaLevel = 0.30f
-
 
     val alphaAnim: Float by animateFloatAsState(
         targetValue = alphaLevel,
@@ -772,7 +771,7 @@ fun CustomShoppingListItem(
                 shape = RoundedCornerShape(25.dp)
             )
             .clickable(
-                enabled = (!isWorking && !isFiltered),
+                enabled = (!isWorking),
                 onClick = if (selected) onClickItemDeselected else onClickItemSelected,
             ),
         shape = RoundedCornerShape(25.dp),
