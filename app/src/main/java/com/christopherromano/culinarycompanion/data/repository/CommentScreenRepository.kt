@@ -20,9 +20,4 @@ class CommentScreenRepository(private val commentScreenDao: CommentScreenDao) {
         }
     }
 
-    fun setReview(recipeName: String, reviewText: String){
-        coroutineScope.launch {
-            commentScreenDao.setReview(recipeName, reviewText)
-        }
-    }
 }

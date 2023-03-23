@@ -25,32 +25,12 @@ import kotlinx.coroutines.withContext
 class DetailsScreenViewModel(application: Application, recipeName: String, private val detailsScreenFirebaseRepository: DetailsScreenFirebaseRepository): ViewModel() {
 
     private val repository: DetailsScreenRepository
-
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
-//    private var job: Job? = null
-
-//    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
-
-//    var firebaseCommentsLiveData: LiveData<List<AuthorDataWithComment>>
-
-
-//    var globalRating: LiveData<Int>
-
-
-//    var globalRatingFirebaseLiveData: LiveData<Int>
-
     var ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>>
-
     var globalRating: LiveData<Int>
-
     val uiAlertState = MutableStateFlow(UiAlertStateDetailsScreenDataModel())
-
     var authState: LiveData<Int>
-
-
-
-//    val uiState = MutableStateFlow(DetailsScreenUiState())
 
     ////////////////
     private val _commentsList = MutableStateFlow<List<AuthorDataWithComment>>(listOf())
@@ -62,8 +42,6 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
 
     private fun getCommentsList(recipeName: String, limit: Int){
-//        job?.cancel()
-//        job =
         viewModelScope.launch {
 
             val isAuthed = withContext(Dispatchers.IO) { detailsScreenFirebaseRepository.currentUser() }
@@ -85,28 +63,12 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
         getCommentsList(_recipeName, 50)
     }
 
-
-
-    ///////////////
-
-
-
     init {
         val appDb = RecipeAppDatabase.getInstance(application)
         val detailsScreenDao = appDb.DetailsScreenDao()
         repository = DetailsScreenRepository(detailsScreenDao)
-
-//        globalRating = repository.globalRating
-//        detailsScreenData = repository.detailsScreenData
-
         repository.setRecipeName(recipeName)
-
-//        firebaseCommentsLiveData = detailsScreenFirebaseRepository.firebaseCommentsLiveData
         detailsScreenFirebaseRepository.setRecipeName(recipeName)
-        println("INIT INIT INIT INIT INIT")
-//        detailsScreenFirebaseRepository.setCommentResultLimit(4)
-
-//        globalRatingFirebaseLiveData = detailsScreenFirebaseRepository.globalRatingFirebaseLiveData
 
         globalRating = repository.globalRating
 
@@ -117,16 +79,6 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
         authState = detailsScreenFirebaseRepository.authState
 
         getGlobalRating(recipeName)
-
-
-
-
-
-
-//        uiState.update {
-//            it.copy(reviewsData = reviewsData)
-//        }
-
 
     }
 
@@ -155,12 +107,6 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
         }
     }
-
-//    fun setCommentsLimit(limit: Int){
-//        println("SET LIMIT SET LIMIT SET LIMIT SET LIMIT SET LIMIT SET LIMIT SET LIMIT $limit")
-//        detailsScreenFirebaseRepository.setCommentResultLimit(limit)
-//    }
-
 
 
     fun removeFromMenu(recipe: RecipeWithIngredientsAndInstructions){
@@ -299,39 +245,19 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
             //show favorite alert
             if(uiAlertState.value.isThumbUpSelected && recipeEntity.isFavorite == 0) {
-
-                //write rating to DB
-//                viewModelScope.launch(Dispatchers.IO) {
-
-//                    withContext(Dispatchers.IO) { repository.setLocalRating(recipeEntity.recipeName, 1) }
-
-                    uiAlertState.update { currentState ->
-                        currentState.copy(
-                            showFavoriteAlert = true,
-                            showRatingAlert = false,
-                            isThumbUpSelected = false,
-                            isThumbDownSelected = false
-                        )
-                    }
-
-//                }
-
+                uiAlertState.update { currentState ->
+                    currentState.copy(
+                        showFavoriteAlert = true,
+                        showRatingAlert = false,
+                        isThumbUpSelected = false,
+                        isThumbDownSelected = false
+                    )
+                }
             }
             //show write review alert
             else if (
                 uiAlertState.value.isThumbDownSelected && recipeEntity.isReviewed == 0
                 || uiAlertState.value.isThumbUpSelected && recipeEntity.isReviewed == 0){
-
-
-                //write rating to DB
-//                viewModelScope.launch(Dispatchers.IO) {
-
-//                    withContext(Dispatchers.IO) {
-//                        repository.setLocalRating(
-//                            recipeEntity.recipeName,
-//                            if (uiAlertState.value.isThumbUpSelected) 1 else -1
-//                        )
-//                    }
 
                     uiAlertState.update { currentState ->
                         currentState.copy(
@@ -342,7 +268,6 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
                         )
                     }
 
-//                }
 
             }
 
@@ -357,19 +282,6 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
                     )
                 }
             }
-            else{
-//                uiAlertState.update { currentState ->
-//                    currentState.copy(
-//                        showRatingAlert = false,
-//                        isThumbUpSelected = false,
-//                        isThumbDownSelected = false
-//                    )
-//                }
-            }
-
-
-
-
 
     }
 
@@ -445,22 +357,6 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
 
     }
-
-//    suspend fun confirmShowWriteReviewAlert(recipeEntity: RecipeEntity) {
-//
-//        /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
-//
-//            repository.cleanReviewTarget()
-//            repository.setReviewTarget(recipeEntity.recipeName)
-//
-//            uiAlertState.update { currentState ->
-//                currentState.copy(
-//                    showLeaveReviewAlert = false
-//                )
-//            }
-//
-//
-//    }
 
     fun doNotWriteReview(recipeEntity: RecipeEntity) {
 

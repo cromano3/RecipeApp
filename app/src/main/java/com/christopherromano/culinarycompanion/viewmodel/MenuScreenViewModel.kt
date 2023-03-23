@@ -3,16 +3,18 @@ package com.christopherromano.culinarycompanion.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.christopherromano.culinarycompanion.data.RecipeAppDatabase
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.MenuScreenFirebaseRepository
 import com.christopherromano.culinarycompanion.data.repository.MenuScreenRepository
 import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAndInstructions
 import com.christopherromano.culinarycompanion.datamodel.UiAlertStateMenuScreenDataModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class MenuScreenViewModel(application: Application, private val menuScreenFirebaseRepository: MenuScreenFirebaseRepository): ViewModel() {
 
@@ -34,23 +36,6 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
         menuScreenData = repository.menuScreenData
 
         println("menu screen init")
-//        getGlobalRatings()
-    }
-
-    private fun getGlobalRatings(){
-        viewModelScope.launch {
-            val names = withContext(Dispatchers.IO) { repository.getOnMenuNames() }
-
-            if(names.isNotEmpty()) {
-                val namesWithRatings = withContext(Dispatchers.IO) {
-                    menuScreenFirebaseRepository.getGlobalRatings(names)
-                }
-
-                if(namesWithRatings.isNotEmpty()) {
-                    withContext(Dispatchers.IO) { repository.setGlobalRatings(namesWithRatings) }
-                }
-            }
-        }
     }
 
     fun triggerCompletedAlert(recipe: RecipeWithIngredientsAndInstructions, userIsOnlineStatus: Int){
@@ -126,18 +111,7 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
         }
     }
 
-    fun triggerRatingAlert(){
-        uiAlertState.update {
-            it.copy(
-                showCompletedAlert = false,
-                showRatingAlert = true
-
-            )
-        }
-    }
-
     fun confirmRating(recipeEntity: RecipeEntity) {
-
 
         //show favorite alert
         if(uiAlertState.value.isThumbUpSelected && recipeEntity.isFavorite == 0) {
@@ -193,20 +167,6 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
                 )
             }
         }
-        else{
-//                uiAlertState.update { currentState ->
-//                    currentState.copy(
-//                        showRatingAlert = false,
-//                        isThumbUpSelected = false,
-//                        isThumbDownSelected = false
-//                    )
-//                }
-        }
-
-
-
-
-
     }
 
     fun thumbDownClicked(){
@@ -325,24 +285,6 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
 
     }
 
-//    suspend fun confirmShowWriteReviewAlert(recipeEntity: RecipeEntity) {
-//
-//        /** Will be main thread query to ensure data is ready when user gets to Comment Screen */
-//
-////        coroutineScope.launch(Dispatchers.IO) {
-//
-//            repository.cleanReviewTarget()
-//            repository.setReviewTarget(recipeEntity.recipeName)
-//
-//            uiAlertState.update { currentState ->
-//                currentState.copy(
-//                    showLeaveReviewAlert = false
-//                )
-//            }
-////        }
-//
-//    }
-
     fun doNotWriteReview(recipeEntity: RecipeEntity) {
 
         coroutineScope.launch(Dispatchers.IO) {
@@ -403,8 +345,6 @@ class MenuScreenViewModel(application: Application, private val menuScreenFireba
         repository.cleanIngredients()
         repository.cleanShoppingFilters()
 
-        //this should always be true
-//        if(recipe.recipeEntity.onMenu == 1){
         coroutineScope.launch(Dispatchers.IO) {
             repository.setToFadeOut(recipe.recipeEntity.recipeName)
             delay(300)
