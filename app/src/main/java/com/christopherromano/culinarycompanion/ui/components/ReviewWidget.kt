@@ -160,11 +160,14 @@ fun ReviewWidget(
                         Modifier
                             .padding(top = 4.dp, end = 16.dp)
                             .align(Alignment.TopEnd)
-                            .wrapContentSize()
+                            .wrapContentWidth()
+                            .fillMaxHeight()
                     ){
                         Column(
-                            Modifier.wrapContentSize(),
-                            verticalArrangement = Arrangement.Center,
+                            Modifier
+                                .wrapContentWidth()
+                                .fillMaxHeight(),
+                            verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Row(
@@ -221,29 +224,27 @@ fun ReviewWidget(
                                     fontWeight = FontWeight.Bold
                                 )
                             }
-                            if (!isProfileScreen) {
-                                Box(Modifier.padding(top = 8.dp)) {
-                                    Surface(
-                                        Modifier
-                                            .clickable() { onReportClick() }
-                                            .wrapContentSize(),
-                                        color = Color.Transparent
-                                    ) {
-                                        Text(
-                                            "Report",
-                                            color = Color(0xFFd8af84),
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Normal
-                                        )
-                                    }
+                        }
+                        if (!isProfileScreen) {
+                            Box(Modifier.padding(top = 0.dp).align(Alignment.BottomCenter)) {
+                                Surface(
+                                    Modifier
+                                        .clickable() { onReportClick() }
+                                        .wrapContentSize(),
+                                    color = Color.Transparent
+                                ) {
+                                    Text(
+                                        "Report",
+                                        color = Color(0xFFd8af84),
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Normal
+                                    )
                                 }
                             }
                         }
                     }
 
-
                 }
-
             }
             Spacer(
                 Modifier
