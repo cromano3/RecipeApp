@@ -9,6 +9,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -22,7 +23,10 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -59,7 +63,7 @@ fun SettingsScreen(
         val authState by settingsScreenViewModel.authState.observeAsState()
         val uiAlertState by settingsScreenViewModel.uiAlertState.collectAsState()
 
-        val ctx = LocalContext.current
+        val context = LocalContext.current
 
         val focusRequester = remember { FocusRequester() }
 
@@ -191,7 +195,7 @@ fun SettingsScreen(
                         .padding(8.dp)
                         .clickable {
                             val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com/culinarycompaniontermsandconditions"))
-                            ctx.startActivity(urlIntent)
+                            context.startActivity(urlIntent)
                         }
                 ){
                     Text(
@@ -223,7 +227,7 @@ fun SettingsScreen(
                         .padding(8.dp)
                         .clickable {
                             val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com/culinarycompanionEULA"))
-                            ctx.startActivity(urlIntent)
+                            context.startActivity(urlIntent)
                         }
                 ){
                     Text(
@@ -255,7 +259,7 @@ fun SettingsScreen(
                         .padding(8.dp)
                         .clickable {
                             val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com/culinarycompanionprivacypolicy"))
-                            ctx.startActivity(urlIntent)
+                            context.startActivity(urlIntent)
                         }
                 ){
                     Text(
@@ -265,6 +269,86 @@ fun SettingsScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF682300)
                     )
+                }
+                Spacer(
+                    Modifier
+                        .height(2.dp)
+                        .fillMaxWidth()
+                        .border(
+                            width = 2.dp,
+                            brush = (Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFFd8af84),
+                                    Color(0xFFb15f33)
+                                ),
+                                tileMode = TileMode.Mirror
+                            )),
+                            shape = RectangleShape
+                        ),
+                )
+                Surface(
+                    Modifier
+                        .padding(8.dp)
+                ){
+                    val email = "bugreport.culinarycompanion@gmail.com"
+                    val subject = "Bug Report"
+                    val body = "Your device model and manufacturer: \n \n" +
+                            "Your Android operating system version number: \n \n" +
+                            "Steps to reproduce bug (this is critical for our development team to fix the problem.  Please reproduce the bug yourself first before submitting a report.): \n \n" +
+                            "Detailed description of bug:"
+
+                    val annotatedString = buildAnnotatedString {
+
+                        pushStringAnnotation(
+                            tag = "Email",
+                            annotation = "bugreport.culinarycompanion@gmail.com"
+                        )
+                        withStyle(
+                            style = SpanStyle(
+                                fontSize = 18.sp,
+                                fontFamily = Cabin,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF682300))
+                        ) {
+                            append("Bug Report")
+                        }
+
+                        pop()
+
+                    }
+
+                    ClickableText(
+                        text = annotatedString,
+                        onClick = { offset ->
+                            annotatedString.getStringAnnotations(tag = "Email", start = offset, end = offset)
+                                .firstOrNull()?.let {
+                                    val i = Intent(Intent.ACTION_SEND)
+
+                                    // on below line we are passing email address,
+                                    // email subject and email body
+                                    val emailAddress = arrayOf(email)
+                                    i.putExtra(Intent.EXTRA_EMAIL,emailAddress)
+                                    i.putExtra(Intent.EXTRA_SUBJECT,subject)
+                                    i.putExtra(Intent.EXTRA_TEXT,body)
+
+                                    // on below line we are
+                                    // setting type of intent
+                                    i.type = "message/rfc822"
+
+                                    // on the below line we are starting our activity to open email application.
+                                    context.startActivity(Intent.createChooser(i,"Choose an Email client: "))
+                                }
+
+
+                        }
+                    )
+//                    Text(
+//                        text = "Submit Bug Report",
+//                        fontSize = 18.sp,
+//                        fontFamily = Cabin,
+//                        fontWeight = FontWeight.Bold,
+//                        color = Color(0xFF682300)
+//                    )
                 }
                 Spacer(
                     Modifier
