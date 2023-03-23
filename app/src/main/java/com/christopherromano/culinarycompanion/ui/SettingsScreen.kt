@@ -71,47 +71,54 @@ fun SettingsScreen(
         Surface(Modifier.fillMaxSize()){
             Column()
             {
-                if (authState == 0) {
-                Box(
+                Surface(
                     Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    contentAlignment = Alignment.Center)
-                    {
-                        Button(
-                            modifier = Modifier
-                                .width(250.dp)
-                                .padding(start = 8.dp, end = 8.dp),
-                            onClick = confirmSignInWithGoogle,
-                            elevation = ButtonDefaults.elevation(6.dp),
-                            shape = RoundedCornerShape(10.dp),
-                            border = BorderStroke(
-                                width = 2.dp,
-                                brush = (Brush.horizontalGradient(
-                                    startX = -30f,
-                                    colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
-                                    tileMode = TileMode.Mirror
-                                )),
-                            ),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color(0xFF682300),
-                                contentColor = Color(0xFFd8af84)
-                            )
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .width(250.dp)
-                                    .height(25.dp),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_google_logo),
-                                    contentDescription = null
-                                )
-                                Text("Sign in with Google")
-                            }
+                        .padding(8.dp)
+                        .clickable {
+                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com"))
+                            context.startActivity(urlIntent)
                         }
+                ){
+                    Text(
+                        text = "About Me",
+                        fontSize = 18.sp,
+                        fontFamily = Cabin,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF682300)
+                    )
+                }
+
+                Spacer(
+                    Modifier
+                        .height(2.dp)
+                        .fillMaxWidth()
+                        .border(
+                            width = 2.dp,
+                            brush = (Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFFd8af84),
+                                    Color(0xFFb15f33)
+                                ),
+                                tileMode = TileMode.Mirror
+                            )),
+                            shape = RectangleShape
+                        ),
+                )
+
+                if(authState == 1)
+                {
+                    Surface(
+                        Modifier
+                            .padding(8.dp)
+                            .clickable { settingsScreenViewModel.updateDisplayName() })
+                    {
+                        Text(
+                            text = "Update Display Name",
+                            fontSize = 18.sp,
+                            fontFamily = Cabin,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF682300)
+                        )
                     }
                     Spacer(
                         Modifier
@@ -129,16 +136,14 @@ fun SettingsScreen(
                                 shape = RectangleShape
                             ),
                     )
-                }
-                if(authState == 1)
-                {
+
                     Surface(
                         Modifier
                             .padding(8.dp)
-                            .clickable { settingsScreenViewModel.updateDisplayName() })
+                            .clickable { settingsScreenViewModel.triggerDeleteAccountAlert() })
                     {
                         Text(
-                            text = "Update Display Name",
+                            text = "Delete Account",
                             fontSize = 18.sp,
                             fontFamily = Cabin,
                             fontWeight = FontWeight.Bold,
@@ -367,19 +372,66 @@ fun SettingsScreen(
                             shape = RectangleShape
                         ),
                 )
-                Surface(
-                    Modifier
-                        .padding(8.dp)
-                        .clickable { settingsScreenViewModel.triggerDeleteAccountAlert() })
-                {
-                    Text(
-                        text = "Delete Account",
-                        fontSize = 18.sp,
-                        fontFamily = Cabin,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF682300)
+                if (authState == 0) {
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center)
+                    {
+                        Button(
+                            modifier = Modifier
+                                .width(250.dp)
+                                .padding(start = 8.dp, end = 8.dp),
+                            onClick = confirmSignInWithGoogle,
+                            elevation = ButtonDefaults.elevation(6.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            border = BorderStroke(
+                                width = 2.dp,
+                                brush = (Brush.horizontalGradient(
+                                    startX = -30f,
+                                    colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
+                                    tileMode = TileMode.Mirror
+                                )),
+                            ),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color(0xFF682300),
+                                contentColor = Color(0xFFd8af84)
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .width(250.dp)
+                                    .height(25.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_google_logo),
+                                    contentDescription = null
+                                )
+                                Text("Sign in with Google")
+                            }
+                        }
+                    }
+                    Spacer(
+                        Modifier
+                            .height(2.dp)
+                            .fillMaxWidth()
+                            .border(
+                                width = 2.dp,
+                                brush = (Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFFd8af84),
+                                        Color(0xFFb15f33)
+                                    ),
+                                    tileMode = TileMode.Mirror
+                                )),
+                                shape = RectangleShape
+                            ),
                     )
                 }
+
             }
             Box(Modifier.fillMaxSize()){
                 if(uiAlertState.showAccountWasDeletedMessage){
