@@ -530,6 +530,7 @@ fun NewDetailsScreen(
                                 likes = it.comment.likes,
                                 likedByUser = it.comment.likedByMe,
                                 dislikedByUser = it.comment.dislikedByMe,
+                                reportedByUser = it.comment.reportedByMe,
                                 onLikeClick = {
                                     println("click")
                                     updateLikes(it.comment.commentID)
@@ -574,7 +575,7 @@ fun NewDetailsScreen(
                         cancelButtonText = "Cancel",
                         onConfirmClick = {
                             submitReport(uiAlertState.reportedComment)
-                             detailsScreenViewModel.cancelReportAlert()
+                            detailsScreenViewModel.cancelReportAlert()
                                          },
                         onCancelClick = { detailsScreenViewModel.cancelReportAlert() },
                         onDismiss = {

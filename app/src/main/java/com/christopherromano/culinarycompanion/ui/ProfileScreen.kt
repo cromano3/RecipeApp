@@ -980,6 +980,7 @@ fun ProfileScreen(
                                     likes = it.comment.likes,
                                     likedByUser = it.comment.likedByMe,
                                     dislikedByUser = it.comment.dislikedByMe,
+                                    reportedByUser = it.comment.reportedByMe,
                                     onLikeClick = {
                                         println("click")
                                         updateLikes(it.comment.commentID)

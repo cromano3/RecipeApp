@@ -78,7 +78,7 @@ class DetailsScreenFirebaseRepository(
 
                         var likedByMe = 0
 
-                        var likedByList = comment.get("likedBy") as? List<String> ?: listOf()
+                        val likedByList = comment.get("likedBy") as? List<String> ?: listOf()
 
                         if(likedByList.contains(auth.currentUser?.uid)){
                             likedByMe = 1
@@ -86,10 +86,18 @@ class DetailsScreenFirebaseRepository(
 
                         var dislikedByMe = 0
 
-                        var dislikedByList = comment.get("dislikedBy") as? List<String> ?: listOf()
+                        val dislikedByList = comment.get("dislikedBy") as? List<String> ?: listOf()
 
                         if(dislikedByList.contains(auth.currentUser?.uid)){
                             dislikedByMe = 1
+                        }
+
+                        var reportedByMe = 0
+
+                        val reportedByList = comment.get("reportedBy") as? List<String> ?: listOf()
+
+                        if(reportedByList.contains(auth.currentUser?.uid)){
+                            reportedByMe = 1
                         }
 
                         val thisCommentEntity = CommentsEntity(
@@ -100,6 +108,7 @@ class DetailsScreenFirebaseRepository(
                             likes = likes,
                             likedByMe = likedByMe,
                             dislikedByMe = dislikedByMe,
+                            reportedByMe = reportedByMe,
                         )
 
                         db.collection("users").whereEqualTo("uid", authorUid).get().addOnSuccessListener {

@@ -17,7 +17,11 @@ import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.ThumbDown
 import androidx.compose.material.icons.outlined.ThumbUp
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,13 +53,15 @@ fun ReviewWidget(
     likes: Int,
     likedByUser: Int,
     dislikedByUser: Int,
+    reportedByUser: Int,
     onLikeClick: () -> Unit,
     onDislikeClick: () -> Unit,
     onReportClick: () -> Unit,
 ){
-    var expanded by remember { mutableStateOf(false) }
-    var liked by remember { mutableStateOf(false) }
-    var disliked by remember { mutableStateOf(false) }
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    var liked by rememberSaveable { mutableStateOf(false) }
+    var disliked by rememberSaveable { mutableStateOf(false) }
+    var reported by rememberSaveable { mutableStateOf(false) }
 
    val expandable = reviewText.length > 160
     val surfaceShape = if(expandable) RoundedCornerShape(10.dp, 10.dp, 25.dp, 25.dp) else RoundedCornerShape(10.dp)
@@ -215,7 +221,7 @@ fun ReviewWidget(
                                 )
                             }
                         }
-                        if (!isProfileScreen) {
+                        if (!isProfileScreen && reportedByUser != 1 && !reported) {
                             Box(Modifier.padding(top = 0.dp).align(Alignment.BottomCenter)) {
                                 Surface(
                                     Modifier
@@ -322,6 +328,7 @@ fun revwidprev(){
         authorName = "Chirs",
         dislikedByUser = 0,
         likedByUser = 0,
+        reportedByUser = 0,
         likes = 20,
         onLikeClick = {},
         karma = 5,

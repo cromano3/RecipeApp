@@ -62,6 +62,7 @@ class ProfileScreenFirebaseRepository(
                         likes = likes ?: 0,
                         likedByMe = 1,
                         dislikedByMe = 0,
+                        reportedByMe = 1
                     )
 
                     commentsResult.add(thisCommentEntity)

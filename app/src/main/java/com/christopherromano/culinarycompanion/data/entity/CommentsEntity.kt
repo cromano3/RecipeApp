@@ -29,5 +29,8 @@ class CommentsEntity(
     @ColumnInfo(name = "disliked_by_local_user")
     var dislikedByMe: Int = 0,
 
+    @ColumnInfo(name = "reported_by_local_user")
+    var reportedByMe: Int = 0,
+
 )
 

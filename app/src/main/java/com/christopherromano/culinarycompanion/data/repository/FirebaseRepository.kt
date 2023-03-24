@@ -94,6 +94,7 @@ class FirebaseRepository(
                         "likes" to 0,
                         "likedBy" to arrayListOf<String>(uid),
                         "dislikedBy" to arrayListOf<String>(),
+                        "reportedBy" to arrayListOf<String>(uid),
                         "timestamp" to serverTimestamp(),
                         "isModApproved" to 1,
                         "isDeleted" to 0,
@@ -385,6 +386,40 @@ class FirebaseRepository(
         }
         catch(e: Exception){
             println("Failed to upload comment with: $e")
+        }
+
+
+        //update reportedBy List
+        try {
+            val reviewRef = db.collection("reviews").document(authorDataWithComment.comment.commentID)
+
+            db.runTransaction { transaction ->
+
+                val snapshotReview = transaction.get(reviewRef)
+
+                var reportedByList = snapshotReview.get("reportedBy") as? List<String> ?: listOf()
+
+                if (auth.currentUser?.uid == null) {
+                    println("Null Reporter")
+                } else if (reportedByList.contains(auth.currentUser?.uid)) {
+                    println("Failed Duplicate report")
+                } else {
+                    transaction.update(
+                        reviewRef,
+                        "reportedBy",
+                        FieldValue.arrayUnion(auth.currentUser?.uid)
+                    )
+                }
+
+            }.addOnSuccessListener {
+                println("successfully updated reportedBy list in firestore")
+            }.addOnFailureListener { e ->
+                println("Failed with $e")
+            }.await()
+
+        }
+        catch(e: Exception){
+            println("failed to update reported by list with: $e")
         }
 
         println("end of try to upload report")
