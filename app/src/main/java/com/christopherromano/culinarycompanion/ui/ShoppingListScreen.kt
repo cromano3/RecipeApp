@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -101,6 +102,7 @@ fun ShoppingListScreen(
             coroutineScope.launch {
 
                 delay(420)
+//                listState.animateScrollBy(value= -5000f, animationSpec = tween(durationMillis = 1000))
                 listState.animateScrollToItem(0)
                 listState2.animateScrollToItem(0)
                 filterWasClicked = false

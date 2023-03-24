@@ -31,7 +31,7 @@ class ProfileScreenFirebaseRepository(
         println("auth uid is :" + auth.currentUser?.uid)
         val listener = EventListener<QuerySnapshot> { snapshot, exception ->
             if(exception != null){
-                println("FAILED WITH: $exception")
+                println("Failed with: $exception")
                 cancel()
             }
             if (snapshot != null){
@@ -41,7 +41,7 @@ class ProfileScreenFirebaseRepository(
 
                 val numDocuments = snapshot.documents.size
 
-                println("NUM DOCS IS: $numDocuments")
+                println("Num docs: $numDocuments")
 
                 val commentsResult = mutableListOf<CommentsEntity>()
                 val result = mutableListOf<AuthorDataWithComment>()
@@ -104,6 +104,8 @@ class ProfileScreenFirebaseRepository(
         val registration = db
             .collection("reviews")
             .whereEqualTo("authorUid", auth.currentUser?.uid ?: "")
+            .whereEqualTo("isModApproved", 1)
+            .whereEqualTo("isDeleted", 0)
             .orderBy("likes", Query.Direction.DESCENDING)
             .addSnapshotListener(listener)
 

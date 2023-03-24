@@ -60,7 +60,7 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
 
     fun changeLimit(){
-        getCommentsList(_recipeName, 50)
+        getCommentsList(_recipeName, 10)
     }
 
     init {

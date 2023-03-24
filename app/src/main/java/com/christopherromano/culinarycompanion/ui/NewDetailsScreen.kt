@@ -18,10 +18,9 @@ import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material.icons.outlined.Timer
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -101,6 +100,8 @@ fun NewDetailsScreen(
         val ingredientsQuantities by detailsScreenViewModel.ingredientQuantitiesList.observeAsState()
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
+
+        var isCommentListSizeLimited by rememberSaveable { mutableStateOf(true) }
 
         /*
          * Get the image based on the recipe Name
@@ -517,7 +518,7 @@ fun NewDetailsScreen(
                     }
 
                     if(commentsList.isNotEmpty()) {
-                        items(if(commentsList.size <= 4) commentsList.take(3) else commentsList, key = { it.comment.commentID })
+                        items(if(commentsList.size <= 4 && isCommentListSizeLimited) commentsList.take(3) else commentsList, key = { it.comment.commentID })
                         {
                             ReviewWidget(
                                 modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
@@ -541,9 +542,10 @@ fun NewDetailsScreen(
                                 }
                             )
                         }
-                        if(commentsList.size == 4){
+                        if(commentsList.size == 4 && isCommentListSizeLimited){
                             item() {
                                 ConfirmAlertButton(buttonText = "Show All Comments") {
+                                    isCommentListSizeLimited = false
                                     detailsScreenViewModel.changeLimit()
                                 }
                             }
