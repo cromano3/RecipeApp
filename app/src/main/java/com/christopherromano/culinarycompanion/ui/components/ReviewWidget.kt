@@ -61,7 +61,6 @@ fun ReviewWidget(
     var expanded by rememberSaveable { mutableStateOf(false) }
     var liked by rememberSaveable { mutableStateOf(false) }
     var disliked by rememberSaveable { mutableStateOf(false) }
-    var reported by rememberSaveable { mutableStateOf(false) }
 
    val expandable = reviewText.length > 160
     val surfaceShape = if(expandable) RoundedCornerShape(10.dp, 10.dp, 25.dp, 25.dp) else RoundedCornerShape(10.dp)
@@ -221,7 +220,7 @@ fun ReviewWidget(
                                 )
                             }
                         }
-                        if (!isProfileScreen && reportedByUser != 1 && !reported) {
+                        if (!isProfileScreen && reportedByUser != 1) {
                             Box(Modifier.padding(top = 0.dp).align(Alignment.BottomCenter)) {
                                 Surface(
                                     Modifier
