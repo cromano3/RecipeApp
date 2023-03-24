@@ -6,6 +6,17 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 
+
+fun confirmSubmitReportAnoString(): AnnotatedString{
+    return buildAnnotatedString {
+        append("Report this comment for being inappropriate or off topic? ")
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            append("Please note: submitting false reports may result in your account being banned")
+        }
+        append(".")
+    }
+}
+
 fun confirmRemoveMenuAnoString(recipeName: String): AnnotatedString{
      return buildAnnotatedString {
         append("Are you sure you want to remove ")

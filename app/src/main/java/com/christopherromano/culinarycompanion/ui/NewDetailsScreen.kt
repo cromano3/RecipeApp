@@ -44,6 +44,7 @@ import com.christopherromano.culinarycompanion.R
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmCompletedCookingAnoString
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmIMadeThisAnoString
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmRemoveMenuAnoString
+import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmSubmitReportAnoString
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.DetailsScreenFirebaseRepository
 import com.christopherromano.culinarycompanion.datamodel.AuthorDataWithComment
@@ -569,8 +570,8 @@ fun NewDetailsScreen(
 
                 //Report Alert
                 if(uiAlertState.showReportAlert){
-                    BasicAlert(
-                        text = "Report this comment for being inappropriate or off topic? Please note: submitting false reports may result in your account being banned.",
+                    AnnotatedStringAlert(
+                        text = confirmSubmitReportAnoString(),
                         confirmButtonText = "Submit report",
                         cancelButtonText = "Cancel",
                         onConfirmClick = {
