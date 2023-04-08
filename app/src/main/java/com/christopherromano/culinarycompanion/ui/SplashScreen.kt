@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
@@ -117,7 +118,7 @@ fun SplashScreen(
 
         if(endSplash){
             LaunchedEffect(Unit){
-                delay(2000)
+                delay(1500)
                 onSplashFinished()
             }
         }
@@ -140,7 +141,8 @@ fun SplashScreen(
                 Image(
                     painter = painterResource(id = R.drawable.mainlogo),
                     contentDescription = null,
-                    modifier = Modifier
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+                    contentScale = ContentScale.Inside
                 )
             }
 
