@@ -108,25 +108,25 @@ fun NewDetailsScreen(
          * Get the image based on the recipe Name
          */
         val image: Int = when (recipeData.recipeEntity.recipeName) {
-            "Bagels" -> R.drawable.rice_soup2
-            "Garlic Knots" -> R.drawable.garlic2
-            "Cauliflower Walnut Tacos" -> R.drawable.cauliflower
-            "Lentil Sweet Potato Curry" -> R.drawable.garlic
-            "Thai Style Peanut Soup" -> R.drawable.garlic
-            "Yummy Rice with Marinated Tofu" -> R.drawable.garlic
+            "Bagels" -> R.drawable.bagel
+            "Garlic Knots" -> R.drawable.garlic_knots
+            "Cauliflower Walnut Tacos" -> R.drawable.cauliflower_tacos_details
+            "Lentil Sweet Potato Curry" -> R.drawable.lentil_curry_details
+            "Thai Style Peanut Soup" -> R.drawable.thai_soup_details
+            "Yummy Rice with Marinated Tofu" -> R.drawable.yummy_rice_details
             "Corn Chowder" -> R.drawable.corn_chowder
             "Vegan Eggplant Parmesan" -> R.drawable.eggplant
-            "Mexican Style Rice" -> R.drawable.garlic
-            "Wild Rice Salad" -> R.drawable.garlic
-            "Rice Soup" -> R.drawable.rice_soup
+            "Mexican Style Rice" -> R.drawable.bagel
+            "Wild Rice Salad" -> R.drawable.wild_rice
+            "Rice Soup" -> R.drawable.rice_soup_details
             "Miso Soup" -> R.drawable.miso_soup
             "Sweet Potato Tortilla" -> R.drawable.sweet_potato_tortilla
-            "Tumbet" -> R.drawable.tumbet
-            "Chinese Eggplant" -> R.drawable.garlic
-            "Coca De Prebes" -> R.drawable.garlic
-            "Banana Walnut Pancakes" -> R.drawable.garlic
-            "Huevos Rotos" -> R.drawable.garlic
-            else -> R.drawable.garlic
+            "Tumbet" -> R.drawable.tumbet_details
+            "Chinese Eggplant" -> R.drawable.chinese_eggplant_details
+            "Coca De Prebes" -> R.drawable.coca
+            "Banana Walnut Pancakes" -> R.drawable.pancakes_details
+            "Huevos Rotos" -> R.drawable.huevos
+            else -> R.drawable.bagel
         }
 
 
