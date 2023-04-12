@@ -472,8 +472,8 @@ fun SettingsScreen(
                                     singleLine = true,
                                 )
                                 Text(
-                                    text = "${uiAlertState.inputText.text.length}/20",
-                                    color = if(uiAlertState.inputText.text.length > 20) Color.Red else Color.Black
+                                    text = "${uiAlertState.inputText.text.length}/14",
+                                    color = if(uiAlertState.inputText.text.length > 14) Color.Red else Color.Black
                                 )
                             }
                         },
@@ -489,7 +489,7 @@ fun SettingsScreen(
                                     settingsScreenViewModel.cancelChangeDisplayNameAlert()
                                 }
                                 ConfirmAlertButton(buttonText = "Confirm") {
-                                    if(uiAlertState.inputText.text.length < 20 && uiAlertState.inputText.text != "") {
+                                    if(uiAlertState.inputText.text.length <= 14 && uiAlertState.inputText.text != "") {
                                         settingsScreenViewModel.confirmDisplayNameChange()
                                     }
                                 }

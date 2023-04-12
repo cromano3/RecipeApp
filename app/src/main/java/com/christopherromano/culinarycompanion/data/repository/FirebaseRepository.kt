@@ -514,7 +514,13 @@ class FirebaseRepository(
     private suspend fun addUserToFirestore() {
         println("in add new")
         auth.currentUser?.apply {
-            val user = toUser(this.displayName, this.uid)
+
+            val firstName = this.displayName?.let { name ->
+                name.trim().split("\\s+".toRegex())[0].substring(0,14)
+            } ?: ""
+
+            val user = toUser(this.displayName, firstName, this.uid)
+
             db.collection("users").document(uid).set(user).await()
             val backupData = hashMapOf(
                 "email" to this.email,
@@ -525,9 +531,9 @@ class FirebaseRepository(
         }
     }
 
-    private fun FirebaseUser.toUser(displayName: String?, uid: String?) = mapOf(
-        "name" to displayName,
-        "display_name" to displayName,
+    private fun FirebaseUser.toUser(fullName: String?, firstName: String, uid: String?) = mapOf(
+        "name" to fullName,
+        "display_name" to firstName,
         "uid" to uid,
         "user_photo" to photoUrl?.toString(),
         "timestamp" to serverTimestamp(),
