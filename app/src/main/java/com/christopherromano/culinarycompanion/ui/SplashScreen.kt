@@ -155,12 +155,14 @@ fun SplashScreen(
 
                 Spacer(Modifier.fillMaxWidth().height(40.dp))
 
-                if(showLoading){
-                    CircularProgressIndicator(color = Color(0xFF682300))
-                }
 
-                if(showSignInButtons) {
-                    Column(modifier = Modifier.wrapContentSize()){
+
+
+                Column(modifier = Modifier.wrapContentWidth().height(170.dp)){
+                    if(showLoading){
+                        CircularProgressIndicator(color = Color(0xFF682300))
+                    }
+                    if(showSignInButtons) {
                         Button(
                             modifier = Modifier
                                 .width(260.dp)
