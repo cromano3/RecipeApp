@@ -1100,7 +1100,7 @@ fun RecipeIcon(
 
 
     val image: Int = when(recipeWithIngredients.recipeEntity.recipeName){
-        "Bagels" -> R.drawable.bagel
+        "Bagels" -> R.drawable.bagels
         "Garlic Knots" -> R.drawable.garlic_knots
         "Cauliflower Walnut Tacos" -> R.drawable.cauliflower_tacos
         "Lentil Sweet Potato Curry" -> R.drawable.lentil_curry

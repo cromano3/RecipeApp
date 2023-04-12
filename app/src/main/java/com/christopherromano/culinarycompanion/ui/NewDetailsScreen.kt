@@ -108,7 +108,7 @@ fun NewDetailsScreen(
          * Get the image based on the recipe Name
          */
         val image: Int = when (recipeData.recipeEntity.recipeName) {
-            "Bagels" -> R.drawable.bagel
+            "Bagels" -> R.drawable.bagels
             "Garlic Knots" -> R.drawable.garlic_knots
             "Cauliflower Walnut Tacos" -> R.drawable.cauliflower_tacos_details
             "Lentil Sweet Potato Curry" -> R.drawable.lentil_curry_details
