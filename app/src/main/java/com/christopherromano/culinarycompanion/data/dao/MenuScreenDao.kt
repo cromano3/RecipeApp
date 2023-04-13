@@ -10,7 +10,7 @@ import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAn
 interface MenuScreenDao {
 
     @Transaction
-    @Query("SELECT * FROM recipe_table WHERE on_menu > 0")
+    @Query("SELECT * FROM recipe_table WHERE on_menu > 0 ORDER BY recipe_name ASC")
     fun getData(): LiveData<List<RecipeWithIngredientsAndInstructions>>
 
     @Transaction
