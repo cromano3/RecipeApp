@@ -17,7 +17,7 @@ interface DetailsScreenDao {
     fun getGlobalRating(recipeName: String): LiveData<Int>
 
     @Transaction
-    @Query("SELECT * FROM quantities_table WHERE recipe_name = :recipeName")
+    @Query("SELECT * FROM quantities_table WHERE recipe_name = :recipeName ORDER BY ingredient_name ASC")
     fun getIngredientQuantitiesList(recipeName: String): LiveData<List<QuantitiesTableEntity>>
 
 
