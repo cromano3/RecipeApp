@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import com.christopherromano.culinarycompanion.data.entity.InstructionEntity
 import com.christopherromano.culinarycompanion.data.entity.QuantitiesTableEntity
 
 
@@ -15,6 +16,10 @@ interface DetailsScreenDao {
     @Transaction
     @Query("SELECT global_rating FROM recipe_table WHERE recipe_name = :recipeName")
     fun getGlobalRating(recipeName: String): LiveData<Int>
+
+    @Transaction
+    @Query("SELECT * FROM instructions_table WHERE recipe_id = :recipeName ORDER BY instruction_id ASC")
+    fun getInstructionsList(recipeName: String): LiveData<List<InstructionEntity>>
 
     @Transaction
     @Query("SELECT * FROM quantities_table WHERE recipe_name = :recipeName ORDER BY ingredient_name ASC")

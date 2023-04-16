@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.christopherromano.culinarycompanion.data.RecipeAppDatabase
 import com.christopherromano.culinarycompanion.data.entity.CommentsEntity
+import com.christopherromano.culinarycompanion.data.entity.InstructionEntity
 import com.christopherromano.culinarycompanion.data.entity.QuantitiesTableEntity
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.DetailsScreenFirebaseRepository
@@ -29,6 +30,8 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
 
     var ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>>
     var globalRating: LiveData<Int>
+    var instructionsList: LiveData<List<InstructionEntity>>
+
     val uiAlertState = MutableStateFlow(UiAlertStateDetailsScreenDataModel())
     var authState: LiveData<Int>
 
@@ -73,6 +76,10 @@ class DetailsScreenViewModel(application: Application, recipeName: String, priva
         globalRating = repository.globalRating
 
         ingredientQuantitiesList = repository.ingredientQuantitiesList
+
+        instructionsList = repository.instructionsList
+
+
 
         getCommentsList(recipeName, 4)
 

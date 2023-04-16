@@ -45,6 +45,7 @@ import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmComp
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmIMadeThisAnoString
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmRemoveMenuAnoString
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmSubmitReportAnoString
+import com.christopherromano.culinarycompanion.data.entity.InstructionEntity
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.DetailsScreenFirebaseRepository
 import com.christopherromano.culinarycompanion.datamodel.AuthorDataWithComment
@@ -99,6 +100,8 @@ fun NewDetailsScreen(
         val globalRating by detailsScreenViewModel.globalRating.observeAsState()
 
         val ingredientsQuantities by detailsScreenViewModel.ingredientQuantitiesList.observeAsState()
+
+        val instructionsList by detailsScreenViewModel.instructionsList.observeAsState()
 
         val coroutineScope = CoroutineScope(Dispatchers.Main)
 
@@ -453,11 +456,9 @@ fun NewDetailsScreen(
                         }
 
 
-
-
                     //Instructions List
 
-                    items(recipeData.instructionsList, key = { it.instruction })
+                    items(instructionsList ?: listOf<InstructionEntity>(), key = { it.instruction })
                     {
                         Surface(
                             modifier = Modifier

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.christopherromano.culinarycompanion.data.dao.DetailsScreenDao
 import com.christopherromano.culinarycompanion.data.entity.IngredientEntity
+import com.christopherromano.culinarycompanion.data.entity.InstructionEntity
 import com.christopherromano.culinarycompanion.data.entity.QuantitiesTableEntity
 import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAndInstructions
 import kotlinx.coroutines.CoroutineScope
@@ -70,6 +71,10 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
 
     val globalRating: LiveData<Int> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
         detailsScreenDao.getGlobalRating(recipeName)
+    }
+
+    val instructionsList: LiveData<List<InstructionEntity>> = Transformations.switchMap(recipeNameLiveData) {
+        detailsScreenDao.getInstructionsList(it)
     }
 
     fun setGlobalRating(recipeName: String, globalRating: Int) {
