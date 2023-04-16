@@ -21,3 +21,10 @@ val dark_primaryVariant = Color(0xFF920101)
 val dark_secondaryVariant = Color(0xFF682300)
 
 //0xFFcb7d3a
+
+
+val main_background_light = Color.White
+
+val main_background_dark = Color.Black
+
+

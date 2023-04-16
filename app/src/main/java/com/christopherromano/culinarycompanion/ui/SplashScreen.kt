@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.outlined.CheckBoxOutlineBlank
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -26,11 +27,13 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.christopherromano.culinarycompanion.R
+import com.christopherromano.culinarycompanion.ui.theme.SplashTheme
 import kotlinx.coroutines.delay
 
 @Composable
@@ -44,224 +47,238 @@ fun SplashScreen(
     continueWithoutSignIn: () -> Unit,
     onSplashFinished: () -> Unit,
 ){
-    Surface(
-        Modifier
-            .fillMaxSize(),
-        color = Color.White
-    ){
-
-        var visible by remember { mutableStateOf(false) }
-
-        var myTextColor by remember { mutableStateOf(Color.Black) }
-
-        val uriHandler = LocalUriHandler.current
-
-        val myText = buildAnnotatedString {
-
-            append("I agree to the ")
-
-            pushStringAnnotation(
-                tag = "URL",
-                annotation = "https://www.ChristopherRomano.com/culinarycompaniontermsandconditions"
-            )
-            withStyle(
-                style = SpanStyle(
-                    color = myTextColor,
-                    textDecoration = TextDecoration.Underline,
-                    fontWeight = FontWeight.Bold
-                )
-            ) {
-                append("Terms and Conditions")
-            }
-
-            pop()
-
-            append(", ")
-
-            pushStringAnnotation(
-                tag = "URL",
-                annotation = "https://www.ChristopherRomano.com/culinarycompanionprivacypolicy"
-            )
-            withStyle(
-                style = SpanStyle(
-                    color = myTextColor,
-                    textDecoration = TextDecoration.Underline,
-                    fontWeight = FontWeight.Bold
-                )
-            ) {
-                append("Privacy Policy")
-            }
-            pop()
-
-            append(", and ")
-
-            pushStringAnnotation(
-                tag = "URL",
-                annotation = "https://www.ChristopherRomano.com/culinarycompanionEULA"
-            )
-            withStyle(
-                style = SpanStyle(
-                    color = myTextColor,
-                    textDecoration = TextDecoration.Underline,
-                    fontWeight = FontWeight.Bold
-                )
-            ) {
-                append("EULA")
-            }
-            pop()
-        }
-
-        LaunchedEffect(Unit){
-            visible = true
-        }
-
-        if(endSplash){
-            LaunchedEffect(Unit){
-                delay(1500)
-                onSplashFinished()
-            }
-        }
-
-        Box(
+    SplashTheme(){
+        Surface(
             Modifier
                 .fillMaxSize(),
-        contentAlignment = Alignment.Center
+//            color = Color.White
         ){
-            Column(
-                Modifier
-                    .fillMaxSize()
-//                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 0.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ){
 
-                val density = LocalDensity.current
+            var visible by rememberSaveable { mutableStateOf(false) }
 
-                androidx.compose.animation.AnimatedVisibility(
-                    visible = visible,
-                    enter = slideInVertically {
-                        with(density) { -300.dp.roundToPx() }
-                    } + fadeIn(initialAlpha = 0.0f),
+            var isError by rememberSaveable { mutableStateOf(false) }
 
-                    ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.mainlogo),
-                        contentDescription = null,
-                        modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-                        contentScale = ContentScale.Inside
+            val uriHandler = LocalUriHandler.current
+
+            val myText = buildAnnotatedString {
+
+                append("I agree to the ")
+
+                pushStringAnnotation(
+                    tag = "URL",
+                    annotation = "https://www.ChristopherRomano.com/culinarycompaniontermsandconditions"
+                )
+                withStyle(
+                    style = SpanStyle(
+//                        color = MaterialTheme.colors.onSurface,
+                        textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.Bold
                     )
+                ) {
+                    append("Terms and Conditions")
                 }
 
-                Spacer(Modifier.fillMaxWidth().height(40.dp))
+                pop()
 
+                append(", ")
 
+                pushStringAnnotation(
+                    tag = "URL",
+                    annotation = "https://www.ChristopherRomano.com/culinarycompanionprivacypolicy"
+                )
+                withStyle(
+                    style = SpanStyle(
+//                        color = MaterialTheme.colors.onSurface,
+                        textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.Bold
+                    )
+                ) {
+                    append("Privacy Policy")
+                }
+                pop()
 
+                append(", and ")
 
-                Column(modifier = Modifier.wrapContentWidth().height(170.dp)){
-                    if(showLoading){
-                        CircularProgressIndicator(color = Color(0xFF682300))
-                    }
-                    if(showSignInButtons) {
-                        Button(
-                            modifier = Modifier
-                                .width(260.dp)
-                                .padding(start = 8.dp, end = 8.dp),
-                            onClick = { if (isConsentBoxChecked) trySignInWithGoogle() else myTextColor = Color.Red },
-                            elevation = ButtonDefaults.elevation(6.dp),
-                            shape = RoundedCornerShape(10.dp),
-                            border = BorderStroke(
-                                width = 2.dp,
-                                brush = (Brush.horizontalGradient(
-                                    startX = -30f,
-                                    colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
-                                    tileMode = TileMode.Mirror
-                                )),
-                            ),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color(0xFF682300),
-                                contentColor = Color(0xFFd8af84)
-                            )
+                pushStringAnnotation(
+                    tag = "URL",
+                    annotation = "https://www.ChristopherRomano.com/culinarycompanionEULA"
+                )
+                withStyle(
+                    style = SpanStyle(
+//                        color = MaterialTheme.colors.onSurface,
+                        textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.Bold
+                    )
+                ) {
+                    append("EULA.")
+                }
+                pop()
+            }
+
+            LaunchedEffect(Unit){
+                visible = true
+            }
+
+            if(endSplash){
+                LaunchedEffect(Unit){
+                    delay(1500)
+                    onSplashFinished()
+                }
+            }
+
+            Box(
+                Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
+                Column(
+                    Modifier
+                        .fillMaxSize()
+//                    .align(Alignment.BottomCenter)
+                        .padding(bottom = 0.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ){
+
+                    val density = LocalDensity.current
+
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = visible,
+                        enter = slideInVertically {
+                            with(density) { -300.dp.roundToPx() }
+                        } + fadeIn(initialAlpha = 0.0f),
+
                         ) {
-                            Row(
+                        Image(
+                            painter = painterResource(id = R.drawable.mainlogo),
+                            contentDescription = null,
+                            modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+                            contentScale = ContentScale.Inside
+                        )
+                    }
+
+                    Spacer(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(40.dp))
+
+
+
+
+                    Column(modifier = Modifier
+                        .wrapContentWidth()
+                        .height(170.dp)){
+                        if(showLoading){
+                            CircularProgressIndicator(color = Color(0xFF682300))
+                        }
+                        if(showSignInButtons) {
+                            Button(
                                 modifier = Modifier
                                     .width(260.dp)
-                                    .height(25.dp),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_google_logo),
-                                    contentDescription = null
+                                    .padding(start = 8.dp, end = 8.dp),
+                                onClick = { if (isConsentBoxChecked) trySignInWithGoogle() else isError = true },
+                                elevation = ButtonDefaults.elevation(6.dp),
+                                shape = RoundedCornerShape(10.dp),
+                                border = BorderStroke(
+                                    width = 2.dp,
+                                    brush = (Brush.horizontalGradient(
+                                        startX = -30f,
+                                        colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
+                                        tileMode = TileMode.Mirror
+                                    )),
+                                ),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = Color(0xFF682300),
+                                    contentColor = Color(0xFFd8af84)
                                 )
-                                Text("Sign in with Google")
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .width(260.dp)
+                                        .height(25.dp),
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_google_logo),
+                                        contentDescription = null
+                                    )
+                                    Text("Sign in with Google")
+                                }
                             }
-                        }
-                        Button(
-                            modifier = Modifier
-                                .width(260.dp)
-                                .padding(8.dp),
-                            onClick = { if (isConsentBoxChecked) continueWithoutSignIn() else myTextColor = Color.Red },
-                            elevation = ButtonDefaults.elevation(6.dp),
-                            shape = RoundedCornerShape(10.dp),
-                            border = BorderStroke(
-                                width = 2.dp,
-                                brush = (Brush.horizontalGradient(
-                                    startX = -30f,
-                                    colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
-                                    tileMode = TileMode.Mirror
-                                )),
-                            ),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color(0xFFd8af84),
-                                contentColor = Color(0xFF682300)
-                            )
-                        ) {
-                            Text("Continue without signing in")
-                        }
+                            Button(
+                                modifier = Modifier
+                                    .width(260.dp)
+                                    .padding(8.dp),
+                                onClick = { if (isConsentBoxChecked) continueWithoutSignIn() else isError = true },
+                                elevation = ButtonDefaults.elevation(6.dp),
+                                shape = RoundedCornerShape(10.dp),
+                                border = BorderStroke(
+                                    width = 2.dp,
+                                    brush = (Brush.horizontalGradient(
+                                        startX = -30f,
+                                        colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
+                                        tileMode = TileMode.Mirror
+                                    )),
+                                ),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = Color(0xFFd8af84),
+                                    contentColor = Color(0xFF682300)
+                                )
+                            ) {
+                                Text("Continue without signing in")
+                            }
 
-                        Spacer(
-                            Modifier
-                                .width(1.dp)
-                                .height(12.dp))
-
-                        Surface(
-                            Modifier.clickable { consentBoxClicked() }.width(260.dp).padding(8.dp),
-                            color = Color.Transparent
-                        ){
-                            Row(
+                            Spacer(
                                 Modifier
-                                    .width(260.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    if(!isConsentBoxChecked) Icons.Outlined.CheckBoxOutlineBlank else Icons.Filled.CheckBox,
-                                    contentDescription = "Consent to Privacy Policy, Terms and Conditions, and end user license agreement check box.",
-                                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                                    tint = Color(0xFFd8af84)
-                                )
-                                Spacer(
-                                    Modifier
-                                        .width(8.dp)
-                                        .height(1.dp))
+                                    .width(1.dp)
+                                    .height(12.dp))
 
-                                ClickableText(
-                                    text = myText,
-                                    modifier = Modifier,
-                                    style = TextStyle.Default.copy(color = myTextColor, fontSize = 12.sp),
-                                    onClick = { offset ->
-                                        myText.getStringAnnotations(tag = "URL", start = offset, end = offset)
-                                            .firstOrNull()?.let { uriHandler.openUri(it.item) }
-                                    }
-                                )
+                            Surface(
+                                Modifier
+                                    .clickable { consentBoxClicked() }
+                                    .width(260.dp)
+                                    .padding(8.dp),
+                                color = Color.Transparent
+                            ){
+                                Row(
+                                    Modifier
+                                        .width(260.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Icon(
+                                        if(!isConsentBoxChecked) Icons.Outlined.CheckBoxOutlineBlank else Icons.Filled.CheckBox,
+                                        contentDescription = "Consent to Privacy Policy, Terms and Conditions, and end user license agreement check box.",
+                                        modifier = Modifier.padding(start = 4.dp, end = 10.dp),
+                                        tint = Color(0xFFd8af84)
+                                    )
+                                    Spacer(
+                                        Modifier
+                                            .width(8.dp)
+                                            .height(1.dp))
+
+                                    ClickableText(
+                                        text = myText,
+                                        modifier = Modifier.padding(end = 4.dp),
+                                        style = TextStyle.Default.copy(
+                                            color = if(isError) Color.Red else MaterialTheme.colors.onSurface,
+                                            fontSize = 12.sp,
+                                            textAlign = TextAlign.Center),
+                                        onClick = { offset ->
+                                            myText.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                                                .firstOrNull()?.let { uriHandler.openUri(it.item) }
+                                        }
+                                    )
+                                }
                             }
+
                         }
 
                     }
-
                 }
             }
         }
     }
+
 }
