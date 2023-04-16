@@ -10,7 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CheckBox
+import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.outlined.CheckBoxOutlineBlank
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -236,8 +236,9 @@ fun SplashScreen(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Icon(
-                                    if(!isConsentBoxChecked) Icons.Outlined.CheckBoxOutlineBlank else Icons.Outlined.CheckBox,
+                                    if(!isConsentBoxChecked) Icons.Outlined.CheckBoxOutlineBlank else Icons.Filled.CheckBox,
                                     contentDescription = "Consent to Privacy Policy, Terms and Conditions, and end user license agreement check box.",
+                                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                                     tint = Color(0xFFd8af84)
                                 )
                                 Spacer(
