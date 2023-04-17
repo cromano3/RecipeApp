@@ -164,8 +164,8 @@ class DetailsScreenFirebaseRepository(
             .whereEqualTo("isModApproved", 1)
             .whereEqualTo("isDeleted", 0)
             .whereGreaterThan("likes", -2)
-            .limit(limit.toLong())
             .orderBy("likes", Query.Direction.DESCENDING)
+            .limit(limit.toLong())
             .addSnapshotListener(listener)
 
         awaitClose {registration.remove()}

@@ -95,6 +95,8 @@ fun NewDetailsScreen(
 
         val commentsList by detailsScreenViewModel.commentsList.collectAsState()
 
+        val sortedCommentsList = commentsList.orEmpty().sortedByDescending { it.comment.likes }
+
         val authState by detailsScreenViewModel.authState.observeAsState()
 
         val globalRating by detailsScreenViewModel.globalRating.observeAsState()
@@ -520,7 +522,7 @@ fun NewDetailsScreen(
                     }
 
                     if(commentsList.isNotEmpty()) {
-                        items(if(commentsList.size <= 4 && isCommentListSizeLimited) commentsList.take(3) else commentsList, key = { it.comment.commentID })
+                        items(if(commentsList.size <= 4 && isCommentListSizeLimited) sortedCommentsList.take(3) else sortedCommentsList, key = { it.comment.commentID })
                         {
                             ReviewWidget(
                                 modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
