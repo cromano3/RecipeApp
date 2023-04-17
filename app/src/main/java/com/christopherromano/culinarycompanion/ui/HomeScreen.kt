@@ -389,7 +389,7 @@ fun FiltersButton(
         "Japanese" -> R.drawable.sushi
         "Mexican" -> R.drawable.taco
         "Baking" -> R.drawable.bake
-        "Sweets" -> R.drawable.baking
+//        "Sweets" -> R.drawable.baking
         "Vegan" -> R.drawable.vegan
         else -> R.drawable.bagel
     }
