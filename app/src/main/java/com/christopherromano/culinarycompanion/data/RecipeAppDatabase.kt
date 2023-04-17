@@ -7,7 +7,6 @@ import androidx.room.RoomDatabase
 import com.christopherromano.culinarycompanion.data.dao.*
 import com.christopherromano.culinarycompanion.data.entity.*
 
-// Annotates class to be a Room Database with a table (entity) of the Word class
 @Database(entities = [
                         RecipeEntity::class,
                         IngredientEntity::class,
@@ -56,41 +55,5 @@ public abstract class RecipeAppDatabase : RoomDatabase() {
               //  .allowMainThreadQueries()
                 .createFromAsset("database/app_database77.db")
                 .build()
-                // prepopulate the database after onCreate was called
-//                .addCallback(object : Callback() {
-//                    override fun onCreate(db: SupportSQLiteDatabase) {
-//                        super.onCreate(db)
-//                        // insert the data on the IO Thread
-//                        suspend {
-//                            getInstance(context).RecipeDao()
-//                        }
-//                    }
-//                })
-
-//        val PREPOPULATE_DATA = listOf(Data("1", "val"), Data("2", "val 2"))
     }
 }
-
-
-//    companion object {
-//        // Singleton prevents multiple instances of database opening at the
-//        // same time.
-//        @Volatile
-//        private var INSTANCE: RecipeAppDatabase? = null
-//
-//        fun getDatabase(context: Context): RecipeAppDatabase {
-//            // if the INSTANCE is not null, then return it,
-//            // if it is, then create the database
-//            return INSTANCE ?: synchronized(this) {
-//                val instance = Room.databaseBuilder(
-//                    context.applicationContext,
-//                    RecipeAppDatabase::class.java,
-//                    "app_database"
-//                ).createFromAsset("database/app_database.db").build()
-//                INSTANCE = instance
-//                // return instance
-//                instance
-//            }
-//        }
-//    }
-//}
