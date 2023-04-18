@@ -1,7 +1,5 @@
 package com.christopherromano.culinarycompanion.ui
 
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -20,19 +18,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.christopherromano.culinarycompanion.R
+import com.christopherromano.culinarycompanion.data.annotatedstrings.splashConsentAnoString
 import com.christopherromano.culinarycompanion.ui.theme.SplashTheme
 import kotlinx.coroutines.delay
 
@@ -60,60 +54,7 @@ fun SplashScreen(
 
             val uriHandler = LocalUriHandler.current
 
-            val myText = buildAnnotatedString {
-
-                append("I agree to the ")
-
-                pushStringAnnotation(
-                    tag = "URL",
-                    annotation = "https://www.ChristopherRomano.com/culinarycompaniontermsandconditions"
-                )
-                withStyle(
-                    style = SpanStyle(
-//                        color = MaterialTheme.colors.onSurface,
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Bold
-                    )
-                ) {
-                    append("Terms and Conditions")
-                }
-
-                pop()
-
-                append(", ")
-
-                pushStringAnnotation(
-                    tag = "URL",
-                    annotation = "https://www.ChristopherRomano.com/culinarycompanionprivacypolicy"
-                )
-                withStyle(
-                    style = SpanStyle(
-//                        color = MaterialTheme.colors.onSurface,
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Bold
-                    )
-                ) {
-                    append("Privacy Policy")
-                }
-                pop()
-
-                append(", and ")
-
-                pushStringAnnotation(
-                    tag = "URL",
-                    annotation = "https://www.ChristopherRomano.com/culinarycompanionEULA"
-                )
-                withStyle(
-                    style = SpanStyle(
-//                        color = MaterialTheme.colors.onSurface,
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Bold
-                    )
-                ) {
-                    append("EULA.")
-                }
-                pop()
-            }
+            val myText = splashConsentAnoString()
 
             LaunchedEffect(Unit){
                 visible = true
@@ -121,53 +62,38 @@ fun SplashScreen(
 
             if(endSplash){
                 LaunchedEffect(Unit){
-                    delay(1500)
+                    delay(1000)
                     onSplashFinished()
                 }
             }
 
-            Box(
-                Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
+            ConstraintLayout(
+                Modifier.fillMaxSize()
             ){
-                Column(
-                    Modifier
-                        .fillMaxSize()
-//                    .align(Alignment.BottomCenter)
-                        .padding(bottom = 0.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ){
 
-                    val density = LocalDensity.current
+                val (image, buttons) = createRefs()
 
-                    androidx.compose.animation.AnimatedVisibility(
-                        visible = visible,
-                        enter = slideInVertically {
-                            with(density) { -300.dp.roundToPx() }
-                        } + fadeIn(initialAlpha = 0.0f),
-
-                        ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.mainlogo),
-                            contentDescription = null,
-                            modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-                            contentScale = ContentScale.Inside
-                        )
-                    }
-
-                    Spacer(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(40.dp))
-
-
-
-
+                Image(
+                    painter = painterResource(id = R.drawable.mainlogo),
+                    contentDescription = null,
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+                        .constrainAs(image){
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            },
+                    contentScale = ContentScale.Inside
+                )
+                if(showLoading || showSignInButtons){
                     Column(modifier = Modifier
-                        .wrapContentWidth()
-                        .height(170.dp)){
+                        .wrapContentSize()
+                        .padding(top = 30.dp)
+                        .constrainAs(buttons){
+                            top.linkTo(image.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }){
                         if(showLoading){
                             CircularProgressIndicator(color = Color(0xFF682300))
                         }
@@ -251,7 +177,7 @@ fun SplashScreen(
                                         if(!isConsentBoxChecked) Icons.Outlined.CheckBoxOutlineBlank else Icons.Filled.CheckBox,
                                         contentDescription = "Consent to Privacy Policy, Terms and Conditions, and end user license agreement check box.",
                                         modifier = Modifier.padding(start = 4.dp, end = 10.dp),
-                                        tint = Color(0xFFd8af84)
+                                        tint = if(isError && !isConsentBoxChecked) Color.Red else Color(0xFF682300)
                                     )
                                     Spacer(
                                         Modifier
@@ -262,7 +188,7 @@ fun SplashScreen(
                                         text = myText,
                                         modifier = Modifier.padding(end = 4.dp),
                                         style = TextStyle.Default.copy(
-                                            color = if(isError) Color.Red else MaterialTheme.colors.onSurface,
+                                            color = if(isError && !isConsentBoxChecked) Color.Red else MaterialTheme.colors.onSurface,
                                             fontSize = 12.sp,
                                             textAlign = TextAlign.Center),
                                         onClick = { offset ->
@@ -272,13 +198,10 @@ fun SplashScreen(
                                     )
                                 }
                             }
-
                         }
-
                     }
                 }
             }
         }
     }
-
 }

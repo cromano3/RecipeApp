@@ -4,8 +4,56 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 
+
+fun splashConsentAnoString(): AnnotatedString{
+    return buildAnnotatedString {
+        append("I agree to the ")
+        pushStringAnnotation(
+            tag = "URL",
+            annotation = "https://www.ChristopherRomano.com/culinarycompaniontermsandconditions"
+        )
+        withStyle(
+            style = SpanStyle(
+                textDecoration = TextDecoration.Underline,
+                fontWeight = FontWeight.Bold
+            )
+        ) {
+            append("Terms and Conditions")
+        }
+        pop()
+        append(", ")
+        pushStringAnnotation(
+            tag = "URL",
+            annotation = "https://www.ChristopherRomano.com/culinarycompanionprivacypolicy"
+        )
+        withStyle(
+            style = SpanStyle(
+                textDecoration = TextDecoration.Underline,
+                fontWeight = FontWeight.Bold
+            )
+        ) {
+            append("Privacy Policy")
+        }
+        pop()
+        append(", and ")
+        pushStringAnnotation(
+            tag = "URL",
+            annotation = "https://www.ChristopherRomano.com/culinarycompanionEULA"
+        )
+        withStyle(
+            style = SpanStyle(
+            textDecoration = TextDecoration.Underline,
+            fontWeight = FontWeight.Bold
+            )
+        ) {
+            append("EULA.")
+        }
+        pop()
+    }
+}
 
 fun confirmSubmitReportAnoString(): AnnotatedString{
     return buildAnnotatedString {

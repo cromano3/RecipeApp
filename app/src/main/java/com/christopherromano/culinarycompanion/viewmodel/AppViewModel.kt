@@ -55,7 +55,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 //they are offline user do nothing
                 appUiState.update {
                     it.copy(
-                        showLoading = true,
+//                        showLoading = true,
                         endSplash = true,
                     )
                 }
@@ -75,7 +75,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                     //back up upload sync should then try to upload any of their stuff that wasn't uploaded
                     appUiState.update {
                         it.copy(
-                            showLoading = true,
+//                            showLoading = true,
                             endSplash = true,
                         )
                     }
