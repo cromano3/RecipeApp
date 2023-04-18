@@ -25,6 +25,6 @@ val dark_secondaryVariant = Color(0xFF682300)
 
 val main_background_light = Color(0xFFFDFCF4)
 
-val main_background_dark = Color(0xFF1B1C18)
+val main_background_dark = Color(0xFF000000)
 
 
