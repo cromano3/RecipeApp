@@ -319,9 +319,6 @@ fun CulinaryCompanion(
                     )
                 }
 
-                /** Add Recipe Screen */
-                composable(route = "AddRecipeScreen") { AddRecipeScreen() }
-
                 /** Settings Screen */
                 composable(
                     route = "SettingsScreen",
@@ -726,29 +723,30 @@ fun CulinaryCompanionBottomBar(
                             navController.popBackStack()
                         }
 
-                        if(currentRoute == "WeeklyMenuScreen"){
-                            navController.navigate(it) {
+                        if(currentRoute != it){
+                            if(currentRoute == "WeeklyMenuScreen"){
+                                navController.navigate(it) {
 
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = false
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = false
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+
                                 }
-                                launchSingleTop = true
-                                restoreState = true
+                            }
+                            else{
+                                navController.navigate(it) {
 
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+
+                                }
                             }
                         }
-                        else{
-                            navController.navigate(it) {
-
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-
-                            }
-                        }
-
 
                     },
                     icon = {
