@@ -10,7 +10,6 @@ import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -34,7 +33,6 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,7 +44,6 @@ import com.christopherromano.culinarycompanion.R
 import com.christopherromano.culinarycompanion.data.annotatedstrings.tutorialTextAnoString
 import com.christopherromano.culinarycompanion.data.entity.FilterEntity
 import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredients
-import com.christopherromano.culinarycompanion.ui.components.AddRecipeCard
 import com.christopherromano.culinarycompanion.ui.components.BasicAlert
 import com.christopherromano.culinarycompanion.ui.components.SmallRecipeCard
 import com.christopherromano.culinarycompanion.viewmodel.HomeScreenViewModel
@@ -204,55 +201,6 @@ fun HomeScreen(
                                     )
                                 }
 
-                                if(!uiFiltersState.isFiltered && shownRecipeList.isNotEmpty()) {
-                                    item(span = { GridItemSpan(2) }) {
-
-                                        Box(
-                                            Modifier
-                                                .background(
-                                                    Brush.horizontalGradient(
-                                                        colors = listOf(
-                                                            Color(0xFFb15f33),
-                                                            Color(0xFF682300)
-                                                        ), tileMode = TileMode.Mirror
-                                                    )
-                                                )
-                                                .height(2.dp)
-                                                .fillMaxWidth(),
-                                        )
-
-                                        Spacer(
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .height(2.dp))
-
-                                        Text(
-                                            text = "Custom Recipes",
-                                            fontSize = 18.sp,
-                                            style = TextStyle(
-                                                brush = Brush.horizontalGradient(
-                                                    colors = listOf(
-                                                        Color(0xFFb15f33),
-                                                        Color(0xFF682300)
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    }
-
-
-                                }
-
-                                if(!uiFiltersState.isFiltered && shownRecipeList.isNotEmpty()) {
-                                    item {
-                                        var bottomPadding = 16
-                                        AddRecipeCard(
-                                            modifier = Modifier
-                                                .padding(bottom = bottomPadding.dp),
-                                            onCreateRecipeClick = onCreateRecipeClick
-                                        )
-                                    }
-                                }
                             }
                         }
                     }
