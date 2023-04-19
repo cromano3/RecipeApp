@@ -261,8 +261,8 @@ fun CulinaryCompanion(
                 /** Profile Screen */
                 composable(
                     route = "ProfileScreen",
-                    enterTransition = { fadeIn(animationSpec = tween(700)) },
-                    exitTransition = { fadeOut(animationSpec = tween(700)) },
+                    enterTransition = { fadeIn(animationSpec = tween(300)) },
+                    exitTransition = { fadeOut(animationSpec = tween(300)) },
                 ) {
                     ProfileScreen(
                         onDetailsClick =
@@ -291,8 +291,8 @@ fun CulinaryCompanion(
                 /**Comment Screen*/
                 composable(
                     route = "CommentScreen",
-                    enterTransition = { fadeIn(animationSpec = tween(700)) },
-                    exitTransition = { fadeOut(animationSpec = tween(700)) },
+                    enterTransition = { fadeIn(animationSpec = tween(300)) },
+                    exitTransition = { fadeOut(animationSpec = tween(300)) },
                 ) {
                     CommentScreen(
                         commentScreenData = appUiState.reviewScreenTarget,
@@ -322,8 +322,8 @@ fun CulinaryCompanion(
                 /** Settings Screen */
                 composable(
                     route = "SettingsScreen",
-                    enterTransition = { fadeIn(animationSpec = tween(700)) },
-                    exitTransition = { fadeOut(animationSpec = tween(700)) }
+                    enterTransition = { fadeIn(animationSpec = tween(300)) },
+                    exitTransition = { fadeOut(animationSpec = tween(300)) }
                 ) {
                     SettingsScreen(
                         confirmSignInWithGoogle = { appViewModel.signInWithGoogle() },
@@ -334,8 +334,8 @@ fun CulinaryCompanion(
                 /** Settings Screen */
                 composable(
                     route = "LicensesScreen",
-                    enterTransition = { fadeIn(animationSpec = tween(700)) },
-                    exitTransition = { fadeOut(animationSpec = tween(700)) }
+                    enterTransition = { fadeIn(animationSpec = tween(300)) },
+                    exitTransition = { fadeOut(animationSpec = tween(300)) }
                 ) {
                     LicensesScreen()
                 }
@@ -346,34 +346,34 @@ fun CulinaryCompanion(
                         when (initialState.destination.route) {
                             "WeeklyMenuScreen" -> slideIntoContainer(
                                 AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
                             "ShoppingScreen" -> slideIntoContainer(
                                 AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
                             "SearchScreen" -> slideIntoContainer(
                                 AnimatedContentScope.SlideDirection.Up,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
-                            else -> fadeIn(animationSpec = tween(700))
+                            else -> fadeIn(animationSpec = tween(300))
                         }
                     },
                     exitTransition = {
                         when (targetState.destination.route) {
                             "WeeklyMenuScreen" -> slideOutOfContainer(
                                 AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
                             "ShoppingScreen" -> slideOutOfContainer(
                                 AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
                             "SearchScreen" -> slideOutOfContainer(
                                 AnimatedContentScope.SlideDirection.Down,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
-                            else -> fadeOut(animationSpec = tween(700))
+                            else -> fadeOut(animationSpec = tween(300))
                         }
                     }
                 ) {
@@ -418,26 +418,26 @@ fun CulinaryCompanion(
                         when (initialState.destination.route) {
                             "RecipeScreen" -> slideIntoContainer(
                                 AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
                             "ShoppingScreen" -> slideIntoContainer(
                                 AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
-                            else -> fadeIn(animationSpec = tween(700))
+                            else -> fadeIn(animationSpec = tween(300))
                         }
                     },
                     exitTransition = {
                         when (targetState.destination.route) {
                             "RecipeScreen" -> slideOutOfContainer(
                                 AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
                             "ShoppingScreen" -> slideOutOfContainer(
                                 AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
-                            else -> fadeOut(animationSpec = tween(700))
+                            else -> fadeOut(animationSpec = tween(300))
                         }
                     },
                 ) {
@@ -517,26 +517,26 @@ fun CulinaryCompanion(
                         when (initialState.destination.route) {
                             "RecipeScreen" -> slideIntoContainer(
                                 AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
                             "WeeklyMenuScreen" -> slideIntoContainer(
                                 AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
-                            else -> fadeIn(animationSpec = tween(700))
+                            else -> fadeIn(animationSpec = tween(300))
                         }
                     },
                     exitTransition = {
                         when (targetState.destination.route) {
                             "RecipeScreen" -> slideOutOfContainer(
                                 AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
                             "WeeklyMenuScreen" -> slideOutOfContainer(
                                 AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
-                            else -> fadeOut(animationSpec = tween(700))
+                            else -> fadeOut(animationSpec = tween(300))
                         }
                     }
                 ) {
@@ -577,8 +577,8 @@ fun CulinaryCompanion(
                 /** Details Screen */
                 composable(
                     route = "DetailsScreen",
-                    enterTransition = { fadeIn(animationSpec = tween(700)) },
-                    exitTransition = { fadeOut(animationSpec = tween(700)) },
+                    enterTransition = { fadeIn(animationSpec = tween(300)) },
+                    exitTransition = { fadeOut(animationSpec = tween(300)) },
                 ) {
                     NewDetailsScreen(
                         recipeData = appUiState.detailsScreenTarget,
@@ -634,18 +634,18 @@ fun CulinaryCompanion(
                         when (initialState.destination.route) {
                             "RecipeScreen" -> slideIntoContainer(
                                 AnimatedContentScope.SlideDirection.Down,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
-                            else -> fadeIn(animationSpec = tween(700))
+                            else -> fadeIn(animationSpec = tween(300))
                         }
                     },
                     exitTransition = {
                         when (targetState.destination.route) {
                             "RecipeScreen" -> slideOutOfContainer(
                                 AnimatedContentScope.SlideDirection.Up,
-                                animationSpec = tween(700)
+                                animationSpec = tween(300)
                             )
-                            else -> fadeOut(animationSpec = tween(700))
+                            else -> fadeOut(animationSpec = tween(300))
                         }
                     },
                 ) {
