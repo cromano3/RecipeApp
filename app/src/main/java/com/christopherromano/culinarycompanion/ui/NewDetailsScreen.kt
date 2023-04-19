@@ -121,7 +121,7 @@ fun NewDetailsScreen(
             "Yummy Rice with Marinated Tofu" -> R.drawable.yummy_rice_details
             "Corn Chowder" -> R.drawable.corn_chowder
             "Vegan Eggplant Parmesan" -> R.drawable.eggplant
-            "Mexican Style Rice" -> R.drawable.bagel
+//            "Mexican Style Rice" -> R.drawable.bagel
             "Wild Rice Salad" -> R.drawable.wild_rice
             "Rice Soup" -> R.drawable.rice_soup_details
             "Miso Soup" -> R.drawable.miso_soup

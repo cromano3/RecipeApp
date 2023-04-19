@@ -7,7 +7,11 @@ import com.christopherromano.culinarycompanion.data.RecipeAppDatabase
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.AppRepository
 import com.christopherromano.culinarycompanion.data.repository.FirebaseRepository
-import com.christopherromano.culinarycompanion.datamodel.*
+import com.christopherromano.culinarycompanion.datamodel.AppUiState
+import com.christopherromano.culinarycompanion.datamodel.AuthorDataWithComment
+import com.christopherromano.culinarycompanion.datamodel.RecipeNameAndRating
+import com.christopherromano.culinarycompanion.datamodel.RecipeNameAndReview
+import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAndInstructions
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
@@ -178,6 +182,17 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     }
 
 
+
+    fun endSplashOnFail(){
+        println("ending splash: Auth Failed.")
+        appUiState.update {
+            it.copy(
+                googleSignInState = "",
+                endSplash = true,
+            )
+        }
+
+    }
     fun firebaseSignInWithGoogle(googleCredential: AuthCredential) = viewModelScope.launch {
         println("in view firebase try")
         val firebaseSignInWithGoogleResponse = firebaseRepository.firebaseSignInWithGoogle(googleCredential)

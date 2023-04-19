@@ -4,8 +4,27 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.christopherromano.culinarycompanion.data.dao.*
-import com.christopherromano.culinarycompanion.data.entity.*
+import com.christopherromano.culinarycompanion.data.dao.AppDao
+import com.christopherromano.culinarycompanion.data.dao.CommentScreenDao
+import com.christopherromano.culinarycompanion.data.dao.DetailsScreenDao
+import com.christopherromano.culinarycompanion.data.dao.HomeScreenDao
+import com.christopherromano.culinarycompanion.data.dao.MenuScreenDao
+import com.christopherromano.culinarycompanion.data.dao.ProfileScreenDao
+import com.christopherromano.culinarycompanion.data.dao.SearchScreenDao
+import com.christopherromano.culinarycompanion.data.dao.SettingsScreenDao
+import com.christopherromano.culinarycompanion.data.dao.ShoppingListScreenDao
+import com.christopherromano.culinarycompanion.data.dao.TopBarDao
+import com.christopherromano.culinarycompanion.data.entity.CommentsEntity
+import com.christopherromano.culinarycompanion.data.entity.FilterEntity
+import com.christopherromano.culinarycompanion.data.entity.IngredientEntity
+import com.christopherromano.culinarycompanion.data.entity.InstructionEntity
+import com.christopherromano.culinarycompanion.data.entity.QuantitiesTableEntity
+import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
+import com.christopherromano.culinarycompanion.data.entity.RecipeFiltersJoinEntity
+import com.christopherromano.culinarycompanion.data.entity.RecipeIngredientJoinEntity
+import com.christopherromano.culinarycompanion.data.entity.SearchEntity
+import com.christopherromano.culinarycompanion.data.entity.ShoppingListCustomItemsEntity
+import com.christopherromano.culinarycompanion.data.entity.UserEntity
 
 @Database(entities = [
                         RecipeEntity::class,
@@ -50,10 +69,10 @@ public abstract class RecipeAppDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                RecipeAppDatabase::class.java, "app_database78.db"
+                RecipeAppDatabase::class.java, "app_database80.db"
             )
               //  .allowMainThreadQueries()
-                .createFromAsset("database/app_database78.db")
+                .createFromAsset("database/app_database80.db")
                 .build()
     }
 }

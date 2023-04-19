@@ -139,6 +139,7 @@ fun CulinaryCompanion(
                     appViewModel.firebaseSignInWithGoogle(googleCredentials)
                 } catch (it: ApiException) {
                     println("big fail with error $it")
+                    appViewModel.endSplashOnFail()
                 }
             }
 

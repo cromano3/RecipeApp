@@ -1108,7 +1108,7 @@ fun RecipeIcon(
         "Yummy Rice with Marinated Tofu" -> R.drawable.yummy_rice
         "Corn Chowder" -> R.drawable.corn_chowder
         "Vegan Eggplant Parmesan" -> R.drawable.eggplant
-        "Mexican Style Rice" -> R.drawable.bagel
+//        "Mexican Style Rice" -> R.drawable.bagel
         "Wild Rice Salad" -> R.drawable.wild_rice
         "Rice Soup" -> R.drawable.rice_soup
         "Miso Soup" -> R.drawable.miso_soup
