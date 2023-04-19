@@ -81,7 +81,7 @@ android {
 
 dependencies {
 
-    implementation 'com.google.firebase:firebase-firestore-ktx:24.1.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.5.0'
 
     def room_version = "2.4.3" // check latest version from docs
 
@@ -106,7 +106,7 @@ dependencies {
     // Add the dependency for the Firebase SDK for Google Analytics
     implementation 'com.google.firebase:firebase-analytics-ktx'
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:31.2.1')
+    implementation platform('com.google.firebase:firebase-bom:31.5.0')
 
     // Add the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
@@ -114,7 +114,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
 
     // Also add the dependency for the Google Play services library and specify its version
-    implementation 'com.google.android.gms:play-services-auth:20.4.1'
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
 
 
 
