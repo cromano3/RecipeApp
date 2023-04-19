@@ -2,7 +2,8 @@ package com.christopherromano.culinarycompanion.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import com.christopherromano.culinarycompanion.data.dao.DetailsScreenDao
 import com.christopherromano.culinarycompanion.data.entity.IngredientEntity
 import com.christopherromano.culinarycompanion.data.entity.InstructionEntity
@@ -17,11 +18,11 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private val recipeNameLiveData = MutableLiveData<String>()
 
-    private val _ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
+    private val _ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>> = (recipeNameLiveData).switchMap { recipeName ->
         detailsScreenDao.getIngredientQuantitiesList(recipeName)
     }
 
-    val ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>> = Transformations.map(_ingredientQuantitiesList) {
+    val ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>> = (_ingredientQuantitiesList).map {
         it.map { quantityEntity ->
 
             if(quantityEntity.quantity.isBlank()){
@@ -69,11 +70,11 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
     }
 
 
-    val globalRating: LiveData<Int> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
+    val globalRating: LiveData<Int> = (recipeNameLiveData).switchMap { recipeName ->
         detailsScreenDao.getGlobalRating(recipeName)
     }
 
-    val instructionsList: LiveData<List<InstructionEntity>> = Transformations.switchMap(recipeNameLiveData) {
+    val instructionsList: LiveData<List<InstructionEntity>> = (recipeNameLiveData).switchMap {
         detailsScreenDao.getInstructionsList(it)
     }
 

@@ -1,7 +1,7 @@
 package com.christopherromano.culinarycompanion.data.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import com.christopherromano.culinarycompanion.data.dao.ShoppingListScreenDao
 import com.christopherromano.culinarycompanion.data.entity.IngredientEntity
 import com.christopherromano.culinarycompanion.data.entity.ShoppingListCustomItemsEntity
@@ -17,7 +17,7 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
 
     var shoppingListScreenData: LiveData<List<RecipeWithIngredients>> = shoppingListScreenDao.getData()
     var selectedIngredients:  LiveData<List<IngredientEntity>> = shoppingListScreenDao.getNeededIngredients()
-    var selectedIngredients2:  LiveData<List<IngredientsWithQuantities>> = Transformations.map(shoppingListScreenDao.getNeededIngredients2()) { it ->
+    var selectedIngredients2:  LiveData<List<IngredientsWithQuantities>> = (shoppingListScreenDao.getNeededIngredients2()).map { it ->
         it.groupBy { quantityEntity -> quantityEntity.ingredientName }
             .map { mapEntry ->
                 val totalQuantity = mapEntry.value.sumOf {
