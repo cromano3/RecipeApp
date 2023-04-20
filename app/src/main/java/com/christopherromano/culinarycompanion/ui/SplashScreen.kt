@@ -2,16 +2,25 @@ package com.christopherromano.culinarycompanion.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckBox
-import androidx.compose.material.icons.outlined.CheckBoxOutlineBlank
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -35,30 +44,15 @@ fun SplashScreen(
     showSignInButtons: Boolean,
     showLoading: Boolean,
     endSplash: Boolean,
-    isConsentBoxChecked: Boolean,
-    consentBoxClicked: () -> Unit,
     trySignInWithGoogle: () -> Unit,
     continueWithoutSignIn: () -> Unit,
     onSplashFinished: () -> Unit,
 ){
     SplashTheme(){
-        Surface(
-            Modifier
-                .fillMaxSize(),
-//            color = Color.White
-        ){
-
-            var visible by rememberSaveable { mutableStateOf(false) }
-
-            var isError by rememberSaveable { mutableStateOf(false) }
+        Surface(Modifier.fillMaxSize()){
 
             val uriHandler = LocalUriHandler.current
-
             val myText = splashConsentAnoString()
-
-            LaunchedEffect(Unit){
-                visible = true
-            }
 
             if(endSplash){
                 LaunchedEffect(Unit){
@@ -102,7 +96,7 @@ fun SplashScreen(
                                 modifier = Modifier
                                     .width(260.dp)
                                     .padding(start = 8.dp, end = 8.dp),
-                                onClick = { if (isConsentBoxChecked) trySignInWithGoogle() else isError = true },
+                                onClick = { trySignInWithGoogle() },
                                 elevation = ButtonDefaults.elevation(6.dp),
                                 shape = RoundedCornerShape(10.dp),
                                 border = BorderStroke(
@@ -136,7 +130,7 @@ fun SplashScreen(
                                 modifier = Modifier
                                     .width(260.dp)
                                     .padding(8.dp),
-                                onClick = { if (isConsentBoxChecked) continueWithoutSignIn() else isError = true },
+                                onClick = { continueWithoutSignIn() },
                                 elevation = ButtonDefaults.elevation(6.dp),
                                 shape = RoundedCornerShape(10.dp),
                                 border = BorderStroke(
@@ -162,7 +156,6 @@ fun SplashScreen(
 
                             Surface(
                                 Modifier
-                                    .clickable { consentBoxClicked() }
                                     .width(260.dp)
                                     .padding(8.dp),
                                 color = Color.Transparent
@@ -173,22 +166,11 @@ fun SplashScreen(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center
                                 ) {
-                                    Icon(
-                                        if(!isConsentBoxChecked) Icons.Outlined.CheckBoxOutlineBlank else Icons.Filled.CheckBox,
-                                        contentDescription = "Consent to Privacy Policy, Terms and Conditions, and end user license agreement check box.",
-                                        modifier = Modifier.padding(start = 4.dp, end = 10.dp),
-                                        tint = if(isError && !isConsentBoxChecked) Color.Red else Color(0xFF682300)
-                                    )
-                                    Spacer(
-                                        Modifier
-                                            .width(8.dp)
-                                            .height(1.dp))
-
                                     ClickableText(
                                         text = myText,
                                         modifier = Modifier.padding(end = 4.dp),
                                         style = TextStyle.Default.copy(
-                                            color = if(isError && !isConsentBoxChecked) Color.Red else MaterialTheme.colors.onSurface,
+                                            color = MaterialTheme.colors.onSurface,
                                             fontSize = 12.sp,
                                             textAlign = TextAlign.Center),
                                         onClick = { offset ->

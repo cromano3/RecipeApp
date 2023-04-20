@@ -46,7 +46,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     private fun userSetup(){
         viewModelScope.launch {
 
-            val currentFirestoreUserNotNull = checkAuth()
+
             val localOnlineUserType =  withContext(Dispatchers.IO) { repository.onlineUserType() }
 
             appUiState.update {
@@ -74,6 +74,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 }
             }
             else if(localOnlineUserType == 1){
+                val currentFirestoreUserNotNull = checkAuth()
                 //they are already signed in
                 if(currentFirestoreUserNotNull){
                     //back up upload sync should then try to upload any of their stuff that wasn't uploaded
@@ -99,12 +100,6 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
 
 
-    }
-
-    fun toggleConsentBoxCheck(){
-        appUiState.update {
-            it.copy(consentBoxChecked = !appUiState.value.consentBoxChecked)
-        }
     }
 
     private fun checkAuth(): Boolean{

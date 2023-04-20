@@ -10,7 +10,6 @@ data class AppUiState(
     val showSignInButtons: Boolean = false,
     val showLoading: Boolean = false,
     val endSplash: Boolean = false,
-    val consentBoxChecked: Boolean = false,
     val googleSignInState: String = "",
     val googleSignInResult: BeginSignInResult? = null,
     val firebaseSignInResult: String = "",

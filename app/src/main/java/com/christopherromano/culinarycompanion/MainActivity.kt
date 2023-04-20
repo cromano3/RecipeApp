@@ -166,8 +166,6 @@ fun CulinaryCompanion(
                 showLoading = appUiState.showLoading,
                 showSignInButtons = appUiState.showSignInButtons,
                 endSplash = appUiState.endSplash,
-                isConsentBoxChecked = appUiState.consentBoxChecked,
-                consentBoxClicked = { appViewModel.toggleConsentBoxCheck() },
                 continueWithoutSignIn = {
                     appViewModel.dontSignIn()
                                         },
