@@ -10,7 +10,7 @@ import androidx.compose.ui.text.withStyle
 
 fun splashConsentAnoString(): AnnotatedString{
     return buildAnnotatedString {
-        append("I agree to the ")
+        append("By continuing you agree to the ")
         pushStringAnnotation(
             tag = "URL",
             annotation = "https://www.ChristopherRomano.com/culinarycompaniontermsandconditions"
@@ -21,10 +21,10 @@ fun splashConsentAnoString(): AnnotatedString{
                 fontWeight = FontWeight.Bold
             )
         ) {
-            append("Terms and Conditions")
+            append("terms and conditions")
         }
         pop()
-        append(", ")
+        append(", acknowledge that you have read the ")
         pushStringAnnotation(
             tag = "URL",
             annotation = "https://www.ChristopherRomano.com/culinarycompanionprivacypolicy"
@@ -35,10 +35,10 @@ fun splashConsentAnoString(): AnnotatedString{
                 fontWeight = FontWeight.Bold
             )
         ) {
-            append("Privacy Policy")
+            append("privacy policy")
         }
         pop()
-        append(", and ")
+        append(", and accept the ")
         pushStringAnnotation(
             tag = "URL",
             annotation = "https://www.ChristopherRomano.com/culinarycompanionEULA"
@@ -49,7 +49,7 @@ fun splashConsentAnoString(): AnnotatedString{
             fontWeight = FontWeight.Bold
             )
         ) {
-            append("EULA.")
+            append("End-user license agreement.")
         }
         pop()
     }
