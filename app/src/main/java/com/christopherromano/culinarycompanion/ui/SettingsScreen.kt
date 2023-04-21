@@ -94,17 +94,27 @@ fun SettingsScreen(
                         .padding(8.dp)
                         .height(48.dp)
                         .clickable {
-                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com"))
+                            val urlIntent = Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://www.ChristopherRomano.com")
+                            )
                             context.startActivity(urlIntent)
                         }
                 ){
-                    Text(
-                        text = "About Me",
-                        fontSize = 18.sp,
-                        fontFamily = Cabin,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF682300)
-                    )
+                    Column(
+                        Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ){
+                        Text(
+                            text = "About Me",
+                            fontSize = 18.sp,
+                            fontFamily = Cabin,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF682300)
+                        )
+                    }
+
                 }
 
                 Spacer(
@@ -132,13 +142,20 @@ fun SettingsScreen(
                             .height(48.dp)
                             .clickable { settingsScreenViewModel.updateDisplayName() })
                     {
-                        Text(
-                            text = "Update Display Name",
-                            fontSize = 18.sp,
-                            fontFamily = Cabin,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF682300)
-                        )
+                        Column(
+                            Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.Start
+                        ){
+                            Text(
+                                text = "Update Display Name",
+                                fontSize = 18.sp,
+                                fontFamily = Cabin,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF682300)
+                            )
+                        }
+
                     }
                     Spacer(
                         Modifier
@@ -163,13 +180,20 @@ fun SettingsScreen(
                             .height(48.dp)
                             .clickable { settingsScreenViewModel.triggerDeleteAccountAlert() })
                     {
-                        Text(
-                            text = "Delete Account",
-                            fontSize = 18.sp,
-                            fontFamily = Cabin,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF682300)
+                        Column(
+                            Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.Start
                         )
+                        {
+                            Text(
+                                text = "Delete Account",
+                                fontSize = 18.sp,
+                                fontFamily = Cabin,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF682300)
+                            )
+                        }
                     }
                     Spacer(
                         Modifier
@@ -194,13 +218,19 @@ fun SettingsScreen(
                         .height(48.dp)
                         .clickable { navigateToLicensesScreen() }
                 ){
-                    Text(
-                        text = "Licenses Info",
-                        fontSize = 18.sp,
-                        fontFamily = Cabin,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF682300)
-                    )
+                    Column(
+                        Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = "Licenses Info",
+                            fontSize = 18.sp,
+                            fontFamily = Cabin,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF682300)
+                        )
+                    }
                 }
                 Spacer(
                     Modifier
@@ -223,17 +253,27 @@ fun SettingsScreen(
                         .padding(8.dp)
                         .height(48.dp)
                         .clickable {
-                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com/culinarycompaniontermsandconditions"))
+                            val urlIntent = Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://www.ChristopherRomano.com/culinarycompaniontermsandconditions")
+                            )
                             context.startActivity(urlIntent)
                         }
                 ){
-                    Text(
-                        text = "Terms and Conditions",
-                        fontSize = 18.sp,
-                        fontFamily = Cabin,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF682300)
+                    Column(
+                        Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
                     )
+                    {
+                        Text(
+                            text = "Terms and Conditions",
+                            fontSize = 18.sp,
+                            fontFamily = Cabin,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF682300)
+                        )
+                    }
                 }
                 Spacer(
                     Modifier
@@ -256,17 +296,27 @@ fun SettingsScreen(
                         .padding(8.dp)
                         .height(48.dp)
                         .clickable {
-                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com/culinarycompanionEULA"))
+                            val urlIntent = Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://www.ChristopherRomano.com/culinarycompanioneula")
+                            )
                             context.startActivity(urlIntent)
                         }
                 ){
-                    Text(
-                        text = "EULA (End User License Agreement)",
-                        fontSize = 18.sp,
-                        fontFamily = Cabin,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF682300)
+                    Column(
+                        Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
                     )
+                    {
+                        Text(
+                            text = "EULA (End User License Agreement)",
+                            fontSize = 18.sp,
+                            fontFamily = Cabin,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF682300)
+                        )
+                    }
                 }
                 Spacer(
                     Modifier
@@ -289,17 +339,27 @@ fun SettingsScreen(
                         .padding(8.dp)
                         .height(48.dp)
                         .clickable {
-                            val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ChristopherRomano.com/culinarycompanionprivacypolicy"))
+                            val urlIntent = Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://www.ChristopherRomano.com/culinarycompanionprivacypolicy")
+                            )
                             context.startActivity(urlIntent)
                         }
                 ){
-                    Text(
-                        text = "Privacy Policy",
-                        fontSize = 18.sp,
-                        fontFamily = Cabin,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF682300)
+                    Column(
+                        Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
                     )
+                    {
+                        Text(
+                            text = "Privacy Policy",
+                            fontSize = 18.sp,
+                            fontFamily = Cabin,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF682300)
+                        )
+                    }
                 }
                 Spacer(
                     Modifier
@@ -349,26 +409,41 @@ fun SettingsScreen(
 
                     }
 
-                    ClickableText(
-                        text = annotatedString,
-                        onClick = { offset ->
-                            annotatedString.getStringAnnotations(tag = "Email", start = offset, end = offset)
-                                .firstOrNull()?.let {
-                                    val i = Intent(Intent.ACTION_SEND)
+                    Column(
+                        Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ){
+                        ClickableText(
+                            text = annotatedString,
+                            onClick = { offset ->
+                                annotatedString.getStringAnnotations(
+                                    tag = "Email",
+                                    start = offset,
+                                    end = offset
+                                )
+                                    .firstOrNull()?.let {
+                                        val i = Intent(Intent.ACTION_SEND)
 
-                                    val emailAddress = arrayOf(email)
-                                    i.putExtra(Intent.EXTRA_EMAIL,emailAddress)
-                                    i.putExtra(Intent.EXTRA_SUBJECT,subject)
-                                    i.putExtra(Intent.EXTRA_TEXT,body)
+                                        val emailAddress = arrayOf(email)
+                                        i.putExtra(Intent.EXTRA_EMAIL, emailAddress)
+                                        i.putExtra(Intent.EXTRA_SUBJECT, subject)
+                                        i.putExtra(Intent.EXTRA_TEXT, body)
 
-                                    i.type = "message/rfc822"
+                                        i.type = "message/rfc822"
 
-                                    context.startActivity(Intent.createChooser(i,"Choose an Email client: "))
-                                }
+                                        context.startActivity(
+                                            Intent.createChooser(
+                                                i,
+                                                "Choose an Email client: "
+                                            )
+                                        )
+                                    }
 
 
-                        }
-                    )
+                            }
+                        )
+                    }
 
                 }
                 Spacer(

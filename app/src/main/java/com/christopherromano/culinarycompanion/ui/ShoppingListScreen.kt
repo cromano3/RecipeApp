@@ -23,6 +23,7 @@ import androidx.compose.material.icons.outlined.CheckBoxOutlineBlank
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -79,7 +80,7 @@ fun ShoppingListScreen(
         val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
         val selectedIngredients2 by shoppingListScreenViewModel.selectedIngredients2.observeAsState(listOf())
 
-        var filterWasClicked by remember { mutableStateOf(false) }
+        var filterWasClicked by rememberSaveable { mutableStateOf(false) }
 
         val uiState by shoppingListScreenViewModel.shoppingScreenUiState.collectAsState()
         val uiAlertState by shoppingListScreenViewModel.uiAlertState.collectAsState()
@@ -89,7 +90,7 @@ fun ShoppingListScreen(
         val listState = rememberLazyListState()
         val listState2 = rememberLazyListState()
 
-        var scrollDown by remember { mutableStateOf(false) }
+        var scrollDown by rememberSaveable { mutableStateOf(false) }
 
         val focusRequester = remember { FocusRequester() }
 

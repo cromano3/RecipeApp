@@ -752,15 +752,15 @@ fun CulinaryCompanionBottomBar(
                         when (it) {
                             "RecipeScreen" -> Icon(
                                 Icons.Outlined.MenuBook,
-                                contentDescription = null
+                                contentDescription = "Home screen button."
                             )
                             "WeeklyMenuScreen" -> Icon(
                                 Icons.Outlined.Restaurant,
-                                contentDescription = null
+                                contentDescription = "Menu screen button."
                             )
                             "ShoppingScreen" -> Icon(
                                 Icons.Outlined.ShoppingCart,
-                                contentDescription = null
+                                contentDescription = "Shopping list screen button."
                             )
                         }
                     },

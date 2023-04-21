@@ -227,7 +227,7 @@ fun SmallRecipeCard(
                         tint = Color(0xFFd8af84),
                         modifier = Modifier.size(20.dp),
                         // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
-                        contentDescription = null
+                        contentDescription = if(recipe.onMenu == 0) "Add this recipe to your menu." else "Remove this recipe from your menu."
                     )
                 }
 
@@ -267,7 +267,7 @@ fun SmallRecipeCard(
                         icon,
                         tint = Color(0xFFd8af84),
                         modifier = Modifier.size(20.dp),
-                        contentDescription = null
+                        contentDescription = if(recipe.isFavorite == 0) "Add this recipe to your favorites." else "Remove this recipe from your favorites."
                     )
                 }
             }
@@ -315,9 +315,8 @@ fun SmallRecipeCard(
 }
 
 @Preview("default")
-@Preview("large font", fontScale = 2f)
 @Composable
-fun SnackCardPreview() {
+fun SmallCardPreview() {
     CulinaryCompanionTheme {
 
         val myRE =
