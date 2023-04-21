@@ -41,10 +41,26 @@ class TopBarViewModel(application: Application, ): ViewModel() {
             val ingredientNames = repository.getIngredientNamesReferenceList()
             val filterNames = repository.getFilterNamesReferenceList()
 
+            val filteredIngredientsName = mutableListOf<String>()
+
+            for(name in ingredientNames){
+                if(name.contains('(')){
+                    for(x in name.indices){
+                        if(name[x] == '('){
+                            val goodName = name.substring(0, x - 1)
+                            if(!filteredIngredientsName.contains(goodName)) filteredIngredientsName.add(goodName)
+                        }
+                    }
+                }
+                else{
+                    if(!filteredIngredientsName.contains(name)) filteredIngredientsName.add(name)
+                }
+            }
+
             uiState.update { currentState ->
                 currentState.copy(
                     recipeNames = recipeNames,
-                    ingredientNames = ingredientNames,
+                    ingredientNames = filteredIngredientsName,
                     filterNames = filterNames
                 )
             }
