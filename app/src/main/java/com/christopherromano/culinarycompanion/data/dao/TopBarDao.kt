@@ -30,7 +30,7 @@ interface TopBarDao {
     fun getIngredientNamesReferenceList(): List<String>
 
     @Transaction
-    @Query("SELECT filter_name FROM filters_table ORDER BY filter_name ASC")
+    @Query("SELECT filter_name FROM filters_table WHERE filter_name != 'Unfiltered' ORDER BY filter_name ASC")
     fun getFilterNamesReferenceList(): List<String>
 
 
