@@ -818,6 +818,7 @@ fun CulinaryCompanionTopBar(
         var showSearchField = false
         var showIcon = false
         var showIcon2 = false
+        var showDummyIcon = false
         var icon = Icons.Outlined.Home
         var icon2 = Icons.Outlined.Home
         var clickEffectLeft = onHomeClick
@@ -852,6 +853,7 @@ fun CulinaryCompanionTopBar(
                 showShare = false
                 showIcon = false
                 showIcon2 = true
+                showDummyIcon = false
             }
             "WeeklyMenuScreen" -> {
                 show = true
@@ -867,6 +869,7 @@ fun CulinaryCompanionTopBar(
                 showShare = false
                 showIcon = true
                 showIcon2 = true
+                showDummyIcon = false
             }
             "ShoppingScreen" -> {
                 show = true
@@ -882,6 +885,7 @@ fun CulinaryCompanionTopBar(
                 showShare = false
                 showIcon = true
                 showIcon2 = true
+                showDummyIcon = false
             }
             "ProfileScreen" -> {
                 show = true
@@ -897,6 +901,7 @@ fun CulinaryCompanionTopBar(
                 showShare = false
                 showIcon = true
                 showIcon2 = true
+                showDummyIcon = false
             }
             "SettingsScreen" -> {
                 show = true
@@ -912,6 +917,7 @@ fun CulinaryCompanionTopBar(
                 showShare = false
                 showIcon = true
                 showIcon2 = true
+                showDummyIcon = false
             }
             "SearchScreen" -> {
                 show = true
@@ -927,6 +933,7 @@ fun CulinaryCompanionTopBar(
                 showShare = false
                 showIcon = true
                 showIcon2 = false
+                showDummyIcon = false
 
             }
             "AddRecipeScreen" -> {
@@ -943,6 +950,7 @@ fun CulinaryCompanionTopBar(
                 showShare = false
                 showIcon = true
                 showIcon2 = false
+                showDummyIcon = false
 
             }
             "CommentScreen" -> {
@@ -959,6 +967,7 @@ fun CulinaryCompanionTopBar(
                 showShare = false
                 showIcon = false
                 showIcon2 = false
+                showDummyIcon = false
 
             }
             "LicensesScreen" -> {
@@ -975,13 +984,14 @@ fun CulinaryCompanionTopBar(
                 showShare = false
                 showIcon = true
                 showIcon2 = false
+                showDummyIcon = true
 
             }
             "DetailsScreen" -> {
                 show = true
 
                 title = detailsScreenData.recipeEntity.recipeName
-                textModifier = Modifier.width(200.dp)
+                textModifier = Modifier.wrapContentSize()
                 icon = Icons.Outlined.ArrowBack
 
                 clickEffectLeft = onBackClick
@@ -1020,22 +1030,23 @@ fun CulinaryCompanionTopBar(
                         .height(64.dp)
                         .background(Color(0xFF682300)),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
+                    horizontalArrangement = if(currentScreen != "CommentScreen") Arrangement.SpaceBetween else Arrangement.Center
                 ) {
-                    Spacer(Modifier.size(8.dp))
 
                     //shows clickable only search button on main screen to go to search screen
                     if (showSearchButton) {
                         Surface(
                             Modifier
+                                .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 0.dp)
                                 .height(44.dp)
-                                .width(300.dp)
+                                .fillMaxWidth()
+                                .weight(1f)
                                 .clickable(onClick = onSearchClick)
-                                .padding(start = 8.dp, top = 0.dp, bottom = 0.dp)
+
                                 .border(
                                     width = 2.dp,
                                     brush = (Brush.horizontalGradient(
-                                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                        colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
                                         tileMode = TileMode.Mirror
                                     )),
                                     shape = RoundedCornerShape(25.dp)
@@ -1051,7 +1062,7 @@ fun CulinaryCompanionTopBar(
                                 leadingIcon = {
                                     Icon(
                                         Icons.Outlined.Search,
-                                        contentDescription = null,
+                                        contentDescription = "Search recipes button",
                                         tint = Color(0xFF000000)
                                     )
                                 },
@@ -1071,10 +1082,11 @@ fun CulinaryCompanionTopBar(
                                       },
                             modifier =
                             Modifier
+                                .padding(start = 16.dp)
                                 .size(48.dp)
                                 .align(Alignment.CenterVertically)
                                 .background(color = Color.Transparent)
-                                .padding(start = 8.dp)
+
                                 .border(
                                     width = 2.dp,
                                     brush = (Brush.horizontalGradient(
@@ -1086,24 +1098,18 @@ fun CulinaryCompanionTopBar(
                         ) {
                             Icon(
                                 imageVector = icon,
-                                contentDescription = null,
+                                contentDescription = if(currentScreen == "WeeklyMenuScreen" || currentScreen == "ShoppingScreen") "Home button." else "Go back button.",
                                 modifier = Modifier
                                     .size(24.dp),
                                 tint = Color(0xFFd8af84)
                             )
                         }
                     }
-                    else{
-                        Spacer(Modifier.width(48.dp))
-
-                    }
-
-                    Spacer(Modifier.weight(1f))
 
                     if(showTitle){
                         Text(
                             text = title,
-                            modifier = textModifier,
+                            modifier = if(currentScreen == "DetailsScreen") textModifier.weight(1f) else textModifier,
                             color = Color(0xFFd8af84),
                             textAlign = TextAlign.Center,
                             fontSize = 22.sp,
@@ -1124,111 +1130,124 @@ fun CulinaryCompanionTopBar(
                         )
                     }
 
+                    if(showShare || showIcon2 || showDummyIcon){
+                        Row(){
+                            if (showShare) {
 
-                    Spacer(Modifier.weight(1f))
+                                val context = LocalContext.current
 
-                    if (showShare) {
+                                IconButton(
+                                    onClick = {
 
+                                        var myString = detailsScreenData.recipeEntity.recipeName + '\n' + '\n'
 
+                                        for(x in detailsScreenData.ingredientsList.indices){
+                                            myString += detailsScreenData.ingredientsList[x].ingredientName + '\n'
+                                        }
 
-                        val context = LocalContext.current
+                                        myString += '\n'
 
+                                        for(x in detailsScreenData.instructionsList.indices){
+                                            myString += detailsScreenData.instructionsList[x].instruction + '\n'
+                                        }
 
-                        IconButton(
-                            onClick = {
+                                        val sendIntent: Intent = Intent().apply {
+                                            action = Intent.ACTION_SEND
+                                            putExtra(Intent.EXTRA_TEXT, myString)
+                                            type = "text/plain"
+                                        }
 
-                                var myString = detailsScreenData.recipeEntity.recipeName + '\n' + '\n'
+                                        val shareIntent = Intent.createChooser(sendIntent, null)
 
-                                for(x in detailsScreenData.ingredientsList.indices){
-                                    myString += detailsScreenData.ingredientsList[x].ingredientName + '\n'
+                                        context.startActivity(shareIntent)
+
+                                    },
+                                    modifier = Modifier
+//                                .padding(start = 8.dp, end = 8.dp)
+                                        .size(48.dp)
+                                        .align(Alignment.CenterVertically)
+                                        .background(color = Color.Transparent)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                tileMode = TileMode.Mirror,
+                                            )),
+                                            shape = CircleShape
+                                        ),
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Share,
+                                        contentDescription = "Share recipe button.",
+                                        modifier = Modifier
+                                            .size(24.dp),
+                                        tint = Color(0xFFd8af84)
+                                    )
                                 }
+//                        Spacer(Modifier.size(16.dp))
+                            }
 
-                                myString += '\n'
 
-                                for(x in detailsScreenData.instructionsList.indices){
-                                    myString += detailsScreenData.instructionsList[x].instruction + '\n'
+
+                            val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
+
+
+                            if(showIcon2) {
+                                FloatingActionButton(
+                                    onClick = {
+                                        clickEffectRight()
+                                    },
+                                    elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                                    modifier = Modifier
+                                        .padding(start = 8.dp, end = 16.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            brush = (Brush.horizontalGradient(
+                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                endX = gradientWidthButton,
+                                                tileMode = TileMode.Mirror,
+                                            )),
+                                            shape = CircleShape
+                                        )
+                                        .size(48.dp)
+                                        //the background of the square for this button, it stays a square even tho
+                                        //we have shape = circle shape.  If this is not changed you see a solid
+                                        //square for the "background" of this button.
+                                        .background(color = Color.Transparent),
+                                    shape = CircleShape,
+                                    //this is the background color of the button after the "Shaping" is applied.
+                                    //it is different then the background attribute above.
+                                    backgroundColor = Color(0xFF682300)
+                                ) {
+                                    Icon(
+                                        icon2,
+                                        tint = Color(0xFFd8af84),
+                                        modifier = Modifier.size(24.dp),
+                                        contentDescription =
+                                        if(currentScreen == "ProfileScreen" || currentScreen == "SettingsScreen") {
+                                            "Home button."
+                                        }
+                                        else if(currentScreen == "DetailsScreen" ){
+                                            if (detailsScreenData.recipeEntity.isFavorite == 0) {
+                                                "Add to favorites."
+                                            }
+                                            else {
+                                                "Remove from favorites."
+                                            }
+                                        }
+                                        else{
+                                            "Profile screen button."
+                                        }
+                                    )
                                 }
-
-                                val sendIntent: Intent = Intent().apply {
-                                    action = Intent.ACTION_SEND
-                                    putExtra(Intent.EXTRA_TEXT, myString)
-                                    type = "text/plain"
-                                }
-
-                                val shareIntent = Intent.createChooser(sendIntent, null)
-
-                                context.startActivity(shareIntent)
-
-                            },
-                            modifier = Modifier
-                                .size(48.dp)
-                                .align(Alignment.CenterVertically)
-                                .background(color = Color.Transparent)
-                                .padding(start = 8.dp)
-                                .border(
-                                    width = 2.dp,
-                                    brush = (Brush.horizontalGradient(
-                                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                        tileMode = TileMode.Mirror,
-                                    )),
-                                    shape = CircleShape
-                                ),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Share,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(24.dp),
-                                tint = Color(0xFFd8af84)
-                            )
+                            }
+                            if(showDummyIcon){
+                                Spacer(Modifier.size(48.dp))
+                            }
                         }
-                        Spacer(Modifier.size(16.dp))
+
                     }
 
-
-
-                    val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
-
-
-                    if(currentScreen == "AddRecipeScreen" || currentScreen == "CommentScreen"){
-                        Spacer(Modifier.width(48.dp))
-                    }
-
-                    if(showIcon2) {
-                        FloatingActionButton(
-                            onClick = {
-                                clickEffectRight()
-                            },
-                            elevation = FloatingActionButtonDefaults.elevation(8.dp),
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .border(
-                                    width = 2.dp,
-                                    brush = (Brush.horizontalGradient(
-                                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
-                                        endX = gradientWidthButton,
-                                        tileMode = TileMode.Mirror,
-                                    )),
-                                    shape = CircleShape
-                                )
-                                .size(48.dp)
-                                //the background of the square for this button, it stays a square even tho
-                                //we have shape = circle shape.  If this is not changed you see a solid
-                                //square for the "background" of this button.
-                                .background(color = Color.Transparent),
-                            shape = CircleShape,
-                            //this is the background color of the button after the "Shaping" is applied.
-                            //it is different then the background attribute above.
-                            backgroundColor = Color(0xFF682300)
-                        ) {
-                            Icon(
-                                icon2,
-                                tint = Color(0xFFd8af84),
-                                modifier = Modifier.size(24.dp),
-                                contentDescription = null
-                            )
-                        }
-                    }
                     if(showSearchField){
 
                         val interactionSource = remember { MutableInteractionSource() }
@@ -1238,17 +1257,19 @@ fun CulinaryCompanionTopBar(
                             onValueChange =
                             { topBarViewModel.updatePreview( it, it.text) },
                             modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp)
                                 .focusRequester(focusRequester)
                                 .background(
                                     color = Color(0xFFd8af84),
                                     shape = RoundedCornerShape(25.dp)
                                 )
                                 .height(44.dp)
-                                .width(300.dp)
+                                .fillMaxWidth()
+                                .weight(1f)
                                 .border(
                                     width = 2.dp,
                                     brush = (Brush.horizontalGradient(
-                                        colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                        colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
                                         tileMode = TileMode.Mirror
                                     )),
                                     shape = RoundedCornerShape(25.dp)
@@ -1292,9 +1313,7 @@ fun CulinaryCompanionTopBar(
                             )
                         }
 
-                        Spacer(Modifier.weight(1f))
                     }
-                    Spacer(Modifier.size(8.dp))
                 }
             }
 
