@@ -171,7 +171,6 @@ class TopBarViewModel(application: Application, ): ViewModel() {
             }
 
 
-
             repository.setPreviewList(previewList.joinToString(separator = ","))
 
         }

@@ -2,6 +2,7 @@ package com.christopherromano.culinarycompanion.ui
 
 import android.app.Application
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -18,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -98,36 +101,67 @@ fun SearchScreen(
                     if(showResults == 0){
                         LazyColumn(
                             state = listState,
-                            modifier = Modifier.padding(bottom = 0.dp).pointerInput(Unit) {
-                            detectTapGestures(
-                                onTap = { focusManager.clearFocus() },
-                                onPress = { focusManager.clearFocus() },
-                            )
-                            detectVerticalDragGestures { _, _ -> focusManager.clearFocus()  }
-                            detectDragGestures { _, _ -> focusManager.clearFocus() }
+                            modifier = Modifier
+                                .padding(bottom = 0.dp)
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onTap = { focusManager.clearFocus() },
+                                        onPress = { focusManager.clearFocus() },
+                                    )
+                                    detectVerticalDragGestures { _, _ -> focusManager.clearFocus() }
+                                    detectDragGestures { _, _ -> focusManager.clearFocus() }
 
-                        }
+                                }
                         )
                         {
-                            items(items = myPreviewList, key = {it}){
-                                Surface(
-                                    Modifier
-                                        .wrapContentSize()
-                                        .clickable(onClick = {
-                                            searchScreenViewModel.liveSearchForPush(it)
-                                            focusManager.clearFocus()
-                                        })
-                                )
-                                {
-                                    Text(
-                                        text = it,
-                                        modifier = Modifier.padding(start = 16.dp, top = 8.dp),
-                                        color = Color(0xFF000000))
+                            if(!previewList.isNullOrEmpty()){
+                                items(items = myPreviewList, key = {it}){
+                                    Surface(
+                                        Modifier
+                                            .height(48.dp)
+                                            .fillMaxWidth()
+                                            .clickable(onClick = {
+                                                searchScreenViewModel.liveSearchForPush(it)
+                                                focusManager.clearFocus()
+                                            })
+                                    ){
+                                        Column(
+                                            Modifier.fillMaxSize(),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.Start
+                                        ){
+                                            Text(
+                                                text = it,
+                                                modifier = Modifier.padding(start = 16.dp, top = 0.dp),
+                                                color = Color(0xFF682300)
+                                            )
+                                        }
+                                    }
+                                    Spacer(
+                                        Modifier
+                                            .height(2.dp)
+                                            .fillMaxWidth()
+                                            .border(
+                                                width = 2.dp,
+                                                brush = (Brush.horizontalGradient(
+                                                    colors = listOf(
+                                                        Color(0xFFd8af84),
+                                                        Color(0xFFb15f33)
+                                                    ),
+                                                    tileMode = TileMode.Mirror
+                                                )),
+                                                shape = RectangleShape
+                                            ),
+                                    )
+                                }
+                                item(){
+                                    Spacer(
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .height(56.dp))
                                 }
                             }
-                            item(){
-                                Spacer(Modifier.fillMaxWidth().height(56.dp))
-                            }
+
                         }
                     }
 
@@ -137,12 +171,13 @@ fun SearchScreen(
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),
                             modifier = Modifier
-                                .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp).pointerInput(Unit) {
+                                .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp)
+                                .pointerInput(Unit) {
                                     detectTapGestures(
                                         onTap = { focusManager.clearFocus() },
                                         onPress = { focusManager.clearFocus() },
                                     )
-                                    detectVerticalDragGestures { _, _ -> focusManager.clearFocus()  }
+                                    detectVerticalDragGestures { _, _ -> focusManager.clearFocus() }
                                     detectDragGestures { _, _ -> focusManager.clearFocus() }
 
                                 },

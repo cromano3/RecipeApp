@@ -637,7 +637,8 @@ fun ShoppingListItemWithButton(
         modifier = modifier
             .padding(start = 8.dp, top = 8.dp)
             .width(240.dp)
-            .wrapContentHeight()
+            .defaultMinSize(minHeight = 36.dp)
+//            .wrapContentHeight()
             .alpha(alphaAnim)
             .border(
                 width = 2.dp,

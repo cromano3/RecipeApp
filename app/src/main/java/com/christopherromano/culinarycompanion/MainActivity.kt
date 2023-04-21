@@ -1255,7 +1255,7 @@ fun CulinaryCompanionTopBar(
                         BasicTextField(
                             value =  uiState.currentInput,
                             onValueChange =
-                            { topBarViewModel.updatePreview( it, it.text) },
+                            { topBarViewModel.updatePreview(it, it.text) },
                             modifier = Modifier
                                 .padding(start = 16.dp, end = 16.dp)
                                 .focusRequester(focusRequester)
@@ -1300,7 +1300,7 @@ fun CulinaryCompanionTopBar(
                                         {
                                             Icon(
                                                 Icons.Outlined.Close,
-                                                contentDescription = null,
+                                                contentDescription = "Clear search field text.",
                                                 tint = Color(0xFF000000)
                                             )
                                         }
