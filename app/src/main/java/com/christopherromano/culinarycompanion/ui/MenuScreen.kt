@@ -186,7 +186,7 @@ fun MenuScreen(
                                 imageVector = Icons.Outlined.Add,
                                 tint = Color(0xFFd8af84),
                                 modifier = Modifier.size(28.dp),
-                                contentDescription = null
+                                contentDescription = "Tap to add an item to your menu. Your menu is currently empty."
                             )
                         }
 

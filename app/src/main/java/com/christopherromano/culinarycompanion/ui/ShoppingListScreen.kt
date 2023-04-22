@@ -302,7 +302,9 @@ fun ShoppingListScreen(
                             imageVector = Icons.Outlined.Add,
                             tint = Color(0xFFd8af84),
                             modifier = Modifier.size(28.dp),
-                            contentDescription = null
+                            contentDescription = "Tap to add a recipe to your " +
+                                    "shopping list, or add a custom item to your shopping list. " +
+                                    "Your shopping list is currently empty."
                         )
                     }
                 }
@@ -799,7 +801,7 @@ fun CustomShoppingListItem(
                         modifier = Modifier,
                         imageVector = Icons.Outlined.Close,
                         tint = Color(0xFFFFFFFF),
-                        contentDescription = null
+                        contentDescription = "Delete this item from the shopping list."
                     )
                 }
             }

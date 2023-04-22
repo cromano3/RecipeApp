@@ -219,7 +219,7 @@ fun ProfileScreen(
                                 Icons.Outlined.Settings,
                                 tint = Color(0xFFd8af84),
                                 modifier = Modifier.size(20.dp),
-                                contentDescription = "Settings button"
+                                contentDescription = "Go to settings screen."
                             )
                         }
                     }
@@ -238,6 +238,8 @@ fun ProfileScreen(
                     Text(
                         text = uiState.title,
                         color = Color(0xFFd8af84),
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
                     )
 
                     Spacer(
@@ -661,6 +663,7 @@ fun ProfileScreen(
                     Text(
                         text = "level ${uiState.level}",
                         color = Color(0xFFd8af84),
+                        fontWeight = FontWeight.Bold
                     )
 
                     Spacer(Modifier.height(4.dp))

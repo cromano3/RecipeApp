@@ -752,15 +752,15 @@ fun CulinaryCompanionBottomBar(
                         when (it) {
                             "RecipeScreen" -> Icon(
                                 Icons.Outlined.MenuBook,
-                                contentDescription = "Home screen button."
+                                contentDescription = "Go to home screen."
                             )
                             "WeeklyMenuScreen" -> Icon(
                                 Icons.Outlined.Restaurant,
-                                contentDescription = "Menu screen button."
+                                contentDescription = "Go to menu screen."
                             )
                             "ShoppingScreen" -> Icon(
                                 Icons.Outlined.ShoppingCart,
-                                contentDescription = "Shopping list screen button."
+                                contentDescription = "Go to shopping list screen."
                             )
                         }
                     },
@@ -1062,7 +1062,7 @@ fun CulinaryCompanionTopBar(
                                 leadingIcon = {
                                     Icon(
                                         Icons.Outlined.Search,
-                                        contentDescription = "Search recipes button",
+                                        contentDescription = "Search for recipes based on inputted text.",
                                         tint = Color(0xFF000000)
                                     )
                                 },
@@ -1098,7 +1098,7 @@ fun CulinaryCompanionTopBar(
                         ) {
                             Icon(
                                 imageVector = icon,
-                                contentDescription = if(currentScreen == "WeeklyMenuScreen" || currentScreen == "ShoppingScreen") "Home button." else "Go back button.",
+                                contentDescription = if(currentScreen == "WeeklyMenuScreen" || currentScreen == "ShoppingScreen") "Go to home screen." else "Go back to previous screen.",
                                 modifier = Modifier
                                     .size(24.dp),
                                 tint = Color(0xFFd8af84)
@@ -1178,7 +1178,7 @@ fun CulinaryCompanionTopBar(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Outlined.Share,
-                                        contentDescription = "Share recipe button.",
+                                        contentDescription = "Tap to share this recipe.",
                                         modifier = Modifier
                                             .size(24.dp),
                                         tint = Color(0xFFd8af84)
