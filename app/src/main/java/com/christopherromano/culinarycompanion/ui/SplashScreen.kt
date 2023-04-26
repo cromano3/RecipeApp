@@ -3,6 +3,7 @@ package com.christopherromano.culinarycompanion.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Button
@@ -87,7 +89,9 @@ fun SplashScreen(
                             top.linkTo(image.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                        }){
+                        },
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center){
                         if(showLoading){
                             CircularProgressIndicator(color = Color(0xFF682300))
                         }
@@ -95,6 +99,7 @@ fun SplashScreen(
                             Button(
                                 modifier = Modifier
                                     .width(260.dp)
+                                    .height(41.dp)
                                     .padding(start = 8.dp, end = 8.dp),
                                 onClick = { trySignInWithGoogle() },
                                 elevation = ButtonDefaults.elevation(6.dp),
@@ -126,11 +131,13 @@ fun SplashScreen(
                                     Text("Sign in with Google")
                                 }
                             }
+                            Spacer(Modifier.height(16.dp))
                             Button(
+                                onClick = { continueWithoutSignIn() },
                                 modifier = Modifier
                                     .width(260.dp)
-                                    .padding(8.dp),
-                                onClick = { continueWithoutSignIn() },
+                                    .height(41.dp)
+                                    .padding(start = 8.dp, end = 8.dp),
                                 elevation = ButtonDefaults.elevation(6.dp),
                                 shape = RoundedCornerShape(10.dp),
                                 border = BorderStroke(
@@ -146,23 +153,25 @@ fun SplashScreen(
                                     contentColor = Color(0xFF682300)
                                 )
                             ) {
-                                Text("Continue without signing in")
+                                Box(modifier = Modifier.height(41.dp).width(260.dp)) {
+                                    Text("Continue without signing in", modifier = Modifier.align(Alignment.Center))
+                                }
                             }
 
                             Spacer(
                                 Modifier
                                     .width(1.dp)
-                                    .height(12.dp))
+                                    .height(8.dp))
 
                             Surface(
                                 Modifier
-                                    .width(260.dp)
+                                    .wrapContentWidth()
                                     .padding(8.dp),
                                 color = Color.Transparent
                             ){
                                 Row(
                                     Modifier
-                                        .width(260.dp),
+                                        .wrapContentWidth(),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center
                                 ) {
