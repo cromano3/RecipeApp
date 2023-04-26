@@ -174,6 +174,16 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
                 )
             }
         }
+        else{
+            println("Sign in or up failed, ending splash.")
+            appUiState.update {
+                it.copy(
+                    googleSignInState = "",
+                    endSplash = true,
+                )
+            }
+
+        }
     }
 
 
@@ -191,7 +201,7 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
     fun firebaseSignInWithGoogle(googleCredential: AuthCredential) = viewModelScope.launch {
         println("in view firebase try")
         val firebaseSignInWithGoogleResponse = firebaseRepository.firebaseSignInWithGoogle(googleCredential)
-        println(firebaseSignInWithGoogleResponse)
+        println("firebase sign in result is:$firebaseSignInWithGoogleResponse")
 
         when (firebaseSignInWithGoogleResponse) {
             "ReturningUserSuccess" -> {

@@ -153,7 +153,7 @@ fun SplashScreen(
                                     contentColor = Color(0xFF682300)
                                 )
                             ) {
-                                Box(modifier = Modifier.height(41.dp).width(260.dp)) {
+                                Box(modifier = Modifier.height(25.dp).width(260.dp)) {
                                     Text("Continue without signing in", modifier = Modifier.align(Alignment.Center))
                                 }
                             }
