@@ -478,9 +478,13 @@ class FirebaseRepository(
         return try {
             println("in try of repo fire try")
             val authResult = auth.signInWithCredential(googleCredential).await()
-            val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
+            val isNewUser = authResult.additionalUserInfo?.isNewUser
             println("is new user? $isNewUser")
-            if (isNewUser) {
+            if(isNewUser == null) {
+                println("Error: additionalUserInfo is null")
+                "Failed additionalUserInfo is null"
+            }
+            else if (isNewUser) {
                 println("in is new")
 
                 val uid = authResult.user?.uid

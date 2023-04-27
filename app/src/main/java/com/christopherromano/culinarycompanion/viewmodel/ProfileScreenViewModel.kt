@@ -12,11 +12,20 @@ import com.christopherromano.culinarycompanion.data.RecipeAppDatabase
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.ProfileScreenFirebaseRepository
 import com.christopherromano.culinarycompanion.data.repository.ProfileScreenRepository
-import com.christopherromano.culinarycompanion.datamodel.*
-import kotlinx.coroutines.*
+import com.christopherromano.culinarycompanion.datamodel.AuthorDataWithComment
+import com.christopherromano.culinarycompanion.datamodel.ProfileScreenDataModel
+import com.christopherromano.culinarycompanion.datamodel.ProfileScreenStarsDataModel
+import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredients
+import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAndInstructions
+import com.christopherromano.culinarycompanion.datamodel.UiAlertStateProfileScreenDataModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProfileScreenViewModel(application: Application, private val profileScreenFirebaseRepository: ProfileScreenFirebaseRepository): ViewModel() {
 
@@ -474,7 +483,9 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
 
 
     fun setActiveTab(tabName: String){
-        getCommentsList()
+        if(tabName == "reviews"){
+            getCommentsList()
+        }
         uiState.update { currentState ->
             currentState.copy(
                 previousTab = currentState.activeTab

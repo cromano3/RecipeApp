@@ -70,19 +70,26 @@ class ProfileScreenFirebaseRepository(
                 }
 
                 db.collection("users").whereEqualTo("uid", auth.currentUser?.uid ?: "").get().addOnSuccessListener {
-                    //found author
 
-                    for(comment in commentsResult){
-                        result.add(
-                            AuthorDataWithComment(
-                                AuthorData(
-                                    it.documents[0].getString("display_name") ?: "",
-                                    it.documents[0].getString("user_photo") ?: "",
-                                    karma = it.documents[0].getLong("karma")?.toInt() ?: 0
-                                ),
-                                comment
+                    if(it.documents.isEmpty()){
+                        for(comment in commentsResult){
+                            result.add(AuthorDataWithComment(AuthorData("", "", 0), comment))
+                        }
+                    }
+                    else{
+                        for(comment in commentsResult){
+                            result.add(
+                                AuthorDataWithComment(
+                                    AuthorData(
+                                        it.documents[0].getString("display_name") ?: "",
+                                        it.documents[0].getString("user_photo") ?: "",
+                                        karma = it.documents[0].getLong("karma")?.toInt() ?: 0
+                                    ),
+                                    comment
+                                )
                             )
-                        )
+                        }
+
                     }
 
                     trySend(result)
