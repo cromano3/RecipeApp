@@ -476,12 +476,17 @@ class FirebaseRepository(
     suspend fun firebaseSignInWithGoogle(googleCredential: AuthCredential): String {
         println("in repo fire try")
         return try {
+
             println("in try of repo fire try")
             val authResult = auth.signInWithCredential(googleCredential).await()
             val isNewUser = authResult.additionalUserInfo?.isNewUser
             println("is new user? $isNewUser")
+
             if(isNewUser == null) {
                 println("Error: additionalUserInfo is null")
+
+                deleteUserAndSignOut()
+
                 "Failed additionalUserInfo is null"
             }
             else if (isNewUser) {
@@ -512,6 +517,12 @@ class FirebaseRepository(
         } catch (e: Exception) {
             println("failed but SO CLOSE")
             "Failed: $e"
+        }
+    }
+
+    private suspend fun deleteUserAndSignOut() {
+        auth.currentUser?.apply {
+            delete().await()
         }
     }
 
