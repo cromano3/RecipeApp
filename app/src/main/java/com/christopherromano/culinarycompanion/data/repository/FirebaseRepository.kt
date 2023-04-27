@@ -320,7 +320,8 @@ class FirebaseRepository(
 
                 val query =
                     db.collection("users").whereEqualTo("uid", authorUid).limit(1).get().await()
-                val authorDocSnapshot = query.documents[0]
+
+                val authorDocSnapshot = query.documents.firstOrNull()
 
                 if (authorDocSnapshot != null) {
 
@@ -349,6 +350,9 @@ class FirebaseRepository(
                     }.addOnFailureListener {
                         result = "Failed to update author karma"
                     }.await()
+                }
+                else{
+                    println("Failed to update author karma: document snapshot is null (no matching author doc found).")
                 }
 
             }
@@ -507,7 +511,9 @@ class FirebaseRepository(
                     }
                 }
                 else{
+                    deleteUserAndSignOut()
                     "Failed null uid"
+
                 }
 
             }else{
@@ -530,9 +536,17 @@ class FirebaseRepository(
         println("in add new")
         auth.currentUser?.apply {
 
-            val firstName = this.displayName?.let { name ->
-                name.trim().split("\\s+".toRegex())[0].substring(0,14)
-            } ?: ""
+            var firstName = this.displayName
+
+            if(firstName == null || firstName == ""){
+                firstName = "Default"
+            }
+            else {
+                firstName = firstName.trim().split("\\s+".toRegex())[0]
+                if(firstName.length > 14){
+                    firstName = firstName.substring(0, 14)
+                }
+            }
 
             val user = toUser(this.displayName, firstName, this.uid)
 
