@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "308295296237-75fn17tsembahofiobkvvf3qcau0d2sq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.christopherromano.culinarycompanion",
+            "certificate_hash": "04aa38aadbc6441b4fd8374d53e49c0e4e75f51a"
+          }
+        },
+        {
           "client_id": "308295296237-9dp4qio9671jspnrop7gk0id0vlgqica.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
