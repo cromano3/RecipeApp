@@ -379,6 +379,7 @@ class FirebaseRepository(
                         "commentText" to authorDataWithComment.comment.commentText,
                         "commentID" to authorDataWithComment.comment.commentID,
                         "reporterID" to uid,
+                        "timestamp" to serverTimestamp(),
                     )
                     db.collection("reports").add(newReport)
                         .addOnSuccessListener { println("Report successfully uploaded") }
