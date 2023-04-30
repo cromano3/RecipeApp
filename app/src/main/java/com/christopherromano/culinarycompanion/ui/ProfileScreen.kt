@@ -145,10 +145,7 @@ fun ProfileScreen(
 
 
 
-        val barWidth = 600f
-        val barHeight = 50f
 
-        val mySize = Size(animatedFirstValue.value * barWidth, barHeight-10f)
 
         if(startAnimation){
             println("start animation")
@@ -180,7 +177,7 @@ fun ProfileScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(250.dp)
+                    .wrapContentHeight()
                     .background(
                         Brush.horizontalGradient(
                             colors = listOf(
@@ -669,8 +666,19 @@ fun ProfileScreen(
                     Spacer(Modifier.height(4.dp))
 
                     androidx.compose.foundation.Canvas(modifier = Modifier
-                        .height(40.dp)
+                        .height(21.dp)
                         .fillMaxWidth()){
+
+//                        val barWidth = 600f
+
+                        //Width and Height of outer exp container/border
+                        val barWidth = 180.dp.toPx()
+                        val barHeight = 18.dp.toPx()
+
+                        val strokeSize = 3.dp.toPx()
+
+                        //size of inner bar (the actual exp bar that moves)
+                        val mySize = Size(animatedFirstValue.value * barWidth, barHeight - strokeSize + 2f)
                         val canvasWidth = size.width
 
                         //outer boarder
@@ -681,10 +689,13 @@ fun ProfileScreen(
                                 endX = canvasWidth - (canvasWidth / 2 - barWidth/2),
                             )
                                     ),
-                            topLeft = Offset(canvasWidth / 2 - barWidth/2, 0f),
+                            topLeft =
+                            Offset(
+                                x = canvasWidth / 2 - barWidth / 2,
+                                y = strokeSize / 2),
                             size = Size(barWidth, barHeight),
                             cornerRadius = CornerRadius(25f, 25f),
-                            style = Stroke(10f)
+                            style = Stroke(strokeSize)
                         )
 
                         //Inner progress bar
@@ -697,7 +708,10 @@ fun ProfileScreen(
                                 )
                                         ),
                                 //starting position
-                                topLeft = Offset(canvasWidth / 2 - barWidth / 2, 5f),
+                                topLeft =
+                                Offset(
+                                    x = canvasWidth / 2 - barWidth / 2,
+                                    y = strokeSize - 1f),
                                 /**
                                 Animate this for exp changes
                                  */
@@ -706,6 +720,7 @@ fun ProfileScreen(
                             )
                         }
                     }
+                    Spacer(Modifier.fillMaxWidth().height(8.dp))
                 }
             }
             Row(

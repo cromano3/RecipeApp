@@ -69,10 +69,10 @@ public abstract class RecipeAppDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                RecipeAppDatabase::class.java, "app_database81.db"
+                RecipeAppDatabase::class.java, "app_database82.db"
             )
               //  .allowMainThreadQueries()
-                .createFromAsset("database/app_database81.db")
+                .createFromAsset("database/app_database82.db")
                 .build()
     }
 }

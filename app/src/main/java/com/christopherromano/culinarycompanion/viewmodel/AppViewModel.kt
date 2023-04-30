@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.christopherromano.culinarycompanion.data.RecipeAppDatabase
-import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.AppRepository
 import com.christopherromano.culinarycompanion.data.repository.FirebaseRepository
 import com.christopherromano.culinarycompanion.datamodel.AppUiState
@@ -336,129 +335,25 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
 
     fun markAsRated(){
         appUiState.update {
-            it.copy(
-                detailsScreenTarget = RecipeWithIngredientsAndInstructions(
-                    RecipeEntity(
-                        recipeName = appUiState.value.detailsScreenTarget.recipeEntity.recipeName,
-                        onMenu = appUiState.value.detailsScreenTarget.recipeEntity.onMenu,
-                        isDetailsScreenTarget = appUiState.value.detailsScreenTarget.recipeEntity.isDetailsScreenTarget,
-                        timeToMake = appUiState.value.detailsScreenTarget.recipeEntity.timeToMake,
-                        difficulty = appUiState.value.detailsScreenTarget.recipeEntity.difficulty,
-                        globalRating = appUiState.value.detailsScreenTarget.recipeEntity.globalRating,
-                        isShown = appUiState.value.detailsScreenTarget.recipeEntity.isShown,
-                        isShoppingFilter = appUiState.value.detailsScreenTarget.recipeEntity.isShoppingFilter,
-                        isFavorite = appUiState.value.detailsScreenTarget.recipeEntity.isFavorite,
-                        isSearchResult = appUiState.value.detailsScreenTarget.recipeEntity.isSearchResult,
-                        cookedCount = appUiState.value.detailsScreenTarget.recipeEntity.cookedCount,
-                        isRated = 1,
-                        userRating = appUiState.value.detailsScreenTarget.recipeEntity.userRating,
-                        isRatingSynced = appUiState.value.detailsScreenTarget.recipeEntity.isRatingSynced,
-                        isReviewed = appUiState.value.detailsScreenTarget.recipeEntity.isReviewed,
-                        reviewText = appUiState.value.detailsScreenTarget.recipeEntity.reviewText,
-                        isReviewScreenTarget = appUiState.value.detailsScreenTarget.recipeEntity.isReviewScreenTarget,
-                        isReviewSynced = appUiState.value.detailsScreenTarget.recipeEntity.isReviewSynced,
-                        lastCommentSyncTime = appUiState.value.detailsScreenTarget.recipeEntity.lastCommentSyncTime,
-                        lastDownloadedCommentTimestamp = appUiState.value.detailsScreenTarget.recipeEntity.lastDownloadedCommentTimestamp),
-                    appUiState.value.detailsScreenTarget.ingredientsList,
-                    appUiState.value.detailsScreenTarget.instructionsList
-                )
-            )
+            it.copy(detailsScreenTarget = it.detailsScreenTarget.copy(recipeEntity = it.detailsScreenTarget.recipeEntity.copy(isRated = 1)))
         }
     }
 
     fun markAsReviewed(){
         appUiState.update {
-            it.copy(
-                detailsScreenTarget = RecipeWithIngredientsAndInstructions(
-                    RecipeEntity(
-                        recipeName = appUiState.value.detailsScreenTarget.recipeEntity.recipeName,
-                        onMenu = appUiState.value.detailsScreenTarget.recipeEntity.onMenu,
-                        isDetailsScreenTarget = appUiState.value.detailsScreenTarget.recipeEntity.isDetailsScreenTarget,
-                        timeToMake = appUiState.value.detailsScreenTarget.recipeEntity.timeToMake,
-                        difficulty = appUiState.value.detailsScreenTarget.recipeEntity.difficulty,
-                        globalRating = appUiState.value.detailsScreenTarget.recipeEntity.globalRating,
-                        isShown = appUiState.value.detailsScreenTarget.recipeEntity.isShown,
-                        isShoppingFilter = appUiState.value.detailsScreenTarget.recipeEntity.isShoppingFilter,
-                        isFavorite = appUiState.value.detailsScreenTarget.recipeEntity.isFavorite,
-                        isSearchResult = appUiState.value.detailsScreenTarget.recipeEntity.isSearchResult,
-                        cookedCount = appUiState.value.detailsScreenTarget.recipeEntity.cookedCount,
-                        isRated = appUiState.value.detailsScreenTarget.recipeEntity.isRated,
-                        userRating = appUiState.value.detailsScreenTarget.recipeEntity.userRating,
-                        isRatingSynced = appUiState.value.detailsScreenTarget.recipeEntity.isRatingSynced,
-                        isReviewed = 1,
-                        reviewText = appUiState.value.detailsScreenTarget.recipeEntity.reviewText,
-                        isReviewScreenTarget = appUiState.value.detailsScreenTarget.recipeEntity.isReviewScreenTarget,
-                        isReviewSynced = appUiState.value.detailsScreenTarget.recipeEntity.isReviewSynced,
-                        lastCommentSyncTime = appUiState.value.detailsScreenTarget.recipeEntity.lastCommentSyncTime,
-                        lastDownloadedCommentTimestamp = appUiState.value.detailsScreenTarget.recipeEntity.lastDownloadedCommentTimestamp),
-                    appUiState.value.detailsScreenTarget.ingredientsList,
-                    appUiState.value.detailsScreenTarget.instructionsList
-                )
-            )
+            it.copy(detailsScreenTarget = it.detailsScreenTarget.copy(recipeEntity = it.detailsScreenTarget.recipeEntity.copy(isReviewed = 1)))
         }
     }
 
     fun markReviewAsSynced(){
         appUiState.update {
-            it.copy(
-                detailsScreenTarget = RecipeWithIngredientsAndInstructions(
-                    RecipeEntity(
-                        recipeName = appUiState.value.detailsScreenTarget.recipeEntity.recipeName,
-                        onMenu = appUiState.value.detailsScreenTarget.recipeEntity.onMenu,
-                        isDetailsScreenTarget = appUiState.value.detailsScreenTarget.recipeEntity.isDetailsScreenTarget,
-                        timeToMake = appUiState.value.detailsScreenTarget.recipeEntity.timeToMake,
-                        difficulty = appUiState.value.detailsScreenTarget.recipeEntity.difficulty,
-                        globalRating = appUiState.value.detailsScreenTarget.recipeEntity.globalRating,
-                        isShown = appUiState.value.detailsScreenTarget.recipeEntity.isShown,
-                        isShoppingFilter = appUiState.value.detailsScreenTarget.recipeEntity.isShoppingFilter,
-                        isFavorite = appUiState.value.detailsScreenTarget.recipeEntity.isFavorite,
-                        isSearchResult = appUiState.value.detailsScreenTarget.recipeEntity.isSearchResult,
-                        cookedCount = appUiState.value.detailsScreenTarget.recipeEntity.cookedCount,
-                        isRated = appUiState.value.detailsScreenTarget.recipeEntity.isRated,
-                        userRating = appUiState.value.detailsScreenTarget.recipeEntity.userRating,
-                        isRatingSynced = appUiState.value.detailsScreenTarget.recipeEntity.isRatingSynced,
-                        isReviewed = appUiState.value.detailsScreenTarget.recipeEntity.isReviewed,
-                        reviewText = appUiState.value.detailsScreenTarget.recipeEntity.reviewText,
-                        isReviewScreenTarget = appUiState.value.detailsScreenTarget.recipeEntity.isReviewScreenTarget,
-                        isReviewSynced = 1,
-                        lastCommentSyncTime = appUiState.value.detailsScreenTarget.recipeEntity.lastCommentSyncTime,
-                        lastDownloadedCommentTimestamp = appUiState.value.detailsScreenTarget.recipeEntity.lastDownloadedCommentTimestamp),
-                    appUiState.value.detailsScreenTarget.ingredientsList,
-                    appUiState.value.detailsScreenTarget.instructionsList
-                )
-            )
+            it.copy(detailsScreenTarget = it.detailsScreenTarget.copy(recipeEntity = it.detailsScreenTarget.recipeEntity.copy(isReviewSynced = 1)))
         }
     }
 
     fun addedToFavoriteUiUpdate(){
         appUiState.update {
-            it.copy(
-                detailsScreenTarget = RecipeWithIngredientsAndInstructions(
-                    RecipeEntity(
-                        recipeName = appUiState.value.detailsScreenTarget.recipeEntity.recipeName,
-                        onMenu = appUiState.value.detailsScreenTarget.recipeEntity.onMenu,
-                        isDetailsScreenTarget = appUiState.value.detailsScreenTarget.recipeEntity.isDetailsScreenTarget,
-                        timeToMake = appUiState.value.detailsScreenTarget.recipeEntity.timeToMake,
-                        difficulty = appUiState.value.detailsScreenTarget.recipeEntity.difficulty,
-                        globalRating = appUiState.value.detailsScreenTarget.recipeEntity.globalRating,
-                        isShown = appUiState.value.detailsScreenTarget.recipeEntity.isShown,
-                        isShoppingFilter = appUiState.value.detailsScreenTarget.recipeEntity.isShoppingFilter,
-                        isFavorite = 1,
-                        isSearchResult = appUiState.value.detailsScreenTarget.recipeEntity.isSearchResult,
-                        cookedCount = appUiState.value.detailsScreenTarget.recipeEntity.cookedCount,
-                        isRated = appUiState.value.detailsScreenTarget.recipeEntity.isRated,
-                        userRating = appUiState.value.detailsScreenTarget.recipeEntity.userRating,
-                        isRatingSynced = appUiState.value.detailsScreenTarget.recipeEntity.isRatingSynced,
-                        isReviewed = appUiState.value.detailsScreenTarget.recipeEntity.isReviewed,
-                        reviewText = appUiState.value.detailsScreenTarget.recipeEntity.reviewText,
-                        isReviewScreenTarget = appUiState.value.detailsScreenTarget.recipeEntity.isReviewScreenTarget,
-                        isReviewSynced = appUiState.value.detailsScreenTarget.recipeEntity.isReviewSynced,
-                        lastCommentSyncTime = appUiState.value.detailsScreenTarget.recipeEntity.lastCommentSyncTime,
-                        lastDownloadedCommentTimestamp = appUiState.value.detailsScreenTarget.recipeEntity.lastDownloadedCommentTimestamp),
-                    appUiState.value.detailsScreenTarget.ingredientsList,
-                    appUiState.value.detailsScreenTarget.instructionsList
-                )
-            )
+            it.copy(detailsScreenTarget = it.detailsScreenTarget.copy(recipeEntity = it.detailsScreenTarget.recipeEntity.copy(isFavorite = 1)))
         }
     }
 
