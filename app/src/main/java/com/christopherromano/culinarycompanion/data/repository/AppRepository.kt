@@ -12,6 +12,12 @@ class AppRepository(private val appDao: AppDao) {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
+    fun clearSearch(){
+        coroutineScope.launch(Dispatchers.IO) {
+            appDao.clearSearch()
+        }
+    }
+
     fun getRecipeWithIngredientsAndInstructions(recipeName: String): RecipeWithIngredientsAndInstructions {
         return appDao.getRecipeWithIngredientsAndInstructions(recipeName)
     }

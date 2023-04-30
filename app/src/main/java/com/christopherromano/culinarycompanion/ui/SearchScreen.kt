@@ -8,12 +8,11 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -91,7 +90,7 @@ fun SearchScreen(
                         }
                 )
                 {
-                    val listState = rememberLazyListState()
+                    val listState = rememberScrollState()
 
                     if(listState.isScrollInProgress){
                         focusManager.clearFocus()
@@ -99,10 +98,10 @@ fun SearchScreen(
 
                     //Preview list
                     if(showResults == 0){
-                        LazyColumn(
-                            state = listState,
+                        Column(
                             modifier = Modifier
                                 .padding(bottom = 0.dp)
+                                .verticalScroll(listState)
                                 .pointerInput(Unit) {
                                     detectTapGestures(
                                         onTap = { focusManager.clearFocus() },
@@ -115,13 +114,13 @@ fun SearchScreen(
                         )
                         {
                             if(!previewList.isNullOrEmpty()){
-                                items(items = myPreviewList, key = {it}){
+                                for(item in myPreviewList){
                                     Surface(
                                         Modifier
                                             .height(48.dp)
                                             .fillMaxWidth()
                                             .clickable(onClick = {
-                                                searchScreenViewModel.liveSearchForPush(it)
+                                                searchScreenViewModel.liveSearchForPush(item)
                                                 focusManager.clearFocus()
                                             })
                                     ){
@@ -131,7 +130,7 @@ fun SearchScreen(
                                             horizontalAlignment = Alignment.Start
                                         ){
                                             Text(
-                                                text = it,
+                                                text = item,
                                                 modifier = Modifier.padding(start = 16.dp, top = 0.dp),
                                                 color = Color(0xFF682300)
                                             )
@@ -154,12 +153,13 @@ fun SearchScreen(
                                             ),
                                     )
                                 }
-                                item(){
+
+
                                     Spacer(
                                         Modifier
                                             .fillMaxWidth()
                                             .height(56.dp))
-                                }
+
                             }
 
                         }

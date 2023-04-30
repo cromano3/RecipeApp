@@ -11,6 +11,12 @@ import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAn
 @Dao
 interface AppDao {
 
+
+    @Transaction
+    @Query("UPDATE search_table SET preview_list = ''")
+    fun clearSearch()
+
+
     @Transaction
     @Query("SELECT * FROM recipe_table WHERE recipe_name = :recipeName")
     fun getRecipeWithIngredientsAndInstructions(recipeName: String): RecipeWithIngredientsAndInstructions

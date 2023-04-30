@@ -39,8 +39,14 @@ class AppViewModel(application: Application, private val firebaseRepository: Fir
         repository = AppRepository(appDao)
 
         userSetup()
+        clearSearch()
 
     }
+
+    private fun clearSearch(){
+        repository.clearSearch()
+    }
+
 
     private fun userSetup(){
         viewModelScope.launch {
