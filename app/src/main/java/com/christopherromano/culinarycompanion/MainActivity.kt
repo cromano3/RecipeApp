@@ -31,6 +31,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -86,6 +89,7 @@ import kotlinx.coroutines.withContext
 
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -94,7 +98,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ){
-                        CulinaryCompanion()
+                        val windowSizeClass = calculateWindowSizeClass(this)
+                        val isCompact = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
+                        CulinaryCompanion(isCompact)
 
                 }
             }
@@ -105,8 +111,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun CulinaryCompanion(
-){
+fun CulinaryCompanion(isCompact: Boolean) {
     val owner = LocalViewModelStoreOwner.current
 
     owner?.let { viewModelStoreOwner ->
@@ -379,6 +384,7 @@ fun CulinaryCompanion(
 
                     //Recipe Book Main Screen
                     HomeScreen(
+                        isCompact = isCompact,
                         onDetailsClick = {
                             coroutineScope.launch(Dispatchers.Main) {
                                 withContext(Dispatchers.IO) { appViewModel.setupDetailsScreen(it) }
@@ -649,6 +655,7 @@ fun CulinaryCompanion(
                     },
                 ) {
                     SearchScreen(
+                        isCompact = isCompact,
                         onGoBackClick = { navController.popBackStack() },
                         onDetailsClick = {
                             coroutineScope.launch(Dispatchers.Main) {

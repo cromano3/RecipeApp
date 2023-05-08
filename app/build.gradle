@@ -81,6 +81,9 @@ android {
 
 dependencies {
 
+    implementation "androidx.compose.material3:material3:1.0.1"
+    implementation "androidx.compose.material3:material3-window-size-class:1.0.1"
+
     implementation 'com.google.firebase:firebase-firestore-ktx:24.5.0'
 
     def room_version = "2.5.1" // check latest version from docs

@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.christopherromano.culinarycompanion.R
 import com.christopherromano.culinarycompanion.data.entity.IngredientEntity
@@ -85,9 +86,9 @@ fun SmallRecipeCard(
     Surface(
         elevation = 4.dp,
         modifier = modifier
-            .padding(top = 16.dp)
+            .padding(top = 12.dp)
             .size(
-                width = 180.dp,
+                width = 160.dp,
                 height = 270.dp
             )
             .border(
@@ -106,7 +107,10 @@ fun SmallRecipeCard(
         shape = RoundedCornerShape(15.dp),
         color = Color(0xFFdfe0fb)
     ){
-        Column{
+        Column(Modifier.size(
+            width = 160.dp,
+            height = 270.dp
+        )){
             Box(
                 modifier = Modifier
                     .height(185.dp)
@@ -132,7 +136,7 @@ fun SmallRecipeCard(
                             .fillMaxWidth()
                             .padding(4.dp)
                             .align(alignment = Alignment.TopCenter)
-                            .height(40.dp)
+                            .height(46.dp)
                     ){
                         Text(
                             modifier = Modifier
@@ -141,6 +145,7 @@ fun SmallRecipeCard(
                                 .wrapContentHeight(),
                             //recipe name
                             text = recipe.recipeName,
+                            fontSize = 16.sp,
                             style = MaterialTheme.typography.h4.merge(
                                 TextStyle(
                                     platformStyle = PlatformTextStyle(
@@ -322,7 +327,7 @@ fun SmallCardPreview() {
     CulinaryCompanionTheme {
 
         val myRE =
-            RecipeEntity(recipeName = "", onMenu = 0,1, timeToMake = 60, globalRating = 98)
+            RecipeEntity(recipeName = "Yummy Rice With Marinated Tofu", onMenu = 0,1, timeToMake = 60, globalRating = 98)
         val myList: List<IngredientEntity> = listOf(
             IngredientEntity(ingredientName = "Ing. Name", quantityOwned = 0, quantityNeeded = 1)
         )

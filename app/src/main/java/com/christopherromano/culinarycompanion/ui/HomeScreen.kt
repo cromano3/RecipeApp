@@ -83,6 +83,7 @@ import kotlinx.coroutines.launch
 )
 @Composable
 fun HomeScreen(
+    isCompact: Boolean,
     onDetailsClick: (String) -> Unit,
     onFavoriteClick: (RecipeWithIngredients) -> Unit,
     onMenuClick: (RecipeWithIngredients) -> Unit,
@@ -122,6 +123,8 @@ fun HomeScreen(
 
         val listState = rememberLazyListState()
 
+        println("IS COMPACT $isCompact")
+
 
         if(uiFiltersState.triggerScroll){
             coroutineScope.launch {
@@ -137,7 +140,7 @@ fun HomeScreen(
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 0.dp, bottom = 48.dp),
+                    .padding(top = 0.dp, bottom = 56.dp),
                 color = Color(0xFFd8af84)
             ){
 
@@ -190,16 +193,19 @@ fun HomeScreen(
                         ) {
 
                             LazyVerticalGrid(
-                                columns = GridCells.Fixed(2),
+                                columns = if(isCompact) GridCells.Adaptive(140.dp) else  GridCells.Adaptive(180.dp),
                                 modifier = Modifier
-                                    .padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
-                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                    .padding(
+                                        start = if(isCompact) 12.dp else 16.dp,
+                                        end = if(isCompact) 12.dp else 16.dp
+                                    ),
+                                horizontalArrangement = Arrangement.spacedBy(if(isCompact) 12.dp else 16.dp)
                             ) {
 
                                 items(shownRecipeList.size, key = { it }) { index ->
                                     var bottomPadding = 0
                                     if (index + 1 == shownRecipeList.size) {
-                                        bottomPadding = 16
+                                        bottomPadding = if(isCompact) 12 else 16
                                     }
 
                                     SmallRecipeCard(
