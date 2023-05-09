@@ -59,6 +59,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ShoppingListScreen(
+    isCompact: Boolean,
     onDetailsClick: (String) -> Unit,
     onSystemBackClick: () -> Unit,
     onAddRecipeClick: () -> Unit,
@@ -132,6 +133,7 @@ fun ShoppingListScreen(
                     state = listState,
                     modifier = Modifier
                         .weight(0.60f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
 
                     userScrollEnabled = !filterWasClicked,
 
@@ -139,6 +141,7 @@ fun ShoppingListScreen(
                     items(selectedIngredients2, key = { it.ingredientName }) {
                         ShoppingListItemWithButton(
                             modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
+                            isCompact = isCompact,
                             ingredientEntity = it,
                             isWorking = uiState.isWorking,
                             onClickIngredientSelected = { shoppingListScreenViewModel.ingredientSelected(it.ingredientName) },
@@ -171,6 +174,7 @@ fun ShoppingListScreen(
                                 Modifier
                                     .height(2.dp)
                                     .fillMaxWidth()
+                                    .padding(end = 8.dp)
                                     .border(
                                         width = 2.dp,
                                         brush = (Brush.horizontalGradient(
@@ -246,6 +250,7 @@ fun ShoppingListScreen(
                     modifier = Modifier
                         .weight(0.40f),
                     state = listState2,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     userScrollEnabled = !filterWasClicked,
                         ) {
 
@@ -490,14 +495,15 @@ fun RecipeIconWithButton(
 
     Column(
         modifier
-            .fillMaxWidth()
+            .wrapContentSize()
             .alpha(alphaAnim),
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         Surface(
             modifier = Modifier
-                .size(120.dp)
-                .padding(top = 8.dp, bottom = 4.dp)
+                .aspectRatio(1f)
+                .size(160.dp)
+                .padding(top = 8.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
                 .align(Alignment.CenterHorizontally)
                 .border(
                     width = 2.dp,
@@ -519,17 +525,17 @@ fun RecipeIconWithButton(
             AsyncImage(
                 model = image,
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.aspectRatio(1f).fillMaxSize(),
                 contentScale = ContentScale.Crop,
             )
             Column(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.aspectRatio(1f).fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
                 Text(
                     text = recipeWithIngredients.recipeEntity.recipeName,
+                    modifier = Modifier.padding(start = 2.dp, end = 2.dp),
                     fontSize = 20.sp,
                     color = Color(0xFFFFFFFF),
                     textAlign = TextAlign.Center,
@@ -544,10 +550,7 @@ fun RecipeIconWithButton(
             }
         }
 
-        Spacer(
-            Modifier
-                .size(2.dp)
-                .fillMaxWidth())
+        Spacer(Modifier.size(2.dp))
 
 
         Surface(
@@ -590,6 +593,7 @@ fun RecipeIconWithButton(
 @Composable
 fun ShoppingListItemWithButton(
     modifier: Modifier,
+    isCompact: Boolean,
     ingredientEntity: IngredientsWithQuantities,
     isWorking: Boolean,
     onClickIngredientSelected: () -> Unit,
@@ -637,8 +641,8 @@ fun ShoppingListItemWithButton(
 
     Surface(
         modifier = modifier
-            .padding(start = 8.dp, top = 8.dp)
-            .width(240.dp)
+            .padding(start = 8.dp, top = 8.dp, end = 8.dp)
+            .width(if(isCompact) 240.dp else 300.dp)
             .defaultMinSize(minHeight = 36.dp)
 //            .wrapContentHeight()
             .alpha(alphaAnim)
@@ -763,7 +767,7 @@ fun CustomShoppingListItem(
 
     Surface(
         modifier = modifier
-            .padding(start = 8.dp, top = 8.dp)
+            .padding(start = 8.dp, top = 8.dp, end = 8.dp)
             .width(240.dp)
             .height(36.dp)
             .alpha(alphaAnim)
@@ -854,7 +858,7 @@ fun AddCustomItemButton(
 
     Surface(
         modifier = modifier
-            .padding(start = 8.dp, top = 8.dp)
+            .padding(start = 8.dp, top = 8.dp, end = 8.dp)
             .width(240.dp)
             .height(36.dp)
             .alpha(alphaAnim)
@@ -916,7 +920,7 @@ fun ClearCustomItemButton(
 
     Surface(
         modifier = modifier
-            .padding(start = 8.dp, top = 8.dp)
+            .padding(start = 8.dp, top = 8.dp, end = 8.dp)
             .width(240.dp)
             .height(36.dp)
             .alpha(alphaAnim)

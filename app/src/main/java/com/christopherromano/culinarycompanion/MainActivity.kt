@@ -32,6 +32,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
@@ -100,7 +101,8 @@ class MainActivity : ComponentActivity() {
                 ){
                         val windowSizeClass = calculateWindowSizeClass(this)
                         val isCompact = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
-                        CulinaryCompanion(isCompact)
+                        val isExpandedHeight = windowSizeClass.heightSizeClass == WindowHeightSizeClass.Expanded
+                        CulinaryCompanion(isCompact, isExpandedHeight)
 
                 }
             }
@@ -111,7 +113,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun CulinaryCompanion(isCompact: Boolean) {
+fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
     val owner = LocalViewModelStoreOwner.current
 
     owner?.let { viewModelStoreOwner ->
@@ -269,6 +271,7 @@ fun CulinaryCompanion(isCompact: Boolean) {
                     exitTransition = { fadeOut(animationSpec = tween(300)) },
                 ) {
                     ProfileScreen(
+                        isExpandedHeight = isExpandedHeight,
                         onDetailsClick =
                         {
                             coroutineScope.launch(Dispatchers.Main) {
@@ -449,6 +452,7 @@ fun CulinaryCompanion(isCompact: Boolean) {
                     //Weekly menu screen
                     MenuScreen(
                         userIsOnlineStatus = appUiState.userIsOnlineStatus,
+                        isExpandedHeight = isExpandedHeight,
                         onDetailsClick = {
                             coroutineScope.launch(Dispatchers.Main) {
                                 withContext(Dispatchers.IO) { appViewModel.setupDetailsScreen(it) }
@@ -546,6 +550,7 @@ fun CulinaryCompanion(isCompact: Boolean) {
                     }
                 ) {
                     ShoppingListScreen(
+                        isCompact = isCompact,
                         onDetailsClick = {
                             coroutineScope.launch(Dispatchers.Main) {
                                 withContext(Dispatchers.IO) { appViewModel.setupDetailsScreen(it) }
@@ -587,6 +592,7 @@ fun CulinaryCompanion(isCompact: Boolean) {
                 ) {
                     NewDetailsScreen(
                         recipeData = appUiState.detailsScreenTarget,
+                        isExpandedHeight = isExpandedHeight,
                         storeRating = { appViewModel.storeRating(it) },
                         markAsRated = { appViewModel.markAsRated() },
                         markAsReviewed = { appViewModel.markAsReviewed() },

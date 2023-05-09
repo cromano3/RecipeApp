@@ -66,6 +66,7 @@ fun NewDetailsScreen(
     recipeData: RecipeWithIngredientsAndInstructions,
     onMenuAddClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onMenuRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
+    isExpandedHeight: Boolean,
     addedToFavoriteUiUpdate: () -> Unit,
     markAsRated: () -> Unit,
     storeRating: (Int) -> Unit,
@@ -190,7 +191,7 @@ fun NewDetailsScreen(
                             contentDescription = null,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(300.dp)
+                                .height(if(isExpandedHeight)450.dp else 300.dp)
                                 .padding(bottom = 0.dp),
                             contentScale = ContentScale.Crop,
                         )

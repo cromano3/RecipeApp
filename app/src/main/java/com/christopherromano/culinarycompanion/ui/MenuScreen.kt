@@ -57,6 +57,7 @@ import com.google.firebase.ktx.Firebase
 @Composable
 fun MenuScreen(
     userIsOnlineStatus: Int,
+    isExpandedHeight: Boolean,
     onDetailsClick: (String) -> Unit,
     onFavoriteClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onAddedToFavoriteFromAlertClick: (RecipeEntity) -> Unit,
@@ -111,6 +112,7 @@ fun MenuScreen(
                                     )
                                 ),
                             recipeWithIngredientsAndInstructions = it,
+                            isExpandedHeight = isExpandedHeight,
                             currentScreen = "WeeklyMenuScreen",
                             onFavoriteClick =
                             {

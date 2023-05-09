@@ -65,6 +65,7 @@ import com.christopherromano.culinarycompanion.ui.theme.CulinaryCompanionTheme
 fun RecipeCard(
     modifier: Modifier,
     recipeWithIngredientsAndInstructions: RecipeWithIngredientsAndInstructions,
+    isExpandedHeight: Boolean,
     currentScreen: String,
     onFavoriteClick: () -> Unit,
     onRemoveClick: () -> Unit,
@@ -123,7 +124,7 @@ fun RecipeCard(
         Surface(
             modifier = Modifier
                 .padding(start = 8.dp, end = 8.dp, top = 16.dp,)
-                .height(176.dp)
+                .height(if(isExpandedHeight) 320.dp else 176.dp)
                 .fillMaxWidth()
                 .clickable(onClick = onDetailsClick)
                 .background(
@@ -151,7 +152,7 @@ fun RecipeCard(
                             .padding(start = 0.dp)
                             .width(60.dp)
                             .fillMaxHeight(),
-                        verticalArrangement = Arrangement.SpaceBetween,
+                        verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
 
@@ -278,7 +279,7 @@ fun RecipeCard(
                     contentDescription = null,
                     modifier = Modifier
                         .weight(1f)
-                        .height(176.dp)
+                        .height(if(isExpandedHeight) 320.dp else 176.dp)
                         .clip(RoundedCornerShape(0.dp)),
                     contentScale = ContentScale.Crop,
                 )
@@ -296,7 +297,7 @@ fun RecipeCard(
                             .padding(start = 0.dp)
                             .width(60.dp)
                             .fillMaxHeight(),
-                        verticalArrangement = Arrangement.SpaceAround,
+                        verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
 
@@ -518,6 +519,7 @@ fun DefaultPreview2() {
                     ingredientsList = myList
                 ),
                 currentScreen = "WeeklyMenuScreen",
+                isExpandedHeight = false,
                 onCompleteClick = {},
                 onRemoveClick = {},
                 onDetailsClick = {},

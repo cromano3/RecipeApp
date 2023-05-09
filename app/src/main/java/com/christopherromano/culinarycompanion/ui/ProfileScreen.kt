@@ -104,6 +104,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
+    isExpandedHeight: Boolean,
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onSettingsClick: () -> Unit,
     updateLikes: (String) -> Unit,
@@ -223,8 +224,9 @@ fun ProfileScreen(
 
                 }
                 Column(
-                    modifier = Modifier.wrapContentSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = if(isExpandedHeight) Modifier.fillMaxWidth().height(360.dp) else Modifier.fillMaxWidth().wrapContentHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly
                 ) {
 
                     Spacer(
@@ -915,6 +917,7 @@ fun ProfileScreen(
                                     modifier = Modifier,
                                     recipeWithIngredientsAndInstructions = it,
                                     currentScreen = "FavoritesTab",
+                                    isExpandedHeight = isExpandedHeight,
                                     onFavoriteClick =
                                     {
                                         profileScreenViewModel.triggerRemoveFavoriteAlert(it)
