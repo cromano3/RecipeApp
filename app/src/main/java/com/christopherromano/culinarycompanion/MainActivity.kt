@@ -266,6 +266,7 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
                 ) {
                     ProfileScreen(
                         isExpandedHeight = isExpandedHeight,
+                        isCompact = isCompact,
                         onDetailsClick =
                         {
                             coroutineScope.launch(Dispatchers.Main) {

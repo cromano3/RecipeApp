@@ -105,6 +105,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun ProfileScreen(
     isExpandedHeight: Boolean,
+    isCompact: Boolean,
     onRemoveClick: (RecipeWithIngredientsAndInstructions) -> Unit,
     onSettingsClick: () -> Unit,
     updateLikes: (String) -> Unit,
@@ -966,6 +967,7 @@ fun ProfileScreen(
                             items(cookedData.size, key = { it }) { index ->
                                 RecipeIcon(
                                     recipeWithIngredients = cookedData[index],
+                                    isCompact = isCompact,
                                     onDetailsClick = {
                                         profileScreenViewModel.cancelAnimationStack()
                                         onDetailsClick(cookedData[index].recipeEntity.recipeName)
@@ -1155,6 +1157,7 @@ class ProfileScreenViewModelFactory(val application: Application) : ViewModelPro
 @Composable
 fun RecipeIcon(
     recipeWithIngredients: RecipeWithIngredients,
+    isCompact: Boolean,
     onDetailsClick: () -> Unit
 ){
 
@@ -1188,7 +1191,7 @@ fun RecipeIcon(
     {
         Surface(
             modifier = Modifier
-                .size(120.dp)
+                .size(if (isCompact) 120.dp else 200.dp)
                 .padding(top = 8.dp, bottom = 4.dp)
                 .align(Alignment.CenterHorizontally)
                 .clickable(onClick = onDetailsClick),

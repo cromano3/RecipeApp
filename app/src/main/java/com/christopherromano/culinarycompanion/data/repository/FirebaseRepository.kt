@@ -226,7 +226,7 @@ class FirebaseRepository(
 
                 val query =
                     db.collection("users").whereEqualTo("uid", authorUid).limit(1).get().await()
-                val authorDocSnapshot = query.documents[0]
+                val authorDocSnapshot = query.documents.firstOrNull()
 
                 if (authorDocSnapshot != null) {
 
