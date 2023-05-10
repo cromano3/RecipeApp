@@ -290,9 +290,27 @@ fun ShoppingListScreen(
                             isClickable = shoppingListScreenData.size != 1,
                             onFilterClick = {
                                 coroutineScope.launch {
+
                                     shoppingListScreenViewModel.filterBy(it)
-                                    listState2.animateScrollToItem(index = shoppingListScreenData.indexOf(it))}
-                                },
+
+                                    val lastItemInfo = listState2.layoutInfo.visibleItemsInfo.lastOrNull()
+                                    val firstItemInfo = listState2.layoutInfo.visibleItemsInfo.firstOrNull()
+
+                                    if(lastItemInfo != null && lastItemInfo.index == shoppingListScreenData.indexOf(it)){
+                                        if(lastItemInfo.offset + lastItemInfo.size > listState2.layoutInfo.viewportEndOffset){
+                                            val itemHeight = 176
+                                            val viewportHeight = listState.layoutInfo.viewportEndOffset
+                                            val itemsThatFit = viewportHeight / itemHeight
+                                            val partialItemHeight = viewportHeight % itemHeight
+                                            val scrollToIndex = maxOf(0, lastItemInfo.index - itemsThatFit + (if (partialItemHeight > 0) 1 else 0))
+                                            listState2.animateScrollToItem(scrollToIndex, if (partialItemHeight > 0) partialItemHeight else 0)
+                                        }
+                                    }
+                                    else{
+                                        listState2.animateScrollToItem(index = shoppingListScreenData.indexOf(it))
+                                    }
+                                }
+                            },
                             onClearFilterClick = {
                                 coroutineScope.launch {
                                     shoppingListScreenViewModel.clearFilter()

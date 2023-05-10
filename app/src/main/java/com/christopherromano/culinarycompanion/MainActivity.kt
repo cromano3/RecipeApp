@@ -12,11 +12,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -66,7 +62,10 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.christopherromano.culinarycompanion.data.repository.FirebaseRepository
 import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAndInstructions
 import com.christopherromano.culinarycompanion.ui.*
@@ -75,9 +74,6 @@ import com.christopherromano.culinarycompanion.ui.theme.Cabin
 import com.christopherromano.culinarycompanion.ui.theme.CulinaryCompanionTheme
 import com.christopherromano.culinarycompanion.viewmodel.AppViewModel
 import com.christopherromano.culinarycompanion.viewmodel.TopBarViewModel
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
@@ -184,7 +180,7 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
         else {
 
 
-        val navController: NavHostController = rememberAnimatedNavController()
+        val navController: NavHostController = rememberNavController()
         val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
         val currentScreen = currentBackStackEntry?.destination?.route ?: "RecipeScreen"
@@ -259,7 +255,7 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
 
             }
         ) {
-            AnimatedNavHost(
+            NavHost(
                 navController = navController,
                 startDestination = "RecipeScreen",
             ) {
@@ -267,8 +263,6 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
                 /** Profile Screen */
                 composable(
                     route = "ProfileScreen",
-                    enterTransition = { fadeIn(animationSpec = tween(300)) },
-                    exitTransition = { fadeOut(animationSpec = tween(300)) },
                 ) {
                     ProfileScreen(
                         isExpandedHeight = isExpandedHeight,
@@ -298,8 +292,6 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
                 /**Comment Screen*/
                 composable(
                     route = "CommentScreen",
-                    enterTransition = { fadeIn(animationSpec = tween(300)) },
-                    exitTransition = { fadeOut(animationSpec = tween(300)) },
                 ) {
                     CommentScreen(
                         commentScreenData = appUiState.reviewScreenTarget,
@@ -329,8 +321,6 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
                 /** Settings Screen */
                 composable(
                     route = "SettingsScreen",
-                    enterTransition = { fadeIn(animationSpec = tween(300)) },
-                    exitTransition = { fadeOut(animationSpec = tween(300)) }
                 ) {
                     SettingsScreen(
                         confirmSignInWithGoogle = { appViewModel.signInWithGoogle() },
@@ -341,48 +331,12 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
                 /** Settings Screen */
                 composable(
                     route = "LicensesScreen",
-                    enterTransition = { fadeIn(animationSpec = tween(300)) },
-                    exitTransition = { fadeOut(animationSpec = tween(300)) }
                 ) {
                     LicensesScreen()
                 }
 
                 /** Home Screen */
                 composable(route = "RecipeScreen",
-                    enterTransition = {
-                        when (initialState.destination.route) {
-                            "WeeklyMenuScreen" -> slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(300)
-                            )
-                            "ShoppingScreen" -> slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(300)
-                            )
-                            "SearchScreen" -> slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Up,
-                                animationSpec = tween(300)
-                            )
-                            else -> fadeIn(animationSpec = tween(300))
-                        }
-                    },
-                    exitTransition = {
-                        when (targetState.destination.route) {
-                            "WeeklyMenuScreen" -> slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(300)
-                            )
-                            "ShoppingScreen" -> slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(300)
-                            )
-                            "SearchScreen" -> slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Down,
-                                animationSpec = tween(300)
-                            )
-                            else -> fadeOut(animationSpec = tween(300))
-                        }
-                    }
                 ) {
 
                     //Recipe Book Main Screen
@@ -422,32 +376,6 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
                 /** Weekly Menu Screen */
                 composable(
                     route = "WeeklyMenuScreen",
-                    enterTransition = {
-                        when (initialState.destination.route) {
-                            "RecipeScreen" -> slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(300)
-                            )
-                            "ShoppingScreen" -> slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(300)
-                            )
-                            else -> fadeIn(animationSpec = tween(300))
-                        }
-                    },
-                    exitTransition = {
-                        when (targetState.destination.route) {
-                            "RecipeScreen" -> slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(300)
-                            )
-                            "ShoppingScreen" -> slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(300)
-                            )
-                            else -> fadeOut(animationSpec = tween(300))
-                        }
-                    },
                 ) {
                     //Weekly menu screen
                     MenuScreen(
@@ -522,32 +450,6 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
                 /** Shopping List Screen */
                 composable(
                     route = "ShoppingScreen",
-                    enterTransition = {
-                        when (initialState.destination.route) {
-                            "RecipeScreen" -> slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(300)
-                            )
-                            "WeeklyMenuScreen" -> slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(300)
-                            )
-                            else -> fadeIn(animationSpec = tween(300))
-                        }
-                    },
-                    exitTransition = {
-                        when (targetState.destination.route) {
-                            "RecipeScreen" -> slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(300)
-                            )
-                            "WeeklyMenuScreen" -> slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(300)
-                            )
-                            else -> fadeOut(animationSpec = tween(300))
-                        }
-                    }
                 ) {
                     ShoppingListScreen(
                         isCompact = isCompact,
@@ -587,8 +489,6 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
                 /** Details Screen */
                 composable(
                     route = "DetailsScreen",
-                    enterTransition = { fadeIn(animationSpec = tween(300)) },
-                    exitTransition = { fadeOut(animationSpec = tween(300)) },
                 ) {
                     NewDetailsScreen(
                         recipeData = appUiState.detailsScreenTarget,
@@ -641,24 +541,6 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
                 /** Search Screen */
                 composable(
                     route = "SearchScreen",
-                    enterTransition = {
-                        when (initialState.destination.route) {
-                            "RecipeScreen" -> slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Down,
-                                animationSpec = tween(300)
-                            )
-                            else -> fadeIn(animationSpec = tween(300))
-                        }
-                    },
-                    exitTransition = {
-                        when (targetState.destination.route) {
-                            "RecipeScreen" -> slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Up,
-                                animationSpec = tween(300)
-                            )
-                            else -> fadeOut(animationSpec = tween(300))
-                        }
-                    },
                 ) {
                     SearchScreen(
                         isCompact = isCompact,
