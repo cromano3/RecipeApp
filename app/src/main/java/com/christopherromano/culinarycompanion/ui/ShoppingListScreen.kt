@@ -5,28 +5,68 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckBoxOutlineBlank
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -54,7 +94,7 @@ import com.christopherromano.culinarycompanion.viewmodel.ShoppingListScreenViewM
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
+//@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ShoppingListScreen(
     isCompact: Boolean,
@@ -78,7 +118,7 @@ fun ShoppingListScreen(
         val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
         val selectedIngredients2 by shoppingListScreenViewModel.selectedIngredients2.observeAsState(listOf())
 
-//        var filterWasClicked by remember { mutableStateOf(false) }
+        var filterWasClicked by remember { mutableStateOf(false) }
 
         val uiState by shoppingListScreenViewModel.shoppingScreenUiState.collectAsState()
         val uiAlertState by shoppingListScreenViewModel.uiAlertState.collectAsState()
@@ -121,14 +161,18 @@ fun ShoppingListScreen(
 //        }
 
         LaunchedEffect(selectedIngredients2){
-            scrollState.scrollTo(0)
+//            scrollState.scrollTo(0)
+            if(filterWasClicked) {
+                filterWasClicked = false
+                listState.scrollToItem(0)
+            }
         }
 
         if(scrollDown){
             coroutineScope.launch {
                 scrollDown = false
-                scrollState.scrollTo(scrollState.maxValue)
-//                listState.animateScrollToItem(selectedIngredients2.size + uiState.customItems.size)
+//                scrollState.scrollTo(scrollState.maxValue)
+                listState.animateScrollToItem(selectedIngredients2.size + uiState.customItems.size)
             }
         }
 
@@ -145,18 +189,18 @@ fun ShoppingListScreen(
                     .fillMaxSize()
             )
             {
-
-                Column(
+                LazyColumn(
+                    state = listState,
                     modifier = Modifier
-                        .weight(0.60f)
-                        .verticalScroll(scrollState, enabled = !uiState.isWorking),
+                        .weight(0.60f),
+//                        .verticalScroll(scrollState, enabled = !uiState.isWorking),
                     horizontalAlignment = Alignment.Start,
 
 //                    userScrollEnabled = !uiState.isWorking,
 
                     ) {
-//                    items(selectedIngredients2, key = { it.ingredientName }) {
-                    selectedIngredients2.forEach {it ->
+                    items(selectedIngredients2, key = { it.ingredientName }) {
+//                    selectedIngredients2.forEach {it ->
                         ShoppingListItemWithButton(
                             isCompact = isCompact,
                             ingredientEntity = it,
@@ -167,7 +211,8 @@ fun ShoppingListScreen(
                     }
 
 
-                    if(uiState.customItems.isNotEmpty()){
+//                    if(uiState.customItems.isNotEmpty()){
+                    item{
 //                    androidx.compose.animation.AnimatedVisibility(
 //                        visible = (uiState.customItems.isNotEmpty() && !uiState.isWorking),
 //                        enter = fadeIn(TweenSpec(20)),
@@ -191,28 +236,31 @@ fun ShoppingListScreen(
 //                        enter = fadeIn(TweenSpec(20)),
 //                        exit = fadeOut(TweenSpec(20)),
 //                    ) {
-                        Spacer(
-                            Modifier
-                                .height(2.dp)
-                                .fillMaxWidth()
-                                .padding(end = 8.dp)
-                                .border(
-                                    width = 2.dp,
-                                    brush = (Brush.horizontalGradient(
-                                        colors = listOf(
-                                            Color(0xFFd8af84),
-                                            Color(0xFFb15f33)
-                                        ),
-                                        tileMode = TileMode.Mirror
-                                    )),
-                                    shape = RectangleShape
-                                ),
-                        )
+                        item {
+                            Spacer(
+                                Modifier
+                                    .height(2.dp)
+                                    .fillMaxWidth()
+                                    .padding(end = 8.dp)
+                                    .border(
+                                        width = 2.dp,
+                                        brush = (Brush.horizontalGradient(
+                                            colors = listOf(
+                                                Color(0xFFd8af84),
+                                                Color(0xFFb15f33)
+                                            ),
+                                            tileMode = TileMode.Mirror
+                                        )),
+                                        shape = RectangleShape
+                                    ),
+                            )
+                        }
                     }
 
-//                    items(uiState.customItems, key = {it.item}) {
+
                     if(uiState.customItems.isNotEmpty()){
-                        uiState.customItems.forEach {it ->
+                        items(uiState.customItems, key = {it.item}) {
+//                        uiState.customItems.forEach {it ->
 //                        androidx.compose.animation.AnimatedVisibility(
 //                            visible = (uiState.customItems.isNotEmpty() && !uiState.isWorking),
 //                            enter = fadeIn(TweenSpec(20)),
@@ -231,8 +279,9 @@ fun ShoppingListScreen(
                     }
 
 
-//                    item {
                     if(uiState.customItems.isNotEmpty()){
+                        item {
+
 //                        androidx.compose.animation.AnimatedVisibility(
 //                            visible = (uiState.customItems.isNotEmpty() && !uiState.isWorking),
 //                            enter = fadeIn(TweenSpec(20)),
@@ -245,11 +294,12 @@ fun ShoppingListScreen(
                                 onClickClearAll = { shoppingListScreenViewModel.triggerClearAllCustomItemsAlert() }
                             )
                         }
-//                    }
+                    }
 
 
-//                    item {
+
                     if(uiState.customItems.isNotEmpty() || selectedIngredients2.isNotEmpty()){
+                        item {
 //                        androidx.compose.animation.AnimatedVisibility(
 //                            visible = (
 //                                (uiState.customItems.isNotEmpty() && !uiState.isWorking ) ||
@@ -265,16 +315,14 @@ fun ShoppingListScreen(
                                 onClickAddItem = { shoppingListScreenViewModel.triggerAddCustomItemAlert() }
                             )
                         }
-//                    }
+                    }
 
 
 
-//                    item{
-                        Spacer(
+                    item{ Spacer(
                         Modifier
                             .size(20.dp)
-                            .fillMaxWidth())
-//                }
+                            .fillMaxWidth()) }
                 }
                 LazyColumn(
                     modifier = Modifier
@@ -293,6 +341,8 @@ fun ShoppingListScreen(
                             isClickable = shoppingListScreenData.size != 1,
                             onFilterClick = {
                                 coroutineScope.launch {
+
+                                    filterWasClicked = true
 
                                     shoppingListScreenViewModel.filterBy(it)
 
@@ -316,6 +366,8 @@ fun ShoppingListScreen(
                             },
                             onClearFilterClick = {
                                 coroutineScope.launch {
+                                    filterWasClicked = true
+
                                     shoppingListScreenViewModel.clearFilter()
                                 }
                             },
@@ -615,52 +667,54 @@ fun RecipeIconWithButton(
             }
         }
 
-        Spacer(Modifier.size(2.dp))
+        if(isClickable) {
+            Spacer(Modifier.size(2.dp))
 
 
-        Surface(
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(36.dp)
-                .border(
-                    width = 2.dp,
-                    brush = (Brush.horizontalGradient(
-                        startX = -10f,
-                        colors = borderColors,
-                        tileMode = TileMode.Mirror
-                    )),
-                    shape = RoundedCornerShape(25.dp)
-                )
-                .clickable(enabled = !isWorking && isClickable && recipeWithIngredients.recipeEntity.isShoppingFilter != 0)
+            Surface(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .height(36.dp)
+                    .border(
+                        width = 2.dp,
+                        brush = (Brush.horizontalGradient(
+                            startX = -10f,
+                            colors = borderColors,
+                            tileMode = TileMode.Mirror
+                        )),
+                        shape = RoundedCornerShape(25.dp)
+                    )
+                    .clickable(enabled = !isWorking && recipeWithIngredients.recipeEntity.isShoppingFilter != 0)
                     {
-                        if(recipeWithIngredients.recipeEntity.isShoppingFilter == 2){
+                        if (recipeWithIngredients.recipeEntity.isShoppingFilter == 2) {
                             onClearFilterClick()
-                        }
-                        else{
+                        } else {
                             onFilterClick()
                         }
 
                     },
-            shape = RoundedCornerShape(25.dp),
-            color = mainColor,
-            elevation = 6.dp,
-            contentColor = contentColor,
-        ){
-            Text(
-                text = if (recipeWithIngredients.recipeEntity.isShoppingFilter == 2) "Clear Filter" else "Filter",
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 8.dp)
-                    .background(color = Color.Transparent),
-                color = contentColor,
-                fontSize = 16.sp,
-                textAlign = TextAlign.Center,
+                shape = RoundedCornerShape(25.dp),
+                color = mainColor,
+                elevation = 6.dp,
+                contentColor = contentColor,
+            ) {
+                Text(
+                    text = if (recipeWithIngredients.recipeEntity.isShoppingFilter == 2) "Clear Filter" else "Filter",
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 8.dp)
+                        .background(color = Color.Transparent),
+                    color = contentColor,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                )
+            }
+
+            Spacer(
+                Modifier
+                    .size(20.dp)
+                    .fillMaxWidth()
             )
         }
-
-        Spacer(
-            Modifier
-                .size(20.dp)
-                .fillMaxWidth())
     }
 
 }
@@ -754,7 +808,7 @@ fun ShoppingListItemWithButton(
                     .padding(start = 6.dp, top = 2.dp, end = 2.dp, bottom = 2.dp)
                     .size(28.dp)
                     .align(Alignment.CenterVertically)
-                    .alpha(alphaLevel)
+                    .alpha(alphaAnim)
             )
             var myText = ingredientEntity.ingredientName
 
@@ -770,7 +824,7 @@ fun ShoppingListItemWithButton(
                 modifier = Modifier
                     .padding(start = 2.dp, bottom = 2.dp, end = 2.dp)
                     .align(Alignment.CenterVertically)
-                    .alpha(alphaLevel),
+                    .alpha(alphaAnim),
                 text = myText,
                 fontSize = 16.sp,
 //                fontWeight = FontWeight.Bold
@@ -783,7 +837,7 @@ fun ShoppingListItemWithButton(
                 Text(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .alpha(alphaLevel),
+                        .alpha(alphaAnim),
                     text = " (${ingredientEntity.quantityNeeded})",
                     fontSize = 16.sp,
 //                    fontWeight = FontWeight.Bold
@@ -899,13 +953,13 @@ fun CustomShoppingListItem(
                     .padding(start = 6.dp, top = 2.dp, end = 2.dp, bottom = 2.dp)
                     .size(28.dp)
                     .align(Alignment.CenterVertically)
-                    .alpha(alphaLevel)
+                    .alpha(alphaAnim)
             )
             Text(
                 modifier = Modifier
                     .padding(start = 4.dp)
                     .align(Alignment.CenterVertically)
-                    .alpha(alphaLevel),
+                    .alpha(alphaAnim),
                 text = shoppingListCustomItemEntity.item,
                 fontSize = 16.sp
             )
