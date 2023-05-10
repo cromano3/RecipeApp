@@ -13,7 +13,7 @@ import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredients
 interface ShoppingListScreenDao {
 
     @Transaction
-    @Query("SELECT * FROM recipe_table WHERE on_menu = 1 ORDER BY is_shopping_filter DESC, recipe_name ASC")
+    @Query("SELECT * FROM recipe_table WHERE on_menu = 1 ORDER BY recipe_name ASC")
     fun getData(): LiveData<List<RecipeWithIngredients>>
 
 
@@ -69,11 +69,11 @@ interface ShoppingListScreenDao {
 
     @Transaction
     @Query("UPDATE recipe_table SET is_shopping_filter = 2 WHERE recipe_name = :name")
-    fun filterBy(name: String)
+    suspend fun filterBy(name: String)
 
     @Transaction
     @Query("UPDATE recipe_table SET is_shopping_filter = 0 WHERE recipe_name <> :name")
-    fun removeOtherFilters(name: String)
+    suspend fun removeOtherFilters(name: String)
 
 
 
@@ -84,6 +84,19 @@ interface ShoppingListScreenDao {
     @Transaction
     @Query("UPDATE ingredient_table SET is_shown = 1 WHERE ingredient_name = :name")
     fun setIngredientToShown(name: String)
+
+    @Transaction
+    suspend fun updateIngredients(ingredientsToHide: List<String>, ingredientsToShow: List<String>){
+        setIngredientsToNotShown(ingredientsToHide)
+        setIngredientsToShown(ingredientsToShow)
+    }
+
+    @Query("UPDATE ingredient_table SET is_shown = 0 WHERE ingredient_name IN (:names)")
+    suspend fun setIngredientsToNotShown(names: List<String>)
+
+    @Query("UPDATE ingredient_table SET is_shown = 1 WHERE ingredient_name IN (:names)")
+    suspend fun setIngredientsToShown(names: List<String>)
+
 
 
 

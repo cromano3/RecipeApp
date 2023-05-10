@@ -3,11 +3,8 @@ package com.christopherromano.culinarycompanion.ui
 import android.app.Application
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -80,7 +77,7 @@ fun ShoppingListScreen(
         val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
         val selectedIngredients2 by shoppingListScreenViewModel.selectedIngredients2.observeAsState(listOf())
 
-        var filterWasClicked by remember { mutableStateOf(false) }
+//        var filterWasClicked by remember { mutableStateOf(false) }
 
         val uiState by shoppingListScreenViewModel.shoppingScreenUiState.collectAsState()
         val uiAlertState by shoppingListScreenViewModel.uiAlertState.collectAsState()
@@ -90,6 +87,10 @@ fun ShoppingListScreen(
         val listState = rememberLazyListState()
         val listState2 = rememberLazyListState()
 
+        val scrollState = rememberScrollState()
+
+
+
         var scrollDown by remember { mutableStateOf(false) }
 
         val focusRequester = remember { FocusRequester() }
@@ -98,21 +99,33 @@ fun ShoppingListScreen(
             onSystemBackClick()
         }
 
-        if(filterWasClicked) {
-            coroutineScope.launch {
+//        if(filterWasClicked) {
+//            coroutineScope.launch {
+//
+//                delay(420)
+////                listState.animateScrollBy(value= -5000f, animationSpec = tween(durationMillis = 1000))
+//                listState.animateScrollToItem(0)
+//                listState2.animateScrollToItem(0)
+//                filterWasClicked = false
+//            }
+//        }
 
-                delay(420)
-//                listState.animateScrollBy(value= -5000f, animationSpec = tween(durationMillis = 1000))
-                listState.animateScrollToItem(0)
-                listState2.animateScrollToItem(0)
-                filterWasClicked = false
-            }
+//        if(uiState.triggerScroll) {
+//            coroutineScope.launch {
+//                listState.animateScrollToItem(0)
+//                shoppingListScreenViewModel.stopScroll()
+//            }
+//        }
+
+        LaunchedEffect(selectedIngredients2){
+            scrollState.scrollTo(0)
         }
 
         if(scrollDown){
             coroutineScope.launch {
                 scrollDown = false
-                listState.animateScrollToItem(selectedIngredients2.size + uiState.customItems.size)
+                scrollState.scrollTo(scrollState.maxValue)
+//                listState.animateScrollToItem(selectedIngredients2.size + uiState.customItems.size)
             }
         }
 
@@ -129,18 +142,19 @@ fun ShoppingListScreen(
                     .fillMaxSize()
             )
             {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier
-                        .weight(0.60f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
 
-                    userScrollEnabled = !filterWasClicked,
+                Column(
+                    modifier = Modifier
+                        .weight(0.60f)
+                        .verticalScroll(scrollState, enabled = !uiState.isWorking),
+                    horizontalAlignment = Alignment.Start,
+
+//                    userScrollEnabled = !uiState.isWorking,
 
                     ) {
-                    items(selectedIngredients2, key = { it.ingredientName }) {
+//                    items(selectedIngredients2, key = { it.ingredientName }) {
+                    selectedIngredients2.forEach {it ->
                         ShoppingListItemWithButton(
-                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
                             isCompact = isCompact,
                             ingredientEntity = it,
                             isWorking = uiState.isWorking,
@@ -149,54 +163,61 @@ fun ShoppingListScreen(
                         )
                     }
 
-                    item{
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked),
-                            enter = fadeIn(TweenSpec(20)),
-                            exit = fadeOut(TweenSpec(20)),
-                        ) {
-                            Text(text = "Custom Items",
-                                modifier = Modifier.padding(top = 8.dp, start = 8.dp, bottom = 2.dp),
-                                fontSize = 18.sp,
-                                fontFamily = Cabin,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF682300)
-                            )
-                        }
+
+                    if(uiState.customItems.isNotEmpty()){
+//                    androidx.compose.animation.AnimatedVisibility(
+//                        visible = (uiState.customItems.isNotEmpty() && !uiState.isWorking),
+//                        enter = fadeIn(TweenSpec(20)),
+//                        exit = fadeOut(TweenSpec(20)),
+//                    ) {
+                        Text(text = "Custom Items",
+                            modifier = Modifier.padding(top = 8.dp, start = 8.dp, bottom = 2.dp),
+                            fontSize = 18.sp,
+                            fontFamily = Cabin,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF682300)
+                        )
                     }
-                    item{
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked),
-                            enter = fadeIn(TweenSpec(20)),
-                            exit = fadeOut(TweenSpec(20)),
-                        ) {
-                            Spacer(
-                                Modifier
-                                    .height(2.dp)
-                                    .fillMaxWidth()
-                                    .padding(end = 8.dp)
-                                    .border(
-                                        width = 2.dp,
-                                        brush = (Brush.horizontalGradient(
-                                            colors = listOf(
-                                                Color(0xFFd8af84),
-                                                Color(0xFFb15f33)
-                                            ),
-                                            tileMode = TileMode.Mirror
-                                        )),
-                                        shape = RectangleShape
-                                    ),
-                            )
-                        }
+
+
+
+
+                    if(uiState.customItems.isNotEmpty()){
+//                    androidx.compose.animation.AnimatedVisibility(
+//                        visible = (uiState.customItems.isNotEmpty() && !uiState.isWorking),
+//                        enter = fadeIn(TweenSpec(20)),
+//                        exit = fadeOut(TweenSpec(20)),
+//                    ) {
+                        Spacer(
+                            Modifier
+                                .height(2.dp)
+                                .fillMaxWidth()
+                                .padding(end = 8.dp)
+                                .border(
+                                    width = 2.dp,
+                                    brush = (Brush.horizontalGradient(
+                                        colors = listOf(
+                                            Color(0xFFd8af84),
+                                            Color(0xFFb15f33)
+                                        ),
+                                        tileMode = TileMode.Mirror
+                                    )),
+                                    shape = RectangleShape
+                                ),
+                        )
                     }
-                    items(uiState.customItems, key = {it.item}) {
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked),
-                            enter = fadeIn(TweenSpec(20)),
-                            exit = fadeOut(TweenSpec(20)),
-                        ) {
+
+//                    items(uiState.customItems, key = {it.item}) {
+                    if(uiState.customItems.isNotEmpty()){
+                        uiState.customItems.forEach {it ->
+//                        androidx.compose.animation.AnimatedVisibility(
+//                            visible = (uiState.customItems.isNotEmpty() && !uiState.isWorking),
+//                            enter = fadeIn(TweenSpec(20)),
+//                            exit = fadeOut(TweenSpec(20)),
+//                        ) {
                             CustomShoppingListItem(
-                                modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(20, delay = 0))),
+//                                modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(20, delay = 0))),
+                                isCompact = isCompact,
                                 shoppingListCustomItemEntity = it,
                                 isWorking = uiState.isWorking,
                                 onClickItemSelected = { shoppingListScreenViewModel.customItemSelected(it) },
@@ -207,61 +228,77 @@ fun ShoppingListScreen(
                     }
 
 
-                    item {
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked),
-                            enter = fadeIn(TweenSpec(20)),
-                            exit = fadeOut(TweenSpec(20)),
-                        ) {
+//                    item {
+                    if(uiState.customItems.isNotEmpty()){
+//                        androidx.compose.animation.AnimatedVisibility(
+//                            visible = (uiState.customItems.isNotEmpty() && !uiState.isWorking),
+//                            enter = fadeIn(TweenSpec(20)),
+//                            exit = fadeOut(TweenSpec(20)),
+//                        ) {
                             ClearCustomItemButton(
                                 modifier = Modifier,
+                                isCompact = isCompact,
                                 isWorking = uiState.isWorking,
                                 onClickClearAll = { shoppingListScreenViewModel.triggerClearAllCustomItemsAlert() }
                             )
                         }
-                    }
+//                    }
 
 
-                    item {
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = (
-                                (uiState.customItems.isNotEmpty() && !filterWasClicked ) ||
-                                (selectedIngredients2.isNotEmpty() && !filterWasClicked )
-                            ),
-                            enter = fadeIn(TweenSpec(20)),
-                            exit = fadeOut(TweenSpec(20)),
-                        ) {
+//                    item {
+                    if(uiState.customItems.isNotEmpty() || selectedIngredients2.isNotEmpty()){
+//                        androidx.compose.animation.AnimatedVisibility(
+//                            visible = (
+//                                (uiState.customItems.isNotEmpty() && !uiState.isWorking ) ||
+//                                (selectedIngredients2.isNotEmpty() && !uiState.isWorking )
+//                            ),
+//                            enter = fadeIn(TweenSpec(20)),
+//                            exit = fadeOut(TweenSpec(20)),
+//                        ) {
                             AddCustomItemButton(
                                 modifier = Modifier,
+                                isCompact = isCompact,
                                 isWorking = uiState.isWorking,
                                 onClickAddItem = { shoppingListScreenViewModel.triggerAddCustomItemAlert() }
                             )
                         }
-                    }
+//                    }
 
 
 
-                    item{ Spacer(
+//                    item{
+                        Spacer(
                         Modifier
                             .size(20.dp)
-                            .fillMaxWidth()) }
+                            .fillMaxWidth())
+//                }
                 }
                 LazyColumn(
                     modifier = Modifier
                         .weight(0.40f),
                     state = listState2,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    userScrollEnabled = !filterWasClicked,
+                    userScrollEnabled = !uiState.isWorking,
                         ) {
 
                     items(shoppingListScreenData, key = { it.recipeEntity.recipeName }) {
                         RecipeIconWithButton(
-                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(200, delay = 0))),
+                            isCompact = isCompact,
                             recipeWithIngredients = it,
-                            filterWasClicked = filterWasClicked,
+//                            filterWasClicked = filterWasClicked,
                             isWorking = uiState.isWorking,
                             isClickable = shoppingListScreenData.size != 1,
-                            onFilterClick = {shoppingListScreenViewModel.filterBy(it); filterWasClicked = !filterWasClicked},
+                            onFilterClick = {
+                                coroutineScope.launch {
+                                    shoppingListScreenViewModel.filterBy(it)
+                                    listState2.animateScrollToItem(index = shoppingListScreenData.indexOf(it))}
+                                },
+                            onClearFilterClick = {
+                                coroutineScope.launch {
+                                    shoppingListScreenViewModel.clearFilter()
+                                }
+                            },
+
                             onDetailsClick = { onDetailsClick(it.recipeEntity.recipeName) }
                         )
                     }
@@ -271,7 +308,6 @@ fun ShoppingListScreen(
             if (selectedIngredients2.isEmpty() && uiState.customItems.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Image(
-
                         painter = painterResource(id = R.drawable.shoppingscreenempty),
                         contentDescription = null,
                         alignment = Alignment.Center,
@@ -399,7 +435,9 @@ fun ShoppingListScreen(
                                 TextField(
                                     value = uiAlertState.inputText,
                                     onValueChange = { shoppingListScreenViewModel.updateInputText(it) },
-                                    modifier = Modifier.focusRequester(focusRequester),
+                                    modifier = Modifier
+                                        .focusRequester(focusRequester)
+                                        .fillMaxWidth(),
                                     singleLine = true,
                                 )
                                 Text(
@@ -420,8 +458,11 @@ fun ShoppingListScreen(
                                     shoppingListScreenViewModel.cancelAddCustomItemAlert()
                                 }
                                 ConfirmAlertButton(buttonText = "Confirm") {
-                                    shoppingListScreenViewModel.addCustomItem()
-                                    scrollDown = true
+                                    coroutineScope.launch {
+                                        shoppingListScreenViewModel.addCustomItem()
+                                        scrollDown = true
+                                    }
+
                                 }
                             }
                         }
@@ -446,12 +487,14 @@ fun ShoppingListScreen(
 
 @Composable
 fun RecipeIconWithButton(
-    modifier: Modifier,
+//    modifier: Modifier,
+    isCompact: Boolean,
     recipeWithIngredients: RecipeWithIngredients,
     isWorking: Boolean,
-    filterWasClicked: Boolean,
+//    filterWasClicked: Boolean,
     isClickable: Boolean,
     onFilterClick: () -> Unit,
+    onClearFilterClick: () -> Unit,
     onDetailsClick: () -> Unit
 ){
 
@@ -486,27 +529,28 @@ fun RecipeIconWithButton(
             1f
         else
             0.30f,
-        animationSpec = tween(
-            durationMillis = 150,
-            delayMillis = 0,
-            easing = LinearEasing,
-        )
+        animationSpec = tween(durationMillis = 150, delayMillis = 0, easing = LinearEasing,)
     )
 
+    val (borderColors, mainColor, contentColor) = if (recipeWithIngredients.recipeEntity.isShoppingFilter == 2) {
+        Triple(listOf(Color(0xFF682300), Color(0xFF682300)), Color(0xFFd8af84), Color(0xFF682300))
+    } else {
+        Triple(listOf(Color(0xFFb15f33), Color(0xFFb15f33)), Color(0xFF682300), Color(0xFFd8af84))
+    }
+
     Column(
-        modifier
+        Modifier
             .wrapContentSize()
             .alpha(alphaAnim),
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         Surface(
             modifier = Modifier
-                .aspectRatio(1f)
-                .size(160.dp)
                 .padding(top = 8.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
+                .size(if (isCompact) 120.dp else 200.dp)
                 .align(Alignment.CenterHorizontally)
                 .border(
-                    width = 2.dp,
+                    width = if (isCompact) 2.dp else 4.dp,
                     brush = (Brush.horizontalGradient(
                         startX = -10f,
                         colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
@@ -515,8 +559,8 @@ fun RecipeIconWithButton(
                     shape = RoundedCornerShape(15.dp)
                 )
                 .clickable(
-                    enabled = !isWorking && isClickable && !filterWasClicked,
-                    onClick = onFilterClick
+                    enabled = !isWorking && recipeWithIngredients.recipeEntity.isShoppingFilter != 0,
+                    onClick = onDetailsClick
                 ),
             shape = RoundedCornerShape(15.dp),
             elevation = 6.dp,
@@ -525,18 +569,18 @@ fun RecipeIconWithButton(
             AsyncImage(
                 model = image,
                 contentDescription = null,
-                modifier = Modifier.aspectRatio(1f).fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
             )
             Column(
-                modifier = Modifier.aspectRatio(1f).fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
                 Text(
                     text = recipeWithIngredients.recipeEntity.recipeName,
                     modifier = Modifier.padding(start = 2.dp, end = 2.dp),
-                    fontSize = 20.sp,
+                    fontSize = if(isCompact) 18.sp else 22.sp,
                     color = Color(0xFFFFFFFF),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.h4.copy(
@@ -555,28 +599,38 @@ fun RecipeIconWithButton(
 
         Surface(
             modifier = Modifier
-                .wrapContentSize()
+                .wrapContentWidth()
+                .height(36.dp)
                 .border(
                     width = 2.dp,
                     brush = (Brush.horizontalGradient(
                         startX = -10f,
-                        colors = listOf(Color(0xFFb15f33), Color(0xFFb15f33)),
+                        colors = borderColors,
                         tileMode = TileMode.Mirror
                     )),
                     shape = RoundedCornerShape(25.dp)
                 )
-                .clickable(enabled = !isWorking && !filterWasClicked) { onDetailsClick() },
+                .clickable(enabled = !isWorking && isClickable && recipeWithIngredients.recipeEntity.isShoppingFilter != 0)
+                    {
+                        if(recipeWithIngredients.recipeEntity.isShoppingFilter == 2){
+                            onClearFilterClick()
+                        }
+                        else{
+                            onFilterClick()
+                        }
+
+                    },
             shape = RoundedCornerShape(25.dp),
-            color = Color(0xFF682300),
+            color = mainColor,
             elevation = 6.dp,
-            contentColor = Color(0xFFd8af84),
+            contentColor = contentColor,
         ){
             Text(
-                text = "Details",
+                text = if (recipeWithIngredients.recipeEntity.isShoppingFilter == 2) "Clear Filter" else "Filter",
                 modifier = Modifier
                     .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 8.dp)
                     .background(color = Color.Transparent),
-                color = Color(0xFFd8af84),
+                color = contentColor,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
             )
@@ -592,7 +646,7 @@ fun RecipeIconWithButton(
 
 @Composable
 fun ShoppingListItemWithButton(
-    modifier: Modifier,
+//    modifier: Modifier,
     isCompact: Boolean,
     ingredientEntity: IngredientsWithQuantities,
     isWorking: Boolean,
@@ -640,9 +694,9 @@ fun ShoppingListItemWithButton(
 
 
     Surface(
-        modifier = modifier
+        modifier = Modifier
             .padding(start = 8.dp, top = 8.dp, end = 8.dp)
-            .width(if(isCompact) 240.dp else 300.dp)
+            .width(if (isCompact) 240.dp else 300.dp)
             .defaultMinSize(minHeight = 36.dp)
 //            .wrapContentHeight()
             .alpha(alphaAnim)
@@ -693,7 +747,7 @@ fun ShoppingListItemWithButton(
 
             Text(
                 modifier = Modifier
-                    .padding(start = 2.dp, bottom = 2.dp)
+                    .padding(start = 2.dp, bottom = 2.dp, end = 2.dp)
                     .align(Alignment.CenterVertically)
                     .alpha(alphaLevel),
                 text = myText,
@@ -720,7 +774,8 @@ fun ShoppingListItemWithButton(
 
 @Composable
 fun CustomShoppingListItem(
-    modifier: Modifier,
+//    modifier: Modifier,
+    isCompact: Boolean,
     shoppingListCustomItemEntity: ShoppingListCustomItemsEntity,
     isWorking: Boolean,
     onClickItemSelected: () -> Unit,
@@ -766,9 +821,9 @@ fun CustomShoppingListItem(
 
 
     Surface(
-        modifier = modifier
+        modifier = Modifier
             .padding(start = 8.dp, top = 8.dp, end = 8.dp)
-            .width(240.dp)
+            .width(if (isCompact) 240.dp else 300.dp)
             .height(36.dp)
             .alpha(alphaAnim)
             .border(
@@ -840,6 +895,7 @@ fun CustomShoppingListItem(
 @Composable
 fun AddCustomItemButton(
     modifier: Modifier,
+    isCompact: Boolean,
     isWorking: Boolean,
     onClickAddItem: () -> Unit,
 ){
@@ -859,7 +915,7 @@ fun AddCustomItemButton(
     Surface(
         modifier = modifier
             .padding(start = 8.dp, top = 8.dp, end = 8.dp)
-            .width(240.dp)
+            .width(if (isCompact) 240.dp else 300.dp)
             .height(36.dp)
             .alpha(alphaAnim)
             .border(
@@ -902,6 +958,7 @@ fun AddCustomItemButton(
 @Composable
 fun ClearCustomItemButton(
     modifier: Modifier,
+    isCompact: Boolean,
     isWorking: Boolean,
     onClickClearAll: () -> Unit,
 ){
@@ -921,7 +978,7 @@ fun ClearCustomItemButton(
     Surface(
         modifier = modifier
             .padding(start = 8.dp, top = 8.dp, end = 8.dp)
-            .width(240.dp)
+            .width(if (isCompact) 240.dp else 300.dp)
             .height(36.dp)
             .alpha(alphaAnim)
             .border(

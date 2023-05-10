@@ -12,9 +12,13 @@ import com.christopherromano.culinarycompanion.datamodel.IngredientsWithQuantiti
 import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredients
 import com.christopherromano.culinarycompanion.datamodel.ShoppingScreenUiState
 import com.christopherromano.culinarycompanion.datamodel.UiAlertStateShoppingScreenDataModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
@@ -61,67 +65,91 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
 
 
-    fun filterBy(recipe: RecipeWithIngredients){
+    suspend fun filterBy(recipe: RecipeWithIngredients){
 
 
         coroutineScope.launch(Dispatchers.IO) {
 
-            shoppingScreenUiState.value.isWorking = true
-
-
-            if (recipe.recipeEntity.isShoppingFilter == 0 ||
-                recipe.recipeEntity.isShoppingFilter == 1
-            ) {
-
-                    withContext(Dispatchers.IO) { repository.removeOtherFilters(recipe.recipeEntity.recipeName) }
-                    withContext(Dispatchers.IO) { repository.filterBy(recipe.recipeEntity.recipeName) }
-
-                var match = false
-
-                for (x in 0 until (selectedIngredients.value?.size ?: 0)) {
-                    for (y in 0 until recipe.ingredientsList.size) {
-                        if (selectedIngredients.value?.get(x)?.ingredientName == recipe.ingredientsList[y].ingredientName) {
-                            match = true
-                            break
-                        }
-                    }
-                    if (!match) {
-                        selectedIngredients.value?.get(x)?.ingredientName?.let {
-                            repository.setIngredientToNotShown(it)
-                        }
-                    } else {
-                        selectedIngredients.value?.get(x)?.ingredientName?.let {
-                            repository.setIngredientToShown(it)
-                        }
-                    }
-                    match = false
-                }
-
-                shoppingScreenUiState.update {
-                    it.copy(isFiltered = true)
-                }
-
-
-            } else if (recipe.recipeEntity.isShoppingFilter == 2) {
-
-                    withContext(Dispatchers.IO) {
-                        repository.cleanIngredients();
-                        repository.cleanFilters()
-                    }
-
-                shoppingScreenUiState.update {
-                    it.copy(isFiltered = false)
-                }
-
+            shoppingScreenUiState.update {
+                it.copy(isWorking = true)
             }
 
-            shoppingScreenUiState.value.isWorking = false
+            repository.removeOtherFilters(recipe.recipeEntity.recipeName)
+            repository.filterBy(recipe.recipeEntity.recipeName)
+
+            val ingredientsToBeShown = mutableListOf<String>()
+            val ingredientsNotToBeShown = mutableListOf<String>()
+
+            var match = false
+
+
+
+            for (x in 0 until (selectedIngredients.value?.size ?: 0)) {
+                for (y in 0 until recipe.ingredientsList.size) {
+                    if (selectedIngredients.value?.get(x)?.ingredientName == recipe.ingredientsList[y].ingredientName) {
+                        match = true
+                        break
+                    }
+                }
+                if (!match) {
+                    selectedIngredients.value?.get(x)?.ingredientName?.let {
+//                        repository.setIngredientToNotShown(it)
+                        ingredientsNotToBeShown.add(it)
+                    }
+                } else {
+                    selectedIngredients.value?.get(x)?.ingredientName?.let {
+//                        repository.setIngredientToShown(it)
+                        ingredientsToBeShown.add(it)
+                    }
+                }
+                match = false
+            }
+
+           repository.updateIngredients(ingredientsNotToBeShown, ingredientsToBeShown)
+
+            shoppingScreenUiState.update {
+                it.copy(
+                    isFiltered = true,
+                    isWorking = false,
+//                    triggerScroll = true
+                )
+            }
 
         }
 
     }
 
-    fun addCustomItem(){
+    fun clearFilter(){
+        coroutineScope.launch(Dispatchers.IO) {
+
+            shoppingScreenUiState.update {
+                it.copy(isWorking = true)
+            }
+
+            withContext(Dispatchers.IO) {
+                repository.cleanIngredients();
+                repository.cleanFilters()
+            }
+
+            shoppingScreenUiState.update {
+                it.copy(
+                    isFiltered = false,
+                    isWorking = false,
+//                    triggerScroll = true
+                )
+            }
+
+        }
+
+    }
+
+//    fun stopScroll(){
+//        shoppingScreenUiState.update {
+//            it.copy(triggerScroll = false)
+//        }
+//    }
+
+    suspend fun addCustomItem(){
 
         if (uiAlertState.value.inputText.text.length > 20) {
 
@@ -135,7 +163,7 @@ class ShoppingListScreenViewModel (application: Application): ViewModel() {
 
         else {
 
-            repository.addCustomItem(ShoppingListCustomItemsEntity(uiAlertState.value.inputText.text))
+            withContext(Dispatchers.IO) { repository.addCustomItem(ShoppingListCustomItemsEntity(uiAlertState.value.inputText.text)) }
 
             val myList: MutableList<ShoppingListCustomItemsEntity> = mutableListOf<ShoppingListCustomItemsEntity>()
 

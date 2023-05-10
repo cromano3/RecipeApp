@@ -93,14 +93,20 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
         }
     }
 
+    suspend fun setIngredientsToNotShown(names: List<String>){
+        shoppingListScreenDao.setIngredientsToNotShown(names)
+    }
+
+    suspend fun updateIngredients(ingredientsNotToBeShown: List<String>, ingredientsToBeShown: List<String>){
+        shoppingListScreenDao.updateIngredients(ingredientsNotToBeShown, ingredientsToBeShown)
+    }
+
     fun getCustomItems(): List<ShoppingListCustomItemsEntity>{
         return shoppingListScreenDao.getCustomItems()
     }
 
     fun addCustomItem(item: ShoppingListCustomItemsEntity){
-        coroutineScope.launch(Dispatchers.IO) {
-            shoppingListScreenDao.addCustomItem(item)
-        }
+        shoppingListScreenDao.addCustomItem(item)
     }
 
 
@@ -124,16 +130,12 @@ class ShoppingListScreenRepository(private val shoppingListScreenDao: ShoppingLi
 
 
 
-    fun removeOtherFilters(name: String){
-        coroutineScope.launch(Dispatchers.IO) {
-            shoppingListScreenDao.removeOtherFilters(name)
-        }
+    suspend fun removeOtherFilters(name: String){
+        shoppingListScreenDao.removeOtherFilters(name)
     }
 
-    fun filterBy(name: String){
-        coroutineScope.launch(Dispatchers.IO) {
-            shoppingListScreenDao.filterBy(name)
-        }
+    suspend fun filterBy(name: String){
+        shoppingListScreenDao.filterBy(name)
     }
 
 
