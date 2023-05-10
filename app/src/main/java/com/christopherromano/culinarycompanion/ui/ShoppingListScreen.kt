@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -89,6 +90,8 @@ fun ShoppingListScreen(
 
         val scrollState = rememberScrollState()
 
+        val itemHeight = with(LocalDensity.current) { 190.dp.toPx() }.toInt()
+
 
 
         var scrollDown by remember { mutableStateOf(false) }
@@ -133,7 +136,7 @@ fun ShoppingListScreen(
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 48.dp),
+                .padding(bottom = 56.dp),
             color = Color(0xFFd8af84)
         ) {
 
@@ -298,17 +301,17 @@ fun ShoppingListScreen(
 
                                     if(lastItemInfo != null && lastItemInfo.index == shoppingListScreenData.indexOf(it)){
                                         if(lastItemInfo.offset + lastItemInfo.size > listState2.layoutInfo.viewportEndOffset){
-                                            val itemHeight = 176
-                                            val viewportHeight = listState.layoutInfo.viewportEndOffset
+                                            val viewportHeight = listState2.layoutInfo.viewportEndOffset
                                             val itemsThatFit = viewportHeight / itemHeight
                                             val partialItemHeight = viewportHeight % itemHeight
-                                            val scrollToIndex = maxOf(0, lastItemInfo.index - itemsThatFit + (if (partialItemHeight > 0) 1 else 0))
-                                            listState2.animateScrollToItem(scrollToIndex, if (partialItemHeight > 0) partialItemHeight else 0)
+                                            val scrollToIndex = maxOf(0, (lastItemInfo.index + 1) - (itemsThatFit  + (if (partialItemHeight > 0) 1 else 0)))
+                                            listState2.animateScrollToItem(scrollToIndex, if (partialItemHeight > 0) itemHeight - partialItemHeight else 0)
                                         }
                                     }
-                                    else{
-                                        listState2.animateScrollToItem(index = shoppingListScreenData.indexOf(it))
+                                    else if(firstItemInfo != null && firstItemInfo.index == shoppingListScreenData.indexOf(it)){
+                                        listState2.animateScrollToItem(firstItemInfo.index)
                                     }
+
                                 }
                             },
                             onClearFilterClick = {
