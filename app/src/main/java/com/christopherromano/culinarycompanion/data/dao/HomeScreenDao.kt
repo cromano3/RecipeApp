@@ -41,6 +41,18 @@ interface HomeScreenDao {
     @Query("UPDATE recipe_table SET is_shown = 1 WHERE recipe_name = :name")
     fun setRecipeToShown(name: String)
 
+    @Transaction
+    fun updateRecipes(recipesToHide: List<String>, recipesToShow: List<String>){
+        setRecipesToNotShown(recipesToHide)
+        setRecipesToShown(recipesToShow)
+    }
+
+    @Query("UPDATE recipe_table SET is_shown = 0 WHERE recipe_name IN (:names)")
+    fun setRecipesToNotShown(names: List<String>)
+
+    @Query("UPDATE recipe_table SET is_shown = 1 WHERE recipe_name IN (:names)")
+    fun setRecipesToShown(names: List<String>)
+
     //
 
     @Transaction
@@ -76,7 +88,7 @@ interface HomeScreenDao {
     fun getFilteredList2(): LiveData<List<RecipeWithIngredients>>
 
     @Transaction
-    @Query("SELECT * FROM filters_table WHERE filter_name <> 'Unfiltered' ORDER BY is_active_filter DESC, filter_name ASC")
+    @Query("SELECT * FROM filters_table WHERE filter_name <> 'Unfiltered' ORDER BY filter_name ASC")
     fun getFilters(): LiveData<List<FilterEntity>>
 
 

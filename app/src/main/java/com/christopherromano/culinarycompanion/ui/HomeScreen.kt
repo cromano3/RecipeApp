@@ -15,7 +15,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,6 +57,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextAlign
@@ -74,7 +74,6 @@ import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredients
 import com.christopherromano.culinarycompanion.ui.components.BasicAlert
 import com.christopherromano.culinarycompanion.ui.components.SmallRecipeCard
 import com.christopherromano.culinarycompanion.viewmodel.HomeScreenViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -121,20 +120,23 @@ fun HomeScreen(
 
         val coroutineScope = rememberCoroutineScope()
 
+        val itemWidth = with(LocalDensity.current) { 82.dp.toPx() }.toInt()
+        val scrollOffset = with(LocalDensity.current) { 4.dp.toPx() }.toInt()
+
         val listState = rememberLazyListState()
 
         println("IS COMPACT $isCompact")
 
 
-        if(uiFiltersState.triggerScroll){
-            coroutineScope.launch {
-                homeScreenViewModel.cancelScroll()
-                delay(420)
-//                listState.animateScrollToItem(0)
-                listState.animateScrollBy(value= -5000f, animationSpec = tween(durationMillis = 1000))
-
-            }
-        }
+//        if(uiFiltersState.triggerScroll){
+//            coroutineScope.launch {
+//                homeScreenViewModel.cancelScroll()
+//                delay(420)
+////                listState.animateScrollToItem(0)
+//                listState.animateScrollBy(value= -5000f, animationSpec = tween(durationMillis = 1000))
+//
+//            }
+//        }
 
 
             Surface(
@@ -150,18 +152,53 @@ fun HomeScreen(
                             Color(0xFFd8af84)
                         ),
                         state = listState,
-                        userScrollEnabled = uiFiltersState.isScrollable
+                        userScrollEnabled = true
                     ){
                         items(filtersList, key = { it.filterName }) {
 
                             FiltersButton(
-                                modifier = Modifier
-                                    .animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
+//                                modifier = Modifier
+//                                    .animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
                                 filterEntity = it,
                                 isWorking = uiFiltersState.isWorking,
                                 onFilterClick =
                                 {
-                                    homeScreenViewModel.filterBy(it)
+                                    coroutineScope.launch {
+
+                                        homeScreenViewModel.filterBy(it)
+
+                                        val lastItemInfo =
+                                            listState.layoutInfo.visibleItemsInfo.lastOrNull()
+                                        val firstItemInfo =
+                                            listState.layoutInfo.visibleItemsInfo.firstOrNull()
+
+                                        if (lastItemInfo != null && lastItemInfo.index == filtersList.indexOf(it))
+                                        {
+                                            if (lastItemInfo.offset + lastItemInfo.size > listState.layoutInfo.viewportEndOffset)
+                                            {
+                                                val viewportWidth =
+                                                    listState.layoutInfo.viewportEndOffset
+                                                val itemsThatFit = viewportWidth / itemWidth
+                                                val partialItemHeight = viewportWidth % itemWidth
+                                                val scrollToIndex = maxOf(
+                                                    0,
+                                                    (lastItemInfo.index + 1) - (itemsThatFit + (if (partialItemHeight > 0) 1 else 0))
+                                                )
+                                                listState.animateScrollToItem(
+                                                    scrollToIndex,
+                                                    (if (partialItemHeight > 0) itemWidth - partialItemHeight else 0) + scrollOffset
+                                                )
+                                            }
+                                        } else if (firstItemInfo != null && firstItemInfo.index == filtersList.indexOf(it))
+                                        {
+                                            listState.animateScrollToItem(firstItemInfo.index)
+                                        }
+                                    }
+
+                                },
+                                onClearFilterClick =
+                                {
+                                    homeScreenViewModel.clearFilter()
                                 },
                             )
                         }
@@ -351,10 +388,11 @@ fun HomeScreen(
 
 @Composable
 fun FiltersButton(
-    modifier: Modifier,
+//    modifier: Modifier,
     filterEntity: FilterEntity,
     isWorking: Boolean,
     onFilterClick: () -> Unit,
+    onClearFilterClick: () -> Unit,
 ){
     val image: Int = when (filterEntity.filterName) {
         "Asian" -> R.drawable.noodles
@@ -378,7 +416,7 @@ fun FiltersButton(
     val isActiveFilterBool: Boolean = filterEntity.isActiveFilter == 1 || filterEntity.isActiveFilter == 2
 
     val alphaAnim: Float by animateFloatAsState(
-        targetValue = if (filterEntity.isActiveFilter == 1 || filterEntity.isActiveFilter == 2) 1f else 0.20f,
+        targetValue = if (isActiveFilterBool) 1f else 0.20f,
         animationSpec = tween(
             durationMillis = 150,
             delayMillis = 0,
@@ -388,7 +426,7 @@ fun FiltersButton(
 
 
     Surface(
-        modifier = modifier
+        modifier = Modifier
             .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
             .width(74.dp)
             .height(74.dp)
@@ -402,8 +440,8 @@ fun FiltersButton(
             )
             .alpha(alphaAnim)
             .clickable(
-                enabled = isActiveFilterBool && !isWorking,
-                onClick = onFilterClick,
+                enabled = !isWorking,
+                onClick = if(filterEntity.isActiveFilter == 2) onClearFilterClick else onFilterClick,
             ),
         shape = RoundedCornerShape(12.dp),
         color = Color(0xFF682300),

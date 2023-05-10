@@ -130,7 +130,7 @@ fun ShoppingListScreen(
 
         val scrollState = rememberScrollState()
 
-        val itemHeight = with(LocalDensity.current) { 190.dp.toPx() }.toInt()
+        val itemHeight = with(LocalDensity.current) { if(isCompact) 190.dp.toPx() else 270.dp.toPx() }.toInt()
 
 
 
@@ -211,20 +211,26 @@ fun ShoppingListScreen(
                     }
 
 
-//                    if(uiState.customItems.isNotEmpty()){
-                    item{
+                    if(uiState.customItems.isNotEmpty()) {
+                        item {
 //                    androidx.compose.animation.AnimatedVisibility(
 //                        visible = (uiState.customItems.isNotEmpty() && !uiState.isWorking),
 //                        enter = fadeIn(TweenSpec(20)),
 //                        exit = fadeOut(TweenSpec(20)),
 //                    ) {
-                        Text(text = "Custom Items",
-                            modifier = Modifier.padding(top = 8.dp, start = 8.dp, bottom = 2.dp),
-                            fontSize = 18.sp,
-                            fontFamily = Cabin,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF682300)
-                        )
+                            Text(
+                                text = "Custom Items",
+                                modifier = Modifier.padding(
+                                    top = 8.dp,
+                                    start = 8.dp,
+                                    bottom = 2.dp
+                                ),
+                                fontSize = 18.sp,
+                                fontFamily = Cabin,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF682300)
+                            )
+                        }
                     }
 
 

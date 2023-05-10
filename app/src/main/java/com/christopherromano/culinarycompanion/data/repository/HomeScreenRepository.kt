@@ -68,6 +68,10 @@ class HomeScreenRepository(private val homeScreenDao: HomeScreenDao) {
         homeScreenDao.setRecipeToShown(name)
     }
 
+    fun updateIngredients(recipesNotToBeShown: List<String>, recipesToBeShown: List<String>){
+        homeScreenDao.updateRecipes(recipesNotToBeShown, recipesToBeShown)
+    }
+
     //
 
     fun cleanFilters(){

@@ -11,9 +11,14 @@ import com.christopherromano.culinarycompanion.datamodel.HomeScreenDataModel
 import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredients
 import com.christopherromano.culinarycompanion.datamodel.UiAlertStateHomeScreenDataModel
 import com.christopherromano.culinarycompanion.datamodel.UiFiltersStateDataModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeScreenViewModel(application: Application): ViewModel() {
 
@@ -74,7 +79,7 @@ class HomeScreenViewModel(application: Application): ViewModel() {
     fun cancelScroll(){
         uiFiltersState.update { currentState ->
             currentState.copy(
-                triggerScroll = false
+//                triggerScroll = false
             )
         }
     }
@@ -104,97 +109,102 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         }
     }
 
-    fun filterBy(filter: FilterEntity){
-        coroutineScope.launch(Dispatchers.Main) {
+    suspend fun filterBy(filter: FilterEntity){
+
+//        coroutineScope.launch(Dispatchers.Main) {
 
         uiFiltersState.update { currentState ->
             currentState.copy(
                 isWorking = true,
-                isScrollable = !uiFiltersState.value.isScrollable
+                showAllRecipes = false,
+//              triggerScroll = true
+//              isScrollable = !uiFiltersState.value.isScrollable
             )
         }
-            if (filter.isActiveFilter == 0 ||
-                filter.isActiveFilter == 1
-            ) {
-                uiFiltersState.update { currentState ->
-                    currentState.copy(
-                        showAllRecipes = false,
-                        triggerScroll = true
-                    )
-                }
 
-                //allows fade out animation 300
-                delay(300)
+        //allows fade out animation 300
+        delay(300)
 
-                uiFiltersState.update { currentState ->
-                    currentState.copy(
-                        isFiltered = true,
-                    )
-                }
+//                uiFiltersState.update { currentState ->
+//                    currentState.copy(
+//                        isFiltered = true,
+//                    )
+//                }
 
-                withContext(Dispatchers.IO) { repository.removeOtherFilters(filter.filterName) }
-                withContext(Dispatchers.IO) { repository.filterBy(filter.filterName)  }
+        withContext(Dispatchers.IO) { repository.removeOtherFilters(filter.filterName) }
+        withContext(Dispatchers.IO) { repository.filterBy(filter.filterName)  }
 
-                var match = false
+        val recipesToBeShown = mutableListOf<String>()
+        val recipesNotToBeShown = mutableListOf<String>()
 
-                for (x in 0 until (referenceList.value?.size ?: 0)) {
-                    for (y in 0 until (referenceList.value?.get(x)?.filtersList?.size ?: 0)) {
-                        if ((referenceList.value?.get(x)?.filtersList?.get(y)?.filterName
-                                ?: 0) == filter.filterName
-                        ) {
-                            match = true
-                            break
-                        }
-                    }
-                    if (!match) {
-                        referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
-                            withContext(Dispatchers.IO) { repository.setRecipeToNotShown(it) }
-                        }
-                    } else {
-                        referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
-                            withContext(Dispatchers.IO) { repository.setRecipeToShown(it) }
-                        }
-                    }
-                    match = false
-                }
+        var match = false
 
-                uiFiltersState.update { currentState ->
-                    currentState.copy(
-                        showAllRecipes = true,
-                    )
-                }
-
-            } else if (filter.isActiveFilter == 2) {
-
-                uiFiltersState.update { currentState ->
-                    currentState.copy(showAllRecipes = false)
-                }
-                //this delay allows the fade out animation to take place/finish before getting cut
-                //off. It could/should be reduced to the duration of the animation itself.
-                delay(300)
-
-                uiFiltersState.update { currentState ->
-                    currentState.copy(
-                        isFiltered = false,
-                    )
-                }
-
-                withContext(Dispatchers.IO) { repository.cleanRecipes() }
-                withContext(Dispatchers.IO) { repository.cleanFilters() }
-
-                uiFiltersState.update { currentState ->
-                    currentState.copy(
-                        showAllRecipes = true,
-                    )
+        for (x in 0 until (referenceList.value?.size ?: 0)) {
+            for (y in 0 until (referenceList.value?.get(x)?.filtersList?.size ?: 0)) {
+                if ((referenceList.value?.get(x)?.filtersList?.get(y)?.filterName
+                        ?: 0) == filter.filterName
+                ) {
+                    match = true
+                    break
                 }
             }
-
-            uiFiltersState.update { currentState ->
-                currentState.copy(isWorking = false,)
+            if (!match) {
+                referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
+//                            withContext(Dispatchers.IO) { repository.setRecipeToNotShown(it) }
+                    recipesNotToBeShown.add(it)
+                }
+            } else {
+                referenceList.value?.get(x)?.recipeEntity?.recipeName?.let {
+//                            withContext(Dispatchers.IO) { repository.setRecipeToShown(it) }
+                    recipesToBeShown.add(it)
+                }
             }
-
+            match = false
         }
 
+        withContext(Dispatchers.IO) { repository.updateIngredients(recipesNotToBeShown, recipesToBeShown) }
+
+        uiFiltersState.update { currentState ->
+            currentState.copy(
+                showAllRecipes = true,
+                isWorking = false
+            )
+        }
+
+
+//        }
+
+    }
+
+    fun clearFilter(){
+        coroutineScope.launch {
+
+            uiFiltersState.update { currentState ->
+                currentState.copy(
+                    showAllRecipes = false,
+                    isWorking = true,
+                )
+            }
+            //this delay allows the fade out animation to take place/finish before getting cut
+            //off. It could/should be reduced to the duration of the animation itself.
+            delay(300)
+
+//            uiFiltersState.update { currentState ->
+//                currentState.copy(
+//                    isFiltered = false,
+//                )
+//            }
+
+            withContext(Dispatchers.IO) { repository.cleanRecipes() }
+            withContext(Dispatchers.IO) { repository.cleanFilters() }
+
+            uiFiltersState.update { currentState ->
+                currentState.copy(
+                    showAllRecipes = true,
+                    isWorking = false,
+                )
+            }
+        }
     }
 
 
