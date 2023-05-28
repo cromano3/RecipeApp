@@ -45,7 +45,6 @@ import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmComp
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmIMadeThisAnoString
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmRemoveMenuAnoString
 import com.christopherromano.culinarycompanion.data.annotatedstrings.confirmSubmitReportAnoString
-import com.christopherromano.culinarycompanion.data.entity.InstructionEntity
 import com.christopherromano.culinarycompanion.data.entity.RecipeEntity
 import com.christopherromano.culinarycompanion.data.repository.DetailsScreenFirebaseRepository
 import com.christopherromano.culinarycompanion.datamodel.AuthorDataWithComment
@@ -461,7 +460,7 @@ fun NewDetailsScreen(
 
                     //Instructions List
 
-                    items(instructionsList ?: listOf<InstructionEntity>(), key = { it.instruction })
+                    items(instructionsList ?: listOf(), key = { it.instruction })
                     {
                         Surface(
                             modifier = Modifier
@@ -549,7 +548,7 @@ fun NewDetailsScreen(
                             )
                         }
                         if(commentsList.size == 4 && isCommentListSizeLimited){
-                            item() {
+                            item {
                                 ConfirmAlertButton(buttonText = "Show All Comments") {
                                     isCommentListSizeLimited = false
                                     detailsScreenViewModel.changeLimit()
@@ -678,7 +677,6 @@ fun NewDetailsScreen(
                         onCancelClick = { detailsScreenViewModel.doNotAddToFavorite(recipeData.recipeEntity) },
                         onDismiss = { detailsScreenViewModel.cancelFavoriteAlert() }
                     )
-                        
 
 
                 }

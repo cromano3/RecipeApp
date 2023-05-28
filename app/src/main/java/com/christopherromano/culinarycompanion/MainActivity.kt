@@ -580,7 +580,7 @@ fun CulinaryCompanionBottomBar(
             contentColor = Color(0xFFd8af84)
         ) {
 
-            val routes = listOf("RecipeScreen", "WeeklyMenuScreen", "ShoppingScreen")
+            val routes = listOf("RecipeScreen", "WeeklyMenuScreen", "ShoppingScreen", "ProfileScreen")
 
             var selected: Boolean
             var alpha: Float
@@ -610,12 +610,12 @@ fun CulinaryCompanionBottomBar(
                         else if(currentRoute == "DetailsScreen"){
                             navController.popBackStack()
                         }
-                        else if (currentRoute == "ProfileScreen") {
-                            navController.popBackStack()
-                        }
+//                        else if (currentRoute == "ProfileScreen") {
+//                            navController.popBackStack()
+//                        }
                         else if (currentRoute == "SettingsScreen") {
                             navController.popBackStack()
-                            navController.popBackStack()
+//                            navController.popBackStack()
                         }
 
                         if(currentRoute != it){
@@ -658,6 +658,10 @@ fun CulinaryCompanionBottomBar(
                                 Icons.Outlined.ShoppingCart,
                                 contentDescription = "Go to shopping list screen."
                             )
+                            "ProfileScreen" -> Icon(
+                                Icons.Outlined.Person,
+                                contentDescription = "Go to profile screen."
+                            )
                         }
                     },
                     modifier = Modifier
@@ -669,7 +673,16 @@ fun CulinaryCompanionBottomBar(
                                     Color(0xFFFFFFFF)
                                 )
                             ), alpha = 0.1f
-                        )
+                        ),
+                    label = {
+                        when (it) {
+                            "RecipeScreen" -> Text(text = "Recipes")
+                            "WeeklyMenuScreen" -> Text(text = "Menu")
+                            "ShoppingScreen" -> Text(text = "Shopping List")
+                            "ProfileScreen" -> Text(text = "Profile")
+
+                        }
+                    }
 
                 )
             }
@@ -714,6 +727,7 @@ fun CulinaryCompanionTopBar(
         var showSearchField = false
         var showIcon = false
         var showIcon2 = false
+        var showDummyIcon1 = false
         var showDummyIcon = false
         var icon = Icons.Outlined.Home
         var icon2 = Icons.Outlined.Home
@@ -748,8 +762,9 @@ fun CulinaryCompanionTopBar(
                 showSearchField = false
                 showShare = false
                 showIcon = false
-                showIcon2 = true
-                showDummyIcon = false
+                showDummyIcon1 = true
+                showIcon2 = false
+                showDummyIcon = true
             }
             "WeeklyMenuScreen" -> {
                 show = true
@@ -763,9 +778,10 @@ fun CulinaryCompanionTopBar(
                 showSearchField = false
                 showSearchButton = false
                 showShare = false
-                showIcon = true
-                showIcon2 = true
-                showDummyIcon = false
+                showIcon = false
+                showDummyIcon1 = true
+                showIcon2 = false
+                showDummyIcon = true
             }
             "ShoppingScreen" -> {
                 show = true
@@ -779,9 +795,10 @@ fun CulinaryCompanionTopBar(
                 showSearchField = false
                 showSearchButton = false
                 showShare = false
-                showIcon = true
-                showIcon2 = true
-                showDummyIcon = false
+                showIcon = false
+                showDummyIcon1 = true
+                showIcon2 = false
+                showDummyIcon = true
             }
             "ProfileScreen" -> {
                 show = true
@@ -795,9 +812,10 @@ fun CulinaryCompanionTopBar(
                 showSearchField = false
                 showSearchButton = false
                 showShare = false
-                showIcon = true
-                showIcon2 = true
-                showDummyIcon = false
+                showIcon = false
+                showDummyIcon1 = true
+                showIcon2 = false
+                showDummyIcon = true
             }
             "SettingsScreen" -> {
                 show = true
@@ -812,8 +830,8 @@ fun CulinaryCompanionTopBar(
                 showSearchButton = false
                 showShare = false
                 showIcon = true
-                showIcon2 = true
-                showDummyIcon = false
+                showIcon2 = false
+                showDummyIcon = true
             }
             "SearchScreen" -> {
                 show = true
@@ -929,6 +947,9 @@ fun CulinaryCompanionTopBar(
                     horizontalArrangement = if(currentScreen != "CommentScreen") Arrangement.SpaceBetween else Arrangement.Center
                 ) {
 
+                    if(showDummyIcon1){
+                        Spacer(Modifier.padding(start = 16.dp).size(48.dp))
+                    }
                     //shows clickable only search button on main screen to go to search screen
                     if (showSearchButton) {
                         Surface(
@@ -1002,6 +1023,7 @@ fun CulinaryCompanionTopBar(
                         }
                     }
 
+
                     if(showTitle){
                         Text(
                             text = title,
@@ -1066,7 +1088,10 @@ fun CulinaryCompanionTopBar(
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 tileMode = TileMode.Mirror,
                                             )),
                                             shape = CircleShape
@@ -1099,7 +1124,10 @@ fun CulinaryCompanionTopBar(
                                         .border(
                                             width = 2.dp,
                                             brush = (Brush.horizontalGradient(
-                                                colors = listOf(Color(0xFFd8af84), Color(0xFFb15f33)),
+                                                colors = listOf(
+                                                    Color(0xFFd8af84),
+                                                    Color(0xFFb15f33)
+                                                ),
                                                 endX = gradientWidthButton,
                                                 tileMode = TileMode.Mirror,
                                             )),
@@ -1138,7 +1166,7 @@ fun CulinaryCompanionTopBar(
                                 }
                             }
                             if(showDummyIcon){
-                                Spacer(Modifier.size(48.dp))
+                                Spacer(Modifier.padding(end = 16.dp).size(48.dp))
                             }
                         }
 
