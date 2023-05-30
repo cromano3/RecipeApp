@@ -14,8 +14,6 @@ data class UiAlertStateDetailsScreenDataModel(
     val showReportAlert: Boolean = false,
     val isThumbDownSelected: Boolean = false,
     val isThumbUpSelected: Boolean = false,
-//    val showWriteReviewAlert: Boolean = false,
-//    val showReviewTextInputAlert: Boolean = false,
     val reportedComment: AuthorDataWithComment = AuthorDataWithComment(
         AuthorData("","",0),
         CommentsEntity()

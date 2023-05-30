@@ -21,17 +21,9 @@ class HomeScreenViewModel(application: Application): ViewModel() {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     var homeScreenData: LiveData<List<HomeScreenDataModel>>
-
     var referenceList: LiveData<List<HomeScreenDataModel>>
-
-
-
-    //GOOD!!!
     var filtersList: LiveData<List<FilterEntity>>
-    //GOOD!!
-
     var shownRecipeList: LiveData<List<RecipeWithIngredients>>
-
     var showTutorial: LiveData<String>
 
 
@@ -41,8 +33,6 @@ class HomeScreenViewModel(application: Application): ViewModel() {
 
     var filteredList1: LiveData<List<RecipeWithIngredients>>
     var filteredList2: LiveData<List<RecipeWithIngredients>>
-
-//    val uiState = MutableStateFlow(HomeScreenUiStateDataModel())
 
     val uiFiltersState = MutableStateFlow(UiFiltersStateDataModel())
     val uiAlertState = MutableStateFlow(UiAlertStateHomeScreenDataModel())
@@ -58,10 +48,6 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         val homeScreenDao = appDb.HomeScreenDao()
         repository = HomeScreenRepository(homeScreenDao)
 
-//        cleanUpSort()
-//        cleanUpFilters()
-//        newGetData()
-
         filterCount = 0
         isSecondFiltered = false
         myFiltersList = mutableListOf()
@@ -74,10 +60,6 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         unfilteredList = repository.unfilteredList
         filteredList1 = repository.filteredList1
         filteredList2 = repository.filteredList2
-
-//        newGetData()
-
-        //
 
         coroutineScope.launch(Dispatchers.IO) {
             async(Dispatchers.IO) { repository.cleanRecipes() }
@@ -197,13 +179,8 @@ class HomeScreenViewModel(application: Application): ViewModel() {
                     )
                 }
 
-//                coroutineScope.launch(Dispatchers.IO) {
-//                println("zero")
-                    withContext(Dispatchers.IO) { repository.cleanRecipes() }
-//                println("first")
-                    withContext(Dispatchers.IO) { repository.cleanFilters() }
-//                println("second")
-//                }
+                withContext(Dispatchers.IO) { repository.cleanRecipes() }
+                withContext(Dispatchers.IO) { repository.cleanFilters() }
 
                 uiFiltersState.update { currentState ->
                     currentState.copy(
@@ -212,11 +189,9 @@ class HomeScreenViewModel(application: Application): ViewModel() {
                 }
             }
 
-        uiFiltersState.update { currentState ->
-            currentState.copy(
-                isWorking = false,
-                )
-        }
+            uiFiltersState.update { currentState ->
+                currentState.copy(isWorking = false,)
+            }
 
         }
 
@@ -255,7 +230,4 @@ class HomeScreenViewModel(application: Application): ViewModel() {
         }
     }
 
-    suspend fun setDetailsScreenTarget(recipeName: String){
-        repository.setDetailsScreenTarget(recipeName)
-    }
 }

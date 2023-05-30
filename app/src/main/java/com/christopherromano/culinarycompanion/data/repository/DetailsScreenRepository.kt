@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.christopherromano.culinarycompanion.data.dao.DetailsScreenDao
 import com.christopherromano.culinarycompanion.data.entity.IngredientEntity
+import com.christopherromano.culinarycompanion.data.entity.InstructionEntity
 import com.christopherromano.culinarycompanion.data.entity.QuantitiesTableEntity
 import com.christopherromano.culinarycompanion.datamodel.RecipeWithIngredientsAndInstructions
-import com.christopherromano.culinarycompanion.datamodel.ReviewWithAuthorDataModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,8 +15,6 @@ import kotlinx.coroutines.launch
 class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
-
-//    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions> = detailsScreenDao.getData()
     private val recipeNameLiveData = MutableLiveData<String>()
 
     private val _ingredientQuantitiesList: LiveData<List<QuantitiesTableEntity>> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
@@ -70,12 +68,13 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
         }
     }
 
-    val reviewsData: LiveData<List<ReviewWithAuthorDataModel>> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
-        detailsScreenDao.getReviewsData(recipeName)
-    }
 
     val globalRating: LiveData<Int> = Transformations.switchMap(recipeNameLiveData) { recipeName ->
         detailsScreenDao.getGlobalRating(recipeName)
+    }
+
+    val instructionsList: LiveData<List<InstructionEntity>> = Transformations.switchMap(recipeNameLiveData) {
+        detailsScreenDao.getInstructionsList(it)
     }
 
     fun setGlobalRating(recipeName: String, globalRating: Int) {
@@ -90,13 +89,13 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
 
 
 
-    suspend fun removeFromMenu(recipeName: String){
+    fun removeFromMenu(recipeName: String){
 
-            detailsScreenDao.removeFromMenu(recipeName)
+        detailsScreenDao.removeFromMenu(recipeName)
 
     }
 
-    suspend fun addToMenu(recipeName: String){
+    fun addToMenu(recipeName: String){
 
         detailsScreenDao.addToMenu(recipeName)
 
@@ -114,15 +113,15 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
         }
     }
 
-    suspend fun updateQuantityNeeded(ingredientName: String, quantityNeeded: Int){
+    fun updateQuantityNeeded(ingredientName: String, quantityNeeded: Int){
 
-            detailsScreenDao.updateQuantityNeeded(ingredientName, quantityNeeded)
+        detailsScreenDao.updateQuantityNeeded(ingredientName, quantityNeeded)
 
     }
 
-    suspend fun setIngredientQuantityOwned(ingredientEntity: IngredientEntity, quantityOwned: Int){
+    fun setIngredientQuantityOwned(ingredientEntity: IngredientEntity, quantityOwned: Int){
 
-            detailsScreenDao.setIngredientQuantityOwned(ingredientEntity.ingredientName, quantityOwned)
+        detailsScreenDao.setIngredientQuantityOwned(ingredientEntity.ingredientName, quantityOwned)
 
     }
 
@@ -140,19 +139,7 @@ class DetailsScreenRepository(private val detailsScreenDao: DetailsScreenDao) {
         detailsScreenDao.setReviewAsWritten(recipeName)
     }
 
-    suspend fun setReviewTarget(recipeName: String){
-        println("5")
-        detailsScreenDao.setReviewTarget(recipeName)
-        println("6")
-    }
-
-    suspend fun cleanReviewTarget(){
-        println("3")
-        detailsScreenDao.cleanReviewTarget()
-        println("4")
-    }
-
-    suspend fun addExpToGive(expToGive: Int){
+    fun addExpToGive(expToGive: Int){
         detailsScreenDao.addExpToGive(expToGive)
     }
 

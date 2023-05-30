@@ -116,24 +116,6 @@ class SettingsScreenViewModel(
         }
     }
 
-
-    fun showLicenses(){
-        uiAlertState.update {
-            it.copy(
-                showLicenses = true
-            )
-        }
-    }
-
-    fun closeLicenses(){
-        uiAlertState.update {
-            it.copy(
-                showLicenses = false
-            )
-        }
-    }
-
-
     fun confirmDeleteAccount(){
         viewModelScope.launch {
 
@@ -149,17 +131,6 @@ class SettingsScreenViewModel(
                     )
                 }
             }
-//            else if(deleteResult == "FirebaseAuthRecentLoginRequiredException"){
-//
-//
-//                //show "you need to log in again first to authenticate your account before it can be deleted" message
-//
-//                uiAlertState.update {
-//                    it.copy(
-//                        showDeleteAccountAlert = false
-//                    )
-//                }
-//            }
             else{
                 println("PROBLEM MESSAGE IS: $deleteResult")
                 uiAlertState.update {

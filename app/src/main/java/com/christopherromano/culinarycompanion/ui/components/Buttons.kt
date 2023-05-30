@@ -62,7 +62,6 @@ fun DetailsScreenButton(
                 color = textColor,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
-//                fontWeight = FontWeight.Bold
 
             )
         }

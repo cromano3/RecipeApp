@@ -90,7 +90,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CulinaryCompanionTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
@@ -131,8 +130,6 @@ fun CulinaryCompanion(
         val launcher =
             rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
                 println("result code is ${ActivityResult.resultCodeToString(result.resultCode)}")
-//        if (result.resultCode == Activity.RESULT_OK) {
-                println("result ok")
                 try {
                     println("big try")
                     val credentials =
@@ -143,7 +140,6 @@ fun CulinaryCompanion(
                 } catch (it: ApiException) {
                     println("big fail with error $it")
                 }
-//        }
             }
 
         fun tryFirebaseSignIn(signInResult: BeginSignInResult) {
@@ -197,7 +193,6 @@ fun CulinaryCompanion(
                 CulinaryCompanionTopBar(
                     detailsScreenData = appUiState.detailsScreenTarget,
                     currentScreen = currentScreen,
-                    navController = navController,
                     onHomeClick = {
                         if (currentScreen == "ProfileScreen") {
                             navController.popBackStack()
@@ -275,7 +270,6 @@ fun CulinaryCompanion(
                             coroutineScope.launch(Dispatchers.Main) {
                                 withContext(Dispatchers.IO) { appViewModel.setupDetailsScreen(it) }
                                 navController.navigate("DetailsScreen")
-//                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                             }
                         },
                         updateLikes = { appViewModel.updateLikes(it) },
@@ -283,7 +277,6 @@ fun CulinaryCompanion(
                         deleteReview = { commentID, recipeName ->
                             appViewModel.deleteReview(commentID, recipeName)
                         },
-//                    { navController.navigate("DetailsScreen"){ popUpTo("ProfileScreen"){ inclusive = true } } },
                         onRemoveClick = {
                             favoriteSnackBar(
                                 it.recipeEntity,
@@ -317,7 +310,6 @@ fun CulinaryCompanion(
                                 if (navController.previousBackStackEntry?.destination?.route == "DetailsScreen") {
                                     navController.popBackStack()
                                     navController.popBackStack()
-//                                withContext(Dispatchers.IO){appViewModel.updateDetailsScreenWithJustWrittenReview()}
                                     navController.navigate("DetailsScreen")
                                 } else {
                                     navController.popBackStack()
@@ -395,8 +387,6 @@ fun CulinaryCompanion(
                             coroutineScope.launch(Dispatchers.Main) {
                                 withContext(Dispatchers.IO) { appViewModel.setupDetailsScreen(it) }
                                 navController.navigate("DetailsScreen")
-
-//                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                             }
                         },
                         onFavoriteClick = {
@@ -461,7 +451,6 @@ fun CulinaryCompanion(
                             coroutineScope.launch(Dispatchers.Main) {
                                 withContext(Dispatchers.IO) { appViewModel.setupDetailsScreen(it) }
                                 navController.navigate("DetailsScreen")
-//                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                             }
                         },
                         onFavoriteClick = {
@@ -559,7 +548,6 @@ fun CulinaryCompanion(
                             coroutineScope.launch(Dispatchers.Main) {
                                 withContext(Dispatchers.IO) { appViewModel.setupDetailsScreen(it) }
                                 navController.navigate("DetailsScreen")
-//                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                             }
                         },
                         onSystemBackClick = {
@@ -597,13 +585,6 @@ fun CulinaryCompanion(
                 ) {
                     NewDetailsScreen(
                         recipeData = appUiState.detailsScreenTarget,
-//                        reviewsData = appUiState.detailsScreenReviewsData,
-//                        appUiState = appUiState,
-//                        localUserReview = appUiState.detailsScreenLocalUserReview,
-//                        localUserNickName = appUiState.userNickname,
-//                        localUserImageIRL = appUiState.userImageURL,
-//                        onGoBackClick = { navController.popBackStack() },
-                        confirmSignInWithGoogle = { appViewModel.signInWithGoogle() },
                         storeRating = { appViewModel.storeRating(it) },
                         markAsRated = { appViewModel.markAsRated() },
                         markAsReviewed = { appViewModel.markAsReviewed() },
@@ -677,7 +658,6 @@ fun CulinaryCompanion(
                             coroutineScope.launch(Dispatchers.Main) {
                                 withContext(Dispatchers.IO) { appViewModel.setupDetailsScreen(it) }
                                 navController.navigate("DetailsScreen")
-//                            withContext(Dispatchers.IO){appViewModel.setupDetailsScreenComments(it)}
                             }
                         },
                         onFavoriteClick = { favoriteSnackBar(it, scaffoldState, coroutineScope) },
@@ -708,8 +688,6 @@ fun CulinaryCompanionBottomBar(
             contentColor = Color(0xFFd8af84)
         ) {
 
-//        val queue = navController.backQueue
-
             val routes = listOf("RecipeScreen", "WeeklyMenuScreen", "ShoppingScreen")
 
             var selected: Boolean
@@ -725,9 +703,7 @@ fun CulinaryCompanionBottomBar(
                     alpha = 0.5f
                 }
                 BottomNavigationItem(
-                    selected = selected
-//                (it == currentRoute)
-                    ,
+                    selected = selected,
                     onClick = {
                         if (currentRoute == "SearchScreen" && it == "RecipeScreen") {
                             navController.popBackStack()
@@ -814,7 +790,6 @@ fun CulinaryCompanionBottomBar(
 fun CulinaryCompanionTopBar(
     detailsScreenData: RecipeWithIngredientsAndInstructions,
     currentScreen: String,
-    navController: NavHostController,
     onHomeClick: () -> Unit,
     onBackClick: () -> Unit,
     onProfileClick: () -> Unit,
@@ -834,10 +809,8 @@ fun CulinaryCompanionTopBar(
             )
         )
 
-//        val detailsScreenData by topBarViewModel.detailsScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
         val uiState by topBarViewModel.uiState.collectAsState()
 
-//        val textFieldValue by topBarViewModel.textFieldValue.observeAsState()
         val showResults by topBarViewModel.showResults.observeAsState()
 
         var title = ""
@@ -857,10 +830,9 @@ fun CulinaryCompanionTopBar(
         val focusManager = LocalFocusManager.current
         val focusRequester = remember { FocusRequester() }
 
-//      if(!uiState.showResults && currentScreen == "SearchScreen") {
+
         if(showResults == 0 && currentScreen == "SearchScreen") {
             LaunchedEffect(Unit) {
-//                topBarViewModel.updatePreview( TextFieldValue(""), "")
                 focusRequester.requestFocus()
             }
         }
@@ -1039,13 +1011,6 @@ fun CulinaryCompanionTopBar(
             }
         }
 
-
-
-//        AnimatedVisibility(
-//            visible = show,
-//            enter = fadeIn(animationSpec = tween(700)) ,
-//            exit = fadeOut(animationSpec = tween(700)) ,
-//        ) {
             if (show) {
             Surface(
                 modifier = Modifier
@@ -1078,15 +1043,12 @@ fun CulinaryCompanionTopBar(
                                     )),
                                     shape = RoundedCornerShape(25.dp)
                                 ),
-//                        color = Color(0xFF682300),
                             shape = RoundedCornerShape(25.dp)
                         ) {
                             TextField(
                                 value = "",
                                 onValueChange = {},
-                                modifier = Modifier
-//                                .alpha(.8f)
-                                ,
+                                modifier = Modifier,
                                 enabled = false,
                                 readOnly = true,
                                 leadingIcon = {
@@ -1108,7 +1070,6 @@ fun CulinaryCompanionTopBar(
                     else if(showIcon){
                         IconButton(
                             onClick = {
-//                                if(currentScreen == "SearchScreen") topBarViewModel.updatePreview( TextFieldValue(""), "");
                                 clickEffectLeft()
                                       },
                             modifier =
@@ -1125,16 +1086,12 @@ fun CulinaryCompanionTopBar(
                                     )),
                                     shape = CircleShape
                                 ),
-                            // color = Color.Transparent
-
                         ) {
                             Icon(
                                 imageVector = icon,
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(24.dp),
-                                // .padding(start = 16.dp)
-                                // .clickable(onClick = {onGoBackClick(detailsScreenData)}),
                                 tint = Color(0xFFd8af84)
                             )
                         }
@@ -1150,7 +1107,6 @@ fun CulinaryCompanionTopBar(
                         Text(
                             text = title,
                             modifier = textModifier,
-                            //  .weight(1f),
                             color = Color(0xFFd8af84),
                             textAlign = TextAlign.Center,
                             fontSize = 22.sp,
@@ -1199,14 +1155,12 @@ fun CulinaryCompanionTopBar(
                                 val sendIntent: Intent = Intent().apply {
                                     action = Intent.ACTION_SEND
                                     putExtra(Intent.EXTRA_TEXT, myString)
-//                                    putExtra(Intent.EXTRA_TITLE, detailsScreenData.recipeEntity.recipeName)
                                     type = "text/plain"
                                 }
 
                                 val shareIntent = Intent.createChooser(sendIntent, null)
 
                                 context.startActivity(shareIntent)
-
 
                             },
                             modifier = Modifier
@@ -1222,8 +1176,6 @@ fun CulinaryCompanionTopBar(
                                     )),
                                     shape = CircleShape
                                 ),
-                            // color = Color.Transparent
-
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Share,
@@ -1276,7 +1228,6 @@ fun CulinaryCompanionTopBar(
                                 icon2,
                                 tint = Color(0xFFd8af84),
                                 modifier = Modifier.size(24.dp),
-                                // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
                                 contentDescription = null
                             )
                         }
@@ -1309,7 +1260,6 @@ fun CulinaryCompanionTopBar(
                             keyboardActions = KeyboardActions(
                                 onSearch = {
                                     topBarViewModel.liveSearchForClick()
-//                                  searchScreenViewModel.searchFor(text)
                                     focusManager.clearFocus()
                                 }),
                             singleLine = true,
@@ -1378,12 +1328,3 @@ class AppViewModelFactory(
         ) as T
     }
 }
-//
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun DefaultPreview() {
-//    CulinaryCompanionTopBar(menuCount = 2, onClick = {}, showTopBar = false, newDetailsScreenTarget = RecipeWithIngredientsAndInstructions(),
-//        onGoBackClick = {},
-//        onUpdateMenuClick = {}
-//    )
-//}

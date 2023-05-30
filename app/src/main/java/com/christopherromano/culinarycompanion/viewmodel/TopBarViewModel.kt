@@ -19,25 +19,17 @@ import kotlinx.coroutines.withContext
 class TopBarViewModel(application: Application, ): ViewModel() {
 
     private val repository: TopBarRepository
-
-    var detailsScreenData: LiveData<RecipeWithIngredientsAndInstructions>
-
-//    var textFieldValue: LiveData<String>
     var showResults: LiveData<Int>
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     val uiState = MutableStateFlow(UiTopBarDataModel())
 
-//    val uiAlertState = MutableStateFlow(UiAlertStateDetailsScreenDataModel())
-
     init {
         val appDb = RecipeAppDatabase.getInstance(application)
         val topBarDao = appDb.TopBarDao()
         repository = TopBarRepository(topBarDao)
 
-        detailsScreenData = repository.detailsScreenData
-//        textFieldValue = repository.textFieldValue
         showResults = repository.showResults
 
         setReferenceList()
@@ -112,18 +104,7 @@ class TopBarViewModel(application: Application, ): ViewModel() {
 
                 repository.setShowResults(1)
 
-//                uiState.update {
-//                    it.copy(
-//                        showResults = true
-//                    )
-//                }
             }
-        }
-    }
-
-    fun setShowResults(isShown: Int){
-        coroutineScope.launch(Dispatchers.IO) {
-            repository.setShowResults(isShown)
         }
     }
 
@@ -148,10 +129,6 @@ class TopBarViewModel(application: Application, ): ViewModel() {
                     currentInput = textFieldValueInput
                 )
             }
-
-//            repository.setTextFieldValue(input)
-
-//            var previewList = mutableListOf<SearchItemWithCategory>()
             var previewList = mutableListOf<String>()
 
             val badChars =  "[\$&+,:;=?@#|/'<>.^*()%!-]".toCharArray()
@@ -164,30 +141,25 @@ class TopBarViewModel(application: Application, ): ViewModel() {
                 }
             }
             if(input == "" || hasBad){
-//                previewList = mutableListOf<SearchItemWithCategory>()
                 previewList = mutableListOf<String>()
-
             }
-            else{
 
+            else{
 
                 for(x in 0 until uiState.value.recipeNames.size){
                     if(input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(uiState.value.recipeNames[x])){
-//                        previewList.add(SearchItemWithCategory(name = uiState.value.recipeNames[x], category = "Recipe"))
                         previewList.add(uiState.value.recipeNames[x])
                     }
                 }
 
                 for(x in 0 until uiState.value.ingredientNames.size){
                     if(input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(uiState.value.ingredientNames[x])){
-//                        previewList.add(SearchItemWithCategory(name = uiState.value.ingredientNames[x], category = "Ingredient"))
                         previewList.add(uiState.value.ingredientNames[x])
                     }
                 }
 
                 for(x in 0 until uiState.value.filterNames.size){
                     if(input.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(uiState.value.filterNames[x])){
-//                        previewList.add(SearchItemWithCategory(name = uiState.value.filterNames[x], category = "Filter"))
                         previewList.add(uiState.value.filterNames[x])
                     }
                 }
@@ -195,19 +167,12 @@ class TopBarViewModel(application: Application, ): ViewModel() {
             }
 
             if(previewList.size > 1){
-//                previewList = previewList.sortedWith(compareBy{it.name}) as MutableList<SearchItemWithCategory>
                 previewList = previewList.sortedWith(compareBy{it}) as MutableList<String>
             }
 
 
 
             repository.setPreviewList(previewList.joinToString(separator = ","))
-
-//            uiState.update { currentState ->
-//                currentState.copy(
-//                    previewList = previewList
-//                )
-//            }
 
         }
     }

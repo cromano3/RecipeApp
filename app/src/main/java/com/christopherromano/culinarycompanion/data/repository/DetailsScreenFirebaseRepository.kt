@@ -1,6 +1,5 @@
 package com.christopherromano.culinarycompanion.data.repository
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.christopherromano.culinarycompanion.data.entity.CommentsEntity
@@ -12,8 +11,6 @@ import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -21,16 +18,11 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class DetailsScreenFirebaseRepository(
-    application: Application,
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
 ) {
 
     private val recipeNameLiveData = MutableLiveData<String>()
-//    private val commentResultLimit = MutableLiveData<Int>()
-
-
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
 
     private val _authState = MutableLiveData<Int>()
@@ -49,13 +41,6 @@ class DetailsScreenFirebaseRepository(
         }
     }
 
-//    val globalRatingFirebaseLiveData: LiveData<Int> = MediatorLiveData<Int>().apply {
-//        addSource(recipeNameLiveData) { recipeName ->
-//            retrieveGlobalRatingFirebaseLiveData(recipeName) { rating ->
-//                    value = rating
-//            }
-//        }
-//    }
 
 
     fun setRecipeName(recipeName: String) {
@@ -67,41 +52,12 @@ class DetailsScreenFirebaseRepository(
         return auth.currentUser
     }
 
-//    fun setCommentResultLimit(limit: Int) {
-//        println("set limit to $limit set limit to $limit set limit to $limit set limit to $limit set limit to $limit set limit to $limit ")
-//        commentResultLimit.postValue(limit)
-//
-//    }
-
-//    private fun retrieveGlobalRatingFirebaseLiveData(recipeName: String, callback: (Int) -> Unit){
-//        db.collection("recipes").whereEqualTo(FieldPath.documentId(), recipeName).limit(1).addSnapshotListener(){ snapshot, e ->
-//            if(e != null){
-//                println("couldn't get rating with: ${e.message}")
-//                callback(0)
-//            }
-//            else{
-//                try {
-//                    val rating = snapshot!!.documents[0].getLong("rating")!!.toInt()
-//                    callback(rating)
-//                }
-//                catch(e: Exception){
-//                    println("couldn't get rating with: ${e.message}")
-//                    callback(0)
-//                }
-//
-//            }
-//
-//        }
-//
-//    }
-
 
 
     fun getCommentsList(recipeName: String, limit: Int): Flow<List<AuthorDataWithComment>> = callbackFlow {
         println("CALL BACK FLOW")
         val listener = EventListener<QuerySnapshot> { snapshot, exception ->
                 if(exception != null){
-                    println("FEIFJOEFJ $exception")
                     cancel()
                 }
                 if (snapshot != null){
@@ -122,7 +78,7 @@ class DetailsScreenFirebaseRepository(
 
                         var likedByMe = 0
 
-                        var likedByList = comment.get("likedBy") as? List<String> ?: listOf()
+                        val likedByList = comment.get("likedBy") as? List<String> ?: listOf()
 
                         if(likedByList.contains(auth.currentUser?.uid)){
                             likedByMe = 1
@@ -130,10 +86,18 @@ class DetailsScreenFirebaseRepository(
 
                         var dislikedByMe = 0
 
-                        var dislikedByList = comment.get("dislikedBy") as? List<String> ?: listOf()
+                        val dislikedByList = comment.get("dislikedBy") as? List<String> ?: listOf()
 
                         if(dislikedByList.contains(auth.currentUser?.uid)){
                             dislikedByMe = 1
+                        }
+
+                        var reportedByMe = 0
+
+                        val reportedByList = comment.get("reportedBy") as? List<String> ?: listOf()
+
+                        if(reportedByList.contains(auth.currentUser?.uid)){
+                            reportedByMe = 1
                         }
 
                         val thisCommentEntity = CommentsEntity(
@@ -144,8 +108,7 @@ class DetailsScreenFirebaseRepository(
                             likes = likes,
                             likedByMe = likedByMe,
                             dislikedByMe = dislikedByMe,
-                            myLikeWasSynced = 0,
-                            timestamp = ""
+                            reportedByMe = reportedByMe,
                         )
 
                         db.collection("users").whereEqualTo("uid", authorUid).get().addOnSuccessListener {
@@ -201,8 +164,8 @@ class DetailsScreenFirebaseRepository(
             .whereEqualTo("isModApproved", 1)
             .whereEqualTo("isDeleted", 0)
             .whereGreaterThan("likes", -2)
-            .limit(limit.toLong())
             .orderBy("likes", Query.Direction.DESCENDING)
+            .limit(limit.toLong())
             .addSnapshotListener(listener)
 
         awaitClose {registration.remove()}
@@ -231,47 +194,5 @@ class DetailsScreenFirebaseRepository(
         return result
     }
 
-//    suspend fun getComments(recipeName: String): MutableList<CommentsEntity>{
-//
-//        val reviewsCollection = db.collection("reviews")
-//        val querySnapshot = reviewsCollection.whereEqualTo("recipeName", recipeName).get().await()
-//
-//        val resultCommentsList: MutableList<CommentsEntity> = mutableListOf()
-//
-//        if (querySnapshot != null) {
-//            for (document in querySnapshot.documents) {
-//                val commentId = document.id
-//                val thisRecipeName = document.getString("recipeName")
-//                val reviewText = document.getString("reviewText")
-//                val authorUid = document.getString("authorUid")
-//                val likes = document.getDouble("likes")?.toInt()
-//                val timestamp = document.getTimestamp("timestamp")
-//                val date = timestamp?.toDate()
-//                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
-//                var formattedDate = "Failed"
-//                try{
-//                    formattedDate = formatter.format(date!!)
-//                }
-//                catch (e: Exception){
-//                    println("bad timestamp in firestore ${e.message}")
-//                }
-//
-//                val comment = CommentsEntity(
-//                    commentID = commentId,
-//                    recipeName  = thisRecipeName ?: "",
-//                    authorID = authorUid ?: "",
-//                    commentText = reviewText ?: "",
-//                    likes = likes ?: 0,
-//                    likedByMe = 0,
-//                    myLikeWasSynced = 0,
-//                    timestamp = formattedDate
-//                )
-//
-//                resultCommentsList.add(comment)
-//
-//            }
-//        }
-//        return resultCommentsList
-//
-//    }
+
 }

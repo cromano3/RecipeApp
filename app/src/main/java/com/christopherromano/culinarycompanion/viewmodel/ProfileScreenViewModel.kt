@@ -32,7 +32,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
     var cookedData: LiveData<List<RecipeWithIngredients>>
 
     var expToGive: LiveData<Int>
-//    var exp: LiveData<Int>
 
 
     private val _commentsList = MutableStateFlow<List<AuthorDataWithComment>>(listOf())
@@ -42,8 +41,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
 
 
     private fun getCommentsList(){
-//        job?.cancel()
-//        job =
         viewModelScope.launch {
 
             val isAuthed = withContext(Dispatchers.IO) { profileScreenFirebaseRepository.currentUser() }
@@ -67,9 +64,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
         favoritesData = repository.favoritesData
         cookedData = repository.cookedData
         expToGive = repository.expToGive
-//        exp = repository.exp
-
-//        animationSetup()
 
     }
 
@@ -85,10 +79,7 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
         coroutineScope.launch(Dispatchers.IO){
 
             uiState.update {
-                it.copy(
-//                    doAnimation = false,
-                    totalAnimationsToPlay = uiState.value.totalAnimationsToPlay - 1
-                )
+                it.copy(totalAnimationsToPlay = uiState.value.totalAnimationsToPlay - 1)
             }
 
             withContext(Dispatchers.IO){ updateExp() }
@@ -100,15 +91,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                         resetAnimation = true
                     )
                 }
-
-//                delay(500)
-//
-//                uiState.update{
-//                    it.copy(
-//                        resetAnimation = false,
-//                        doAnimation = true
-//                    )
-//                }
             }
         }
     }
@@ -129,7 +111,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                     starList = myList
                 )
             }
-//            delay(200)
 
     }
 
@@ -143,12 +124,7 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
     }
 
     fun startNextAnimation(){
-            uiState.update {
-                it.copy(
-//                    resetAnimation = false,
-                    doAnimation = true
-                )
-            }
+            uiState.update { it.copy(doAnimation = true) }
     }
 
 
@@ -182,11 +158,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                 )
             }
 
-            println("here")
-
-//            repository.clearExpToGive()
-//            repository.addToExp(uiState.value.xpToGive)
-
             repository.updateExp(uiState.value.xpToGive)
 
             levelHelper(xp)
@@ -213,8 +184,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
     private suspend fun drawStars(){
 
         for(x in 0 until uiState.value.level){
-
-//            println(uiStarsState.value.starList)
 
             var myList = uiStarsState.value.starList
 
@@ -302,7 +271,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                     level = 9,
                     title = "Master Chef",
                     animationTargetFirst = if(200 * 9 - totalCurrentExp <= uiState.value.xpToGive) 1f else (200 - (200 * 9 - totalCurrentExp) + uiState.value.xpToGive) / 200f,
-//                    animationStartValue = ((200 - (200 * 9 - totalCurrentExp)) / 200f),
                 )
             }
         }
@@ -312,7 +280,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                     level = 8,
                     title = "Pro Chef",
                     animationTargetFirst = if(200 * 8 - totalCurrentExp <= uiState.value.xpToGive) 1f else (200 - (200 * 8 - totalCurrentExp) + uiState.value.xpToGive) / 200f,
-//                    animationStartValue = ((200 - (200 * 8 - totalCurrentExp)) / 200f),
                 )
             }
         }
@@ -322,7 +289,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                     level = 7,
                     title = "Expert Chef",
                     animationTargetFirst = if(200 * 7 - totalCurrentExp <= uiState.value.xpToGive) 1f else (200 - (200 * 7 - totalCurrentExp) + uiState.value.xpToGive) / 200f,
-//                    animationStartValue = ((200 - (200 * 7 - totalCurrentExp)) / 200f),
                 )
             }
         }
@@ -333,7 +299,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                     level = 6,
                     title = "Advanced Chef",
                     animationTargetFirst = if(200 * 6 - totalCurrentExp <= uiState.value.xpToGive) 1f else (200 - (200 * 6 - totalCurrentExp) + uiState.value.xpToGive) / 200f,
-//                    animationStartValue = ((200 - (200 * 6 - totalCurrentExp)) / 200f),
                 )
             }
 
@@ -344,7 +309,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                     level = 5,
                     title = "Skilled Chef",
                     animationTargetFirst = if(200 * 5 - totalCurrentExp <= uiState.value.xpToGive) 1f else (200 - (200 * 5 - totalCurrentExp) + uiState.value.xpToGive) / 200f,
-//                    animationStartValue = ((200 - (200 * 5 - totalCurrentExp)) / 200f),
                 )
             }
         }
@@ -354,7 +318,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                     level = 4,
                     title = "Sous Chef",
                     animationTargetFirst = if(200 * 4 - totalCurrentExp <= uiState.value.xpToGive) 1f else (200 - (200 * 4 - totalCurrentExp) + uiState.value.xpToGive) / 200f,
-//                    animationStartValue = ((200 - (200 * 4 - totalCurrentExp)) / 200f),
                 )
             }
 
@@ -365,7 +328,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                     level = 3,
                     title = "Apprentice Chef",
                     animationTargetFirst = if(200 * 3 - totalCurrentExp <= uiState.value.xpToGive) 1f else (200 - (200 * 3 - totalCurrentExp) + uiState.value.xpToGive) / 200f,
-//                    animationStartValue = ((200 - (200 * 3 - totalCurrentExp)) / 200f),
                 )
             }
 
@@ -376,7 +338,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                     level = 2,
                     title = "Novice Chef",
                     animationTargetFirst = if(200 * 2 - totalCurrentExp <= uiState.value.xpToGive) 1f else (200 - (200 * 2 - totalCurrentExp) + uiState.value.xpToGive) / 200f,
-//                    animationStartValue = ((200 - (200 * 2 - totalCurrentExp)) / 200f),
                 )
             }
 
@@ -386,7 +347,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                 currentState.copy(
                     level = 1,
                     title = "Beginner Chef",
-//                    animationStartValue = ((200 - (200 * 1 - totalCurrentExp)) / 200f),
                     animationTargetFirst = if(200 * 1 - totalCurrentExp <= uiState.value.xpToGive) 1f else (200 - (200 * 1 - totalCurrentExp) + uiState.value.xpToGive) / 200f,
                 )
             }
@@ -394,51 +354,7 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
         }
     }
 
-//    private fun getFirstAnimationTarget(){
-//        if(uiState.value.animationsPlayed + 1  == uiState.value.totalAnimationsToPlay){
-//
-//            uiState.update { currentState ->
-//                currentState.copy(
-//                    animationTargetFirst = uiState.value.xpToGive / 200f
-//                )
-//            }
-//
-//        }
-//        else{
-//
-//            uiState.update { currentState ->
-//                currentState.copy(
-//                    animationTargetFirst = 1f
-//                )
-//            }
-//
-//        }
-//    }
-//
-//    fun getSecondOrMoreAnimationTarget(){
-//        if(uiState.value.animationsPlayed + 1 == uiState.value.totalAnimationsToPlay){
-//
-//            uiState.update { currentState ->
-//                currentState.copy(
-//                    animationTargetSecond = uiState.value.xpToGive / 200f
-//                )
-//            }
-//
-//        }
-//        else{
-//
-//            uiState.update { currentState ->
-//                currentState.copy(
-//                    animationTargetSecond = 1f
-//                )
-//            }
-//
-//        }
-//    }
-
-    private suspend fun updateExp(){
-
-//        coroutineScope.launch(Dispatchers.IO) {
+    private fun updateExp(){
 
             if(uiState.value.xpToGive > ((uiState.value.level * 200) - uiState.value.xp)){
 
@@ -460,11 +376,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
 
                 val expChange = nextTotalTnl - uiState.value.xp
 
-//                levelHelper(uiState.value.xp + (nextTotalTnl - uiState.value.xp))
-
-//                repository.addToExp(expChange)
-//                repository.removeFromExpToGive(expChange)
-
                 uiState.update { currentState ->
                     currentState.copy(
                         xp = uiState.value.xp + expChange,
@@ -475,8 +386,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
             }
 
             else{
-//                repository.addToExp(uiState.value.xpToGive)
-//                repository.clearExpToGive()
 
                 uiState.update { currentState ->
                     currentState.copy(
@@ -486,20 +395,13 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
                 }
             }
 
-//            val xpToGive = repository.getExpToGive()
-//            val xp = repository.getExp()
-
             uiState.update { currentState ->
                 currentState.copy(
-//                    xp = xp,
-//                    xpToGive = xpToGive,
                     animationsPlayed =  uiState.value.animationsPlayed + 1
                 )
             }
 
             levelHelper(uiState.value.xp)
-
-//        }
 
     }
 
@@ -570,9 +472,6 @@ class ProfileScreenViewModel(application: Application, private val profileScreen
         }
     }
 
-    suspend fun setDetailsScreenTarget(recipeName: String){
-        repository.setDetailsScreenTarget(recipeName)
-    }
 
     fun setActiveTab(tabName: String){
         getCommentsList()

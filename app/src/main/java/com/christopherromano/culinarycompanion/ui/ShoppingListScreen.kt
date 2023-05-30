@@ -36,7 +36,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -79,7 +78,6 @@ fun ShoppingListScreen(
         val shoppingListScreenData by shoppingListScreenViewModel.shoppingListScreenData.observeAsState(listOf())
         val selectedIngredients by shoppingListScreenViewModel.selectedIngredients.observeAsState(listOf())
         val selectedIngredients2 by shoppingListScreenViewModel.selectedIngredients2.observeAsState(listOf())
-//        val customIngredients by shoppingListScreenViewModel.customIngredients.observeAsState(listOf())
 
         var filterWasClicked by remember { mutableStateOf(false) }
 
@@ -100,18 +98,16 @@ fun ShoppingListScreen(
         }
 
         if(filterWasClicked) {
-//            LaunchedEffect(Unit) {
             coroutineScope.launch {
 
                 delay(420)
+//                listState.animateScrollBy(value= -5000f, animationSpec = tween(durationMillis = 1000))
                 listState.animateScrollToItem(0)
                 listState2.animateScrollToItem(0)
                 filterWasClicked = false
             }
-//            filterWasClicked = false
         }
 
-//        if(uiAlertState.newCustomItemAddedSuccessfully){
         if(scrollDown){
             coroutineScope.launch {
                 scrollDown = false
@@ -124,7 +120,7 @@ fun ShoppingListScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = 48.dp),
-            color = Color(0xFFd8af84)//Color(0xFFb15f33), //Color(0xFFd8af84)
+            color = Color(0xFFd8af84)
         ) {
 
             Row(
@@ -135,19 +131,11 @@ fun ShoppingListScreen(
                 LazyColumn(
                     state = listState,
                     modifier = Modifier
-//                        .fillMaxHeight()
-                        .weight(0.60f)
-//                        .padding(bottom = 48.dp)
-                    ,
+                        .weight(0.60f),
 
                     userScrollEnabled = !filterWasClicked,
-//                        .verticalScroll(rememberScrollState()),
 
                     ) {
-//                    item(){
-//                        Text(text = uiState.counter.toString())
-//                    }
-
                     items(selectedIngredients2, key = { it.ingredientName }) {
                         ShoppingListItemWithButton(
                             modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(400, delay = 0))),
@@ -157,7 +145,6 @@ fun ShoppingListScreen(
                             onClickIngredientDeselected = { shoppingListScreenViewModel.ingredientDeselected(it.ingredientName) },
                         )
                     }
-
 
                     item{
                         androidx.compose.animation.AnimatedVisibility(
@@ -208,7 +195,6 @@ fun ShoppingListScreen(
                                 modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(20, delay = 0))),
                                 shoppingListCustomItemEntity = it,
                                 isWorking = uiState.isWorking,
-                                isFiltered = uiState.isFiltered,
                                 onClickItemSelected = { shoppingListScreenViewModel.customItemSelected(it) },
                                 onClickItemDeselected = { shoppingListScreenViewModel.customItemDeselected(it) },
                                 onClickDeleteCustomItem = { shoppingListScreenViewModel.deleteCustomItem(it) }
@@ -219,7 +205,7 @@ fun ShoppingListScreen(
 
                     item {
                         androidx.compose.animation.AnimatedVisibility(
-                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked && !uiState.isFiltered),
+                            visible = (uiState.customItems.isNotEmpty() && !filterWasClicked),
                             enter = fadeIn(TweenSpec(20)),
                             exit = fadeOut(TweenSpec(20)),
                         ) {
@@ -231,11 +217,12 @@ fun ShoppingListScreen(
                         }
                     }
 
+
                     item {
                         androidx.compose.animation.AnimatedVisibility(
                             visible = (
-                                (uiState.customItems.isNotEmpty() && !filterWasClicked && !uiState.isFiltered) ||
-                                (selectedIngredients2.isNotEmpty() && !filterWasClicked  && !uiState.isFiltered)
+                                (uiState.customItems.isNotEmpty() && !filterWasClicked ) ||
+                                (selectedIngredients2.isNotEmpty() && !filterWasClicked )
                             ),
                             enter = fadeIn(TweenSpec(20)),
                             exit = fadeOut(TweenSpec(20)),
@@ -254,24 +241,12 @@ fun ShoppingListScreen(
                         Modifier
                             .size(20.dp)
                             .fillMaxWidth()) }
-
-//                    selectedIngredients.forEach {
-//                        ShoppingListItemWithButton(
-//                            modifier = Modifier.animateItemPlacement(animationSpec = (TweenSpec(150, delay = 0))),
-//                            ingredientEntity = it,
-//                            onClickIngredientSelected = { shoppingListScreenViewModel.ingredientSelected(it) },
-//                            onClickIngredientDeselected = { shoppingListScreenViewModel.ingredientDeselected(it) },
-//                            )
-//                    }
                 }
                 LazyColumn(
                     modifier = Modifier
-//                        .padding(bottom = 48.dp)
-//                        .fillMaxHeight()
                         .weight(0.40f),
                     state = listState2,
                     userScrollEnabled = !filterWasClicked,
-//                        .verticalScroll(rememberScrollState()),
                         ) {
 
                     items(shoppingListScreenData, key = { it.recipeEntity.recipeName }) {
@@ -282,33 +257,10 @@ fun ShoppingListScreen(
                             isWorking = uiState.isWorking,
                             isClickable = shoppingListScreenData.size != 1,
                             onFilterClick = {shoppingListScreenViewModel.filterBy(it); filterWasClicked = !filterWasClicked},
-                            onDetailsClick =
-                            {
-                                onDetailsClick(it.recipeEntity.recipeName)
-
-//                                /** main to IO coroutine */
-//                                coroutineScope.launch(Dispatchers.Main) {
-//                                    withContext(Dispatchers.IO) {
-//                                        shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName)
-//                                    }
-//                                    onDetailsClick()
-//                                }
-                            }
+                            onDetailsClick = { onDetailsClick(it.recipeEntity.recipeName) }
                         )
-
-
                     }
 
-//                    shoppingListScreenData.forEach {
-//                        RecipeIconWithButton(
-//                            recipeWithIngredients = RecipeWithIngredients(
-//                                recipeEntity = it.recipeEntity,
-//                                ingredientsList = it.ingredientsList
-//                            ),
-//                            onDetailsClick = { shoppingListScreenViewModel.setDetailsScreenTarget(it.recipeEntity.recipeName);
-//                                onDetailsClick() }
-//                        )
-//                    }
                 }
             }
             if (selectedIngredients2.isEmpty() && uiState.customItems.isEmpty()) {
@@ -342,20 +294,14 @@ fun ShoppingListScreen(
                             )
                             .align(Alignment.BottomEnd)
                             .size(56.dp)
-                            //the background of the square for this button, it stays a square even tho
-                            //we have shape = circle shape.  If this is not changed you see a solid
-                            //square for the "background" of this button.
                             .background(color = Color.Transparent),
                         shape = CircleShape,
-                        //this is the background color of the button after the "Shaping" is applied.
-                        //it is different then the background attribute above.
                         backgroundColor = Color(0xFF682300)
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Add,
                             tint = Color(0xFFd8af84),
                             modifier = Modifier.size(28.dp),
-                            // modifier = Modifier.background(color = Color(0xFFFFFFFF)),
                             contentDescription = null
                         )
                     }
@@ -380,7 +326,6 @@ fun ShoppingListScreen(
                                 modifier = Modifier
                                     .padding(all = 8.dp)
                                     .fillMaxWidth(),
-//                                horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
                                 Button(
                                     modifier = Modifier.fillMaxWidth(),
@@ -504,28 +449,26 @@ fun RecipeIconWithButton(
 ){
 
     val image = when(recipeWithIngredients.recipeEntity.recipeName){
-        "Bagels" -> R.drawable.rice_soup2
-        "Garlic Knots" -> R.drawable.garlic2
-        "Cauliflower Walnut Tacos" -> R.drawable.cauliflower
-        "Lentil Sweet Potato Curry" -> R.drawable.garlic
-        "Thai Style Peanut Soup" -> R.drawable.garlic
-        "Yummy Rice with Marinated Tofu" -> R.drawable.garlic
+        "Bagels" -> R.drawable.bagels
+        "Garlic Knots" -> R.drawable.garlic_knots
+        "Cauliflower Walnut Tacos" -> R.drawable.cauliflower_tacos
+        "Lentil Sweet Potato Curry" -> R.drawable.lentil_curry
+        "Thai Style Peanut Soup" -> R.drawable.thai_soup
+        "Yummy Rice with Marinated Tofu" -> R.drawable.yummy_rice
         "Corn Chowder" -> R.drawable.corn_chowder
         "Vegan Eggplant Parmesan" -> R.drawable.eggplant
-        "Mexican Style Rice" -> R.drawable.garlic
-        "Wild Rice Salad" -> R.drawable.garlic
+        "Mexican Style Rice" -> R.drawable.bagel
+        "Wild Rice Salad" -> R.drawable.wild_rice
         "Rice Soup" -> R.drawable.rice_soup
         "Miso Soup" -> R.drawable.miso_soup
         "Sweet Potato Tortilla" -> R.drawable.sweet_potato_tortilla
         "Tumbet" -> R.drawable.tumbet
-        "Chinese Eggplant" -> R.drawable.garlic
-        "Coca De Prebes" -> R.drawable.garlic
-        "Banana Walnut Pancakes" -> R.drawable.garlic
-        "Huevos Rotos" -> R.drawable.garlic
-        else -> R.drawable.garlic
+        "Chinese Eggplant" -> R.drawable.chinese_eggplant
+        "Coca De Prebes" -> R.drawable.coca
+        "Banana Walnut Pancakes" -> R.drawable.pancakes
+        "Huevos Rotos" -> R.drawable.huevos
+        else -> R.drawable.bagel
     }
-
-//    val gradientWidth = with(LocalDensity.current) { 100.dp.toPx() }
 
     val alphaAnim: Float by animateFloatAsState(
         targetValue =
@@ -577,13 +520,6 @@ fun RecipeIconWithButton(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
             )
-//            Image(
-//                modifier = Modifier
-//                    .fillMaxSize(),
-//                contentScale = ContentScale.Crop,
-//                painter = painterResource(image),
-//                contentDescription = null
-//            )
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -614,7 +550,6 @@ fun RecipeIconWithButton(
 
         Surface(
             modifier = Modifier
-                // .padding(top = 4.dp)
                 .wrapContentSize()
                 .border(
                     width = 2.dp,
@@ -626,19 +561,9 @@ fun RecipeIconWithButton(
                     shape = RoundedCornerShape(25.dp)
                 )
                 .clickable(enabled = !isWorking && !filterWasClicked) { onDetailsClick() },
- //               .background(
-//                    brush = Brush.horizontalGradient(
-//                        colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
-//                        endX = gradientWidth,
-//                        tileMode = TileMode.Mirror
-//                    ),
-//                    shape = RoundedCornerShape((25.dp))
-//                ),
-             //   .clickable(enabled = !selected) { selected = !selected },
             shape = RoundedCornerShape(25.dp),
             color = Color(0xFF682300),
             elevation = 6.dp,
-            //color = Color(0xFF682300),//Color(0xFFd8af84),
             contentColor = Color(0xFFd8af84),
         ){
             Text(
@@ -649,7 +574,6 @@ fun RecipeIconWithButton(
                 color = Color(0xFFd8af84),
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
-
             )
         }
 
@@ -672,11 +596,8 @@ fun ShoppingListItemWithButton(
 
     val selected: Boolean
 
-//    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
-
     val myIcon: ImageVector
     val checkBoxBackgroundColor: Color
-    val decoration : TextDecoration
     var alphaLevel : Float
 
 
@@ -686,7 +607,6 @@ fun ShoppingListItemWithButton(
         selected = true
         myIcon = Icons.Filled.CheckBox
         checkBoxBackgroundColor = Color(0xFFd8af84)
-        decoration = TextDecoration.LineThrough
         alphaLevel = 0.55f
 
 
@@ -696,7 +616,6 @@ fun ShoppingListItemWithButton(
         selected = false
         myIcon = Icons.Outlined.CheckBoxOutlineBlank
         checkBoxBackgroundColor = Color(0xFFd8af84)
-        decoration = TextDecoration.None
         alphaLevel = 1f
 
     }
@@ -732,52 +651,28 @@ fun ShoppingListItemWithButton(
             .clickable(
                 enabled = !isWorking && (ingredientEntity.isShown == 1),
                 onClick = if (selected) onClickIngredientDeselected else onClickIngredientSelected,
-            ),// { selected = !selected },
+            ),
         shape = RoundedCornerShape(25.dp),
         color = Color(0xFF81340A),
         elevation = 4.dp,
-        //color = Color(0xFF682300),//Color(0xFFd8af84),
         contentColor = Color(0xFFd8af84),
     ){
-        /*
-            if selected then show X
-         */
-//        if (selected){
-//            Box{
-//                IconButton(
-//                    modifier = Modifier
-//                        .align(Alignment.CenterEnd)
-//                        .size(36.dp),
-//                    onClick = onClickIngredientDeselected, //{ selected = !selected }
-//                    enabled = !isWorking
-//                ){
-//                    Icon(
-//                        modifier = Modifier,
-//                        imageVector = Icons.Outlined.Close,
-//                        tint = Color(0xFFFFFFFF),
-//                        contentDescription = null
-//                    )
-//                }
-//            }
-//        }
         Row(
-            Modifier.fillMaxSize().padding(top = 1.dp, bottom = 1.dp),
+            Modifier
+                .fillMaxSize()
+                .padding(top = 1.dp, bottom = 1.dp),
             horizontalArrangement = Arrangement.Start
         )
         {
             Icon(
                 imageVector = myIcon,
                 tint = checkBoxBackgroundColor,
-
-                //  .background(color = Color(0xFFFFFFFF)),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(start = 6.dp, top = 2.dp, end = 2.dp, bottom = 2.dp)
                     .size(28.dp)
                     .align(Alignment.CenterVertically)
                     .alpha(alphaLevel)
-                //.weight(1f)
-
             )
             var myText = ingredientEntity.ingredientName
 
@@ -791,12 +686,10 @@ fun ShoppingListItemWithButton(
 
             Text(
                 modifier = Modifier
-                    // .weight(1f)
                     .padding(start = 2.dp, bottom = 2.dp)
                     .align(Alignment.CenterVertically)
                     .alpha(alphaLevel),
                 text = myText,
-                textDecoration = decoration,
                 fontSize = 16.sp
             )
             /*
@@ -806,12 +699,9 @@ fun ShoppingListItemWithButton(
             if(ingredientEntity.quantityNeeded > 1 && ingredientEntity.quantity.isBlank()) {
                 Text(
                     modifier = Modifier
-                        //.weight(1f)
-                        //.padding(start = 4.dp)
                         .align(Alignment.CenterVertically)
                         .alpha(alphaLevel),
                     text = " (${ingredientEntity.quantityNeeded})",
-                    textDecoration = decoration,
                     fontSize = 16.sp
                 )
             }
@@ -824,7 +714,6 @@ fun CustomShoppingListItem(
     modifier: Modifier,
     shoppingListCustomItemEntity: ShoppingListCustomItemsEntity,
     isWorking: Boolean,
-    isFiltered: Boolean,
     onClickItemSelected: () -> Unit,
     onClickItemDeselected: () -> Unit,
     onClickDeleteCustomItem: () -> Unit,
@@ -832,11 +721,9 @@ fun CustomShoppingListItem(
 
     val selected: Boolean
 
-//    val gradientWidth = with(LocalDensity.current) { 200.dp.toPx() }
 
     val myIcon: ImageVector
     val checkBoxBackgroundColor: Color
-    val decoration : TextDecoration
     var alphaLevel : Float
 
 
@@ -845,7 +732,6 @@ fun CustomShoppingListItem(
         selected = true
         myIcon = Icons.Filled.CheckBox
         checkBoxBackgroundColor = Color(0xFFd8af84)
-        decoration = TextDecoration.LineThrough
         alphaLevel = 0.55f
 
 
@@ -855,12 +741,9 @@ fun CustomShoppingListItem(
         selected = false
         myIcon = Icons.Outlined.CheckBoxOutlineBlank
         checkBoxBackgroundColor = Color(0xFFd8af84)
-        decoration = TextDecoration.None
         alphaLevel = 1f
 
     }
-
-    if (isFiltered) alphaLevel = 0.30f
 
 
     val alphaAnim: Float by animateFloatAsState(
@@ -888,22 +771,13 @@ fun CustomShoppingListItem(
                 )),
                 shape = RoundedCornerShape(25.dp)
             )
-//            .background(
-//                brush = Brush.horizontalGradient(
-//                    colors = listOf(Color(0xFF682300), Color(0xFFb15f33)),
-//                    endX = gradientWidth,
-//                    tileMode = TileMode.Mirror
-//                ),
-//                shape = RoundedCornerShape((14.dp))
-//            )
             .clickable(
-                enabled = (!isWorking && !isFiltered),
+                enabled = (!isWorking),
                 onClick = if (selected) onClickItemDeselected else onClickItemSelected,
             ),
         shape = RoundedCornerShape(25.dp),
         color = Color(0xFF81340A),
         elevation = 4.dp,
-        //color = Color(0xFF682300),//Color(0xFFd8af84),
         contentColor = Color(0xFFd8af84),
     ){
 
@@ -935,25 +809,19 @@ fun CustomShoppingListItem(
             Icon(
                 imageVector = myIcon,
                 tint = checkBoxBackgroundColor,
-
-                //  .background(color = Color(0xFFFFFFFF)),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(start = 6.dp, top = 2.dp, end = 2.dp, bottom = 2.dp)
                     .size(28.dp)
                     .align(Alignment.CenterVertically)
                     .alpha(alphaLevel)
-                //.weight(1f)
-
             )
             Text(
                 modifier = Modifier
-                    // .weight(1f)
                     .padding(start = 4.dp)
                     .align(Alignment.CenterVertically)
                     .alpha(alphaLevel),
                 text = shoppingListCustomItemEntity.item,
-                textDecoration = decoration,
                 fontSize = 16.sp
             )
         }

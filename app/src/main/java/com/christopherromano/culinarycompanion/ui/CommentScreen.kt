@@ -52,10 +52,6 @@ fun CommentScreen(
 
         val uiState by commentScreenViewModel.uiState.collectAsState()
 
-//        val commentScreenData by commentScreenViewModel.commentScreenData.observeAsState(RecipeWithIngredientsAndInstructions())
-
-//        var text by remember { mutableStateOf("") }
-//        var ingredients by remember { mutableStateOf("") }
 
         val focusManager = LocalFocusManager.current
         val focusRequester = remember { FocusRequester() }
@@ -169,10 +165,3 @@ class CommentScreenViewModelFactory(
     }
 }
 
-//@Preview
-//@Composable
-//fun comprev(){
-//    CommentScreen(
-//        RecipeWithIngredientsAndInstructions(),
-//        onCancelClick = { /*TODO*/ }) {}
-//}

@@ -48,35 +48,26 @@ fun RecipeCard(
     onDetailsClick: () -> Unit,
     ){
 
-    //temporary variable change to Parameter
-//    val pantry = listOf("Garlic", "Onion", "Flour", "Yeast", "Garlic Powder", "Vegan Butter")
-
-
-//    var expanded by remember { mutableStateOf(false) }
-
-
-//    var image = R.drawable.bagel
-
     val image = when(recipeWithIngredientsAndInstructions.recipeEntity.recipeName){
-        "Bagels" -> R.drawable.rice_soup2
-        "Garlic Knots" -> R.drawable.garlic2
-        "Cauliflower Walnut Tacos" -> R.drawable.cauliflower
-        "Lentil Sweet Potato Curry" -> R.drawable.garlic
-        "Thai Style Peanut Soup" -> R.drawable.garlic
-        "Yummy Rice with Marinated Tofu" -> R.drawable.garlic
+        "Bagels" -> R.drawable.bagels
+        "Garlic Knots" -> R.drawable.garlic_knots
+        "Cauliflower Walnut Tacos" -> R.drawable.cauliflower_tacos
+        "Lentil Sweet Potato Curry" -> R.drawable.lentil_curry
+        "Thai Style Peanut Soup" -> R.drawable.thai_soup
+        "Yummy Rice with Marinated Tofu" -> R.drawable.yummy_rice
         "Corn Chowder" -> R.drawable.corn_chowder
         "Vegan Eggplant Parmesan" -> R.drawable.eggplant
-        "Mexican Style Rice" -> R.drawable.garlic
-        "Wild Rice Salad" -> R.drawable.garlic
+        "Mexican Style Rice" -> R.drawable.bagel
+        "Wild Rice Salad" -> R.drawable.wild_rice
         "Rice Soup" -> R.drawable.rice_soup
         "Miso Soup" -> R.drawable.miso_soup
         "Sweet Potato Tortilla" -> R.drawable.sweet_potato_tortilla
         "Tumbet" -> R.drawable.tumbet
-        "Chinese Eggplant" -> R.drawable.garlic
-        "Coca De Prebes" -> R.drawable.garlic
-        "Banana Walnut Pancakes" -> R.drawable.garlic
-        "Huevos Rotos" -> R.drawable.garlic
-        else -> R.drawable.garlic
+        "Chinese Eggplant" -> R.drawable.chinese_eggplant
+        "Coca De Prebes" -> R.drawable.coca
+        "Banana Walnut Pancakes" -> R.drawable.pancakes
+        "Huevos Rotos" -> R.drawable.huevos
+        else -> R.drawable.bagel
     }
 
     /*
@@ -264,10 +255,7 @@ fun RecipeCard(
                     modifier = Modifier
                         .weight(1f)
                         .height(176.dp)
-//                        .width(200.dp)
-//                        .fillMaxWidth()
                         .clip(RoundedCornerShape(0.dp)),
-//                        .border(1.dp, Color(0xFFd8af84)),
                     contentScale = ContentScale.Crop,
                 )
 
@@ -352,7 +340,6 @@ fun RecipeCard(
                                 val sendIntent: Intent = Intent().apply {
                                     action = Intent.ACTION_SEND
                                     putExtra(Intent.EXTRA_TEXT, myString)
-//                                    putExtra(Intent.EXTRA_TITLE, detailsScreenData.recipeEntity.recipeName)
                                     type = "text/plain"
                                 }
 
@@ -384,15 +371,6 @@ fun RecipeCard(
                                 tint = Color(0xFFd8af84)
                             )
                         }
-
-
-//                        Icon(
-//                            imageVector = Icons.Outlined.Share,
-//                            contentDescription = null,
-//                            modifier = Modifier
-//                                .size(36.dp),
-//                            tint = Color(0xFFd8af84)
-//                        )
 
                     }
                 }
@@ -490,69 +468,6 @@ fun BottomBarSurface(
         }
     }
 }
-
-
-//@Composable
-//private fun RowHelper(list: List<IngredientEntity>, pantry: List<String>) {
-//
-//    var textColor = MaterialTheme.colors.primary
-//
-//    Row(modifier = Modifier.fillMaxWidth()) {
-//        for(x in list.indices){
-//            textColor = if (!pantry.contains(list[x].ingredientName)) {
-//                MaterialTheme.colors.primaryVariant
-//            } else {
-//                MaterialTheme.colors.primary
-//            }
-//            Text(
-//                modifier = Modifier.weight(1f),
-//                text = list[x].ingredientName,
-//                textAlign = TextAlign.Center,
-//                style = MaterialTheme.typography.body1,
-//                color = textColor
-//            )
-//        }
-//    }
-//}
-
-
-
-//*Currently unused (Checkbox add/remove menu button)
-//@Composable
-//private fun AddToMenuButton(
-//    selected: Boolean,
-//    onClick: () -> Unit,
-//) {
-//    IconButton(onClick = onClick){
-//        Icon(
-//            modifier = Modifier
-//                .padding(top = 14.dp, start = 12.dp, end = 12.dp, bottom = 12.dp)
-//                .size(36.dp),
-//            imageVector = if (selected) Icons.Filled.CheckBox else Icons.Filled.CheckBoxOutlineBlank,
-//            tint = MaterialTheme.colors.primary,
-//            contentDescription = null
-//        )
-//    }
-//}
-
-//@Composable
-//private fun ExpandInstructionsButton(
-//    expanded: Boolean,
-//    onClick: () -> Unit,
-//    modifier: Modifier = Modifier
-//) {
-//    IconButton(onClick = onClick){
-//        Icon(
-//            modifier = modifier
-//                .background(
-//                    color = MaterialTheme.colors.primary,
-//                    shape = MaterialTheme.shapes.small),
-//            imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Outlined.ExpandMore,
-//            tint = MaterialTheme.colors.surface,
-//            contentDescription = null
-//        )
-//    }
-//}
 
 
 @Preview(showBackground = true, showSystemUi = true)

@@ -40,19 +40,9 @@ class CommentScreenViewModel(application: Application): ViewModel() {
     }
 
     fun cancelReview(recipeName: String){
-
         coroutineScope.launch(Dispatchers.IO){
             repository.setReviewAsWritten(recipeName)
         }
-
-    }
-
-    fun confirmReview(recipeName: String, reviewText: String){
-
-        coroutineScope.launch(Dispatchers.IO){
-            repository.setReview(recipeName, reviewText)
-        }
-
     }
 
 
@@ -62,7 +52,6 @@ class CommentScreenViewModel(application: Application): ViewModel() {
         }
 
     }
-
 
     fun cancelTooLongAlert(){
         uiState.update {

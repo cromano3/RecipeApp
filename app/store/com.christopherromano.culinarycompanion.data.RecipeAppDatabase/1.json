@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2c0dd7a9e26155877f2fcb1bd8a8d382",
+    "identityHash": "5d04dbb4e0e3eb401e92be3b69f696be",
     "entities": [
       {
         "tableName": "recipe_table",
@@ -295,26 +295,6 @@
         "foreignKeys": []
       },
       {
-        "tableName": "details_screen_target_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`target_name` TEXT NOT NULL, PRIMARY KEY(`target_name`))",
-        "fields": [
-          {
-            "fieldPath": "ingredientName",
-            "columnName": "target_name",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "target_name"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
         "tableName": "search_table",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`preview_list` TEXT NOT NULL, `results_list` TEXT NOT NULL, `show_results` INTEGER NOT NULL, `text_field_value` TEXT NOT NULL, PRIMARY KEY(`text_field_value`))",
         "fields": [
@@ -354,18 +334,12 @@
       },
       {
         "tableName": "user_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_pk` INTEGER NOT NULL, `firestore_uid` TEXT NOT NULL, `exp_to_give` INTEGER NOT NULL, `exp_total` INTEGER NOT NULL, `show_tutorial` TEXT NOT NULL, `is_online_user_type` INTEGER NOT NULL, `user_image_url` TEXT NOT NULL, `user_nickname` TEXT NOT NULL, PRIMARY KEY(`user_pk`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_pk` INTEGER NOT NULL, `exp_to_give` INTEGER NOT NULL, `exp_total` INTEGER NOT NULL, `show_tutorial` TEXT NOT NULL, `is_online_user_type` INTEGER NOT NULL, PRIMARY KEY(`user_pk`))",
         "fields": [
           {
             "fieldPath": "userID",
             "columnName": "user_pk",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "firestoreUid",
-            "columnName": "firestore_uid",
-            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -390,18 +364,6 @@
             "fieldPath": "isOnlineUser",
             "columnName": "is_online_user_type",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "userImageUrl",
-            "columnName": "user_image_url",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "userNickname",
-            "columnName": "user_nickname",
-            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -441,46 +403,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "comments_authors_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`author_id` TEXT NOT NULL, `author_name` TEXT NOT NULL, `author_karma` INTEGER NOT NULL, `author_image_url` TEXT NOT NULL, PRIMARY KEY(`author_id`))",
-        "fields": [
-          {
-            "fieldPath": "authorID",
-            "columnName": "author_id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "authorName",
-            "columnName": "author_name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "authorKarma",
-            "columnName": "author_karma",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "authorImageURL",
-            "columnName": "author_image_url",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "author_id"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
         "tableName": "comments_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment_id` TEXT NOT NULL, `recipe_name` TEXT NOT NULL, `author_id` TEXT NOT NULL, `comment_text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `liked_by_local_user` INTEGER NOT NULL, `disliked_by_local_user` INTEGER NOT NULL, `local_user_like_was_synced` INTEGER NOT NULL, `timestamp` TEXT NOT NULL, PRIMARY KEY(`comment_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`comment_id` TEXT NOT NULL, `recipe_name` TEXT NOT NULL, `author_id` TEXT NOT NULL, `comment_text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `liked_by_local_user` INTEGER NOT NULL, `disliked_by_local_user` INTEGER NOT NULL, `reported_by_local_user` INTEGER NOT NULL, PRIMARY KEY(`comment_id`))",
         "fields": [
           {
             "fieldPath": "commentID",
@@ -525,15 +449,9 @@
             "notNull": true
           },
           {
-            "fieldPath": "myLikeWasSynced",
-            "columnName": "local_user_like_was_synced",
+            "fieldPath": "reportedByMe",
+            "columnName": "reported_by_local_user",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "timestamp",
-            "columnName": "timestamp",
-            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -594,7 +512,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2c0dd7a9e26155877f2fcb1bd8a8d382')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5d04dbb4e0e3eb401e92be3b69f696be')"
     ]
   }
 }

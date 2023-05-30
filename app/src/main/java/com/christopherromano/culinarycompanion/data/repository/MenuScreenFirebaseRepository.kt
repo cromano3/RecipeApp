@@ -1,6 +1,5 @@
 package com.christopherromano.culinarycompanion.data.repository
 
-import android.app.Application
 import com.christopherromano.culinarycompanion.datamodel.RecipeNamesWithRatings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -9,7 +8,6 @@ import kotlinx.coroutines.tasks.await
 
 
 class MenuScreenFirebaseRepository(
-    application: Application,
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
 ) {

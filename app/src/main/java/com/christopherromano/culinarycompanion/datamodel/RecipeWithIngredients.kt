@@ -22,15 +22,3 @@ data class RecipeWithIngredients(
     val ingredientsList: List<IngredientEntity>
 
 )
-
-
-
-///// var recipe: String, var instructions: String, var isOnMenu: Boolean,
-///// var ingredientsList: List<IngredientEntity>,
-
-///// OR
-
-///// var recipe: <RecipeEntity>, var ingredientsList: List<IngredientsEntity>
-
-///// we must get room to return either of these two custom data structures in one Query!
-    // TO DO!!!!!!!!!!!!!!!!!!!!

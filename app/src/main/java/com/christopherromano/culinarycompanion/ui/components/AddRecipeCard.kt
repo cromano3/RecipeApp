@@ -18,11 +18,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalTextApi::class)
+
 @Composable
 fun AddRecipeCard(
     modifier: Modifier,
@@ -30,16 +29,8 @@ fun AddRecipeCard(
 ){
 
     val gradientWidth = with(LocalDensity.current) { 170.dp.toPx() }
-    val gradientWidthButton = with(LocalDensity.current) { 48.dp.toPx() }
     val gradientImageVertical = with(LocalDensity.current) { 135.dp.toPx() }
 
-
-    val image: Int
-
-
-//    val gradientWidth = with(LocalDensity.current) {
-//        (6 * (HighlightCardWidth + HighlightCardPadding).toPx())
-//    }
 
     Surface(
         elevation = 0.dp,
@@ -62,22 +53,10 @@ fun AddRecipeCard(
                 shape = RoundedCornerShape(15.dp)
             )
             .clickable(onClick = onCreateRecipeClick)
-//            .background(
-//            Brush.horizontalGradient(
-//                colors = listOf(
-//                    Color(0xFFb15f33),
-//                    Color(0xFF682300)
-//                ),
-//                endX = gradientWidth,
-//                tileMode = TileMode.Mirror
-//            ),
-//                shape = RoundedCornerShape(15.dp)
-//        )
+
             .alpha(1f),
         shape = RoundedCornerShape(15.dp),
         color = Color.Transparent
-        //theme is assigning this value automatically so we don't need to assign it again here
-        //color = MaterialTheme.colors.surface
     ){
         Column{
             Box(
@@ -99,7 +78,6 @@ fun AddRecipeCard(
                     modifier = Modifier
                         .height(140.dp)
                         .fillMaxWidth()
-                        //.background(color = MaterialTheme.colors.secondaryVariant)
                         .background(
                             Brush.horizontalGradient(
                                 colors = listOf(
@@ -118,6 +96,7 @@ fun AddRecipeCard(
                     .fillMaxWidth()
                     .height(2.dp)
                     .background(color = Color(0xFFE10600)))
+
                 //Image Surface
                 Surface(
                     modifier = Modifier

@@ -31,7 +31,7 @@ class ProfileScreenFirebaseRepository(
         println("auth uid is :" + auth.currentUser?.uid)
         val listener = EventListener<QuerySnapshot> { snapshot, exception ->
             if(exception != null){
-                println("FAILED WITH: $exception")
+                println("Failed with: $exception")
                 cancel()
             }
             if (snapshot != null){
@@ -40,9 +40,8 @@ class ProfileScreenFirebaseRepository(
 
 
                 val numDocuments = snapshot.documents.size
-                var numCallbacks = 0
 
-                println("NUM DOCS IS: $numDocuments")
+                println("Num docs: $numDocuments")
 
                 val commentsResult = mutableListOf<CommentsEntity>()
                 val result = mutableListOf<AuthorDataWithComment>()
@@ -52,16 +51,8 @@ class ProfileScreenFirebaseRepository(
                     val commentId = comment.id
                     val thisRecipeName = comment.getString("recipeName")
                     val reviewText = comment.getString("reviewText")
-//                    val authorEmail = comment.getString("authorEmail")
                     val likes = comment.getDouble("likes")?.toInt()
 
-//                    var likedByMe = 0
-//
-//                    val likedByList = comment.get("likedBy") as? List<String> ?: listOf()
-//
-//                    if(likedByList.contains(auth.currentUser?.email)){
-//                        likedByMe = 1
-//                    }
 
                     val thisCommentEntity = CommentsEntity(
                         commentID = commentId,
@@ -71,8 +62,7 @@ class ProfileScreenFirebaseRepository(
                         likes = likes ?: 0,
                         likedByMe = 1,
                         dislikedByMe = 0,
-                        myLikeWasSynced = 0,
-                        timestamp = ""
+                        reportedByMe = 1
                     )
 
                     commentsResult.add(thisCommentEntity)
@@ -115,56 +105,12 @@ class ProfileScreenFirebaseRepository(
         val registration = db
             .collection("reviews")
             .whereEqualTo("authorUid", auth.currentUser?.uid ?: "")
+            .whereEqualTo("isModApproved", 1)
+            .whereEqualTo("isDeleted", 0)
             .orderBy("likes", Query.Direction.DESCENDING)
             .addSnapshotListener(listener)
 
         awaitClose {registration.remove()}
     }
 
-
-
-
-//    suspend fun getComments(recipeName: String): MutableList<CommentsEntity>{
-//
-//        val reviewsCollection = db.collection("reviews")
-//        val querySnapshot = reviewsCollection.whereEqualTo("recipeName", recipeName).get().await()
-//
-//        val resultCommentsList: MutableList<CommentsEntity> = mutableListOf()
-//
-//        if (querySnapshot != null) {
-//            for (document in querySnapshot.documents) {
-//                val commentId = document.id
-//                val thisRecipeName = document.getString("recipeName")
-//                val reviewText = document.getString("reviewText")
-//                val authorUid = document.getString("authorUid")
-//                val likes = document.getDouble("likes")?.toInt()
-//                val timestamp = document.getTimestamp("timestamp")
-//                val date = timestamp?.toDate()
-//                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
-//                var formattedDate = "Failed"
-//                try{
-//                    formattedDate = formatter.format(date!!)
-//                }
-//                catch (e: Exception){
-//                    println("bad timestamp in firestore ${e.message}")
-//                }
-//
-//                val comment = CommentsEntity(
-//                    commentID = commentId,
-//                    recipeName  = thisRecipeName ?: "",
-//                    authorID = authorUid ?: "",
-//                    commentText = reviewText ?: "",
-//                    likes = likes ?: 0,
-//                    likedByMe = 0,
-//                    myLikeWasSynced = 0,
-//                    timestamp = formattedDate
-//                )
-//
-//                resultCommentsList.add(comment)
-//
-//            }
-//        }
-//        return resultCommentsList
-//
-//    }
 }

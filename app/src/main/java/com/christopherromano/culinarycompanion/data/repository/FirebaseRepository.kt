@@ -94,6 +94,7 @@ class FirebaseRepository(
                         "likes" to 0,
                         "likedBy" to arrayListOf<String>(uid),
                         "dislikedBy" to arrayListOf<String>(),
+                        "reportedBy" to arrayListOf<String>(uid),
                         "timestamp" to serverTimestamp(),
                         "isModApproved" to 1,
                         "isDeleted" to 0,
@@ -148,20 +149,12 @@ class FirebaseRepository(
                     result = "Failed Duplicate Rating"
                 } else {
                     recipeRating += rating.rating
-//                if(recipeRating > 99.0){
-//                    recipeRating = 99.0
-//                }
-//                else if(recipeRating < 60){
-//                    recipeRating = 60.0
-//                }
-//                val timestamp: Any = serverTimestamp()
                     transaction.update(
                         currentRecipeDocument,
                         "ratedBy",
                         FieldValue.arrayUnion(auth.currentUser?.uid)
                     )
                     transaction.update(currentRecipeDocument, "rating", recipeRating)
-//                transaction.update(currentRecipeDocument, "timestamp", timestamp)
                 }
 
             }.addOnSuccessListener {
@@ -395,6 +388,40 @@ class FirebaseRepository(
             println("Failed to upload comment with: $e")
         }
 
+
+        //update reportedBy List
+        try {
+            val reviewRef = db.collection("reviews").document(authorDataWithComment.comment.commentID)
+
+            db.runTransaction { transaction ->
+
+                val snapshotReview = transaction.get(reviewRef)
+
+                var reportedByList = snapshotReview.get("reportedBy") as? List<String> ?: listOf()
+
+                if (auth.currentUser?.uid == null) {
+                    println("Null Reporter")
+                } else if (reportedByList.contains(auth.currentUser?.uid)) {
+                    println("Failed Duplicate report")
+                } else {
+                    transaction.update(
+                        reviewRef,
+                        "reportedBy",
+                        FieldValue.arrayUnion(auth.currentUser?.uid)
+                    )
+                }
+
+            }.addOnSuccessListener {
+                println("successfully updated reportedBy list in firestore")
+            }.addOnFailureListener { e ->
+                println("Failed with $e")
+            }.await()
+
+        }
+        catch(e: Exception){
+            println("failed to update reported by list with: $e")
+        }
+
         println("end of try to upload report")
 
     }
@@ -487,7 +514,13 @@ class FirebaseRepository(
     private suspend fun addUserToFirestore() {
         println("in add new")
         auth.currentUser?.apply {
-            val user = toUser(this.displayName, this.uid)
+
+            val firstName = this.displayName?.let { name ->
+                name.trim().split("\\s+".toRegex())[0].substring(0,14)
+            } ?: ""
+
+            val user = toUser(this.displayName, firstName, this.uid)
+
             db.collection("users").document(uid).set(user).await()
             val backupData = hashMapOf(
                 "email" to this.email,
@@ -498,9 +531,9 @@ class FirebaseRepository(
         }
     }
 
-    private fun FirebaseUser.toUser(displayName: String?, uid: String?) = mapOf(
-        "name" to displayName,
-        "display_name" to displayName,
+    private fun FirebaseUser.toUser(fullName: String?, firstName: String, uid: String?) = mapOf(
+        "name" to fullName,
+        "display_name" to firstName,
         "uid" to uid,
         "user_photo" to photoUrl?.toString(),
         "timestamp" to serverTimestamp(),
