@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace 'com.christopherromano.culinarycompanion'
-    compileSdk 33
+    compileSdk 34
 
 
 
@@ -38,9 +38,9 @@ android {
 
         applicationId "com.christopherromano.culinarycompanion"
         minSdk 23
-        targetSdk 33
-        versionCode 16
-        versionName "1.16"
+        targetSdk 34
+        versionCode 17
+        versionName "1.17"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
