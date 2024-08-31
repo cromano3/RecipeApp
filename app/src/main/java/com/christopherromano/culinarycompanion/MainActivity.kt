@@ -113,14 +113,7 @@ fun CulinaryCompanion(isCompact: Boolean, isExpandedHeight: Boolean) {
     val owner = LocalViewModelStoreOwner.current
 
     owner?.let { viewModelStoreOwner ->
-        val appViewModel: AppViewModel = viewModel(
-            viewModelStoreOwner,
-            "AppViewModel",
-            AppViewModelFactory(
-                LocalContext.current.applicationContext
-                        as Application,
-            )
-        )
+        val appViewModel: AppViewModel = viewModel(viewModelStoreOwner, "AppViewModel", AppViewModelFactory(LocalContext.current.applicationContext as Application))
 
         val context = LocalContext.current
 
@@ -1257,14 +1250,8 @@ class TopBarViewModelFactory(
     }
 }
 
-class AppViewModelFactory(
-    val application: Application,
-) : ViewModelProvider.Factory {
+class AppViewModelFactory(val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-
-        return AppViewModel(
-            application,
-            FirebaseRepository(application, Firebase.firestore, Firebase.auth),
-        ) as T
+        return AppViewModel(application, FirebaseRepository(application, Firebase.firestore, Firebase.auth)) as T
     }
 }
